@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/pantalla_final.gd" id="1_final"]
+
+[node name="PantallaFinal" type="CanvasLayer"]
+layer = 3
+script = ExtResource("1_final")
+
+[node name="Fondo" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0392157, 0.027451, 0.027451, 0.82)
+
+[node name="Centro" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Caja" type="VBoxContainer" parent="Centro"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Titulo" type="Label" parent="Centro/Caja"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "HAS LLEGADO AL NUCLEO"
+horizontal_alignment = 1
+
+[node name="Subtitulo" type="Label" parent="Centro/Caja"]
+modulate = Color(0.85098, 0.827451, 0.8, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "12 pisos superados."
+horizontal_alignment = 1
+
+[node name="BotonReiniciar" type="Button" parent="Centro/Caja"]
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 18
+text = "Jugar otra vez  (R)"

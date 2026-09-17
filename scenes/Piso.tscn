@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/piso.gd" id="1_piso"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_salida"]
+radius = 46.0
+
+[node name="Piso" type="Node2D"]
+script = ExtResource("1_piso")
+
+[node name="Muros" type="StaticBody2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="ZonaSalida" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 1
+monitorable = false
+
+[node name="Forma" type="CollisionShape2D" parent="ZonaSalida"]
+shape = SubResource("CircleShape2D_salida")

@@ -1,0 +1,44 @@
+# --- Godot 4 ---
+# Carpeta de datos derivados del editor: se regenera sola, nunca se versiona.
+.godot/
+# Carpeta heredada de Godot 3 (por si alguien abre el proyecto con una version antigua).
+.import/
+
+# Archivos .import de recursos importados (texturas, audio...).
+# Godot los regenera al abrir el proyecto; versionarlos genera conflictos constantes
+# porque contienen rutas absolutas de la maquina de cada persona.
+*.import
+
+# Plantillas/exportaciones y builds
+export.cfg
+export_presets.cfg
+builds/
+build/
+exports/
+*.exe
+*.pck
+*.zip
+*.apk
+*.aab
+*.dmg
+*.x86_64
+/android/
+
+# Mono / C# (por si en el futuro se anaden scripts en C#)
+.mono/
+data_*/
+mono_crash.*.json
+
+# --- Sistemas operativos ---
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# --- Editores ---
+.vscode/
+.idea/
+*.swp
+*~

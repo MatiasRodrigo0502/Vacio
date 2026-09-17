@@ -1,0 +1,25 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/principal.gd" id="1_principal"]
+[ext_resource type="Script" path="res://scripts/pool_obstaculos.gd" id="2_pool"]
+[ext_resource type="PackedScene" path="res://scenes/Jugador.tscn" id="3_jugador"]
+[ext_resource type="Script" path="res://scripts/camara_juego.gd" id="4_camara"]
+[ext_resource type="PackedScene" path="res://scenes/Hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/PantallaFinal.tscn" id="6_final"]
+
+[node name="Principal" type="Node2D"]
+script = ExtResource("1_principal")
+
+[node name="ContenedorPiso" type="Node2D" parent="."]
+
+[node name="PoolObstaculos" type="Node2D" parent="."]
+script = ExtResource("2_pool")
+
+[node name="Jugador" parent="." instance=ExtResource("3_jugador")]
+
+[node name="CamaraJuego" type="Camera2D" parent="."]
+script = ExtResource("4_camara")
+
+[node name="Hud" parent="." instance=ExtResource("5_hud")]
+
+[node name="PantallaFinal" parent="." instance=ExtResource("6_final")]

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DatosPiso" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/datos_piso.gd" id="1_datos_piso"]
+
+[resource]
+script = ExtResource("1_datos_piso")
+nombre_capa = "Zona de transición"
+ancho_area = 1000.0
+velocidad_obstaculos = 175.0
+radio_vision = 395.0
+es_nivel_final = false
+alto_area = 1700.0
+cantidad_obstaculos = 11
