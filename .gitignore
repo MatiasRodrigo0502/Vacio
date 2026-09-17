@@ -29,6 +29,11 @@ exports/
 data_*/
 mono_crash.*.json
 
+# Escenas y scripts de prueba que se crean en la raiz para verificar cosas en
+# headless. Son de usar y tirar; Godot les genera ademas un .uid que se colaba
+# en los commits.
+prueba_temporal.*
+
 # --- Sistemas operativos ---
 .DS_Store
 .DS_Store?
