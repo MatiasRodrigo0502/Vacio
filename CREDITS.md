@@ -16,12 +16,24 @@ los packs gratuitos exigen atribución.
 - **URL**: PENDIENTE
 - **Licencia**: PENDIENTE
 
+### Rocas de cueva — obstáculos y decoración
+- **Archivos**: `assets/obstaculos/*.png` (33 texturas) + `catalogo_cueva.tres`
+- **Origen**: pack `Assets-nivel 1.zip`, carpeta `Assets 1024 Cave`
+- **Procesado**: los cuatro atlas se partieron automáticamente en 100 piezas
+  sueltas (detectando islas de píxeles opacos). De esas 100 se eligieron a mano
+  33: cantos rodados, bloques y grupos de rocas. Se descartaron estalagmitas,
+  estalactitas, esquirlas y repisas planas, porque delatan la vista lateral.
+  Reescaladas a 192 px de lado máximo.
+- **Autor**: PENDIENTE
+- **URL**: PENDIENTE
+- **Licencia**: PENDIENTE
+
 ## Descargados pero todavía sin usar
 
 | Pack | Contenido | Uso previsto |
 |---|---|---|
-| `assets-base.zip` | Slimes, animaciones de plantas, Mossy Tileset | enemigos y decoración, fases siguientes |
-| `Assets-nivel 1.zip` | Cueva 2048px (suelo, rocas), vegetación | suelo y obstáculos de los pisos |
+| `assets-base.zip` | Slimes, animaciones de plantas, Mossy Tileset | los slimes, como obstáculos móviles de la Fase 2 |
+| `Assets-nivel 1.zip` | Vegetación animada, repisas de plataformas | decoración, pendiente de decidir |
 | `Mobs_Personajes.zip` | Tiny RPG Character Asset Pack (Soldier y Orc) | descartado como jugador: es pixel art y no pega con el resto |
 
 ## Dónde están los originales

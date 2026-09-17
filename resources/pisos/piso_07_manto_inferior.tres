@@ -10,4 +10,5 @@ velocidad_obstaculos = 200.0
 radio_vision = 370.0
 es_nivel_final = false
 alto_area = 1680.0
+familia_obstaculos = "grupo"
 cantidad_obstaculos = 13

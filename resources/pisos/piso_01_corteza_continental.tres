@@ -10,4 +10,5 @@ velocidad_obstaculos = 80.0
 radio_vision = 520.0
 es_nivel_final = false
 alto_area = 1800.0
+familia_obstaculos = "roca"
 cantidad_obstaculos = 4

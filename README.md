@@ -9,7 +9,8 @@ Cada piso es más estrecho, más denso y se ve menos que el anterior.
 
 Estado: **Fase 1 — base jugable**. Moverse, bajar del piso 1 al 12, vida,
 cámara y ancho reaccionando al piso, y pantalla de victoria al superar el 12.
-El jugador ya es el mago (BlueWizard) con animaciones de reposo y de andar.
+El jugador ya es el mago (BlueWizard) con animaciones de reposo y de andar, y
+los obstáculos son rocas de cueva con decoración repartida por el suelo.
 
 ## Controles
 
@@ -53,7 +54,8 @@ Vacio/
 │   ├── pisos/             # los 12 .tres, uno por capa (ver su README)
 │   └── mecanicas/         # .tres de mecánicas (vacío en Fase 1, ver su README)
 └── assets/
-    └── personaje/      # frames del mago + animaciones_mago.tres
+    ├── personaje/      # frames del mago + animaciones_mago.tres
+    └── obstaculos/     # 33 rocas + catalogo_cueva.tres
 ```
 
 ## Decisiones de arquitectura
@@ -103,8 +105,9 @@ La regla práctica para no pisarse:
 
 ## Qué NO está hecho todavía (fases siguientes)
 
-Obstáculos variados y móviles, mecánicas concretas, menú principal, sistema de
-puntuación, guardado y el arte de pisos y obstáculos (que se siguen dibujando
-por código). La Fase 1 deja los enganches puestos:
+Obstáculos **móviles** (los de ahora son rocas estáticas), mecánicas concretas,
+menú principal, sistema de puntuación y guardado. El suelo sigue siendo color
+plano a propósito: ninguno de los packs trae una textura cenital repetible, y
+el color interpolado por profundidad es lo que comunica las 12 capas. La Fase 1 deja los enganches puestos:
 `velocidad_obstaculos` ya llega a cada obstáculo, y `Mecanica` ya se carga y se
 aplica aunque todavía no haya ninguna.

@@ -39,3 +39,12 @@ extends Resource
 
 ## Cuantos obstaculos se colocan en el piso.
 @export var cantidad_obstaculos: int = 6
+
+## Que familia de rocas usa este piso. Cambiarla es la forma mas barata de dar
+## personalidad a una capa sin tocar nada mas.
+@export_enum("roca", "piedra", "bloque", "grupo") var familia_obstaculos: String = "roca"
+
+## Catalogo de texturas alternativo. Si se deja vacio se usa el de la cueva.
+## Existe para que en el futuro se pueda meter un pack de arte distinto en los
+## pisos profundos (lava, cristal...) sin tocar una linea de codigo.
+@export var catalogo_obstaculos: CatalogoObstaculos = null

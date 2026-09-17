@@ -26,6 +26,9 @@ const RADIO_SALIDA: float = 46.0
 const DESPEJE_ENTRADA: float = 150.0
 const DESPEJE_SALIDA: float = 130.0
 
+## Catalogo de rocas por defecto. Cada piso puede sobreescribirlo desde su .tres.
+const CATALOGO_POR_DEFECTO := preload("res://assets/obstaculos/catalogo_cueva.tres")
+
 var datos: DatosPiso = null
 var numero_piso: int = 1
 
@@ -35,6 +38,7 @@ var _mecanicas: Array[Mecanica] = []
 var _salida_usada: bool = false
 
 @onready var _muros: StaticBody2D = $Muros
+@onready var _decoracion: Node2D = $Decoracion
 @onready var _zona_salida: Area2D = $ZonaSalida
 @onready var _forma_salida: CollisionShape2D = $ZonaSalida/Forma
 
@@ -142,28 +146,36 @@ func _colocar_obstaculos() -> void:
 	if _pool == null or datos == null:
 		return
 
+	var catalogo: CatalogoObstaculos = datos.catalogo_obstaculos
+	if catalogo == null:
+		catalogo = CATALOGO_POR_DEFECTO
+	var texturas := catalogo.texturas_de(datos.familia_obstaculos)
+	if texturas.is_empty():
+		push_warning("El catalogo del piso %d no tiene texturas." % numero_piso)
+		return
+
 	var generador := RandomNumberGenerator.new()
 	generador.seed = hash(datos.nombre_capa) + numero_piso * 7919
+	var tinte := tinte_profundidad()
 
 	var entrada := Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA)
 	var salida := Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA)
 
-	# Los bloques se encogen con la profundidad porque el area tambien se
+	# Las rocas se encogen con la profundidad porque el area tambien se
 	# estrecha: si no, en el piso 12 no cabria nada jugable.
-	var lado_base := clampf(_ancho() * 0.055, 26.0, 70.0)
+	var lado_base := clampf(_ancho() * 0.075, 34.0, 96.0)
 	var posiciones: Array[Vector2] = []
+	var lados: Array[float] = []
 
 	for _i in datos.cantidad_obstaculos:
-		var tamano := Vector2(
-			lado_base * generador.randf_range(0.8, 1.9),
-			lado_base * generador.randf_range(0.8, 1.9))
+		var lado := lado_base * generador.randf_range(0.75, 1.6)
 
 		# Hasta 24 intentos de encontrar un hueco valido. Si no lo encuentra,
-		# se descarta ese obstaculo: mejor un piso con uno menos que un piso
+		# se descarta esa roca: mejor un piso con una menos que un piso
 		# imposible de pasar.
 		for _intento in 24:
 			var candidata := Vector2(
-				generador.randf_range(-_ancho() * 0.5 + tamano.x, _ancho() * 0.5 - tamano.x),
+				generador.randf_range(-_ancho() * 0.5 + lado, _ancho() * 0.5 - lado),
 				generador.randf_range(entrada.y + DESPEJE_ENTRADA, salida.y - DESPEJE_SALIDA))
 
 			if candidata.distance_to(entrada) < DESPEJE_ENTRADA:
@@ -171,20 +183,64 @@ func _colocar_obstaculos() -> void:
 			if candidata.distance_to(salida) < DESPEJE_SALIDA:
 				continue
 
-			var separacion_minima := tamano.length() + 70.0
+			# La separacion depende del tamano de las dos rocas implicadas, no
+			# de un valor fijo: si no, las grandes se solapan y las pequenas
+			# quedan absurdamente espaciadas.
 			var libre := true
-			for ocupada in posiciones:
-				if candidata.distance_to(ocupada) < separacion_minima:
+			for n in posiciones.size():
+				if candidata.distance_to(posiciones[n]) < (lado + lados[n]) * 0.6 + 40.0:
 					libre = false
 					break
 			if not libre:
 				continue
 
 			var obstaculo := _pool.obtener()
-			obstaculo.preparar(to_global(candidata), tamano, datos.velocidad_obstaculos)
+			obstaculo.preparar(to_global(candidata),
+				texturas[generador.randi() % texturas.size()],
+				lado, tinte, datos.velocidad_obstaculos)
 			_obstaculos.append(obstaculo)
 			posiciones.append(candidata)
+			lados.append(lado)
 			break
+
+	_colocar_decoracion(generador, tinte, catalogo)
+
+
+## Reparte piedras pequenas por el suelo. Son solo decoracion: sin colision y
+## sin logica.
+##
+## POR QUE NO PASAN POR EL POOL: no tienen fisica, son pocas y mueren con el
+## piso. Meterlas en el pool anadiria contabilidad a cambio de nada. El pool
+## existe por los Area2D, que son los caros de crear y destruir.
+##
+## Se generan con el MISMO generador que las rocas y despues que ellas, para no
+## alterar la secuencia de numeros: si no, anadir decoracion moveria de sitio
+## todos los obstaculos y los 12 pisos dejarian de ser los de siempre.
+func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
+		catalogo: CatalogoObstaculos) -> void:
+	for hijo in _decoracion.get_children():
+		hijo.queue_free()
+
+	var piedras := catalogo.texturas_de("piedra")
+	if piedras.is_empty():
+		return
+
+	var cuantas := datos.cantidad_obstaculos * 2 + 6
+	for _i in cuantas:
+		var textura: Texture2D = piedras[generador.randi() % piedras.size()]
+		var piedra := Sprite2D.new()
+		piedra.texture = textura
+		var lado := generador.randf_range(10.0, 26.0)
+		var escala := lado / maxf(textura.get_size().x, textura.get_size().y)
+		piedra.scale = Vector2(escala, escala)
+		# Volteo horizontal en vez de rotacion: el arte tiene la luz desde
+		# arriba y rotarlo delataria que son recortes de un atlas.
+		piedra.flip_h = generador.randf() < 0.5
+		piedra.modulate = Color(tinte.r, tinte.g, tinte.b, 0.8)
+		piedra.position = Vector2(
+			generador.randf_range(-_ancho() * 0.5 + 24.0, _ancho() * 0.5 - 24.0),
+			generador.randf_range(-_alto() * 0.5 + 24.0, _alto() * 0.5 - 24.0))
+		_decoracion.add_child(piedra)
 
 
 func _al_entrar_en_salida(cuerpo: Node2D) -> void:
@@ -198,10 +254,23 @@ func _al_entrar_en_salida(cuerpo: Node2D) -> void:
 	salida_alcanzada.emit()
 
 
+## Tinte que se aplica a rocas y piedras segun la profundidad.
+##
+## El arte de las rocas es marron de cueva y a partir del piso 8 el suelo tira a
+## rojo incandescente, asi que sin tinte la roca canta como pieza de otro juego.
+##
+## OJO AL AJUSTARLO: el tinte tambien decide si el obstaculo se ve, y eso pesa
+## mas que el estilo. Medido sobre una captura del piso 9, con estos valores la
+## roca queda a 0,33 veces la luminancia del suelo (contraste ~3:1, se lee de un
+## vistazo). Aclararlas para lucir mas el dibujo de la roca lo baja a 0,48 (~2:1)
+## y el obstaculo empieza a fundirse con el fondo. Probado y descartado.
+func tinte_profundidad() -> Color:
+	var profundidad := clampf(float(numero_piso - 1) / 11.0, 0.0, 1.0)
+	return Color(0.92, 0.88, 0.84).lerp(Color(1.0, 0.52, 0.34), profundidad)
+
+
 # --- Pintado ----------------------------------------------------------------
 
-## El piso se dibuja por codigo (todavia no hay arte). El color se interpola
-## entre la corteza y el nucleo segun la profundidad, para que se note el descenso.
 func _draw() -> void:
 	var profundidad := clampf(float(numero_piso - 1) / 11.0, 0.0, 1.0)
 	var color_suelo := Color(0.16, 0.13, 0.12).lerp(Color(0.42, 0.13, 0.06), profundidad)

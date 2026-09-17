@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=35 format=3]
+
+[ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="0_catalogo"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/piedra_00.png" id="piedra_00"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/piedra_01.png" id="piedra_01"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/piedra_02.png" id="piedra_02"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/piedra_03.png" id="piedra_03"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/piedra_04.png" id="piedra_04"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/piedra_05.png" id="piedra_05"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/piedra_06.png" id="piedra_06"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/piedra_07.png" id="piedra_07"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_00.png" id="roca_00"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_01.png" id="roca_01"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_02.png" id="roca_02"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_03.png" id="roca_03"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_04.png" id="roca_04"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_05.png" id="roca_05"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_06.png" id="roca_06"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_07.png" id="roca_07"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_08.png" id="roca_08"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/roca_09.png" id="roca_09"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/bloque_00.png" id="bloque_00"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/bloque_01.png" id="bloque_01"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/bloque_02.png" id="bloque_02"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/bloque_03.png" id="bloque_03"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/bloque_04.png" id="bloque_04"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/bloque_05.png" id="bloque_05"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/bloque_06.png" id="bloque_06"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/grupo_00.png" id="grupo_00"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/grupo_01.png" id="grupo_01"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/grupo_02.png" id="grupo_02"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/grupo_03.png" id="grupo_03"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/grupo_04.png" id="grupo_04"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/grupo_05.png" id="grupo_05"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/grupo_06.png" id="grupo_06"]
+[ext_resource type="Texture2D" path="res://assets/obstaculos/grupo_07.png" id="grupo_07"]
+
+[resource]
+script = ExtResource("0_catalogo")
+piedras = Array[Texture2D]([ExtResource("piedra_00"), ExtResource("piedra_01"), ExtResource("piedra_02"), ExtResource("piedra_03"), ExtResource("piedra_04"), ExtResource("piedra_05"), ExtResource("piedra_06"), ExtResource("piedra_07")])
+rocas = Array[Texture2D]([ExtResource("roca_00"), ExtResource("roca_01"), ExtResource("roca_02"), ExtResource("roca_03"), ExtResource("roca_04"), ExtResource("roca_05"), ExtResource("roca_06"), ExtResource("roca_07"), ExtResource("roca_08"), ExtResource("roca_09")])
+bloques = Array[Texture2D]([ExtResource("bloque_00"), ExtResource("bloque_01"), ExtResource("bloque_02"), ExtResource("bloque_03"), ExtResource("bloque_04"), ExtResource("bloque_05"), ExtResource("bloque_06")])
+grupos = Array[Texture2D]([ExtResource("grupo_00"), ExtResource("grupo_01"), ExtResource("grupo_02"), ExtResource("grupo_03"), ExtResource("grupo_04"), ExtResource("grupo_05"), ExtResource("grupo_06"), ExtResource("grupo_07")])

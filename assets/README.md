@@ -24,3 +24,27 @@ es independiente y está aparte (círculo de radio 15 sobre la base de la túnic
 
 Nota sobre `.gitignore`: los `*.import` no se versionan, los regenera Godot al
 abrir el proyecto.
+
+## obstaculos/
+
+Las rocas: 33 texturas de 192 px de lado máximo, agrupadas en cuatro familias
+por el prefijo del nombre.
+
+- `piedra_00..07` — piedras pequeñas, solo decoración del suelo, sin colisión
+- `roca_00..09` — cantos sueltos, familia por defecto de los obstáculos
+- `bloque_00..06` — bloques angulares, para los pisos del núcleo
+- `grupo_00..07` — grupos de varias rocas, ocupan más y cierran más el paso
+- `catalogo_cueva.tres` — el `CatalogoObstaculos` que agrupa las cuatro listas
+
+**Por qué un catálogo y no leer la carpeta**: el orden de los archivos en disco
+no es estable entre sistemas, y los 12 pisos tienen que ser idénticos en las
+tres máquinas del equipo. Con la lista fija dentro del `.tres`, la roca número
+3 es la misma para todo el mundo.
+
+Cada piso elige su familia desde su propio `.tres` (`familia_obstaculos`), y
+puede apuntar a otro catálogo entero (`catalogo_obstaculos`) si algún día hay
+un pack de arte distinto para las capas profundas.
+
+Las rocas se tintan en tiempo de ejecución según la profundidad. Ese tinte no
+es decorativo: decide si el obstáculo se distingue del suelo. Está explicado y
+medido en `tinte_profundidad()`, en `scripts/piso.gd`.
