@@ -41,3 +41,13 @@ func texturas_de(familia: String) -> Array[Texture2D]:
 func esta_completo() -> bool:
 	return not piedras.is_empty() and not rocas.is_empty() \
 		and not bloques.is_empty() and not grupos.is_empty()
+
+
+## Todas las piezas grandes del pack juntas. Se usan para el borde del area,
+## donde da igual la familia: lo que importa es que tengan volumen.
+func rocas_todas() -> Array[Texture2D]:
+	var todas: Array[Texture2D] = []
+	todas.append_array(rocas)
+	todas.append_array(bloques)
+	todas.append_array(grupos)
+	return todas

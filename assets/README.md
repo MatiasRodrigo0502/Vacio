@@ -62,6 +62,17 @@ número 3 es la misma para todo el mundo.
 
 No hace falta tocar ni una línea de GDScript.
 
+### El borde del área
+
+Cada piso se rodea de rocas del pack que tenga asignado, para que el límite no
+sea una línea dibujada sino la pared de la cueva. Son **decoración pura**: van
+por fuera del borde y no chocan con nada, la colisión sigue siendo el muro
+invisible. Se dejan huecos en el centro de arriba y de abajo, donde aparece el
+jugador y donde está el círculo de salida.
+
+Salen unos 100-135 sprites por piso, sin física. Para hacerlo más o menos denso
+está `_colocar_borde()` en `scripts/piso.gd`.
+
 ### Tinte
 
 Las rocas y plantas se tintan en tiempo de ejecución según la profundidad. Ese

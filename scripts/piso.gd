@@ -208,6 +208,7 @@ func _colocar_obstaculos() -> void:
 			break
 
 	_colocar_decoracion(generador, tinte, catalogo)
+	_colocar_borde(generador, tinte, catalogo)
 
 
 ## Reparte piedras pequenas por el suelo. Son solo decoracion: sin colision y
@@ -259,6 +260,58 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 		_decoracion.add_child(adorno)
 
 
+## Rodea el area jugable con rocas, para que el limite deje de ser una linea
+## dibujada y parezca la pared de la cueva.
+##
+## Van POR FUERA del borde, desplazadas hacia afuera: el suelo jugable tiene que
+## quedar limpio. La colision sigue siendo el muro invisible de _construir_muros,
+## estas piezas no chocan con nada.
+##
+## Se dejan huecos en el centro de los lados corto: arriba aparece el jugador y
+## abajo esta el circulo de salida, y taparlos con rocas confundiria.
+func _colocar_borde(generador: RandomNumberGenerator, tinte: Color,
+		catalogo: CatalogoObstaculos) -> void:
+	var piezas := catalogo.rocas_todas()
+	if piezas.is_empty():
+		return
+
+	var mitad_ancho := _ancho() * 0.5
+	var mitad_alto := _alto() * 0.5
+	# Las piezas del borde son mayores que las del suelo: tienen que leerse como
+	# pared, no como piedras sueltas.
+	var lado_medio := clampf(_ancho() * 0.09, 56.0, 130.0)
+
+	for lado_n in 4:
+		var horizontal := lado_n < 2
+		var largo := _ancho() if horizontal else _alto()
+		var signo := 1.0 if lado_n % 2 == 0 else -1.0
+		var recorrido := -largo * 0.5
+		while recorrido < largo * 0.5:
+			var tamano := lado_medio * generador.randf_range(0.7, 1.5)
+			var salto := tamano * generador.randf_range(0.45, 0.8)
+			recorrido += salto
+
+			# Hueco para la entrada (arriba) y la salida (abajo).
+			if horizontal and absf(recorrido) < DESPEJE_SALIDA:
+				continue
+
+			var fuera := generador.randf_range(0.2, 0.55) * tamano
+			var posicion: Vector2
+			if horizontal:
+				posicion = Vector2(recorrido, signo * (mitad_alto + fuera))
+			else:
+				posicion = Vector2(signo * (mitad_ancho + fuera), recorrido)
+
+			var textura: Texture2D = piezas[generador.randi() % piezas.size()]
+			var roca := Sprite2D.new()
+			roca.texture = textura
+			roca.scale = Vector2.ONE * (tamano / maxf(textura.get_size().x, textura.get_size().y))
+			roca.flip_h = generador.randf() < 0.5
+			roca.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
+			roca.position = posicion
+			_decoracion.add_child(roca)
+
+
 ## Pinta los carteles de controles si este piso los pide desde su .tres.
 func _colocar_tutorial() -> void:
 	if datos == null or not datos.mostrar_tutorial:
@@ -306,7 +359,11 @@ func _draw() -> void:
 
 	var rectangulo := Rect2(Vector2(-_ancho() * 0.5, -_alto() * 0.5), Vector2(_ancho(), _alto()))
 	draw_rect(rectangulo, color_suelo)
-	draw_rect(rectangulo, color_borde, false, 6.0)
+	# La linea del limite va tenue: desde que hay rocas rodeando el area, el
+	# borde ya se ve, y una linea marcada encima parecia un marco de interfaz.
+	# Se mantiene porque marca donde esta exactamente el muro invisible, que en
+	# un juego de precision el jugador agradece.
+	draw_rect(rectangulo, Color(color_borde.r, color_borde.g, color_borde.b, 0.35), false, 4.0)
 
 	# Lineas horizontales de referencia: sin ellas cuesta percibir el avance
 	# vertical sobre un fondo plano.

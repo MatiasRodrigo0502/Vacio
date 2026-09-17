@@ -11,7 +11,8 @@ Estado: **Fase 1 — base jugable**. Moverse, bajar del piso 1 al 12, vida,
 cámara y ancho reaccionando al piso, y pantalla de victoria al superar el 12.
 El jugador ya es el mago (BlueWizard) con animaciones de reposo y de andar, y
 los obstáculos son rocas con decoración repartida por el suelo. El piso 1
-enseña los controles y tiene arte de cueva; el piso 2, de musgo.
+enseña los controles y tiene arte de cueva; el piso 2, de musgo. El área de
+cada piso va rodeada de rocas del pack que le toque.
 
 ## Controles
 
