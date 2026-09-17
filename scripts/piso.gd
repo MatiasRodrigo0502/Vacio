@@ -60,6 +60,12 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	_mecanicas = mecanicas
 	_salida_usada = false
 
+	# El nodo de decoracion se vacia AQUI y no dentro de cada funcion que lo
+	# llena: plataformas, decoracion suelta y borde escriben en el mismo nodo,
+	# y si cada una lo vaciara, la ultima borraria el trabajo de las anteriores.
+	for hijo in _decoracion.get_children():
+		hijo.queue_free()
+
 	_construir_muros()
 	_colocar_salida()
 	_colocar_obstaculos()
@@ -207,8 +213,97 @@ func _colocar_obstaculos() -> void:
 			lados.append(lado)
 			break
 
+	_colocar_plataformas(generador, tinte, catalogo)
 	_colocar_decoracion(generador, tinte, catalogo)
 	_colocar_borde(generador, tinte, catalogo)
+
+
+## Reparte plataformas bajas por el suelo y hace crecer la vegetacion encima.
+##
+## POR QUE AGRUPAR LAS PLANTAS EN PLATAFORMAS:
+## repartidas sueltas por todo el piso parecian puestas al azar, porque lo
+## estaban. Agrupadas sobre una repisa cuentan algo: ahi hay tierra y por eso
+## crece algo. Da estructura al suelo sin tocar la jugabilidad.
+##
+## Son decoracion, no chocan: el jugador pasa por encima. Convertirlas en
+## obstaculo seria otra decision de diseno, y no es la que se ha pedido.
+func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
+		catalogo: CatalogoObstaculos) -> void:
+	var losas := catalogo.texturas_de("plataforma")
+	if losas.is_empty():
+		return
+	var plantas := catalogo.texturas_de("vegetacion")
+
+	var entrada := Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA)
+	var salida := Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA)
+	# Una cada tanta superficie, como la decoracion: los pisos de arriba son
+	# mucho mas grandes y con un numero fijo quedarian vacios.
+	var cuantas := int(_ancho() * _alto() / 380000.0) + 2
+	var puestas: Array[Vector2] = []
+
+	# Una plataforma tiene que leerse como TERRENO, no como obstaculo: si se
+	# parece a una roca el jugador la esquivara creyendo que hace dano. Por eso
+	# son anchas, planas y mas CLARAS que el suelo (los valores por encima de 1
+	# en modulate suben el brillo), al reves que las rocas, que van oscuras.
+	var tinte_losa := Color(minf(tinte.r * 1.28, 2.0), minf(tinte.g * 1.28, 2.0),
+		minf(tinte.b * 1.28, 2.0), 1.0)
+
+	for _i in cuantas:
+		var ancho_losa := clampf(_ancho() * 0.3, 210.0, 470.0) * generador.randf_range(0.8, 1.35)
+
+		for _intento in 16:
+			var candidata := Vector2(
+				generador.randf_range(-_ancho() * 0.5 + ancho_losa * 0.6,
+					_ancho() * 0.5 - ancho_losa * 0.6),
+				generador.randf_range(entrada.y + DESPEJE_ENTRADA, salida.y - DESPEJE_SALIDA))
+			if candidata.distance_to(entrada) < DESPEJE_ENTRADA * 1.5:
+				continue
+			if candidata.distance_to(salida) < DESPEJE_SALIDA * 1.5:
+				continue
+			var libre := true
+			for ocupada in puestas:
+				if candidata.distance_to(ocupada) < ancho_losa * 1.2:
+					libre = false
+					break
+			if not libre:
+				continue
+
+			var textura: Texture2D = losas[generador.randi() % losas.size()]
+			var losa := Sprite2D.new()
+			losa.texture = textura
+			losa.scale = Vector2.ONE * (ancho_losa / textura.get_size().x)
+			losa.flip_h = generador.randf() < 0.5
+			losa.modulate = tinte_losa
+			losa.position = candidata
+			_decoracion.add_child(losa)
+
+			_plantar_encima(losa, ancho_losa, generador, tinte, plantas)
+			puestas.append(candidata)
+			break
+
+
+## Siembra unas cuantas plantas sobre una plataforma ya colocada.
+## Se anaden despues que la losa para que queden dibujadas encima de ella.
+func _plantar_encima(losa: Sprite2D, ancho_losa: float, generador: RandomNumberGenerator,
+		tinte: Color, plantas: Array[Texture2D]) -> void:
+	if plantas.is_empty():
+		return
+
+	var alto_losa := losa.texture.get_size().y * losa.scale.y
+	for _i in generador.randi_range(2, 5):
+		var textura: Texture2D = plantas[generador.randi() % plantas.size()]
+		var planta := Sprite2D.new()
+		planta.texture = textura
+		var lado := generador.randf_range(34.0, 76.0)
+		planta.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
+		planta.flip_h = generador.randf() < 0.5
+		planta.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
+		# Repartidas a lo ancho de la losa y pegadas a su mitad superior, que es
+		# donde se apoyarian si la plataforma tuviera altura de verdad.
+		planta.position = losa.position + Vector2(
+			generador.randf_range(-ancho_losa * 0.38, ancho_losa * 0.38),
+			generador.randf_range(-alto_losa * 0.35, alto_losa * 0.1))
+		_decoracion.add_child(planta)
 
 
 ## Reparte piedras pequenas por el suelo. Son solo decoracion: sin colision y
@@ -223,12 +318,10 @@ func _colocar_obstaculos() -> void:
 ## todos los obstaculos y los 12 pisos dejarian de ser los de siempre.
 func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 		catalogo: CatalogoObstaculos) -> void:
-	for hijo in _decoracion.get_children():
-		hijo.queue_free()
-
+	# Solo piedras: la vegetacion va sobre las plataformas, agrupada. Repartirla
+	# tambien por aqui la devolveria al "puesto al azar" que queriamos quitar.
 	var piedras := catalogo.texturas_de("piedra")
-	var plantas := catalogo.texturas_de("vegetacion")
-	if piedras.is_empty() and plantas.is_empty():
+	if piedras.is_empty():
 		return
 
 	# La cantidad sale de la superficie del piso, no de un numero fijo: el piso 1
@@ -236,16 +329,8 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 	# desierto y el otro abarrotado.
 	var cuantas := int(_ancho() * _alto() / 80000.0) + datos.cantidad_obstaculos
 	for _i in cuantas:
-		# Mitad piedras y mitad plantas cuando hay de las dos. Las plantas van
-		# mas grandes: una hoja de 12 px no se distingue del suelo.
-		var es_planta := not plantas.is_empty() and (piedras.is_empty() or generador.randf() < 0.5)
-		var lista := plantas if es_planta else piedras
-		var textura: Texture2D = lista[generador.randi() % lista.size()]
-		var lado := 0.0
-		if es_planta:
-			lado = generador.randf_range(38.0, 86.0)
-		else:
-			lado = generador.randf_range(12.0, 30.0)
+		var textura: Texture2D = piedras[generador.randi() % piedras.size()]
+		var lado := generador.randf_range(12.0, 30.0)
 
 		var adorno := Sprite2D.new()
 		adorno.texture = textura
@@ -253,7 +338,7 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 		# Volteo horizontal en vez de rotacion: el arte tiene la luz desde
 		# arriba y rotarlo delataria que son recortes de un atlas.
 		adorno.flip_h = generador.randf() < 0.5
-		adorno.modulate = Color(tinte.r, tinte.g, tinte.b, 0.85 if es_planta else 0.8)
+		adorno.modulate = Color(tinte.r, tinte.g, tinte.b, 0.8)
 		adorno.position = Vector2(
 			generador.randf_range(-_ancho() * 0.5 + 24.0, _ancho() * 0.5 - 24.0),
 			generador.randf_range(-_alto() * 0.5 + 24.0, _alto() * 0.5 - 24.0))

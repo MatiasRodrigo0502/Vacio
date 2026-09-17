@@ -45,8 +45,9 @@ propio para ellos. Y sin vegetación: no crecen plantas en el manto.
 - `roca_*` — obstáculos principales, familia por defecto
 - `bloque_*` — obstáculos angulares, para los pisos del núcleo
 - `grupo_*` — obstáculos grandes; en el pack de musgo son las lianas con pinchos
-- `vegetacion_*` — plantas, solo decoración, repartidas más grandes que las
-  piedras porque si no no se distinguen del suelo
+- `vegetacion_*` — plantas; ya no van sueltas por el suelo, crecen sobre las
+  plataformas
+- `plataforma_*` — repisas y losas anchas que se reparten por el suelo
 
 **Por qué un catálogo `.tres` y no leer la carpeta**: el orden de los archivos
 en disco no es estable entre sistemas, y los 12 pisos tienen que ser idénticos
@@ -61,6 +62,21 @@ número 3 es la misma para todo el mundo.
 3. En el `.tres` del piso, apunta `catalogo_arte` a ese catálogo.
 
 No hace falta tocar ni una línea de GDScript.
+
+### Plataformas
+
+Cada piso reparte entre 3 y 6 plataformas bajas, y la vegetación crece **encima
+de ellas** en vez de suelta por el suelo. Sueltas parecían puestas al azar,
+porque lo estaban; agrupadas sobre una repisa cuentan algo: ahí hay tierra y por
+eso crece algo.
+
+Son decoración, no chocan: el jugador pasa por encima. Por eso se pintan
+**más claras** que el suelo, al revés que las rocas, que van oscuras. Si una
+plataforma se pareciera a una roca, el jugador la esquivaría creyendo que hace
+daño, y en un juego donde chocar quita vida eso es un problema de verdad.
+
+Los pisos 3 al 12 tienen plataformas de piedra pero sin plantas: sus catálogos
+no llevan vegetación.
 
 ### El borde del área
 

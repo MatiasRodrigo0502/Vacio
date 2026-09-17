@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=35 format=3]
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=43 format=3]
 
 [ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="0_catalogo"]
 [ext_resource type="Texture2D" path="res://assets/cueva/piedra_00.png" id="cue_piedra_00"]
@@ -34,6 +34,14 @@
 [ext_resource type="Texture2D" path="res://assets/cueva/grupo_05.png" id="cue_grupo_05"]
 [ext_resource type="Texture2D" path="res://assets/cueva/grupo_06.png" id="cue_grupo_06"]
 [ext_resource type="Texture2D" path="res://assets/cueva/grupo_07.png" id="cue_grupo_07"]
+[ext_resource type="Texture2D" path="res://assets/cueva/plataforma_00.png" id="cue_plataforma_00"]
+[ext_resource type="Texture2D" path="res://assets/cueva/plataforma_01.png" id="cue_plataforma_01"]
+[ext_resource type="Texture2D" path="res://assets/cueva/plataforma_02.png" id="cue_plataforma_02"]
+[ext_resource type="Texture2D" path="res://assets/cueva/plataforma_03.png" id="cue_plataforma_03"]
+[ext_resource type="Texture2D" path="res://assets/cueva/plataforma_04.png" id="cue_plataforma_04"]
+[ext_resource type="Texture2D" path="res://assets/cueva/plataforma_05.png" id="cue_plataforma_05"]
+[ext_resource type="Texture2D" path="res://assets/cueva/plataforma_06.png" id="cue_plataforma_06"]
+[ext_resource type="Texture2D" path="res://assets/cueva/plataforma_07.png" id="cue_plataforma_07"]
 
 [resource]
 script = ExtResource("0_catalogo")
@@ -42,3 +50,4 @@ rocas = Array[Texture2D]([ExtResource("cue_roca_00"), ExtResource("cue_roca_01")
 bloques = Array[Texture2D]([ExtResource("cue_bloque_00"), ExtResource("cue_bloque_01"), ExtResource("cue_bloque_02"), ExtResource("cue_bloque_03"), ExtResource("cue_bloque_04"), ExtResource("cue_bloque_05"), ExtResource("cue_bloque_06")])
 grupos = Array[Texture2D]([ExtResource("cue_grupo_00"), ExtResource("cue_grupo_01"), ExtResource("cue_grupo_02"), ExtResource("cue_grupo_03"), ExtResource("cue_grupo_04"), ExtResource("cue_grupo_05"), ExtResource("cue_grupo_06"), ExtResource("cue_grupo_07")])
 vegetacion = Array[Texture2D]([])
+plataformas = Array[Texture2D]([ExtResource("cue_plataforma_00"), ExtResource("cue_plataforma_01"), ExtResource("cue_plataforma_02"), ExtResource("cue_plataforma_03"), ExtResource("cue_plataforma_04"), ExtResource("cue_plataforma_05"), ExtResource("cue_plataforma_06"), ExtResource("cue_plataforma_07")])

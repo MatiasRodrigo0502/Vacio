@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=38 format=3]
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=43 format=3]
 
 [ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="0_catalogo"]
 [ext_resource type="Texture2D" path="res://assets/musgo/piedra_00.png" id="mus_piedra_00"]
@@ -37,6 +37,11 @@
 [ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_09.png" id="mus_vegetacion_09"]
 [ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_10.png" id="mus_vegetacion_10"]
 [ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_11.png" id="mus_vegetacion_11"]
+[ext_resource type="Texture2D" path="res://assets/musgo/plataforma_00.png" id="mus_plataforma_00"]
+[ext_resource type="Texture2D" path="res://assets/musgo/plataforma_01.png" id="mus_plataforma_01"]
+[ext_resource type="Texture2D" path="res://assets/musgo/plataforma_02.png" id="mus_plataforma_02"]
+[ext_resource type="Texture2D" path="res://assets/musgo/plataforma_03.png" id="mus_plataforma_03"]
+[ext_resource type="Texture2D" path="res://assets/musgo/plataforma_04.png" id="mus_plataforma_04"]
 
 [resource]
 script = ExtResource("0_catalogo")
@@ -45,3 +50,4 @@ rocas = Array[Texture2D]([ExtResource("mus_roca_00"), ExtResource("mus_roca_01")
 bloques = Array[Texture2D]([ExtResource("mus_bloque_00"), ExtResource("mus_bloque_01"), ExtResource("mus_bloque_02")])
 grupos = Array[Texture2D]([ExtResource("mus_grupo_00"), ExtResource("mus_grupo_01"), ExtResource("mus_grupo_02"), ExtResource("mus_grupo_03"), ExtResource("mus_grupo_04"), ExtResource("mus_grupo_05")])
 vegetacion = Array[Texture2D]([ExtResource("mus_vegetacion_00"), ExtResource("mus_vegetacion_01"), ExtResource("mus_vegetacion_02"), ExtResource("mus_vegetacion_03"), ExtResource("mus_vegetacion_04"), ExtResource("mus_vegetacion_05"), ExtResource("mus_vegetacion_06"), ExtResource("mus_vegetacion_07"), ExtResource("mus_vegetacion_08"), ExtResource("mus_vegetacion_09"), ExtResource("mus_vegetacion_10"), ExtResource("mus_vegetacion_11")])
+plataformas = Array[Texture2D]([ExtResource("mus_plataforma_00"), ExtResource("mus_plataforma_01"), ExtResource("mus_plataforma_02"), ExtResource("mus_plataforma_03"), ExtResource("mus_plataforma_04")])

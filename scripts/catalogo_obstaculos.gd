@@ -21,6 +21,9 @@ extends Resource
 ## Plantas y hierba. Solo decoracion, como las piedras, pero se reparten en
 ## tamanos mayores porque si no no se ven.
 @export var vegetacion: Array[Texture2D] = []
+## Repisas y losas anchas. Se reparten por el suelo como plataformas bajas y la
+## vegetacion crece encima de ellas, en vez de suelta por el piso.
+@export var plataformas: Array[Texture2D] = []
 
 
 ## Devuelve las texturas de una familia. Si el nombre no existe, cae en rocas:
@@ -32,6 +35,7 @@ func texturas_de(familia: String) -> Array[Texture2D]:
 		"grupo": return grupos
 		"roca": return rocas
 		"vegetacion": return vegetacion
+		"plataforma": return plataformas
 		_:
 			push_warning("Familia de obstaculos desconocida: '%s'. Se usan rocas." % familia)
 			return rocas
