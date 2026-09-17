@@ -21,6 +21,9 @@ de pisos en el código.
 | `radio_vision` | Media altura visible de la cámara, en píxeles. Menor = zoom más cerrado = se ve menos. |
 | `cantidad_obstaculos` | Cuántos bloques se reparten por el piso. |
 | `es_nivel_final` | Solo `true` en el piso 12. Al superarlo se gana la partida. |
+| `familia_obstaculos` | Qué rocas usa el piso: `roca`, `bloque`, `grupo` o `piedra`. |
+| `catalogo_obstaculos` | Catálogo de texturas alternativo. Vacío = el de la cueva. |
+| `mostrar_tutorial` | Pinta los carteles de controles sobre el suelo. Solo el piso 1. |
 
 ## Valores de partida (sin jugar todavía, pendientes de ajuste)
 

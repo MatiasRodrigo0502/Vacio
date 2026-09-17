@@ -44,6 +44,11 @@ extends Resource
 ## personalidad a una capa sin tocar nada mas.
 @export_enum("roca", "piedra", "bloque", "grupo") var familia_obstaculos: String = "roca"
 
+## Pinta los carteles de controles sobre el suelo. Solo el piso 1 los lleva,
+## pero es un interruptor por piso y no un "if numero_piso == 1" escondido en el
+## codigo: si manana se quiere recordar algo en el piso 6, se marca su .tres.
+@export var mostrar_tutorial: bool = false
+
 ## Catalogo de texturas alternativo. Si se deja vacio se usa el de la cueva.
 ## Existe para que en el futuro se pueda meter un pack de arte distinto en los
 ## pisos profundos (lava, cristal...) sin tocar una linea de codigo.

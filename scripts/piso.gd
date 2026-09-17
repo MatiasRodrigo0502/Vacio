@@ -29,6 +29,9 @@ const DESPEJE_SALIDA: float = 130.0
 ## Catalogo de rocas por defecto. Cada piso puede sobreescribirlo desde su .tres.
 const CATALOGO_POR_DEFECTO := preload("res://assets/obstaculos/catalogo_cueva.tres")
 
+## Carteles de controles. Solo se instancian en los pisos que lo pidan.
+const ESCENA_TUTORIAL := preload("res://scenes/Tutorial.tscn")
+
 var datos: DatosPiso = null
 var numero_piso: int = 1
 
@@ -60,6 +63,7 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	_construir_muros()
 	_colocar_salida()
 	_colocar_obstaculos()
+	_colocar_tutorial()
 
 	# Las mecanicas se aplican al final, cuando el piso ya existe: asi pueden
 	# anadir o modificar lo que haga falta. El piso no sabe que hace cada una.
@@ -241,6 +245,20 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 			generador.randf_range(-_ancho() * 0.5 + 24.0, _ancho() * 0.5 - 24.0),
 			generador.randf_range(-_alto() * 0.5 + 24.0, _alto() * 0.5 - 24.0))
 		_decoracion.add_child(piedra)
+
+
+## Pinta los carteles de controles si este piso los pide desde su .tres.
+func _colocar_tutorial() -> void:
+	if datos == null or not datos.mostrar_tutorial:
+		return
+	var tutorial: Tutorial = ESCENA_TUTORIAL.instantiate()
+	# add_child antes de colocar(): los @onready del tutorial tienen que estar
+	# resueltos, y los Label necesitan estar en el arbol para saber su tamano.
+	add_child(tutorial)
+	tutorial.colocar(
+		Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA),
+		Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA),
+		_alto())
 
 
 func _al_entrar_en_salida(cuerpo: Node2D) -> void:

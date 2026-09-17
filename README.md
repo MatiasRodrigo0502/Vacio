@@ -10,7 +10,8 @@ Cada piso es más estrecho, más denso y se ve menos que el anterior.
 Estado: **Fase 1 — base jugable**. Moverse, bajar del piso 1 al 12, vida,
 cámara y ancho reaccionando al piso, y pantalla de victoria al superar el 12.
 El jugador ya es el mago (BlueWizard) con animaciones de reposo y de andar, y
-los obstáculos son rocas de cueva con decoración repartida por el suelo.
+los obstáculos son rocas de cueva con decoración repartida por el suelo. El
+piso 1 enseña los controles.
 
 ## Controles
 
@@ -18,6 +19,9 @@ los obstáculos son rocas de cueva con decoración repartida por el suelo.
 |---|---|
 | Moverse | WASD o flechas |
 | Reiniciar partida | R |
+
+No hace falta memorizarlos: el piso 1 hace de tutorial y los explica con
+carteles pintados sobre el suelo, cada uno donde hace falta.
 
 ## Cómo se juega ahora mismo
 
@@ -34,6 +38,7 @@ Vacio/
 ├── scenes/
 │   ├── Principal.tscn     # escena raíz: monta pisos, jugador, cámara, HUD
 │   ├── Piso.tscn          # UNA escena genérica para los 12 pisos
+│   ├── Tutorial.tscn      # carteles de controles (solo en los pisos que lo piden)
 │   ├── Jugador.tscn
 │   ├── Obstaculo.tscn     # bloque reciclado por el pool
 │   ├── Hud.tscn
@@ -44,6 +49,7 @@ Vacio/
 │   ├── mecanica.gd        # class_name Mecanica extends Resource (clase base)
 │   ├── principal.gd
 │   ├── piso.gd
+│   ├── tutorial.gd
 │   ├── jugador.gd
 │   ├── camara_juego.gd
 │   ├── obstaculo.gd
