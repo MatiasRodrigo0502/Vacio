@@ -10,8 +10,8 @@ Cada piso es más estrecho, más denso y se ve menos que el anterior.
 Estado: **Fase 1 — base jugable**. Moverse, bajar del piso 1 al 12, vida,
 cámara y ancho reaccionando al piso, y pantalla de victoria al superar el 12.
 El jugador ya es el mago (BlueWizard) con animaciones de reposo y de andar, y
-los obstáculos son rocas de cueva con decoración repartida por el suelo. El
-piso 1 enseña los controles.
+los obstáculos son rocas con decoración repartida por el suelo. El piso 1
+enseña los controles y tiene arte de cueva; el piso 2, de musgo.
 
 ## Controles
 
@@ -61,7 +61,8 @@ Vacio/
 │   └── mecanicas/         # .tres de mecánicas (vacío en Fase 1, ver su README)
 └── assets/
     ├── personaje/      # frames del mago + animaciones_mago.tres
-    └── obstaculos/     # 33 rocas + catalogo_cueva.tres
+    ├── cueva/          # rocas y vegetación del piso 1 (y base del 3 al 12)
+    └── musgo/          # arte del piso 2
 ```
 
 ## Decisiones de arquitectura

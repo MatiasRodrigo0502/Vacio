@@ -17,7 +17,7 @@ los packs gratuitos exigen atribución.
 - **Licencia**: PENDIENTE
 
 ### Rocas de cueva — obstáculos y decoración
-- **Archivos**: `assets/obstaculos/*.png` (33 texturas) + `catalogo_cueva.tres`
+- **Archivos**: `assets/cueva/*.png` (33 rocas + 12 de vegetación)
 - **Origen**: pack `Assets-nivel 1.zip`, carpeta `Assets 1024 Cave`
 - **Procesado**: los cuatro atlas se partieron automáticamente en 100 piezas
   sueltas (detectando islas de píxeles opacos). De esas 100 se eligieron a mano
@@ -28,12 +28,23 @@ los packs gratuitos exigen atribución.
 - **URL**: PENDIENTE
 - **Licencia**: PENDIENTE
 
+### Musgo — arte del piso 2
+- **Archivos**: `assets/musgo/*.png` (36 texturas)
+- **Origen**: pack `assets-base.zip`, carpetas `Mossy Tileset` y `Plant Animations`
+- **Procesado**: los atlas `Decorations&Hazards`, `FloatingPlatforms` y
+  `MossyHills` se partieron en piezas sueltas y se eligieron matorrales, rocas
+  con musgo y lianas con pinchos (que en el pack original ya son peligros, así
+  que aquí también hacen daño). Las plantas animadas aportan un frame cada una.
+- **Autor**: PENDIENTE
+- **URL**: PENDIENTE
+- **Licencia**: PENDIENTE
+
 ## Descargados pero todavía sin usar
 
 | Pack | Contenido | Uso previsto |
 |---|---|---|
-| `assets-base.zip` | Slimes, animaciones de plantas, Mossy Tileset | los slimes, como obstáculos móviles de la Fase 2 |
-| `Assets-nivel 1.zip` | Vegetación animada, repisas de plataformas | decoración, pendiente de decidir |
+| `assets-base.zip` | Slimes | obstáculos móviles de la Fase 2 |
+| `Assets-nivel 1.zip` | Secuencias completas de animación | animar la vegetación, pendiente |
 | `Mobs_Personajes.zip` | Tiny RPG Character Asset Pack (Soldier y Orc) | descartado como jugador: es pixel art y no pega con el resto |
 
 ## Dónde están los originales

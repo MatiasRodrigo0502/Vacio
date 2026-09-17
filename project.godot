@@ -1,5 +1,10 @@
-; Archivo de configuracion del motor.
-; Proyecto: Vacio (juego 2D top-down de descenso por capas de la Tierra)
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
@@ -12,14 +17,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-; Unico singleton del proyecto: centraliza el progreso entre pisos.
-; El script NO declara class_name a proposito (chocaria con el nombre del autoload).
 GestorProgreso="*res://scripts/gestor_progreso.gd"
 
 [display]
 
-window/size/viewport_width=1152
-window/size/viewport_height=648
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
@@ -67,5 +68,4 @@ reiniciar_partida={
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-; Fondo oscuro: lo que queda fuera del area jugable es "el vacio".
 environment/defaults/default_clear_color=Color(0.043, 0.031, 0.031, 1)

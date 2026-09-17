@@ -27,7 +27,7 @@ const DESPEJE_ENTRADA: float = 150.0
 const DESPEJE_SALIDA: float = 130.0
 
 ## Catalogo de rocas por defecto. Cada piso puede sobreescribirlo desde su .tres.
-const CATALOGO_POR_DEFECTO := preload("res://assets/obstaculos/catalogo_cueva.tres")
+const CATALOGO_POR_DEFECTO := preload("res://assets/cueva/catalogo_cueva.tres")
 
 ## Carteles de controles. Solo se instancian en los pisos que lo pidan.
 const ESCENA_TUTORIAL := preload("res://scenes/Tutorial.tscn")
@@ -150,7 +150,7 @@ func _colocar_obstaculos() -> void:
 	if _pool == null or datos == null:
 		return
 
-	var catalogo: CatalogoObstaculos = datos.catalogo_obstaculos
+	var catalogo: CatalogoObstaculos = datos.catalogo_arte
 	if catalogo == null:
 		catalogo = CATALOGO_POR_DEFECTO
 	var texturas := catalogo.texturas_de(datos.familia_obstaculos)
@@ -226,25 +226,37 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 		hijo.queue_free()
 
 	var piedras := catalogo.texturas_de("piedra")
-	if piedras.is_empty():
+	var plantas := catalogo.texturas_de("vegetacion")
+	if piedras.is_empty() and plantas.is_empty():
 		return
 
-	var cuantas := datos.cantidad_obstaculos * 2 + 6
+	# La cantidad sale de la superficie del piso, no de un numero fijo: el piso 1
+	# tiene casi cuatro veces el area del 12, y con una cifra fija uno queda
+	# desierto y el otro abarrotado.
+	var cuantas := int(_ancho() * _alto() / 80000.0) + datos.cantidad_obstaculos
 	for _i in cuantas:
-		var textura: Texture2D = piedras[generador.randi() % piedras.size()]
-		var piedra := Sprite2D.new()
-		piedra.texture = textura
-		var lado := generador.randf_range(10.0, 26.0)
-		var escala := lado / maxf(textura.get_size().x, textura.get_size().y)
-		piedra.scale = Vector2(escala, escala)
+		# Mitad piedras y mitad plantas cuando hay de las dos. Las plantas van
+		# mas grandes: una hoja de 12 px no se distingue del suelo.
+		var es_planta := not plantas.is_empty() and (piedras.is_empty() or generador.randf() < 0.5)
+		var lista := plantas if es_planta else piedras
+		var textura: Texture2D = lista[generador.randi() % lista.size()]
+		var lado := 0.0
+		if es_planta:
+			lado = generador.randf_range(38.0, 86.0)
+		else:
+			lado = generador.randf_range(12.0, 30.0)
+
+		var adorno := Sprite2D.new()
+		adorno.texture = textura
+		adorno.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
 		# Volteo horizontal en vez de rotacion: el arte tiene la luz desde
 		# arriba y rotarlo delataria que son recortes de un atlas.
-		piedra.flip_h = generador.randf() < 0.5
-		piedra.modulate = Color(tinte.r, tinte.g, tinte.b, 0.8)
-		piedra.position = Vector2(
+		adorno.flip_h = generador.randf() < 0.5
+		adorno.modulate = Color(tinte.r, tinte.g, tinte.b, 0.85 if es_planta else 0.8)
+		adorno.position = Vector2(
 			generador.randf_range(-_ancho() * 0.5 + 24.0, _ancho() * 0.5 - 24.0),
 			generador.randf_range(-_alto() * 0.5 + 24.0, _alto() * 0.5 - 24.0))
-		_decoracion.add_child(piedra)
+		_decoracion.add_child(adorno)
 
 
 ## Pinta los carteles de controles si este piso los pide desde su .tres.
@@ -272,8 +284,6 @@ func _al_entrar_en_salida(cuerpo: Node2D) -> void:
 	salida_alcanzada.emit()
 
 
-## Tinte que se aplica a rocas y piedras segun la profundidad.
-##
 ## El arte de las rocas es marron de cueva y a partir del piso 8 el suelo tira a
 ## rojo incandescente, asi que sin tinte la roca canta como pieza de otro juego.
 ##

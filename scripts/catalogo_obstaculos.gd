@@ -18,6 +18,9 @@ extends Resource
 @export var bloques: Array[Texture2D] = []
 ## Grupos de varias rocas juntas. Ocupan mas y cierran mas el paso.
 @export var grupos: Array[Texture2D] = []
+## Plantas y hierba. Solo decoracion, como las piedras, pero se reparten en
+## tamanos mayores porque si no no se ven.
+@export var vegetacion: Array[Texture2D] = []
 
 
 ## Devuelve las texturas de una familia. Si el nombre no existe, cae en rocas:
@@ -28,6 +31,7 @@ func texturas_de(familia: String) -> Array[Texture2D]:
 		"bloque": return bloques
 		"grupo": return grupos
 		"roca": return rocas
+		"vegetacion": return vegetacion
 		_:
 			push_warning("Familia de obstaculos desconocida: '%s'. Se usan rocas." % familia)
 			return rocas

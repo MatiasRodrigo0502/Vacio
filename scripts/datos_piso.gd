@@ -49,7 +49,7 @@ extends Resource
 ## codigo: si manana se quiere recordar algo en el piso 6, se marca su .tres.
 @export var mostrar_tutorial: bool = false
 
-## Catalogo de texturas alternativo. Si se deja vacio se usa el de la cueva.
-## Existe para que en el futuro se pueda meter un pack de arte distinto en los
-## pisos profundos (lava, cristal...) sin tocar una linea de codigo.
-@export var catalogo_obstaculos: CatalogoObstaculos = null
+## Pack de arte del piso: rocas, piedras y vegetacion. Si se deja vacio se usa
+## el de la cueva. Es lo que permite que cada piso tenga su propio aspecto sin
+## tocar codigo: basta con apuntar a otro catalogo.
+@export var catalogo_arte: CatalogoObstaculos = null

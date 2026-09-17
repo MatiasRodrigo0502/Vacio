@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=38 format=3]
+
+[ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="0_catalogo"]
+[ext_resource type="Texture2D" path="res://assets/musgo/piedra_00.png" id="mus_piedra_00"]
+[ext_resource type="Texture2D" path="res://assets/musgo/piedra_01.png" id="mus_piedra_01"]
+[ext_resource type="Texture2D" path="res://assets/musgo/piedra_02.png" id="mus_piedra_02"]
+[ext_resource type="Texture2D" path="res://assets/musgo/piedra_03.png" id="mus_piedra_03"]
+[ext_resource type="Texture2D" path="res://assets/musgo/piedra_04.png" id="mus_piedra_04"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_00.png" id="mus_roca_00"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_01.png" id="mus_roca_01"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_02.png" id="mus_roca_02"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_03.png" id="mus_roca_03"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_04.png" id="mus_roca_04"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_05.png" id="mus_roca_05"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_06.png" id="mus_roca_06"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_07.png" id="mus_roca_07"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_08.png" id="mus_roca_08"]
+[ext_resource type="Texture2D" path="res://assets/musgo/roca_09.png" id="mus_roca_09"]
+[ext_resource type="Texture2D" path="res://assets/musgo/bloque_00.png" id="mus_bloque_00"]
+[ext_resource type="Texture2D" path="res://assets/musgo/bloque_01.png" id="mus_bloque_01"]
+[ext_resource type="Texture2D" path="res://assets/musgo/bloque_02.png" id="mus_bloque_02"]
+[ext_resource type="Texture2D" path="res://assets/musgo/grupo_00.png" id="mus_grupo_00"]
+[ext_resource type="Texture2D" path="res://assets/musgo/grupo_01.png" id="mus_grupo_01"]
+[ext_resource type="Texture2D" path="res://assets/musgo/grupo_02.png" id="mus_grupo_02"]
+[ext_resource type="Texture2D" path="res://assets/musgo/grupo_03.png" id="mus_grupo_03"]
+[ext_resource type="Texture2D" path="res://assets/musgo/grupo_04.png" id="mus_grupo_04"]
+[ext_resource type="Texture2D" path="res://assets/musgo/grupo_05.png" id="mus_grupo_05"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_00.png" id="mus_vegetacion_00"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_01.png" id="mus_vegetacion_01"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_02.png" id="mus_vegetacion_02"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_03.png" id="mus_vegetacion_03"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_04.png" id="mus_vegetacion_04"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_05.png" id="mus_vegetacion_05"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_06.png" id="mus_vegetacion_06"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_07.png" id="mus_vegetacion_07"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_08.png" id="mus_vegetacion_08"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_09.png" id="mus_vegetacion_09"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_10.png" id="mus_vegetacion_10"]
+[ext_resource type="Texture2D" path="res://assets/musgo/vegetacion_11.png" id="mus_vegetacion_11"]
+
+[resource]
+script = ExtResource("0_catalogo")
+piedras = Array[Texture2D]([ExtResource("mus_piedra_00"), ExtResource("mus_piedra_01"), ExtResource("mus_piedra_02"), ExtResource("mus_piedra_03"), ExtResource("mus_piedra_04")])
+rocas = Array[Texture2D]([ExtResource("mus_roca_00"), ExtResource("mus_roca_01"), ExtResource("mus_roca_02"), ExtResource("mus_roca_03"), ExtResource("mus_roca_04"), ExtResource("mus_roca_05"), ExtResource("mus_roca_06"), ExtResource("mus_roca_07"), ExtResource("mus_roca_08"), ExtResource("mus_roca_09")])
+bloques = Array[Texture2D]([ExtResource("mus_bloque_00"), ExtResource("mus_bloque_01"), ExtResource("mus_bloque_02")])
+grupos = Array[Texture2D]([ExtResource("mus_grupo_00"), ExtResource("mus_grupo_01"), ExtResource("mus_grupo_02"), ExtResource("mus_grupo_03"), ExtResource("mus_grupo_04"), ExtResource("mus_grupo_05")])
+vegetacion = Array[Texture2D]([ExtResource("mus_vegetacion_00"), ExtResource("mus_vegetacion_01"), ExtResource("mus_vegetacion_02"), ExtResource("mus_vegetacion_03"), ExtResource("mus_vegetacion_04"), ExtResource("mus_vegetacion_05"), ExtResource("mus_vegetacion_06"), ExtResource("mus_vegetacion_07"), ExtResource("mus_vegetacion_08"), ExtResource("mus_vegetacion_09"), ExtResource("mus_vegetacion_10"), ExtResource("mus_vegetacion_11")])
