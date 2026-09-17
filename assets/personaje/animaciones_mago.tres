@@ -1,0 +1,175 @@
+[gd_resource type="SpriteFrames" load_steps=41 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_00.png" id="c_00"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_01.png" id="c_01"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_02.png" id="c_02"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_03.png" id="c_03"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_04.png" id="c_04"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_05.png" id="c_05"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_06.png" id="c_06"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_07.png" id="c_07"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_08.png" id="c_08"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_09.png" id="c_09"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_10.png" id="c_10"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_11.png" id="c_11"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_12.png" id="c_12"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_13.png" id="c_13"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_14.png" id="c_14"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_15.png" id="c_15"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_16.png" id="c_16"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_17.png" id="c_17"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_18.png" id="c_18"]
+[ext_resource type="Texture2D" path="res://assets/personaje/caminar_19.png" id="c_19"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_00.png" id="q_00"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_01.png" id="q_01"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_02.png" id="q_02"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_03.png" id="q_03"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_04.png" id="q_04"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_05.png" id="q_05"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_06.png" id="q_06"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_07.png" id="q_07"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_08.png" id="q_08"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_09.png" id="q_09"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_10.png" id="q_10"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_11.png" id="q_11"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_12.png" id="q_12"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_13.png" id="q_13"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_14.png" id="q_14"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_15.png" id="q_15"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_16.png" id="q_16"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_17.png" id="q_17"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_18.png" id="q_18"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_19.png" id="q_19"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("c_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_09")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_10")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_15")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_16")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_17")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c_19")
+}],
+"loop": true,
+"name": &"caminar",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("q_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_09")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_10")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_15")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_16")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_17")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("q_19")
+}],
+"loop": true,
+"name": &"quieto",
+"speed": 12.0
+}]

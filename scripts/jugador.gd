@@ -25,8 +25,9 @@ signal sin_vida
 ## golpe cuando el jugador se queda encima de un obstaculo.
 @export var duracion_invulnerabilidad: float = 1.1
 
-## Radio visual (y de colision) del jugador.
-const RADIO: float = 13.0
+## Por debajo de esta velocidad se considera que el personaje esta parado y se
+## pasa a la animacion de reposo. No es 0 porque la friccion deja residuos.
+const VELOCIDAD_MINIMA_ANDAR: float = 12.0
 
 var vida_actual: int = 0
 
@@ -36,6 +37,12 @@ var _tiempo_invulnerable: float = 0.0
 var _fase_parpadeo: float = 0.0
 ## Mientras es false el jugador no responde a los controles (cambios de piso).
 var _control_activo: bool = true
+
+## El sprite se escala y se desplaza desde la escena, no desde aqui: el origen
+## del nodo esta a los pies del mago y la forma de colision cubre la base de la
+## tunica. Asi, en vista cenital, lo que choca es la "huella" en el suelo y no
+## la cabeza, que es lo que espera el jugador.
+@onready var _sprite: AnimatedSprite2D = $Sprite
 
 
 func _ready() -> void:
@@ -58,17 +65,34 @@ func _physics_process(delta: float) -> void:
 		velocity = velocity.move_toward(Vector2.ZERO, friccion * delta)
 
 	move_and_slide()
+	_actualizar_animacion()
+
+
+## Elige la animacion segun el movimiento real, no segun la tecla pulsada: asi
+## el mago sigue "andando" durante el deslizamiento por inercia, que es lo que
+## se ve en pantalla.
+func _actualizar_animacion() -> void:
+	var animacion := &"caminar" if velocity.length() > VELOCIDAD_MINIMA_ANDAR else &"quieto"
+	if _sprite.animation != animacion:
+		_sprite.play(animacion)
 
 
 func _actualizar_invulnerabilidad(delta: float) -> void:
 	if _tiempo_invulnerable <= 0.0:
 		return
+
 	_tiempo_invulnerable -= delta
 	_fase_parpadeo += delta
-	queue_redraw()
+
+	# Parpadeo rojo a ~10 Hz mientras dura la invulnerabilidad. Se hace con
+	# modulate y no cambiando de animacion porque este pack no trae pose de
+	# golpe: asi el aviso funciona sobre cualquier animacion.
+	var encendido := fmod(_fase_parpadeo, 0.2) < 0.1
+	_sprite.modulate = Color(1.0, 0.4, 0.35, 1.0) if encendido else Color(1.0, 1.0, 1.0, 0.45)
+
 	if _tiempo_invulnerable <= 0.0:
 		_fase_parpadeo = 0.0
-		queue_redraw()
+		_sprite.modulate = Color.WHITE
 
 
 ## Aplica dano. Devuelve true solo si el golpe ha contado (util para que el
@@ -81,7 +105,6 @@ func recibir_dano(cantidad: int = 1) -> bool:
 	_tiempo_invulnerable = duracion_invulnerabilidad
 	dano_recibido.emit()
 	vida_cambiada.emit(vida_actual, vida_maxima)
-	queue_redraw()
 
 	if vida_actual == 0:
 		_control_activo = false
@@ -107,25 +130,13 @@ func reubicar(posicion: Vector2) -> void:
 func restaurar_vida() -> void:
 	vida_actual = vida_maxima
 	_tiempo_invulnerable = 0.0
+	_fase_parpadeo = 0.0
 	_control_activo = true
+	_sprite.modulate = Color.WHITE
 	vida_cambiada.emit(vida_actual, vida_maxima)
-	queue_redraw()
 
 
 ## Congela al jugador (final de partida, transiciones).
 func bloquear_control() -> void:
 	_control_activo = false
 	velocity = Vector2.ZERO
-
-
-# El aspecto se dibuja por codigo en vez de usar un sprite: en Fase 1 no hay
-# arte todavia y asi el repo no arrastra binarios que compliquen los merges.
-func _draw() -> void:
-	var color_base := Color(0.96, 0.93, 0.85)
-	if esta_invulnerable():
-		# Parpadeo a ~10 Hz mientras dura la invulnerabilidad.
-		var visible_ahora := fmod(_fase_parpadeo, 0.2) < 0.1
-		color_base = Color(1.0, 0.45, 0.35, 1.0 if visible_ahora else 0.35)
-
-	draw_circle(Vector2.ZERO, RADIO, color_base)
-	draw_arc(Vector2.ZERO, RADIO, 0.0, TAU, 24, Color(0.1, 0.08, 0.07, 0.9), 2.5, true)
