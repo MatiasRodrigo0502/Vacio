@@ -97,6 +97,14 @@ vegetación (esperando packs).
 - **En Python, `\` al final de línea dentro de una cadena normal es continuación
   de línea**: se come la barra y el salto. Rompió una línea de GDScript al
   generarla desde un script.
+- **Godot avisa de solapamientos con posiciones caducadas.** `body_entered`
+  puede llegar con la posición que el cuerpo tenía al empezar el paso de física,
+  no la que ya tiene. Como todos los pisos se construyen en el origen, la salida
+  del piso nuevo nacía donde estaba la del anterior y el juego saltaba del piso
+  1 al 3. Lo mismo con las rocas recicladas: golpes fantasma al entrar en un
+  piso. Por eso tanto `_al_entrar_en_salida()` como `_al_entrar_cuerpo()`
+  comprueban la distancia real antes de hacer nada. No quitar esas
+  comprobaciones.
 - Un solo nodo `Decoracion` lo llenan tres funciones (plataformas, decoración
   suelta y borde). El vaciado se hace **una vez** en `configurar()`. Si alguna
   vuelve a vaciarlo, borra el trabajo de las anteriores.

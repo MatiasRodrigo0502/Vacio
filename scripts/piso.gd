@@ -422,6 +422,20 @@ func _al_entrar_en_salida(cuerpo: Node2D) -> void:
 		return
 	if not (cuerpo is Jugador):
 		return
+
+	# Y ademas comprobamos que el jugador este DE VERDAD encima del circulo.
+	#
+	# POR QUE HACE FALTA:
+	# Godot avisa del solapamiento con la posicion que el cuerpo tenia al empezar
+	# el paso de fisica, no con la que tiene ya. Al cambiar de piso eso pasaba
+	# siempre: el piso nuevo se construye en el origen, asi que su salida nace
+	# casi exactamente donde estaba la del piso anterior (y=780 frente a y=790),
+	# el jugador todavia figuraba ahi aunque ya lo habiamos movido arriba, y el
+	# piso nuevo se daba por superado al nacer. Se saltaba un piso entero: del 1
+	# al 3.
+	if cuerpo.global_position.distance_to(_zona_salida.global_position) > RADIO_SALIDA * 2.0:
+		return
+
 	_salida_usada = true
 	salida_alcanzada.emit()
 

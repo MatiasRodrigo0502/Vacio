@@ -19,6 +19,10 @@ extends Area2D
 ## jugador tiene que sentir que "ha pasado raspando", no que le golpea el aire.
 const FACTOR_COLISION: float = 0.72
 
+## Holgura al comprobar el impacto, del tamano del jugador. Sin ella, un roce
+## legitimo en el borde se descartaria por unos pocos pixeles.
+const TOLERANCIA: float = 16.0
+
 ## Velocidad heredada del piso. En Fase 1 no se usa (rocas estaticas), pero se
 ## guarda para que los obstaculos moviles de fases futuras la lean tal cual.
 var velocidad: float = 0.0
@@ -78,5 +82,17 @@ func tamano() -> Vector2:
 func _al_entrar_cuerpo(cuerpo: Node2D) -> void:
 	# El obstaculo no sabe que es un "Jugador" concreto: solo pide que sepa
 	# recibir dano. Asi la misma roca servira para otras entidades.
-	if cuerpo.has_method("recibir_dano"):
-		cuerpo.recibir_dano(dano)
+	if not cuerpo.has_method("recibir_dano"):
+		return
+
+	# Misma precaucion que en la zona de salida del piso: el aviso de Godot puede
+	# llegar con la posicion que el cuerpo tenia al empezar el paso de fisica.
+	# Como las rocas se reciclan y aparecen en otro sitio en cada piso, sin esta
+	# comprobacion el jugador recibia golpes fantasma nada mas entrar en un piso
+	# nuevo, de una roca que ya no esta donde el motor cree.
+	var mitad := _tamano * 0.5 * FACTOR_COLISION + Vector2(TOLERANCIA, TOLERANCIA)
+	var distancia := (cuerpo.global_position - global_position).abs()
+	if distancia.x > mitad.x or distancia.y > mitad.y:
+		return
+
+	cuerpo.recibir_dano(dano)
