@@ -240,7 +240,12 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 	var salida := Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA)
 	# Una cada tanta superficie, como la decoracion: los pisos de arriba son
 	# mucho mas grandes y con un numero fijo quedarian vacios.
-	var cuantas := int(_ancho() * _alto() / 380000.0) + 2
+	#
+	# El divisor subio de 380000 a 1000000 al convertirlas en obstaculo: siendo
+	# decoracion daba igual llenar el suelo, pero ahora cada losa quita vida y
+	# son grandes. Con las de antes el piso 1 pasaba de 4 obstaculos a 9 de
+	# golpe, y ese piso es el que hace de escuela.
+	var cuantas := int(_ancho() * _alto() / 1000000.0) + 1
 	var puestas: Array[Vector2] = []
 
 	# Las plataformas se oscurecen hasta la luminosidad de las rocas.

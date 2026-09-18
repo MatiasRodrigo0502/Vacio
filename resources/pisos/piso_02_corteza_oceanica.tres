@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="DatosPiso" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/datos_piso.gd" id="1_datos_piso"]
-[ext_resource type="Resource" path="res://assets/musgo/catalogo_musgo.tres" id="2_catalogo"]
+[ext_resource type="Resource" path="res://assets/cueva/catalogo_cueva_vegetal.tres" id="2_catalogo"]
 
 [resource]
 script = ExtResource("1_datos_piso")

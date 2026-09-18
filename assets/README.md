@@ -32,11 +32,13 @@ Ahora mismo:
 
 | Piso | Catálogo | Qué se ve |
 |---|---|---|
-| 1 | `cueva/catalogo_cueva_vegetal.tres` | rocas de cueva + su vegetación seca |
-| 2 | `musgo/catalogo_musgo.tres` | matorrales, rocas con musgo, lianas con pinchos y plantas |
+| 1 | `musgo/catalogo_musgo.tres` | matorrales, rocas con musgo, lianas con pinchos y plantas |
+| 2 | `cueva/catalogo_cueva_vegetal.tres` | rocas de cueva + su vegetación seca |
 | 3–12 | `cueva/catalogo_cueva.tres` (por defecto) | solo rocas, sin vegetación |
 
-Los pisos 3 al 12 se quedan con roca pelada a propósito, hasta que haya arte
+El musgo va arriba y la cueva debajo, que es el orden que pide el tema: se
+empieza en la superficie y se baja a la roca. Los pisos 3 al 12 se quedan con
+roca pelada a propósito, hasta que haya arte
 propio para ellos. Y sin vegetación: no crecen plantas en el manto.
 
 ### Las familias de un catálogo

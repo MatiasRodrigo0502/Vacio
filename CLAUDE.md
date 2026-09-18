@@ -68,8 +68,8 @@ controles con carteles sobre el suelo. La vida se muestra con corazones
 dibujados por código: la fuente de Godot no tiene glifos de corazón ni emoji,
 así que un "♥" de texto saldría como un cuadradito.
 
-Arte por piso: piso 1 cueva, piso 2 musgo, pisos 3-12 roca de cueva sin
-vegetación (esperando packs).
+Arte por piso: piso 1 musgo (superficie), piso 2 cueva con vegetación, pisos
+3-12 roca de cueva pelada (esperando packs).
 
 ## Pendiente
 
