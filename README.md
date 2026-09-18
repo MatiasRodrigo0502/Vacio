@@ -31,8 +31,8 @@ cada uno donde hace falta.
 Apareces arriba del piso. Bajas esquivando bloques (cada toque quita 1 de vida,
 con ~1 s de invulnerabilidad después) hasta el círculo de salida del fondo. Al
 tocarlo pasas al piso siguiente, con la vida que te quede. Disparas bolas
-mágicas con las flechas, en las cuatro direcciones, y rompen rocas y
-plataformas. Superar el piso 12
+mágicas con las flechas, en las cuatro direcciones, y rompen rocas, plataformas
+y enemigos. Del piso 2 en adelante hay slimes que te persiguen. Superar el piso 12
 gana la partida; quedarte sin vida la termina.
 
 ## Estructura del proyecto

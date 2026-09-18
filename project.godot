@@ -79,6 +79,7 @@ reiniciar_partida={
 2d_physics/layer_3="obstaculos"
 2d_physics/layer_4="salida"
 2d_physics/layer_5="proyectiles"
+2d_physics/layer_6="enemigos"
 
 [rendering]
 

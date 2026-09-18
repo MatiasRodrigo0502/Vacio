@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_00.png" id="slime_verde_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_01.png" id="slime_verde_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_02.png" id="slime_verde_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_03.png" id="slime_verde_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_04.png" id="slime_verde_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_05.png" id="slime_verde_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_06.png" id="slime_verde_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_07.png" id="slime_verde_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_08.png" id="slime_verde_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_verde_09.png" id="slime_verde_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("slime_verde_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_verde_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]

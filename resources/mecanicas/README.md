@@ -31,6 +31,7 @@ una mecánica nueva no obliga a tocar su código.
 
 | Archivo | Qué hace | Desde el piso |
 |---|---|---|
+| `enemigos.tres` | Reparte slimes que persiguen al jugador | 2 |
 | `rocas_moviles.tres` | Parte de las rocas van y vienen en línea recta | 4 |
 
 `rocas_moviles.tres` es el ejemplo de que el sistema funciona: no hay ni una

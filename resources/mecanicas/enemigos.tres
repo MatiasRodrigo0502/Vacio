@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MecanicaEnemigos" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/mecanicas/enemigos.gd" id="1_enemigos"]
+
+[resource]
+script = ExtResource("1_enemigos")
+nombre_mecanica = "Enemigos"
+descripcion = "Reparte slimes que persiguen al jugador. Aparecen a partir del piso 2 y van a mas segun se baja."
+piso_desbloqueo = 2
+activa = true
+base = 2
+por_piso = 0.6
+maximo = 9
+despeje = 240.0

@@ -69,11 +69,13 @@ rocas, plataformas y piedras pequeñas (las tres cosas quitan vida; lo único
 decorativo es la vegetación), con plantas encima de las plataformas y un borde de roca alrededor del área. Del piso 4 en adelante parte
 de las rocas se mueven, por la mecánica `rocas_moviles.tres`. El jugador dispara
 bolas mágicas con las flechas (WASD mueve), con cadencia, y rompen lo primero
-que tocan.
+que tocan. Del piso 2 en adelante hay slimes que le persiguen (mecánica
+`enemigos.tres`): aguantan dos disparos y quitan vida al tocarte.
 
 **Rumbo actual: acercar el juego a The Binding of Isaac.** Pedido por Matías el
 2026-09-18, en cuatro pasos: 1) disparo en cuatro direcciones (hecho),
-2) enemigos que persiguen, 3) objetos que mejoran, 4) salas con puertas. El piso 1 enseña los
+2) enemigos que persiguen (hecho), 3) objetos que mejoran, 4) salas con
+puertas. El piso 1 enseña los
 controles con carteles sobre el suelo. La vida se muestra con corazones
 dibujados por código: la fuente de Godot no tiene glifos de corazón ni emoji,
 así que un "♥" de texto saldría como un cuadradito.
