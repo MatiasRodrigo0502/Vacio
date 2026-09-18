@@ -113,8 +113,9 @@ La regla práctica para no pisarse:
 
 ## Qué NO está hecho todavía (fases siguientes)
 
-Obstáculos **móviles** (los de ahora son rocas estáticas), mecánicas concretas,
-menú principal, sistema de puntuación y guardado. El suelo sigue siendo color
+Menú principal, sistema de puntuación y guardado. Los obstáculos móviles ya
+están: del piso 4 en adelante, parte de las rocas van y vienen, y es la primera
+`Mecanica` del proyecto. El suelo sigue siendo color
 plano a propósito: ninguno de los packs trae una textura cenital repetible, y
 el color interpolado por profundidad es lo que comunica las 12 capas. La Fase 1 deja los enganches puestos:
 `velocidad_obstaculos` ya llega a cada obstáculo, y `Mecanica` ya se carga y se

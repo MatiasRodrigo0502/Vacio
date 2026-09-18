@@ -98,6 +98,12 @@ func punto_salida() -> Vector2:
 	return to_global(Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA))
 
 
+## Los obstaculos de este piso. Lo usan las mecanicas: es la unica forma que
+## tienen de tocarlos sin que el piso sepa que hace cada mecanica.
+func obstaculos() -> Array[Obstaculo]:
+	return _obstaculos
+
+
 ## Devuelve sus obstaculos al pool. Principal la llama antes de destruir el piso.
 func devolver_obstaculos() -> void:
 	if _pool == null:

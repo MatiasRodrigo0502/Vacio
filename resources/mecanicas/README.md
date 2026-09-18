@@ -27,5 +27,14 @@ una mecánica nueva no obliga a tocar su código.
 
 3. Listo. No hay que registrar nada en ningún sitio.
 
-La carpeta está vacía en la Fase 1 porque todavía no hay mecánicas concretas:
-el sistema funciona igual con cero mecánicas cargadas.
+## Mecánicas que hay ahora
+
+| Archivo | Qué hace | Desde el piso |
+|---|---|---|
+| `rocas_moviles.tres` | Parte de las rocas van y vienen en línea recta | 4 |
+
+`rocas_moviles.tres` es el ejemplo de que el sistema funciona: no hay ni una
+línea suya en `gestor_progreso.gd` ni en `piso.gd`. Para desactivarla, pon
+`activa = false` en su `.tres`. Para que empiece en otro piso, cambia
+`piso_desbloqueo`. Para que se muevan más o menos rocas, `proporcion_moviles`.
+Todo desde el inspector, sin tocar código.

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MecanicaRocasMoviles" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/mecanicas/rocas_moviles.gd" id="1_rocas_moviles"]
+
+[resource]
+script = ExtResource("1_rocas_moviles")
+nombre_mecanica = "Rocas moviles"
+descripcion = "A partir del piso 4, parte de las rocas van y vienen en linea recta. La velocidad la pone cada piso en su propio .tres."
+piso_desbloqueo = 4
+activa = true
+amplitud_minima = 70.0
+amplitud_maxima = 200.0
+proporcion_moviles = 0.55
+proporcion_horizontales = 0.7
+despeje_extremos = 190.0

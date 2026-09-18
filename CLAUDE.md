@@ -63,7 +63,8 @@ Fase 1 cerrada y jugable: movimiento con inercia, vida con invulnerabilidad,
 cámara con zoom por piso, los 12 pisos, victoria y derrota, pooling de
 obstáculos. El jugador es el mago (BlueWizard) animado. Los obstáculos son
 rocas y plataformas (las dos cosas quitan vida), con vegetación encima de las
-plataformas y un borde de roca alrededor del área. El piso 1 enseña los
+plataformas y un borde de roca alrededor del área. Del piso 4 en adelante parte
+de las rocas se mueven, por la mecánica `rocas_moviles.tres`. El piso 1 enseña los
 controles con carteles sobre el suelo. La vida se muestra con corazones
 dibujados por código: la fuente de Godot no tiene glifos de corazón ni emoji,
 así que un "♥" de texto saldría como un cuadradito.
@@ -77,9 +78,9 @@ Arte por piso: piso 1 musgo (superficie), piso 2 cueva con vegetación, pisos
   de cada uno está "sin verificar". No se pudo abrir itch.io desde aquí.
 - **Equilibrar la dificultad jugando**. Los valores de los 12 `.tres` se
   pusieron a ojo el primer día y nadie los ha jugado del tirón.
-- **Fase 2**: obstáculos móviles. Los slimes del pack Mossy Cavern encajan
-  (están dibujados de frente, como el mago) y `velocidad_obstaculos` ya viaja
-  hasta cada obstáculo esperando eso.
+- **Fase 2**: los slimes del pack Mossy Cavern como enemigos (están dibujados
+  de frente, como el mago). Las rocas móviles ya están hechas: mecánica
+  `rocas_moviles.tres`, desde el piso 4.
 - Arte de los pisos 3 al 12 cuando Matías consiga más packs.
 
 ## Trampas ya pisadas (no repetirlas)

@@ -29,12 +29,55 @@ var velocidad: float = 0.0
 
 var _tamano: Vector2 = Vector2(48, 48)
 
+# --- Vaiven (lo activa la mecanica de rocas moviles, a partir del piso 4) ---
+## Punto alrededor del cual oscila. Vector2.ZERO mientras este quieta.
+var _origen: Vector2 = Vector2.ZERO
+## Direccion del recorrido, normalizada.
+var _direccion: Vector2 = Vector2.ZERO
+## Cuanto se aleja del origen, en pixeles, hacia cada lado.
+var _amplitud: float = 0.0
+## Desplazamiento actual respecto al origen, entre -_amplitud y +_amplitud.
+var _avance: float = 0.0
+## 1.0 de ida, -1.0 de vuelta.
+var _sentido: float = 1.0
+
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _forma: CollisionShape2D = $Forma
 
 
 func _ready() -> void:
 	body_entered.connect(_al_entrar_cuerpo)
+	# Quieto hasta que alguien lo mueva: la mayoria de las rocas no se mueven y
+	# no tiene sentido gastar un _physics_process por cada una.
+	set_physics_process(false)
+
+
+## Recorrido de ida y vuelta en linea recta. Lo activa la mecanica de rocas
+## moviles; la velocidad es la que traiga el piso en su .tres.
+func activar_vaiven(direccion: Vector2, amplitud: float) -> void:
+	if direccion == Vector2.ZERO or amplitud <= 0.0 or velocidad <= 0.0:
+		return
+	_origen = global_position
+	_direccion = direccion.normalized()
+	_amplitud = amplitud
+	_avance = 0.0
+	_sentido = 1.0
+	set_physics_process(true)
+
+
+func esta_en_movimiento() -> bool:
+	return _direccion != Vector2.ZERO
+
+
+func _physics_process(delta: float) -> void:
+	_avance += velocidad * _sentido * delta
+	# Al llegar al extremo se da la vuelta. Se recorta el avance ademas de
+	# invertir el sentido: sin eso, con velocidades altas la roca se pasaria un
+	# poco de largo en cada rebote y el recorrido se iria agrandando.
+	if absf(_avance) >= _amplitud:
+		_avance = clampf(_avance, -_amplitud, _amplitud)
+		_sentido = -_sentido
+	global_position = _origen + _direccion * _avance
 
 
 ## Configura la roca antes de activarla. La llama el piso al construirse.
@@ -42,6 +85,7 @@ func _ready() -> void:
 ## escala de forma uniforme para no deformar la roca.
 func preparar(posicion: Vector2, textura: Texture2D, lado_objetivo: float,
 		tinte: Color, velocidad_piso: float) -> void:
+	_parar()
 	global_position = posicion
 	velocidad = velocidad_piso
 
@@ -67,7 +111,18 @@ func activar() -> void:
 	set_deferred("monitoring", true)
 
 
+## Deja la roca quieta. Se llama al reciclarla, porque una roca que vuelve del
+## pool no debe heredar el recorrido que tenia en el piso anterior.
+func _parar() -> void:
+	_direccion = Vector2.ZERO
+	_amplitud = 0.0
+	_avance = 0.0
+	_sentido = 1.0
+	set_physics_process(false)
+
+
 func desactivar() -> void:
+	_parar()
 	visible = false
 	set_deferred("monitoring", false)
 	# Se aparca lejos del area jugable: una roca reciclada nunca debe quedarse
