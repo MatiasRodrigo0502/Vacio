@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="ObjetoMejora" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ObjetoMejora" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/objeto_mejora.gd" id="1_objeto"]
+[ext_resource type="Texture2D" path="res://assets/objetos/icono_bota.png" id="2_icono"]
 
 [resource]
 script = ExtResource("1_objeto")
+icono = ExtResource("2_icono")
 nombre = "Botas ligeras"
 descripcion = "Te mueves más rápido"
 color = Color(0.45, 0.9, 0.5, 1)

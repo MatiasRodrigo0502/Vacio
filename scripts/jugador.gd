@@ -114,17 +114,28 @@ func _actualizar_disparo(delta: float) -> void:
 	if not _control_activo or _espera_disparo > 0.0:
 		return
 
-	var direccion := Input.get_vector(
-		"disparar_izquierda", "disparar_derecha", "disparar_arriba", "disparar_abajo")
+	var direccion := Vector2.ZERO
+
+	# El raton manda sobre las flechas: si estas apuntando, es lo que quieres.
+	# Con el raton se apunta libre, en cualquier angulo; con las flechas solo a
+	# las cuatro direcciones, que es el esquema clasico de teclado.
+	if Input.is_action_pressed("disparar_raton"):
+		var hacia := get_global_mouse_position() - centro_colision()
+		if hacia.length() > 1.0:
+			direccion = hacia.normalized()
+	else:
+		direccion = Input.get_vector(
+			"disparar_izquierda", "disparar_derecha", "disparar_arriba", "disparar_abajo")
+		if direccion != Vector2.ZERO:
+			# Con dos flechas a la vez manda la mas marcada: las diagonales
+			# harian el disparo de teclado mas facil de lo que toca.
+			if absf(direccion.x) > absf(direccion.y):
+				direccion = Vector2(signf(direccion.x), 0.0)
+			else:
+				direccion = Vector2(0.0, signf(direccion.y))
+
 	if direccion == Vector2.ZERO:
 		return
-
-	# Solo las cuatro direcciones: con dos flechas a la vez, manda la mas
-	# marcada. Las diagonales harian el disparo mas facil de lo que toca.
-	if absf(direccion.x) > absf(direccion.y):
-		direccion = Vector2(signf(direccion.x), 0.0)
-	else:
-		direccion = Vector2(0.0, signf(direccion.y))
 
 	_espera_disparo = cadencia_disparo
 	# Sale del centro del cuerpo y no de los pies, para que se vea nacer del

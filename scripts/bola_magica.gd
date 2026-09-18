@@ -39,6 +39,9 @@ var _fase: float = 0.0
 
 func _ready() -> void:
 	area_entered.connect(_al_tocar)
+	# Las rocas son cuerpos solidos y los enemigos areas, asi que hacen falta
+	# las dos senales.
+	body_entered.connect(_al_tocar_cuerpo)
 	var circulo := CircleShape2D.new()
 	circulo.radius = radio
 	_forma.shape = circulo
@@ -54,14 +57,18 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 
 
-func _al_tocar(area: Area2D) -> void:
-	# Contra una roca la bola se apaga pero la roca aguanta: sirve de parapeto.
-	if area is Obstaculo and not rompe_obstaculos:
-		queue_free()
-		return
+## Choque contra una roca o plataforma: la bola se apaga y la roca aguanta, asi
+## que la roca sirve de parapeto.
+func _al_tocar_cuerpo(cuerpo: Node2D) -> void:
+	if cuerpo is Obstaculo and rompe_obstaculos:
+		cuerpo.romper()
+		impacto.emit(cuerpo)
+	queue_free()
 
-	# Con el resto, duck typing como en todo el proyecto: la bola no pregunta
-	# contra que ha chocado, solo si eso se puede romper.
+
+func _al_tocar(area: Area2D) -> void:
+	# Duck typing como en todo el proyecto: la bola no pregunta contra que ha
+	# chocado, solo si eso se puede romper.
 	if not area.has_method("romper"):
 		return
 	area.romper()

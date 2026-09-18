@@ -68,9 +68,14 @@ obstáculos. El jugador es el mago (BlueWizard) animado. Los obstáculos son
 rocas, plataformas y piedras pequeñas (las tres cosas quitan vida; lo único
 decorativo es la vegetación), con plantas encima de las plataformas y un borde de roca alrededor del área. Del piso 4 en adelante parte
 de las rocas se mueven, por la mecánica `rocas_moviles.tres`. El jugador dispara
-bolas mágicas con las flechas (WASD mueve), con cadencia. Matan enemigos pero
-NO rompen rocas ni plataformas: la roca para la bola y hace de parapeto
-(`rompe_obstaculos` en `BolaMagica.tscn` lo devuelve al comportamiento viejo). Del piso 2 en adelante hay enemigos que le persiguen
+bolas mágicas con las flechas (cuatro direcciones) o con el clic izquierdo
+apuntando con el ratón; WASD mueve. Matan enemigos pero NO rompen rocas ni
+plataformas (`rompe_obstaculos` en `BolaMagica.tscn` devuelve eso).
+
+**Las rocas y plataformas son `StaticBody2D` sólidos**, no áreas: se choca con
+ellas y no hacen daño. Las piedras pequeñas siguen siendo decoración sin
+colisión: treinta chinas sólidas por piso harían el movimiento un engancharse
+continuo. El daño viene solo de los enemigos. Del piso 2 en adelante hay enemigos que le persiguen
 (mecánica `enemigos.tres`): cuatro tipos definidos en `resources/enemigos/*.tres`
 como `TipoEnemigo`, que aparecen según la profundidad. Añadir uno nuevo es dejar
 otro `.tres` ahí, sin tocar código. Cada piso deja además un objeto recogible

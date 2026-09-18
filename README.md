@@ -19,7 +19,7 @@ cada piso va rodeada de rocas del pack que le toque.
 | Acción | Tecla |
 |---|---|
 | Moverse | WASD |
-| Disparar | Flechas |
+| Disparar | Flechas, o clic izquierdo apuntando con el ratón |
 | Reiniciar partida | R |
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
@@ -31,8 +31,9 @@ cada uno donde hace falta.
 Apareces arriba del piso. Bajas esquivando bloques (cada toque quita 1 de vida,
 con ~1 s de invulnerabilidad después) hasta el círculo de salida del fondo. Al
 tocarlo pasas al piso siguiente, con la vida que te quede. Disparas bolas
-mágicas con las flechas, en las cuatro direcciones, para matar enemigos; las
-rocas paran los disparos y te sirven de parapeto. Del piso 2 en adelante hay enemigos que te persiguen, y van a más según bajas.
+mágicas para matar enemigos: con las flechas en las cuatro direcciones, o con
+el clic izquierdo apuntando donde quieras. Las rocas son sólidas, así que no se
+pueden cruzar y te sirven de parapeto. Del piso 2 en adelante hay enemigos que te persiguen, y van a más según bajas.
 En cada piso hay un objeto que te mejora para el resto de la partida. Superar el piso 12
 gana la partida; quedarte sin vida la termina.
 

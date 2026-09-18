@@ -14,7 +14,12 @@ extends Resource
 ## Frase corta que explica que hace, para el aviso del HUD.
 @export var descripcion: String = ""
 
-## Color con el que se tine el objeto en el suelo. Es la unica pista visual de
+## Dibujo que se ve en el suelo. Un icono de lo que hace: bota para velocidad,
+## corazon para vida, rayo para cadencia. Sin esto todos los objetos serian la
+## misma flor de colores y habria que acercarse para saber cual es.
+@export var icono: Texture2D = null
+
+## Color del halo que rodea al objeto en el suelo. Es la unica pista visual de
 ## que hace, asi que conviene mantener el codigo: rojo vida, verde velocidad,
 ## azul disparo.
 @export var color: Color = Color(0.6, 0.8, 1.0)

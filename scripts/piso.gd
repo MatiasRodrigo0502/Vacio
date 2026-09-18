@@ -342,13 +342,12 @@ func _plantar_encima(centro_losa: Vector2, tamano_losa: Vector2,
 		_decoracion.add_child(planta)
 
 
-## Reparte piedras pequenas por el suelo. Tambien quitan vida: lo que parece una
-## roca tiene que comportarse como una roca, aunque sea pequena.
+## Reparte piedras pequenas por el suelo. Son decoracion: ni chocan ni hacen dano.
 ##
-## Por eso pasan por el pool de obstaculos y respetan los mismos despejes que
-## las rocas grandes (entrada, salida y carteles del tutorial). Antes eran
-## Sprite2D sueltos sin colision y confundian: el jugador las esquivaba o se las
-## comia sin entender por que unas hacian dano y otras no.
+## POR QUE NO SON SOLIDAS COMO LAS ROCAS GRANDES:
+## son unas treinta por piso y miden 16-34 px. Con colision, moverse por el piso
+## seria un engancharse continuo en chinas, y este juego va de deslizarse con
+## inercia. Las rocas grandes son terreno; estas son el suelo.
 ##
 ## Se generan con el MISMO generador que las rocas y despues que ellas, para no
 ## alterar la secuencia de numeros: si no, anadir decoracion moveria de sitio
@@ -358,36 +357,31 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 	# Solo piedras: la vegetacion va sobre las plataformas, agrupada. Repartirla
 	# tambien por aqui la devolveria al "puesto al azar" que queriamos quitar.
 	var piedras := catalogo.texturas_de("piedra")
-	if piedras.is_empty() or _pool == null:
+	if piedras.is_empty():
 		return
 
 	# La cantidad sale de la superficie del piso, no de un numero fijo: el piso 1
 	# tiene casi cuatro veces el area del 12, y con una cifra fija uno queda
 	# desierto y el otro abarrotado.
-	var entrada := Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA)
-	var salida := Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA)
-
 	var cuantas := int(_ancho() * _alto() / 80000.0) + datos.cantidad_obstaculos
 	for _i in cuantas:
 		var lado := generador.randf_range(16.0, 34.0)
 		var sitio := Vector2(
 			generador.randf_range(-_ancho() * 0.5 + 24.0, _ancho() * 0.5 - 24.0),
 			generador.randf_range(-_alto() * 0.5 + 24.0, _alto() * 0.5 - 24.0))
-
-		# Los mismos despejes que las rocas grandes: ahora hacen dano, asi que
-		# una piedra pegada al circulo de salida o encima de un cartel serian
-		# igual de injustas.
-		if sitio.distance_to(entrada) < DESPEJE_ENTRADA:
-			continue
-		if sitio.distance_to(salida) < DESPEJE_SALIDA:
-			continue
 		if _pisa_un_cartel(sitio, Vector2(lado, lado)):
 			continue
 
-		var piedra := _pool.obtener()
-		piedra.preparar(to_global(sitio), piedras[generador.randi() % piedras.size()],
-			lado, tinte, datos.velocidad_obstaculos)
-		_obstaculos.append(piedra)
+		var textura: Texture2D = piedras[generador.randi() % piedras.size()]
+		var adorno := Sprite2D.new()
+		adorno.texture = textura
+		adorno.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
+		# Volteo horizontal en vez de rotacion: el arte tiene la luz desde
+		# arriba y rotarlo delataria que son recortes de un atlas.
+		adorno.flip_h = generador.randf() < 0.5
+		adorno.modulate = Color(tinte.r, tinte.g, tinte.b, 0.8)
+		adorno.position = sitio
+		_decoracion.add_child(adorno)
 
 
 ## Rodea el area jugable con rocas, para que el limite deje de ser una linea

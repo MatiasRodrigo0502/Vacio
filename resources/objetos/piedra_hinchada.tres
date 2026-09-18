@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="ObjetoMejora" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ObjetoMejora" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/objeto_mejora.gd" id="1_objeto"]
+[ext_resource type="Texture2D" path="res://assets/objetos/icono_orbe.png" id="2_icono"]
 
 [resource]
 script = ExtResource("1_objeto")
-nombre = "Piedra hinchada"
+icono = ExtResource("2_icono")
+nombre = "Orbe hinchado"
 descripcion = "Bolas más gordas"
 color = Color(0.8, 0.55, 1.0, 1)
 vida_maxima_extra = 0

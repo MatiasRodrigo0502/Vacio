@@ -1,27 +1,24 @@
-## Obstaculo: roca que resta vida al tocarla.
+## Obstaculo: roca o plataforma. Es terreno solido, no se puede atravesar.
 ##
-## POR QUE Area2D Y NO StaticBody2D:
-## un cuerpo solido frenaria al jugador y el golpe se sentiria como un choque de
-## plataformas. Con un Area2D el jugador la atraviesa, pierde vida y sigue en
-## movimiento, que es lo que pide un juego de habilidad y precision.
+## POR QUE StaticBody2D Y NO RigidBody2D:
+## un RigidBody2D es un cuerpo que la fisica empuja: las rocas saldrian rodando
+## al chocar contra ellas. Lo que hace falta es un cuerpo inmovil contra el que
+## chocar, y eso es StaticBody2D.
+##
+## Antes era un Area2D que restaba vida al atravesarla. Ahora no hace dano: si
+## no puedes atravesarla, cobrarte vida ademas te castigaria por rozar una pared
+## mientras la esquivas. El dano viene de los enemigos.
 ##
 ## Este nodo esta pensado para vivir en un pool: nunca se libera, se recicla.
 ## Por eso todo el estado (textura, escala, tinte, tamano) se fija en preparar()
 ## y no en _ready().
 class_name Obstaculo
-extends Area2D
+extends StaticBody2D
 
-## Vida que quita cada impacto.
-@export var dano: int = 1
-
-## La colision es mas pequena que el dibujo, a proposito. Dos razones: la caja
-## de la textura incluye esquinas transparentes, y en un juego de precision el
-## jugador tiene que sentir que "ha pasado raspando", no que le golpea el aire.
+## La colision es mas pequena que el dibujo, a proposito: la caja de la textura
+## incluye esquinas transparentes, y en un juego de precision el jugador tiene
+## que sentir que "ha pasado raspando", no que choca contra el aire.
 const FACTOR_COLISION: float = 0.72
-
-## Holgura al comprobar el impacto, del tamano del jugador. Sin ella, un roce
-## legitimo en el borde se descartaria por unos pocos pixeles.
-const TOLERANCIA: float = 16.0
 
 ## Velocidad heredada del piso. En Fase 1 no se usa (rocas estaticas), pero se
 ## guarda para que los obstaculos moviles de fases futuras la lean tal cual.
@@ -46,7 +43,6 @@ var _sentido: float = 1.0
 
 
 func _ready() -> void:
-	body_entered.connect(_al_entrar_cuerpo)
 	# Quieto hasta que alguien lo mueva: la mayoria de las rocas no se mueven y
 	# no tiene sentido gastar un _physics_process por cada una.
 	set_physics_process(false)
@@ -106,9 +102,9 @@ func preparar(posicion: Vector2, textura: Texture2D, lado_objetivo: float,
 
 func activar() -> void:
 	visible = true
-	# set_deferred porque activar o desactivar el monitoreo en mitad de un paso
-	# de fisica dispara un error del motor.
-	set_deferred("monitoring", true)
+	# set_deferred porque encender o apagar una forma de colision en mitad de un
+	# paso de fisica dispara un error del motor.
+	_forma.set_deferred("disabled", false)
 
 
 ## Deja la roca quieta. Se llama al reciclarla, porque una roca que vuelve del
@@ -124,7 +120,7 @@ func _parar() -> void:
 func desactivar() -> void:
 	_parar()
 	visible = false
-	set_deferred("monitoring", false)
+	_forma.set_deferred("disabled", true)
 	# Se aparca lejos del area jugable: una roca reciclada nunca debe quedarse
 	# detectando colisiones en la posicion del piso anterior.
 	global_position = Vector2(-100000, -100000)
@@ -139,31 +135,3 @@ func romper() -> void:
 
 func tamano() -> Vector2:
 	return _tamano
-
-
-func _al_entrar_cuerpo(cuerpo: Node2D) -> void:
-	# El obstaculo no sabe que es un "Jugador" concreto: solo pide que sepa
-	# recibir dano. Asi la misma roca servira para otras entidades.
-	if not cuerpo.has_method("recibir_dano"):
-		return
-
-	# Misma precaucion que en la zona de salida del piso: el aviso de Godot puede
-	# llegar con la posicion que el cuerpo tenia al empezar el paso de fisica.
-	# Como las rocas se reciclan y aparecen en otro sitio en cada piso, sin esta
-	# comprobacion el jugador recibia golpes fantasma nada mas entrar en un piso
-	# nuevo, de una roca que ya no esta donde el motor cree.
-	# Se mide contra el CENTRO DE COLISION del cuerpo, no contra su origen. El
-	# origen del jugador esta a los pies y su circulo 16 px mas arriba, asi que
-	# midiendo desde el origen se descartaban golpes buenos: acercandose a una
-	# roca por abajo, el circulo la tocaba de verdad pero el origen quedaba
-	# demasiado lejos y el golpe no contaba.
-	var centro_cuerpo: Vector2 = cuerpo.global_position
-	if cuerpo.has_method("centro_colision"):
-		centro_cuerpo = cuerpo.centro_colision()
-
-	var mitad := _tamano * 0.5 * FACTOR_COLISION + Vector2(TOLERANCIA, TOLERANCIA)
-	var distancia := (centro_cuerpo - global_position).abs()
-	if distancia.x > mitad.x or distancia.y > mitad.y:
-		return
-
-	cuerpo.recibir_dano(dano)

@@ -16,7 +16,7 @@ var mejora: ObjetoMejora = null
 var _fase: float = 0.0
 var _recogido: bool = false
 
-@onready var _sprite: AnimatedSprite2D = $Sprite
+@onready var _sprite: Sprite2D = $Sprite
 
 
 func _ready() -> void:
@@ -27,12 +27,13 @@ func _ready() -> void:
 func preparar(mejora_objeto: ObjetoMejora, posicion: Vector2) -> void:
 	mejora = mejora_objeto
 	global_position = posicion
-	_sprite.play(&"brillar")
-	_sprite.modulate = mejora.color
+	_sprite.texture = mejora.icono
+	# El icono ya viene con su color; el tinte solo sirve para el halo.
+	_sprite.modulate = Color.WHITE
 
-	var tam := _sprite.sprite_frames.get_frame_texture(&"brillar", 0).get_size()
-	var escala := alto_objetivo / tam.y
-	_sprite.scale = Vector2(escala, escala)
+	if mejora.icono != null:
+		var escala := alto_objetivo / mejora.icono.get_size().y
+		_sprite.scale = Vector2(escala, escala)
 
 
 func _process(delta: float) -> void:

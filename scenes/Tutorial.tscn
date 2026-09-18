@@ -28,7 +28,7 @@ modulate = Color(0.760784, 0.870588, 1, 0.9)
 offset_right = 1100.0
 offset_bottom = 46.0
 theme_override_font_sizes/font_size = 32
-text = "flechas  ·  disparar bolas mágicas"
+text = "flechas  o  clic izquierdo  ·  disparar"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -37,7 +37,7 @@ modulate = Color(1, 0.741176, 0.588235, 0.85)
 offset_right = 1200.0
 offset_bottom = 58.0
 theme_override_font_sizes/font_size = 40
-text = "las rocas te quitan vida:  esquívalas"
+text = "las rocas son sólidas:  te tapan y no las puedes cruzar"
 horizontal_alignment = 1
 vertical_alignment = 1
 
