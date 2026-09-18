@@ -17,12 +17,12 @@ de pisos en el código.
 | `nombre_capa` | Texto que aparece en el HUD. |
 | `ancho_area` | Ancho del área jugable en píxeles. Es el embudo: baja piso a piso. |
 | `alto_area` | Largo del descenso, de la entrada a la salida. |
-| `velocidad_obstaculos` | Velocidad base de los obstáculos (px/s). En Fase 1 los bloques son estáticos, pero el valor ya llega hasta ellos. |
+| `velocidad_obstaculos` | Velocidad base de los obstáculos (px/s). En Fase 1 las rocas son estáticas, pero el valor ya llega hasta ellas. |
 | `radio_vision` | Media altura visible de la cámara, en píxeles. Menor = zoom más cerrado = se ve menos. |
-| `cantidad_obstaculos` | Cuántos bloques se reparten por el piso. |
+| `cantidad_obstaculos` | Cuántas rocas se reparten por el piso. |
 | `es_nivel_final` | Solo `true` en el piso 12. Al superarlo se gana la partida. |
 | `familia_obstaculos` | Qué rocas usa el piso: `roca`, `bloque`, `grupo` o `piedra`. |
-| `catalogo_obstaculos` | Catálogo de texturas alternativo. Vacío = el de la cueva. |
+| `catalogo_arte` | Pack de arte del piso (rocas, piedras, plataformas y vegetación). Vacío = el de la cueva sin vegetación. |
 | `mostrar_tutorial` | Pinta los carteles de controles sobre el suelo. Solo el piso 1. |
 
 ## Valores de partida (sin jugar todavía, pendientes de ajuste)
