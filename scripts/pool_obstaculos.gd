@@ -17,7 +17,7 @@ const ESCENA_OBSTACULO := preload("res://scenes/Obstaculo.tscn")
 
 ## Cuantos obstaculos se crean al arrancar. Conviene que cubra el piso mas
 ## cargado para no instanciar nada durante la partida.
-@export var tamano_inicial: int = 40
+@export var tamano_inicial: int = 110
 
 var _libres: Array[Obstaculo] = []
 var _en_uso: Array[Obstaculo] = []

@@ -43,12 +43,12 @@ propio para ellos. Y sin vegetación: no crecen plantas en el manto.
 
 ### Las familias de un catálogo
 
-- `piedra_*` — piezas pequeñas, decoración del suelo, sin colisión
+- `piedra_*` — piezas pequeñas repartidas por el suelo; **también quitan vida**
 - `roca_*` — obstáculos principales, familia por defecto
 - `bloque_*` — obstáculos angulares, para los pisos del núcleo
 - `grupo_*` — obstáculos grandes; en el pack de musgo son las lianas con pinchos
-- `vegetacion_*` — plantas; ya no van sueltas por el suelo, crecen sobre las
-  plataformas
+- `vegetacion_*` — plantas; crecen sobre las plataformas y son lo único
+  decorativo que queda: no chocan, porque una planta no es una roca
 - `plataforma_*` — repisas y losas anchas que se reparten por el suelo
 
 **Por qué un catálogo `.tres` y no leer la carpeta**: el orden de los archivos
