@@ -105,6 +105,9 @@ Arte por piso: piso 1 musgo (superficie), piso 2 cueva con vegetación, pisos
   piso. Por eso tanto `_al_entrar_en_salida()` como `_al_entrar_cuerpo()`
   comprueban la distancia real antes de hacer nada. No quitar esas
   comprobaciones.
+- El tutorial se monta **antes** que los obstáculos, no después: deja apuntadas
+  las zonas de sus carteles en `_zonas_prohibidas` para que ni rocas ni
+  plataformas se coloquen encima y tapen el texto.
 - Un solo nodo `Decoracion` lo llenan tres funciones (plataformas, decoración
   suelta y borde). El vaciado se hace **una vez** en `configurar()`. Si alguna
   vuelve a vaciarlo, borra el trabajo de las anteriores.

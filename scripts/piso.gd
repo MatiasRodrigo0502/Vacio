@@ -25,6 +25,8 @@ const RADIO_SALIDA: float = 46.0
 ## obstaculos: sin esto el jugador podria aparecer dentro de uno.
 const DESPEJE_ENTRADA: float = 150.0
 const DESPEJE_SALIDA: float = 130.0
+## Margen que se deja libre por encima y por debajo de cada cartel del tutorial.
+const HOLGURA_CARTEL: float = 34.0
 
 ## Catalogo de rocas por defecto. Cada piso puede sobreescribirlo desde su .tres.
 const CATALOGO_POR_DEFECTO := preload("res://assets/cueva/catalogo_cueva.tres")
@@ -39,6 +41,9 @@ var _pool: PoolObstaculos = null
 var _obstaculos: Array[Obstaculo] = []
 var _mecanicas: Array[Mecanica] = []
 var _salida_usada: bool = false
+## Rectangulos donde no se puede colocar nada: ahora mismo, los carteles del
+## tutorial. En coordenadas locales del piso.
+var _zonas_prohibidas: Array[Rect2] = []
 
 @onready var _muros: StaticBody2D = $Muros
 @onready var _decoracion: Node2D = $Decoracion
@@ -68,8 +73,12 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 
 	_construir_muros()
 	_colocar_salida()
-	_colocar_obstaculos()
+	# El tutorial va PRIMERO a proposito: deja apuntadas las zonas que ocupan sus
+	# carteles para que ni las rocas ni las plataformas se coloquen encima. Una
+	# plataforma tapando "las rocas te quitan vida" deja el piso escuela sin
+	# explicacion, y con el reparto aleatorio pasaba a la minima.
 	_colocar_tutorial()
+	_colocar_obstaculos()
 
 	# Las mecanicas se aplican al final, cuando el piso ya existe: asi pueden
 	# anadir o modificar lo que haga falta. El piso no sabe que hace cada una.
@@ -192,6 +201,8 @@ func _colocar_obstaculos() -> void:
 				continue
 			if candidata.distance_to(salida) < DESPEJE_SALIDA:
 				continue
+			if _pisa_un_cartel(candidata, Vector2(lado, lado)):
+				continue
 
 			# La separacion depende del tamano de las dos rocas implicadas, no
 			# de un valor fijo: si no, las grandes se solapan y las pequenas
@@ -272,6 +283,10 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 			if candidata.distance_to(entrada) < DESPEJE_ENTRADA * 1.5:
 				continue
 			if candidata.distance_to(salida) < DESPEJE_SALIDA * 1.5:
+				continue
+			# El alto de la losa no se sabe hasta elegir textura, asi que se
+			# reserva un cuadrado de su ancho: es conservador y sale gratis.
+			if _pisa_un_cartel(candidata, Vector2(ancho_losa, ancho_losa)):
 				continue
 			var libre := true
 			for ocupada in puestas:
@@ -414,6 +429,7 @@ func _colocar_borde(generador: RandomNumberGenerator, tinte: Color,
 
 ## Pinta los carteles de controles si este piso los pide desde su .tres.
 func _colocar_tutorial() -> void:
+	_zonas_prohibidas.clear()
 	if datos == null or not datos.mostrar_tutorial:
 		return
 	var tutorial: Tutorial = ESCENA_TUTORIAL.instantiate()
@@ -424,6 +440,25 @@ func _colocar_tutorial() -> void:
 		Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA),
 		Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA),
 		_alto())
+
+	# Cada cartel reserva su rectangulo, con holgura por arriba y por abajo para
+	# que nada quede pegado al texto y lo haga ilegible igualmente.
+	for etiqueta in tutorial.get_children():
+		if etiqueta is Control:
+			_zonas_prohibidas.append(Rect2(
+				etiqueta.position - Vector2(0.0, HOLGURA_CARTEL),
+				etiqueta.size + Vector2(0.0, HOLGURA_CARTEL * 2.0)))
+
+
+## True si una pieza de ese tamano en ese sitio taparia un cartel del tutorial.
+func _pisa_un_cartel(centro: Vector2, tamano: Vector2) -> bool:
+	if _zonas_prohibidas.is_empty():
+		return false
+	var caja := Rect2(centro - tamano * 0.5, tamano)
+	for zona in _zonas_prohibidas:
+		if caja.intersects(zona):
+			return true
+	return false
 
 
 func _al_entrar_en_salida(cuerpo: Node2D) -> void:
