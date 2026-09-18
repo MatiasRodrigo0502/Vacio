@@ -1,0 +1,150 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/menu_principal.gd" id="1_menu"]
+[ext_resource type="Texture2D" path="res://assets/personaje/quieto_00.png" id="2_mago"]
+
+[node name="MenuPrincipal" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Fondo" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.0588235, 0.054902, 1)
+
+[node name="Centro" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Caja" type="VBoxContainer" parent="Centro"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Titulo" type="Label" parent="Centro/Caja"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.909804, 0.827451, 1)
+theme_override_font_sizes/font_size = 78
+text = "VACÍO"
+horizontal_alignment = 1
+
+[node name="Subtitulo" type="Label" parent="Centro/Caja"]
+modulate = Color(1, 0.741176, 0.360784, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "doce pisos hasta el núcleo"
+horizontal_alignment = 1
+
+[node name="Mago" type="TextureRect" parent="Centro/Caja"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+texture = ExtResource("2_mago")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BotonJugar" type="Button" parent="Centro/Caja"]
+custom_minimum_size = Vector2(280, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 22
+text = "Jugar"
+
+[node name="BotonControles" type="Button" parent="Centro/Caja"]
+custom_minimum_size = Vector2(280, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 18
+text = "Controles"
+
+[node name="BotonSalir" type="Button" parent="Centro/Caja"]
+custom_minimum_size = Vector2(280, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 18
+text = "Salir"
+
+[node name="PanelControles" type="Control" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Fondo" type="ColorRect" parent="PanelControles"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0627451, 0.0470588, 0.0431373, 1)
+
+[node name="Centro" type="CenterContainer" parent="PanelControles"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Caja" type="VBoxContainer" parent="PanelControles/Centro"]
+layout_mode = 2
+theme_override_constants/separation = 22
+alignment = 1
+
+[node name="Titulo" type="Label" parent="PanelControles/Centro/Caja"]
+modulate = Color(1, 0.741176, 0.360784, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "CONTROLES"
+horizontal_alignment = 1
+
+[node name="Teclas" type="HBoxContainer" parent="PanelControles/Centro/Caja"]
+layout_mode = 2
+theme_override_constants/separation = 28
+alignment = 1
+
+[node name="Acciones" type="Label" parent="PanelControles/Centro/Caja/Teclas"]
+modulate = Color(0.827451, 0.784314, 0.741176, 1)
+layout_mode = 2
+theme_override_constants/line_spacing = 12
+theme_override_font_sizes/font_size = 22
+text = "moverte
+reiniciar
+cerrar esto"
+horizontal_alignment = 2
+
+[node name="Botones" type="Label" parent="PanelControles/Centro/Caja/Teclas"]
+layout_mode = 2
+theme_override_constants/line_spacing = 12
+theme_override_font_sizes/font_size = 22
+text = "W A S D   o   flechas
+R
+Esc"
+
+[node name="Reglas" type="Label" parent="PanelControles/Centro/Caja"]
+modulate = Color(0.85098, 0.803922, 0.760784, 1)
+layout_mode = 2
+theme_override_constants/line_spacing = 8
+theme_override_font_sizes/font_size = 17
+text = "Baja hasta el círculo del fondo para pasar al piso siguiente.
+Las rocas y las plataformas te quitan vida al tocarlas.
+Del piso 4 en adelante, algunas rocas se mueven.
+Doce pisos, y cada uno más estrecho que el anterior."
+horizontal_alignment = 1
+
+[node name="BotonVolver" type="Button" parent="PanelControles/Centro/Caja"]
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 18
+text = "Volver"

@@ -59,6 +59,9 @@ lo que decía la medición).
 
 ## Estado actual
 
+El juego arranca en `MenuPrincipal.tscn` (jugar, controles, salir); la partida
+vive en `Principal.tscn` y se vuelve al menú desde la pantalla final.
+
 Fase 1 cerrada y jugable: movimiento con inercia, vida con invulnerabilidad,
 cámara con zoom por piso, los 12 pisos, victoria y derrota, pooling de
 obstáculos. El jugador es el mago (BlueWizard) animado. Los obstáculos son

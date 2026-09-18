@@ -21,8 +21,9 @@ cada piso va rodeada de rocas del pack que le toque.
 | Moverse | WASD o flechas |
 | Reiniciar partida | R |
 
-No hace falta memorizarlos: el piso 1 hace de tutorial y los explica con
-carteles pintados sobre el suelo, cada uno donde hace falta.
+No hace falta memorizarlos: están en el botón **Controles** del menú, y además
+el piso 1 hace de tutorial y los explica con carteles pintados sobre el suelo,
+cada uno donde hace falta.
 
 ## Cómo se juega ahora mismo
 
@@ -37,7 +38,8 @@ gana la partida; quedarte sin vida la termina.
 Vacio/
 ├── project.godot          # autoload, mapa de teclas, capas de física
 ├── scenes/
-│   ├── Principal.tscn     # escena raíz: monta pisos, jugador, cámara, HUD
+│   ├── MenuPrincipal.tscn # ESCENA PRINCIPAL: jugar, controles, salir
+│   ├── Principal.tscn     # la partida: monta pisos, jugador, cámara, HUD
 │   ├── Piso.tscn          # UNA escena genérica para los 12 pisos
 │   ├── Tutorial.tscn      # carteles de controles (solo en los pisos que lo piden)
 │   ├── Jugador.tscn
@@ -48,6 +50,7 @@ Vacio/
 │   ├── gestor_progreso.gd # AUTOLOAD: piso actual, los 12 DatosPiso, victoria
 │   ├── datos_piso.gd      # class_name DatosPiso extends Resource
 │   ├── mecanica.gd        # class_name Mecanica extends Resource (clase base)
+│   ├── menu_principal.gd
 │   ├── principal.gd
 │   ├── piso.gd
 │   ├── tutorial.gd
@@ -113,7 +116,7 @@ La regla práctica para no pisarse:
 
 ## Qué NO está hecho todavía (fases siguientes)
 
-Menú principal, sistema de puntuación y guardado. Los obstáculos móviles ya
+Sistema de puntuación y guardado. Los obstáculos móviles ya
 están: del piso 4 en adelante, parte de las rocas van y vienen, y es la primera
 `Mecanica` del proyecto. El suelo sigue siendo color
 plano a propósito: ninguno de los packs trae una textura cenital repetible, y

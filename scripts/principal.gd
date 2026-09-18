@@ -27,6 +27,7 @@ func _ready() -> void:
 	_jugador.vida_cambiada.connect(_hud.actualizar_vida)
 	_jugador.sin_vida.connect(GestorProgreso.terminar_por_derrota)
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
+	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 
 	_pantalla_final.ocultar()
 	# El _ready() de los hijos se ejecuta antes que el del padre, asi que la
@@ -84,6 +85,12 @@ func _al_ganar() -> void:
 func _al_perder() -> void:
 	_jugador.bloquear_control()
 	_pantalla_final.mostrar_derrota(GestorProgreso.piso_actual)
+
+
+## Vuelve al menu. Cambiar de escena tira la partida entera, que es justo lo que
+## queremos: no hay estado que limpiar a mano.
+func _volver_al_menu() -> void:
+	get_tree().change_scene_to_file("res://scenes/MenuPrincipal.tscn")
 
 
 func _reiniciar() -> void:

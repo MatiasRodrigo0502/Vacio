@@ -45,3 +45,10 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 18
 text = "Jugar otra vez  (R)"
+
+[node name="BotonMenu" type="Button" parent="Centro/Caja"]
+custom_minimum_size = Vector2(240, 42)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 16
+text = "Menú principal"

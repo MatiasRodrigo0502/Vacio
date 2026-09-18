@@ -5,14 +5,17 @@ class_name PantallaFinal
 extends CanvasLayer
 
 signal reinicio_solicitado
+signal menu_solicitado
 
 @onready var _titulo: Label = $Centro/Caja/Titulo
 @onready var _subtitulo: Label = $Centro/Caja/Subtitulo
 @onready var _boton: Button = $Centro/Caja/BotonReiniciar
+@onready var _boton_menu: Button = $Centro/Caja/BotonMenu
 
 
 func _ready() -> void:
 	_boton.pressed.connect(func() -> void: reinicio_solicitado.emit())
+	_boton_menu.pressed.connect(func() -> void: menu_solicitado.emit())
 
 
 func mostrar_victoria(total_pisos: int) -> void:
