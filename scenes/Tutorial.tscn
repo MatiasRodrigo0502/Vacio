@@ -10,7 +10,7 @@ modulate = Color(1, 0.898039, 0.717647, 0.85)
 offset_right = 1000.0
 offset_bottom = 58.0
 theme_override_font_sizes/font_size = 44
-text = "WASD  o  flechas  para moverte"
+text = "WASD  para moverte"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -28,7 +28,7 @@ modulate = Color(0.760784, 0.870588, 1, 0.9)
 offset_right = 1100.0
 offset_bottom = 46.0
 theme_override_font_sizes/font_size = 32
-text = "espacio  ·  bola mágica hacia abajo  (una por piso)"
+text = "flechas  ·  disparar bolas mágicas"
 horizontal_alignment = 1
 vertical_alignment = 1
 

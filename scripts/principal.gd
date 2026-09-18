@@ -28,7 +28,6 @@ func _ready() -> void:
 	_jugador.vida_cambiada.connect(_hud.actualizar_vida)
 	_jugador.sin_vida.connect(GestorProgreso.terminar_por_derrota)
 	_jugador.bola_lanzada.connect(_al_lanzar_bola)
-	_jugador.bola_cambiada.connect(_hud.actualizar_bola)
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 
@@ -37,7 +36,6 @@ func _ready() -> void:
 	# primera senal vida_cambiada del jugador se emitio cuando aun no habia
 	# nadie escuchando: sincronizamos el HUD a mano una vez.
 	_hud.actualizar_vida(_jugador.vida_actual, _jugador.vida_maxima)
-	_hud.actualizar_bola(_jugador.tiene_bola())
 	GestorProgreso.iniciar_partida()
 
 
@@ -75,10 +73,11 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 
 ## La bola cuelga del piso, no de Principal: asi al cambiar de piso se va con el
 ## y no queda ninguna volando de un piso al siguiente.
-func _al_lanzar_bola(desde: Vector2) -> void:
+func _al_lanzar_bola(desde: Vector2, direccion: Vector2) -> void:
 	if _piso_actual == null:
 		return
 	var bola: BolaMagica = ESCENA_BOLA.instantiate()
+	bola.direccion = direccion
 	_piso_actual.add_child(bola)
 	bola.global_position = desde
 

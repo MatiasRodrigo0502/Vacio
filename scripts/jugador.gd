@@ -10,10 +10,8 @@ extends CharacterBody2D
 signal vida_cambiada(vida_actual: int, vida_maxima: int)
 signal dano_recibido
 signal sin_vida
-## Se emite al lanzar la bola magica, con el punto de salida.
-signal bola_lanzada(desde: Vector2)
-## Avisa al HUD de si queda bola o no.
-signal bola_cambiada(disponible: bool)
+## Se emite en cada disparo, con el punto de salida y hacia donde va.
+signal bola_lanzada(desde: Vector2, direccion: Vector2)
 
 @export_group("Movimiento")
 ## Velocidad punta en px/s.
@@ -29,6 +27,10 @@ signal bola_cambiada(disponible: bool)
 ## golpe cuando el jugador se queda encima de un obstaculo.
 @export var duracion_invulnerabilidad: float = 1.1
 
+@export_group("Disparo")
+## Segundos entre disparo y disparo. Es la cadencia: mas bajo, mas rapido.
+@export var cadencia_disparo: float = 0.34
+
 ## Por debajo de esta velocidad se considera que el personaje esta parado y se
 ## pasa a la animacion de reposo. No es 0 porque la friccion deja residuos.
 const VELOCIDAD_MINIMA_ANDAR: float = 12.0
@@ -41,8 +43,8 @@ var _tiempo_invulnerable: float = 0.0
 var _fase_parpadeo: float = 0.0
 ## Mientras es false el jugador no responde a los controles (cambios de piso).
 var _control_activo: bool = true
-## Una bola por piso. Se recarga al entrar en el siguiente, en reubicar().
-var _bola_disponible: bool = true
+## Cuanto falta para poder volver a disparar.
+var _espera_disparo: float = 0.0
 
 ## El sprite se escala y se desplaza desde la escena, no desde aqui: el origen
 ## del nodo esta a los pies del mago y la forma de colision cubre la base de la
@@ -73,22 +75,36 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	_actualizar_animacion()
 
-	if _control_activo and Input.is_action_just_pressed("lanzar_bola"):
-		_lanzar_bola()
+	_actualizar_disparo(delta)
 
 
-## Lanza la bola hacia abajo, si queda. Sale del centro del cuerpo y no de los
-## pies, para que se vea nacer del mago y no del suelo.
-func _lanzar_bola() -> void:
-	if not _bola_disponible:
+## Dispara mientras se mantengan pulsadas las flechas, con una cadencia fija.
+##
+## POR QUE LAS FLECHAS Y NO EL RATON:
+## es el esquema de Isaac y de los twin-stick de teclado: una mano mueve y la
+## otra dispara. Con el raton habria que apuntar, y este juego va de esquivar
+## mientras bajas, no de apuntar fino.
+func _actualizar_disparo(delta: float) -> void:
+	_espera_disparo = maxf(_espera_disparo - delta, 0.0)
+	if not _control_activo or _espera_disparo > 0.0:
 		return
-	_bola_disponible = false
-	bola_lanzada.emit(centro_colision())
-	bola_cambiada.emit(false)
 
+	var direccion := Input.get_vector(
+		"disparar_izquierda", "disparar_derecha", "disparar_arriba", "disparar_abajo")
+	if direccion == Vector2.ZERO:
+		return
 
-func tiene_bola() -> bool:
-	return _bola_disponible
+	# Solo las cuatro direcciones: con dos flechas a la vez, manda la mas
+	# marcada. Las diagonales harian el disparo mas facil de lo que toca.
+	if absf(direccion.x) > absf(direccion.y):
+		direccion = Vector2(signf(direccion.x), 0.0)
+	else:
+		direccion = Vector2(0.0, signf(direccion.y))
+
+	_espera_disparo = cadencia_disparo
+	# Sale del centro del cuerpo y no de los pies, para que se vea nacer del
+	# mago y no del suelo.
+	bola_lanzada.emit(centro_colision(), direccion)
 
 
 ## Elige la animacion segun el movimiento real, no segun la tecla pulsada: asi
@@ -154,9 +170,7 @@ func reubicar(posicion: Vector2) -> void:
 	global_position = posicion
 	velocity = Vector2.ZERO
 	_control_activo = true
-	# La bola se recarga en cada piso: es una por piso, no una por partida.
-	_bola_disponible = true
-	bola_cambiada.emit(true)
+	_espera_disparo = 0.0
 
 
 ## Restaura la vida al maximo. Solo se usa al empezar una partida nueva.
@@ -166,9 +180,8 @@ func restaurar_vida() -> void:
 	_fase_parpadeo = 0.0
 	_control_activo = true
 	_sprite.modulate = Color.WHITE
-	_bola_disponible = true
+	_espera_disparo = 0.0
 	vida_cambiada.emit(vida_actual, vida_maxima)
-	bola_cambiada.emit(true)
 
 
 ## Congela al jugador (final de partida, transiciones).

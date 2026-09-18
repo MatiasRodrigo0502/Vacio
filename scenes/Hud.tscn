@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
 [ext_resource type="Script" path="res://scripts/corazones.gd" id="2_corazones"]
-[ext_resource type="Script" path="res://scripts/indicador_bola.gd" id="3_bola"]
 
 [node name="Hud" type="CanvasLayer"]
 layer = 2
@@ -40,20 +39,3 @@ offset_top = 86.0
 offset_right = 360.0
 offset_bottom = 118.0
 script = ExtResource("2_corazones")
-
-[node name="EtiquetaBola" type="Label" parent="."]
-modulate = Color(0.780392, 0.858824, 1, 1)
-offset_left = 28.0
-offset_top = 122.0
-offset_right = 118.0
-offset_bottom = 152.0
-theme_override_font_sizes/font_size = 18
-text = "BOLA"
-vertical_alignment = 1
-
-[node name="IndicadorBola" type="Control" parent="."]
-offset_left = 100.0
-offset_top = 122.0
-offset_right = 200.0
-offset_bottom = 152.0
-script = ExtResource("3_bola")

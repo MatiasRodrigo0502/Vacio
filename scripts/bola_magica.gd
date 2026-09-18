@@ -1,23 +1,29 @@
-## Bola magica: el unico ataque del jugador. Una por piso y siempre hacia abajo.
+## Bola magica: el disparo del jugador.
 ##
-## POR QUE SOLO HACIA ABAJO:
-## el juego va de bajar. Una bola que apunta a cualquier lado convertiria el
-## piso en un tiroteo; bajando en linea recta es una herramienta para abrirse
-## paso, que es lo que se busca. Y al ser una sola por piso, hay que decidir
-## cuando gastarla en vez de disparar por disparar.
+## Sale en la direccion que marquen las flechas y rompe lo primero que toca,
+## sea una roca, una plataforma o (en cuanto existan) un enemigo.
+##
+## POR QUE NO PASA POR UN POOL:
+## el pool del proyecto existe para los obstaculos, que son decenas por piso y
+## se reciclan en cada cambio. Las bolas son tres o cuatro por segundo y viven
+## menos de un segundo; montarles un pool seria contabilidad a cambio de nada.
+## Si algun dia la cadencia sube mucho, este es el sitio donde mirarlo.
 class_name BolaMagica
 extends Area2D
 
 ## Se emite al romper algo, por si en el futuro hay sonido o particulas.
-signal impacto(obstaculo: Node2D)
+signal impacto(objetivo: Node2D)
 
 @export var velocidad: float = 620.0
-@export var radio: float = 12.0
+@export var radio: float = 11.0
 ## Si no choca con nada, se apaga sola despues de recorrer esto.
-@export var alcance: float = 1500.0
+@export var alcance: float = 1200.0
 ## Si es true atraviesa y rompe todo lo que pilla. En false, rompe lo primero
-## que toca y se apaga: una bola, una roca.
+## que toca y se apaga.
 @export var atraviesa: bool = false
+
+## Hacia donde va. La fija el jugador al dispararla.
+var direccion: Vector2 = Vector2.DOWN
 
 var _recorrido: float = 0.0
 var _fase: float = 0.0
@@ -34,7 +40,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var paso := velocidad * delta
-	position.y += paso
+	position += direccion * paso
 	_recorrido += paso
 	_fase += delta
 	queue_redraw()
@@ -44,7 +50,7 @@ func _physics_process(delta: float) -> void:
 
 func _al_tocar(area: Area2D) -> void:
 	# Duck typing, como en el resto del proyecto: la bola no pregunta si es una
-	# roca o una plataforma, solo si se puede romper.
+	# roca, una plataforma o un enemigo, solo si se puede romper.
 	if not area.has_method("romper"):
 		return
 	area.romper()
@@ -54,14 +60,15 @@ func _al_tocar(area: Area2D) -> void:
 
 
 ## Dibujada por codigo, como los corazones: no hay arte de proyectil en los
-## packs y una bola de luz se resuelve con tres circulos y un rastro.
+## packs y una bola de luz se resuelve con unos circulos y un rastro.
 func _draw() -> void:
 	var pulso := 1.0 + sin(_fase * 22.0) * 0.12
+	# El rastro va siempre detras, sea cual sea la direccion del disparo.
+	var atras := -direccion
 
-	# Rastro que se va apagando hacia arriba.
 	for i in 5:
 		var t := float(i) / 5.0
-		draw_circle(Vector2(0.0, -radio * (0.9 + i * 0.85)),
+		draw_circle(atras * radio * (0.9 + i * 0.85),
 			radio * (0.72 - t * 0.5) * pulso,
 			Color(0.45, 0.72, 1.0, 0.30 - t * 0.24))
 

@@ -18,8 +18,8 @@ cada piso va rodeada de rocas del pack que le toque.
 
 | Acción | Tecla |
 |---|---|
-| Moverse | WASD o flechas |
-| Bola mágica (una por piso) | Espacio |
+| Moverse | WASD |
+| Disparar | Flechas |
 | Reiniciar partida | R |
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
@@ -30,8 +30,9 @@ cada uno donde hace falta.
 
 Apareces arriba del piso. Bajas esquivando bloques (cada toque quita 1 de vida,
 con ~1 s de invulnerabilidad después) hasta el círculo de salida del fondo. Al
-tocarlo pasas al piso siguiente, con la vida que te quede. Tienes una bola
-mágica por piso: sale hacia abajo y rompe la roca o plataforma que pille. Superar el piso 12
+tocarlo pasas al piso siguiente, con la vida que te quede. Disparas bolas
+mágicas con las flechas, en las cuatro direcciones, y rompen rocas y
+plataformas. Superar el piso 12
 gana la partida; quedarte sin vida la termina.
 
 ## Estructura del proyecto
