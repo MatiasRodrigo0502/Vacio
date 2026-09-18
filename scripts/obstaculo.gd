@@ -145,8 +145,17 @@ func _al_entrar_cuerpo(cuerpo: Node2D) -> void:
 	# Como las rocas se reciclan y aparecen en otro sitio en cada piso, sin esta
 	# comprobacion el jugador recibia golpes fantasma nada mas entrar en un piso
 	# nuevo, de una roca que ya no esta donde el motor cree.
+	# Se mide contra el CENTRO DE COLISION del cuerpo, no contra su origen. El
+	# origen del jugador esta a los pies y su circulo 16 px mas arriba, asi que
+	# midiendo desde el origen se descartaban golpes buenos: acercandose a una
+	# roca por abajo, el circulo la tocaba de verdad pero el origen quedaba
+	# demasiado lejos y el golpe no contaba.
+	var centro_cuerpo: Vector2 = cuerpo.global_position
+	if cuerpo.has_method("centro_colision"):
+		centro_cuerpo = cuerpo.centro_colision()
+
 	var mitad := _tamano * 0.5 * FACTOR_COLISION + Vector2(TOLERANCIA, TOLERANCIA)
-	var distancia := (cuerpo.global_position - global_position).abs()
+	var distancia := (centro_cuerpo - global_position).abs()
 	if distancia.x > mitad.x or distancia.y > mitad.y:
 		return
 

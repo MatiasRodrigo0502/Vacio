@@ -113,6 +113,13 @@ func recibir_dano(cantidad: int = 1) -> bool:
 	return true
 
 
+## Centro real de la forma de colision, que NO es el origen del nodo: el origen
+## esta a los pies y el circulo esta mas arriba, sobre la base de la tunica.
+## Lo usan los obstaculos para comprobar si un impacto es de verdad.
+func centro_colision() -> Vector2:
+	return $Forma.global_position
+
+
 func esta_invulnerable() -> bool:
 	return _tiempo_invulnerable > 0.0
 

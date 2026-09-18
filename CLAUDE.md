@@ -108,7 +108,10 @@ Arte por piso: piso 1 musgo (superficie), piso 2 cueva con vegetación, pisos
   1 al 3. Lo mismo con las rocas recicladas: golpes fantasma al entrar en un
   piso. Por eso tanto `_al_entrar_en_salida()` como `_al_entrar_cuerpo()`
   comprueban la distancia real antes de hacer nada. No quitar esas
-  comprobaciones.
+  comprobaciones. **Y esa distancia se mide contra `centro_colision()` del
+  cuerpo, no contra su origen**: el origen del jugador esta a los pies y su
+  circulo 16 px mas arriba, asi que midiendo desde el origen se descartaban
+  golpes buenos al acercarse a una roca por abajo.
 - El tutorial se monta **antes** que los obstáculos, no después: deja apuntadas
   las zonas de sus carteles en `_zonas_prohibidas` para que ni rocas ni
   plataformas se coloquen encima y tapen el texto.
