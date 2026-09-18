@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ObjetoMejora" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/objeto_mejora.gd" id="1_objeto"]
+
+[resource]
+script = ExtResource("1_objeto")
+nombre = "Corazón de roca"
+descripcion = "Un corazón más"
+color = Color(0.95, 0.25, 0.3, 1)
+vida_maxima_extra = 1
+cura = 0
+velocidad_extra = 0.0
+cadencia_multiplicador = 1.0
+velocidad_bola_extra = 0.0
+radio_bola_extra = 0.0
+piso_minimo = 1

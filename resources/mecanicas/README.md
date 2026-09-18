@@ -31,8 +31,12 @@ una mecánica nueva no obliga a tocar su código.
 
 | Archivo | Qué hace | Desde el piso |
 |---|---|---|
-| `enemigos.tres` | Reparte slimes que persiguen al jugador | 2 |
-| `rocas_moviles.tres` | Parte de las rocas van y vienen en línea recta | 4 |
+| `objetos.tres` | Deja un objeto recogible por piso | 1 |
+| `enemigos.tres` | Reparte enemigos que persiguen al jugador | 2 |
+| `rocas_moviles.tres` | Parte de las rocas van y vienen en línea recta | 4 (**desactivada**) |
+
+`rocas_moviles.tres` está con `activa = false` porque a Matías no le convenció
+al jugarlo. No se ha borrado: volver a encenderla es cambiar ese flag.
 
 `rocas_moviles.tres` es el ejemplo de que el sistema funciona: no hay ni una
 línea suya en `gestor_progreso.gd` ni en `piso.gd`. Para desactivarla, pon

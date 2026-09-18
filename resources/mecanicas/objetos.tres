@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MecanicaObjetos" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/mecanicas/objetos.gd" id="1_objetos"]
+
+[resource]
+script = ExtResource("1_objetos")
+nombre_mecanica = "Objetos"
+descripcion = "Deja un objeto por piso. Las mejoras se acumulan durante toda la partida."
+piso_desbloqueo = 1
+activa = true
+por_piso = 1
+despeje = 260.0

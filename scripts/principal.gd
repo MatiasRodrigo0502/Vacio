@@ -28,6 +28,7 @@ func _ready() -> void:
 	_jugador.vida_cambiada.connect(_hud.actualizar_vida)
 	_jugador.sin_vida.connect(GestorProgreso.terminar_por_derrota)
 	_jugador.bola_lanzada.connect(_al_lanzar_bola)
+	_jugador.mejora_recogida.connect(_hud.anunciar_mejora)
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 
@@ -78,6 +79,9 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2) -> void:
 		return
 	var bola: BolaMagica = ESCENA_BOLA.instantiate()
 	bola.direccion = direccion
+	# La bola hereda lo que hayan mejorado los objetos recogidos.
+	bola.velocidad = _jugador.velocidad_bola
+	bola.radio = _jugador.radio_bola
 	_piso_actual.add_child(bola)
 	bola.global_position = desde
 

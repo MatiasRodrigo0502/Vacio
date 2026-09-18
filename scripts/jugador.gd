@@ -12,6 +12,8 @@ signal dano_recibido
 signal sin_vida
 ## Se emite en cada disparo, con el punto de salida y hacia donde va.
 signal bola_lanzada(desde: Vector2, direccion: Vector2)
+## Se emite al recoger un objeto, para que el HUD lo anuncie.
+signal mejora_recogida(mejora: ObjetoMejora)
 
 @export_group("Movimiento")
 ## Velocidad punta en px/s.
@@ -30,12 +32,29 @@ signal bola_lanzada(desde: Vector2, direccion: Vector2)
 @export_group("Disparo")
 ## Segundos entre disparo y disparo. Es la cadencia: mas bajo, mas rapido.
 @export var cadencia_disparo: float = 0.34
+## Velocidad de las bolas. La lee Principal al crearlas.
+@export var velocidad_bola: float = 620.0
+## Radio de las bolas. Tambien lo lee Principal.
+@export var radio_bola: float = 11.0
+
+## Tope de cadencia: por debajo de esto el disparo se vuelve una manguera y el
+## juego deja de tener tension.
+const CADENCIA_MINIMA: float = 0.09
 
 ## Por debajo de esta velocidad se considera que el personaje esta parado y se
 ## pasa a la animacion de reposo. No es 0 porque la friccion deja residuos.
 const VELOCIDAD_MINIMA_ANDAR: float = 12.0
 
 var vida_actual: int = 0
+
+## Valores de fabrica, para poder devolver al jugador a como empezo cuando se
+## empieza una partida nueva. Las mejoras se acumulan durante toda la partida,
+## asi que sin esto la siguiente empezaria con las de la anterior.
+var _base_vida_maxima: int = 0
+var _base_velocidad: float = 0.0
+var _base_cadencia: float = 0.0
+var _base_velocidad_bola: float = 0.0
+var _base_radio_bola: float = 0.0
 
 ## Tiempo que queda de invulnerabilidad. > 0 significa invulnerable.
 var _tiempo_invulnerable: float = 0.0
@@ -54,6 +73,12 @@ var _espera_disparo: float = 0.0
 
 
 func _ready() -> void:
+	_base_vida_maxima = vida_maxima
+	_base_velocidad = velocidad_maxima
+	_base_cadencia = cadencia_disparo
+	_base_velocidad_bola = velocidad_bola
+	_base_radio_bola = radio_bola
+
 	vida_actual = vida_maxima
 	vida_cambiada.emit(vida_actual, vida_maxima)
 
@@ -159,6 +184,25 @@ func centro_colision() -> Vector2:
 	return $Forma.global_position
 
 
+## Aplica un objeto recogido. Las mejoras se suman y duran toda la partida.
+func aplicar_mejora(mejora: ObjetoMejora) -> void:
+	if mejora == null:
+		return
+
+	vida_maxima += mejora.vida_maxima_extra
+	# Un corazon nuevo viene lleno, y ademas se cura lo que diga el objeto.
+	vida_actual = mini(vida_actual + mejora.vida_maxima_extra + mejora.cura, vida_maxima)
+
+	velocidad_maxima += mejora.velocidad_extra
+	cadencia_disparo = maxf(cadencia_disparo * mejora.cadencia_multiplicador,
+		CADENCIA_MINIMA)
+	velocidad_bola += mejora.velocidad_bola_extra
+	radio_bola += mejora.radio_bola_extra
+
+	vida_cambiada.emit(vida_actual, vida_maxima)
+	mejora_recogida.emit(mejora)
+
+
 func esta_invulnerable() -> bool:
 	return _tiempo_invulnerable > 0.0
 
@@ -173,8 +217,15 @@ func reubicar(posicion: Vector2) -> void:
 	_espera_disparo = 0.0
 
 
-## Restaura la vida al maximo. Solo se usa al empezar una partida nueva.
+## Deja al jugador como al empezar: vida llena y sin ninguna mejora recogida.
+## Solo se usa al empezar una partida nueva.
 func restaurar_vida() -> void:
+	vida_maxima = _base_vida_maxima
+	velocidad_maxima = _base_velocidad
+	cadencia_disparo = _base_cadencia
+	velocidad_bola = _base_velocidad_bola
+	radio_bola = _base_radio_bola
+
 	vida_actual = vida_maxima
 	_tiempo_invulnerable = 0.0
 	_fase_parpadeo = 0.0

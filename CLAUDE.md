@@ -72,12 +72,16 @@ bolas mágicas con las flechas (WASD mueve), con cadencia, y rompen lo primero
 que tocan. Del piso 2 en adelante hay enemigos que le persiguen
 (mecánica `enemigos.tres`): cuatro tipos definidos en `resources/enemigos/*.tres`
 como `TipoEnemigo`, que aparecen según la profundidad. Añadir uno nuevo es dejar
-otro `.tres` ahí, sin tocar código.
+otro `.tres` ahí, sin tocar código. Cada piso deja además un objeto recogible
+(`resources/objetos/*.tres`) que mejora al jugador para el resto de la partida.
+
+Las rocas móviles están desactivadas (`activa = false` en su `.tres`): no
+convencieron al jugarlas. El código sigue ahí.
 
 **Rumbo actual: acercar el juego a The Binding of Isaac.** Pedido por Matías el
 2026-09-18, en cuatro pasos: 1) disparo en cuatro direcciones (hecho),
-2) enemigos que persiguen (hecho), 3) objetos que mejoran, 4) salas con
-puertas. El piso 1 enseña los
+2) enemigos que persiguen (hecho), 3) objetos que mejoran (hecho), 4) salas
+con puertas. El piso 1 enseña los
 controles con carteles sobre el suelo. La vida se muestra con corazones
 dibujados por código: la fuente de Godot no tiene glifos de corazón ni emoji,
 así que un "♥" de texto saldría como un cuadradito.
