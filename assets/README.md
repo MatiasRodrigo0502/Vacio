@@ -74,10 +74,11 @@ eso crece algo.
 obstáculos, no son decoración. La vegetación que crece encima sí es decoración
 y no choca, para que el borde de la losa sea exactamente lo que quita vida.
 
-Ojo con el color: se siguen pintando **más claras** que el suelo, que era el
-código visual de "esto es terreno, puedes pasar". Ahora que hacen daño, ese
-código miente. Si en las pruebas confunden, se oscurecen a la altura de las
-rocas cambiando `tinte_losa` en `_colocar_plataformas()`.
+Se pintan **a la misma luminosidad que las rocas**: lo que hace daño tiene que
+verse igual, sea roca o losa. No basta con darles el mismo tinte, porque la
+textura de las repisas es de por sí mucho más clara; llevan un factor 0,6
+encima, calculado midiendo una captura (suelo 34, rocas 49, losas sin corregir
+71). Está en `tinte_losa`, dentro de `_colocar_plataformas()`.
 
 Los pisos 3 al 12 tienen plataformas de piedra pero sin plantas: sus catálogos
 no llevan vegetación.

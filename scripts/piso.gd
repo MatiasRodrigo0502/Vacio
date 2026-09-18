@@ -243,12 +243,18 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 	var cuantas := int(_ancho() * _alto() / 380000.0) + 2
 	var puestas: Array[Vector2] = []
 
-	# Una plataforma tiene que leerse como TERRENO, no como obstaculo: si se
-	# parece a una roca el jugador la esquivara creyendo que hace dano. Por eso
-	# son anchas, planas y mas CLARAS que el suelo (los valores por encima de 1
-	# en modulate suben el brillo), al reves que las rocas, que van oscuras.
-	var tinte_losa := Color(minf(tinte.r * 1.28, 2.0), minf(tinte.g * 1.28, 2.0),
-		minf(tinte.b * 1.28, 2.0), 1.0)
+	# Las plataformas se oscurecen hasta la luminosidad de las rocas.
+	#
+	# Antes se pintaban mas claras, como diciendo "esto es terreno, puedes pasar
+	# por encima". Desde que hacen dano ese codigo visual mentia, asi que ahora
+	# lo que hace dano se ve igual, sea roca o losa.
+	#
+	# El 0.6 no es a ojo: la textura de las repisas es de por si mucho mas clara
+	# que la de las rocas, asi que darles el mismo tinte no bastaba. Medido sobre
+	# una captura del piso 1, el suelo esta en 34 de luminosidad, las rocas entre
+	# 18 y 53, y las losas se quedaban en 71. Con este factor caen a la mitad de
+	# ese rango y dejan de destacar como si fueran seguras.
+	var tinte_losa := Color(tinte.r * 0.6, tinte.g * 0.6, tinte.b * 0.6, 1.0)
 
 	for _i in cuantas:
 		var ancho_losa := clampf(_ancho() * 0.3, 210.0, 470.0) * generador.randf_range(0.8, 1.35)
