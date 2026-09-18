@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_slime_naranja.tres" id="2_anim"]
+
+[resource]
+script = ExtResource("1_tipo")
+nombre = "Slime naranja"
+animaciones = ExtResource("2_anim")
+vida = 3
+velocidad = 104.0
+dano = 1
+alto = 58.0
+radio_vision = 760.0
+piso_minimo = 5

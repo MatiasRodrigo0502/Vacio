@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_00.png" id="planta_azul_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_01.png" id="planta_azul_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_02.png" id="planta_azul_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_03.png" id="planta_azul_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_04.png" id="planta_azul_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_05.png" id="planta_azul_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_06.png" id="planta_azul_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_07.png" id="planta_azul_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_08.png" id="planta_azul_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/planta_azul_09.png" id="planta_azul_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("planta_azul_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("planta_azul_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]

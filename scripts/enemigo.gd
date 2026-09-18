@@ -13,16 +13,9 @@ extends Area2D
 
 signal muerto(enemigo: Enemigo)
 
-@export var vida_maxima: int = 2
-@export var velocidad: float = 78.0
-## Dano que hace al tocar al jugador.
-@export var dano: int = 1
-## Alto que ocupa en el mundo, en pixeles. El sprite se escala a esto.
-@export var alto_objetivo: float = 54.0
-
-## Radio en el que pierde de vista al jugador y deja de perseguirlo. Sin esto,
-## todos los slimes del piso convergerian en fila india sobre el jugador.
-@export var radio_vision: float = 620.0
+## De donde salen vida, velocidad, dibujo y demas. Lo pone la mecanica que los
+## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
+var tipo: TipoEnemigo = null
 
 var _vida: int = 0
 var _objetivo: Node2D = null
@@ -33,9 +26,7 @@ var _fase: float = 0.0
 
 
 func _ready() -> void:
-	_vida = vida_maxima
 	body_entered.connect(_al_tocar_cuerpo)
-	_sprite.play(&"moverse")
 	# El enemigo busca al jugador por grupo en vez de que se lo pasen: asi la
 	# mecanica que los coloca no necesita conocer la escena del juego.
 	_objetivo = get_tree().get_first_node_in_group("jugador")
@@ -47,20 +38,23 @@ func _ready() -> void:
 ## que verse siempre. Con el tinte del piso 12, que tira a rojo, el slime verde
 ## se camuflaba con el suelo, y eso en un juego donde te quita vida al tocarte
 ## no vale. Las rocas se tintan para integrarse; los enemigos, para destacar.
-func preparar(posicion: Vector2) -> void:
+func preparar(tipo_enemigo: TipoEnemigo, posicion: Vector2) -> void:
+	tipo = tipo_enemigo
 	global_position = posicion
-	_vida = vida_maxima
+	_vida = tipo.vida
 	_sprite.modulate = Color.WHITE
+	_sprite.sprite_frames = tipo.animaciones
+	_sprite.play(&"moverse")
 
-	var tam := _sprite.sprite_frames.get_frame_texture(&"moverse", 0).get_size()
-	var escala := alto_objetivo / tam.y
+	var tam := tipo.animaciones.get_frame_texture(&"moverse", 0).get_size()
+	var escala := tipo.alto / tam.y
 	_sprite.scale = Vector2(escala, escala)
 
 	var forma := CircleShape2D.new()
-	# El circulo cubre el cuerpo del slime, un poco mas pequeno que el dibujo:
-	# igual que con las rocas, mejor que el jugador sienta que ha pasado
-	# raspando a que le golpee el aire.
-	forma.radius = alto_objetivo * 0.40
+	# El circulo cubre el cuerpo, un poco mas pequeno que el dibujo: igual que
+	# con las rocas, mejor que el jugador sienta que ha pasado raspando a que le
+	# golpee el aire.
+	forma.radius = tipo.alto * 0.40
 	_forma.shape = forma
 
 
@@ -69,11 +63,13 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(_objetivo):
 		return
 
+	if tipo == null:
+		return
 	var hacia := _objetivo.global_position - global_position
-	if hacia.length() > radio_vision:
+	if hacia.length() > tipo.radio_vision:
 		return
 
-	global_position += hacia.normalized() * velocidad * delta
+	global_position += hacia.normalized() * tipo.velocidad * delta
 	# Mira hacia donde va: el slime es simetrico, pero el volteo da sensacion
 	# de intencion y sale gratis.
 	_sprite.flip_h = hacia.x < 0.0
@@ -95,5 +91,5 @@ func romper() -> void:
 
 
 func _al_tocar_cuerpo(cuerpo: Node2D) -> void:
-	if cuerpo.has_method("recibir_dano"):
-		cuerpo.recibir_dano(dano)
+	if tipo != null and cuerpo.has_method("recibir_dano"):
+		cuerpo.recibir_dano(tipo.dano)

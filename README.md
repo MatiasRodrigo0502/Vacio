@@ -32,7 +32,7 @@ Apareces arriba del piso. Bajas esquivando bloques (cada toque quita 1 de vida,
 con ~1 s de invulnerabilidad después) hasta el círculo de salida del fondo. Al
 tocarlo pasas al piso siguiente, con la vida que te quede. Disparas bolas
 mágicas con las flechas, en las cuatro direcciones, y rompen rocas, plataformas
-y enemigos. Del piso 2 en adelante hay slimes que te persiguen. Superar el piso 12
+y enemigos. Del piso 2 en adelante hay enemigos que te persiguen, y van a más según bajas. Superar el piso 12
 gana la partida; quedarte sin vida la termina.
 
 ## Estructura del proyecto
@@ -65,6 +65,7 @@ Vacio/
 │   └── pantalla_final.gd
 ├── resources/
 │   ├── pisos/             # los 12 .tres, uno por capa (ver su README)
+│   ├── enemigos/          # un .tres por tipo de enemigo (ver su README)
 │   └── mecanicas/         # .tres de mecánicas (vacío en Fase 1, ver su README)
 └── assets/
     ├── personaje/      # frames del mago + animaciones_mago.tres
