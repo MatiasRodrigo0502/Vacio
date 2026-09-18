@@ -8,6 +8,7 @@
 extends Node2D
 
 const ESCENA_PISO := preload("res://scenes/Piso.tscn")
+const ESCENA_BOLA := preload("res://scenes/BolaMagica.tscn")
 
 @onready var _contenedor_piso: Node2D = $ContenedorPiso
 @onready var _pool: PoolObstaculos = $PoolObstaculos
@@ -26,6 +27,8 @@ func _ready() -> void:
 
 	_jugador.vida_cambiada.connect(_hud.actualizar_vida)
 	_jugador.sin_vida.connect(GestorProgreso.terminar_por_derrota)
+	_jugador.bola_lanzada.connect(_al_lanzar_bola)
+	_jugador.bola_cambiada.connect(_hud.actualizar_bola)
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 
@@ -34,6 +37,7 @@ func _ready() -> void:
 	# primera senal vida_cambiada del jugador se emitio cuando aun no habia
 	# nadie escuchando: sincronizamos el HUD a mano una vez.
 	_hud.actualizar_vida(_jugador.vida_actual, _jugador.vida_maxima)
+	_hud.actualizar_bola(_jugador.tiene_bola())
 	GestorProgreso.iniciar_partida()
 
 
@@ -67,6 +71,16 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	_camara.aplicar_radio_vision(datos.radio_vision, primer_piso)
 
 	_hud.actualizar_piso(numero_piso, GestorProgreso.total_pisos(), datos.nombre_capa)
+
+
+## La bola cuelga del piso, no de Principal: asi al cambiar de piso se va con el
+## y no queda ninguna volando de un piso al siguiente.
+func _al_lanzar_bola(desde: Vector2) -> void:
+	if _piso_actual == null:
+		return
+	var bola: BolaMagica = ESCENA_BOLA.instantiate()
+	_piso_actual.add_child(bola)
+	bola.global_position = desde
 
 
 func _al_alcanzar_salida() -> void:

@@ -130,6 +130,13 @@ func desactivar() -> void:
 	global_position = Vector2(-100000, -100000)
 
 
+## Lo llama la bola magica. No se libera al pool aqui a proposito: el piso lo
+## hara al desmontarse, como con el resto. Asi la roca rota no puede reaparecer
+## a media partida reciclada en otro sitio.
+func romper() -> void:
+	desactivar()
+
+
 func tamano() -> Vector2:
 	return _tamano
 

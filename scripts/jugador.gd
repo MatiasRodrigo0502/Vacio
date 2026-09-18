@@ -10,6 +10,10 @@ extends CharacterBody2D
 signal vida_cambiada(vida_actual: int, vida_maxima: int)
 signal dano_recibido
 signal sin_vida
+## Se emite al lanzar la bola magica, con el punto de salida.
+signal bola_lanzada(desde: Vector2)
+## Avisa al HUD de si queda bola o no.
+signal bola_cambiada(disponible: bool)
 
 @export_group("Movimiento")
 ## Velocidad punta en px/s.
@@ -37,6 +41,8 @@ var _tiempo_invulnerable: float = 0.0
 var _fase_parpadeo: float = 0.0
 ## Mientras es false el jugador no responde a los controles (cambios de piso).
 var _control_activo: bool = true
+## Una bola por piso. Se recarga al entrar en el siguiente, en reubicar().
+var _bola_disponible: bool = true
 
 ## El sprite se escala y se desplaza desde la escena, no desde aqui: el origen
 ## del nodo esta a los pies del mago y la forma de colision cubre la base de la
@@ -66,6 +72,23 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	_actualizar_animacion()
+
+	if _control_activo and Input.is_action_just_pressed("lanzar_bola"):
+		_lanzar_bola()
+
+
+## Lanza la bola hacia abajo, si queda. Sale del centro del cuerpo y no de los
+## pies, para que se vea nacer del mago y no del suelo.
+func _lanzar_bola() -> void:
+	if not _bola_disponible:
+		return
+	_bola_disponible = false
+	bola_lanzada.emit(centro_colision())
+	bola_cambiada.emit(false)
+
+
+func tiene_bola() -> bool:
+	return _bola_disponible
 
 
 ## Elige la animacion segun el movimiento real, no segun la tecla pulsada: asi
@@ -131,6 +154,9 @@ func reubicar(posicion: Vector2) -> void:
 	global_position = posicion
 	velocity = Vector2.ZERO
 	_control_activo = true
+	# La bola se recarga en cada piso: es una por piso, no una por partida.
+	_bola_disponible = true
+	bola_cambiada.emit(true)
 
 
 ## Restaura la vida al maximo. Solo se usa al empezar una partida nueva.
@@ -140,7 +166,9 @@ func restaurar_vida() -> void:
 	_fase_parpadeo = 0.0
 	_control_activo = true
 	_sprite.modulate = Color.WHITE
+	_bola_disponible = true
 	vida_cambiada.emit(vida_actual, vida_maxima)
+	bola_cambiada.emit(true)
 
 
 ## Congela al jugador (final de partida, transiciones).

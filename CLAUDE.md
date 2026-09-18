@@ -67,7 +67,9 @@ cámara con zoom por piso, los 12 pisos, victoria y derrota, pooling de
 obstáculos. El jugador es el mago (BlueWizard) animado. Los obstáculos son
 rocas, plataformas y piedras pequeñas (las tres cosas quitan vida; lo único
 decorativo es la vegetación), con plantas encima de las plataformas y un borde de roca alrededor del área. Del piso 4 en adelante parte
-de las rocas se mueven, por la mecánica `rocas_moviles.tres`. El piso 1 enseña los
+de las rocas se mueven, por la mecánica `rocas_moviles.tres`. El jugador tiene
+una bola mágica por piso (espacio): baja en línea recta y rompe lo primero que
+toca. El piso 1 enseña los
 controles con carteles sobre el suelo. La vida se muestra con corazones
 dibujados por código: la fuente de Godot no tiene glifos de corazón ni emoji,
 así que un "♥" de texto saldría como un cuadradito.

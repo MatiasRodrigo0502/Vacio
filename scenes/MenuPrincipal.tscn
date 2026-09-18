@@ -119,6 +119,7 @@ layout_mode = 2
 theme_override_constants/line_spacing = 12
 theme_override_font_sizes/font_size = 22
 text = "moverte
+bola mágica
 reiniciar
 cerrar esto"
 horizontal_alignment = 2
@@ -128,6 +129,7 @@ layout_mode = 2
 theme_override_constants/line_spacing = 12
 theme_override_font_sizes/font_size = 22
 text = "W A S D   o   flechas
+espacio
 R
 Esc"
 
@@ -137,6 +139,7 @@ layout_mode = 2
 theme_override_constants/line_spacing = 8
 theme_override_font_sizes/font_size = 17
 text = "Baja hasta el círculo del fondo para pasar al piso siguiente.
+La bola mágica va hacia abajo y rompe una roca: una por piso.
 Las rocas y las plataformas te quitan vida al tocarlas.
 Del piso 4 en adelante, algunas rocas se mueven.
 Doce pisos, y cada uno más estrecho que el anterior."

@@ -7,6 +7,7 @@ extends CanvasLayer
 @onready var _etiqueta_piso: Label = $EtiquetaPiso
 @onready var _etiqueta_capa: Label = $EtiquetaCapa
 @onready var _corazones: Corazones = $Corazones
+@onready var _indicador_bola: IndicadorBola = $IndicadorBola
 
 
 func actualizar_piso(numero_piso: int, total: int, nombre_capa: String) -> void:
@@ -16,3 +17,8 @@ func actualizar_piso(numero_piso: int, total: int, nombre_capa: String) -> void:
 
 func actualizar_vida(vida_actual: int, vida_maxima: int) -> void:
 	_corazones.actualizar(vida_actual, vida_maxima)
+
+
+## Enciende o apaga el indicador de la bola magica.
+func actualizar_bola(disponible: bool) -> void:
+	_indicador_bola.actualizar(disponible)
