@@ -62,8 +62,11 @@ lo que decía la medición).
 Fase 1 cerrada y jugable: movimiento con inercia, vida con invulnerabilidad,
 cámara con zoom por piso, los 12 pisos, victoria y derrota, pooling de
 obstáculos. El jugador es el mago (BlueWizard) animado. Los obstáculos son
-rocas con plataformas, vegetación y un borde de roca alrededor del área.
-El piso 1 enseña los controles con carteles sobre el suelo.
+rocas y plataformas (las dos cosas quitan vida), con vegetación encima de las
+plataformas y un borde de roca alrededor del área. El piso 1 enseña los
+controles con carteles sobre el suelo. La vida se muestra con corazones
+dibujados por código: la fuente de Godot no tiene glifos de corazón ni emoji,
+así que un "♥" de texto saldría como un cuadradito.
 
 Arte por piso: piso 1 cueva, piso 2 musgo, pisos 3-12 roca de cueva sin
 vegetación (esperando packs).

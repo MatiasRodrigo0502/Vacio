@@ -70,10 +70,14 @@ de ellas** en vez de suelta por el suelo. Sueltas parecían puestas al azar,
 porque lo estaban; agrupadas sobre una repisa cuentan algo: ahí hay tierra y por
 eso crece algo.
 
-Son decoración, no chocan: el jugador pasa por encima. Por eso se pintan
-**más claras** que el suelo, al revés que las rocas, que van oscuras. Si una
-plataforma se pareciera a una roca, el jugador la esquivaría creyendo que hace
-daño, y en un juego donde chocar quita vida eso es un problema de verdad.
+**Las plataformas hacen daño**, igual que las rocas: pasan por el pool de
+obstáculos, no son decoración. La vegetación que crece encima sí es decoración
+y no choca, para que el borde de la losa sea exactamente lo que quita vida.
+
+Ojo con el color: se siguen pintando **más claras** que el suelo, que era el
+código visual de "esto es terreno, puedes pasar". Ahora que hacen daño, ese
+código miente. Si en las pruebas confunden, se oscurecen a la altura de las
+rocas cambiando `tinte_losa` en `_colocar_plataformas()`.
 
 Los pisos 3 al 12 tienen plataformas de piedra pero sin plantas: sus catálogos
 no llevan vegetación.

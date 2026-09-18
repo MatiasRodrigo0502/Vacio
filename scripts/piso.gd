@@ -225,8 +225,10 @@ func _colocar_obstaculos() -> void:
 ## estaban. Agrupadas sobre una repisa cuentan algo: ahi hay tierra y por eso
 ## crece algo. Da estructura al suelo sin tocar la jugabilidad.
 ##
-## Son decoracion, no chocan: el jugador pasa por encima. Convertirlas en
-## obstaculo seria otra decision de diseno, y no es la que se ha pedido.
+## Las plataformas HACEN DANO, igual que las rocas: pasan por el pool de
+## obstaculos en vez de ser Sprite2D sueltos. La vegetacion que crece encima si
+## es decoracion y no choca, para que el borde de la losa sea exactamente lo que
+## quita vida y el jugador pueda fiarse de lo que ve.
 func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 		catalogo: CatalogoObstaculos) -> void:
 	var losas := catalogo.texturas_de("plataforma")
@@ -269,27 +271,29 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 				continue
 
 			var textura: Texture2D = losas[generador.randi() % losas.size()]
-			var losa := Sprite2D.new()
-			losa.texture = textura
-			losa.scale = Vector2.ONE * (ancho_losa / textura.get_size().x)
-			losa.flip_h = generador.randf() < 0.5
-			losa.modulate = tinte_losa
-			losa.position = candidata
-			_decoracion.add_child(losa)
+			var losa := _pool.obtener()
+			losa.preparar(to_global(candidata), textura, ancho_losa, tinte_losa,
+				datos.velocidad_obstaculos)
+			_obstaculos.append(losa)
 
-			_plantar_encima(losa, ancho_losa, generador, tinte, plantas)
+			_plantar_encima(candidata, losa.tamano(), generador, tinte, plantas)
 			puestas.append(candidata)
 			break
 
 
 ## Siembra unas cuantas plantas sobre una plataforma ya colocada.
-## Se anaden despues que la losa para que queden dibujadas encima de ella.
-func _plantar_encima(losa: Sprite2D, ancho_losa: float, generador: RandomNumberGenerator,
-		tinte: Color, plantas: Array[Texture2D]) -> void:
+##
+## Recibe la posicion y el tamano en vez del nodo de la losa porque la losa vive
+## en el pool de obstaculos (coordenadas globales) y las plantas cuelgan del
+## nodo de decoracion del piso (coordenadas locales).
+func _plantar_encima(centro_losa: Vector2, tamano_losa: Vector2,
+		generador: RandomNumberGenerator, tinte: Color,
+		plantas: Array[Texture2D]) -> void:
 	if plantas.is_empty():
 		return
 
-	var alto_losa := losa.texture.get_size().y * losa.scale.y
+	var ancho_losa := tamano_losa.x
+	var alto_losa := tamano_losa.y
 	for _i in generador.randi_range(2, 5):
 		var textura: Texture2D = plantas[generador.randi() % plantas.size()]
 		var planta := Sprite2D.new()
@@ -300,7 +304,7 @@ func _plantar_encima(losa: Sprite2D, ancho_losa: float, generador: RandomNumberG
 		planta.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
 		# Repartidas a lo ancho de la losa y pegadas a su mitad superior, que es
 		# donde se apoyarian si la plataforma tuviera altura de verdad.
-		planta.position = losa.position + Vector2(
+		planta.position = centro_losa + Vector2(
 			generador.randf_range(-ancho_losa * 0.38, ancho_losa * 0.38),
 			generador.randf_range(-alto_losa * 0.35, alto_losa * 0.1))
 		_decoracion.add_child(planta)

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
+[ext_resource type="Script" path="res://scripts/corazones.gd" id="2_corazones"]
 
 [node name="Hud" type="CanvasLayer"]
 layer = 2
@@ -26,7 +27,15 @@ text = "CORTEZA CONTINENTAL"
 [node name="EtiquetaVida" type="Label" parent="."]
 offset_left = 28.0
 offset_top = 86.0
-offset_right = 560.0
-offset_bottom = 114.0
+offset_right = 118.0
+offset_bottom = 118.0
 theme_override_font_sizes/font_size = 20
-text = "VIDA  @@@"
+text = "VIDA"
+vertical_alignment = 1
+
+[node name="Corazones" type="Control" parent="."]
+offset_left = 100.0
+offset_top = 86.0
+offset_right = 360.0
+offset_bottom = 118.0
+script = ExtResource("2_corazones")
