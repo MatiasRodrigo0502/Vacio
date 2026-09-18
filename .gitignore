@@ -34,6 +34,11 @@ mono_crash.*.json
 # en los commits.
 prueba_temporal.*
 
+# Instantanea que escribe el hook PreCompact antes de comprimir el contexto.
+# Es de usar y tirar y cambia en cada sesion: no tiene sentido versionarla.
+# El script que la genera (.claude/estado-sesion.sh) si se versiona.
+.claude/estado-sesion.md
+
 # --- Sistemas operativos ---
 .DS_Store
 .DS_Store?

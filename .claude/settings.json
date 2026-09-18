@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "auto|manual",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/estado-sesion.sh\"",
+            "timeout": 20,
+            "statusMessage": "Guardando el estado de la sesion..."
+          }
+        ]
+      }
+    ]
+  }
+}
