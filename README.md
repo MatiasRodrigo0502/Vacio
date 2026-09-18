@@ -31,8 +31,8 @@ cada uno donde hace falta.
 Apareces arriba del piso. Bajas esquivando bloques (cada toque quita 1 de vida,
 con ~1 s de invulnerabilidad después) hasta el círculo de salida del fondo. Al
 tocarlo pasas al piso siguiente, con la vida que te quede. Disparas bolas
-mágicas con las flechas, en las cuatro direcciones, y rompen rocas, plataformas
-y enemigos. Del piso 2 en adelante hay enemigos que te persiguen, y van a más según bajas.
+mágicas con las flechas, en las cuatro direcciones, para matar enemigos; las
+rocas paran los disparos y te sirven de parapeto. Del piso 2 en adelante hay enemigos que te persiguen, y van a más según bajas.
 En cada piso hay un objeto que te mejora para el resto de la partida. Superar el piso 12
 gana la partida; quedarte sin vida la termina.
 

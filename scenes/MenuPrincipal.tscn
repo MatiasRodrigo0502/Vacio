@@ -139,7 +139,7 @@ layout_mode = 2
 theme_override_constants/line_spacing = 8
 theme_override_font_sizes/font_size = 17
 text = "Baja hasta el círculo del fondo para pasar al piso siguiente.
-Disparas bolas mágicas con las flechas y rompen rocas y plataformas.
+Disparas bolas mágicas con las flechas: matan enemigos, pero no rompen rocas.
 Las rocas y las plataformas te quitan vida al tocarlas.
 Del piso 4 en adelante, algunas rocas se mueven.
 Doce pisos, y cada uno más estrecho que el anterior."

@@ -22,6 +22,12 @@ signal impacto(objetivo: Node2D)
 ## que toca y se apaga.
 @export var atraviesa: bool = false
 
+## Si es true, los disparos tambien destruyen rocas y plataformas. Esta en false
+## porque las rocas son el terreno: si el disparo las borra, el piso se limpia
+## solo y esquivar deja de importar. Ahora la roca para la bola y sirve de
+## parapeto, que es lo que hace en Isaac.
+@export var rompe_obstaculos: bool = false
+
 ## Hacia donde va. La fija el jugador al dispararla.
 var direccion: Vector2 = Vector2.DOWN
 
@@ -49,8 +55,13 @@ func _physics_process(delta: float) -> void:
 
 
 func _al_tocar(area: Area2D) -> void:
-	# Duck typing, como en el resto del proyecto: la bola no pregunta si es una
-	# roca, una plataforma o un enemigo, solo si se puede romper.
+	# Contra una roca la bola se apaga pero la roca aguanta: sirve de parapeto.
+	if area is Obstaculo and not rompe_obstaculos:
+		queue_free()
+		return
+
+	# Con el resto, duck typing como en todo el proyecto: la bola no pregunta
+	# contra que ha chocado, solo si eso se puede romper.
 	if not area.has_method("romper"):
 		return
 	area.romper()
