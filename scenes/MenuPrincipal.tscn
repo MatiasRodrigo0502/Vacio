@@ -141,8 +141,8 @@ theme_override_font_sizes/font_size = 17
 text = "Baja hasta el círculo del fondo para pasar al piso siguiente.
 Disparas con las flechas o apuntando con el ratón: matan enemigos.
 Las rocas son sólidas: no se pueden cruzar ni romper, pero te sirven de parapeto.
-Las rocas y las plataformas te quitan vida al tocarlas.
-Del piso 4 en adelante, algunas rocas se mueven.
+Lo que te quita vida son los enemigos al tocarte.
+En cada piso hay un objeto que te mejora para el resto de la partida.
 Doce pisos, y cada uno más estrecho que el anterior."
 horizontal_alignment = 1
 

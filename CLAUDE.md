@@ -1,33 +1,53 @@
 # Vacío — contexto para Claude
 
-Este archivo lo lee Claude Code al empezar cada sesión. Sirve para no tener que
-explicar otra vez qué es el proyecto ni cómo se trabaja en él.
+Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
+explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-09-18.**
+**Última actualización: 2026-09-21.**
+
+---
 
 ## Qué es
 
-Juego 2D top-down de habilidad en **Godot 4.7** (GDScript). Se desciende piso a
-piso por un embudo: 12 niveles fijos basados en las capas de la Tierra, de la
-corteza al núcleo interno. Cada piso es más estrecho, más denso y se ve menos.
-Proyecto de clase (1 DAM), lo trabajan **3 personas en paralelo**.
+Juego 2D top-down en **Godot 4.7** (GDScript). Se desciende piso a piso por un
+embudo: **12 niveles fijos** basados en las capas de la Tierra, de la corteza al
+núcleo interno. Cada piso es más estrecho, más denso y se ve menos.
 
-Repo bueno: `origin` → https://github.com/MatiasRodrigo0502/Vacio
-Repo del instituto: `instituto` → https://github.com/matias0502/Vacio (se queda
-atrás a propósito; solo se sube si Matías lo pide).
+Proyecto de clase (1 DAM). Lo trabajan **3 personas en paralelo**.
+
+- Repo bueno: `origin` → https://github.com/MatiasRodrigo0502/Vacio
+- Repo del instituto: `instituto` → https://github.com/matias0502/Vacio
+  (se queda atrás a propósito; solo se sube si Matías lo pide)
+
+**Rumbo actual: parecerse a The Binding of Isaac.** Pedido el 2026-09-18 en
+cuatro pasos: 1) disparo en cuatro direcciones ✅, 2) enemigos que persiguen ✅,
+3) objetos que mejoran ✅, 4) **salas con puertas — pendiente y es el gordo**:
+toca rehacer generación de piso, cámara y avance.
 
 ## Reglas de este proyecto
 
-1. **Todo en español**: nombres de scripts, clases, variables, funciones, nodos
-   y comentarios. Sin excepciones.
-2. **Los comentarios explican el porqué**, no el qué. Si una decisión tiene una
-   alternativa razonable que se descartó, se dice por qué se descartó.
-3. **Ampliar el juego no debe tocar código.** La dificultad vive en
-   `resources/pisos/*.tres` (uno por piso) y el arte en `assets/<pack>/
-   catalogo_*.tres`. Añadir mecánicas = un script que herede de `Mecanica` + su
-   `.tres`, sin tocar `gestor_progreso.gd` ni `piso.gd`.
-4. **Un archivo por unidad de trabajo**, para que tres personas no se pisen: un
-   piso = un `.tres`, una mecánica = un `.tres`.
+1. **Todo en español**: scripts, clases, variables, funciones, nodos y
+   comentarios. Sin excepciones.
+2. **Los comentarios explican el porqué**, no el qué. Si se descartó una
+   alternativa razonable, se dice por qué.
+3. **Ampliar el juego no debe tocar código.** Todo lo que se repite vive en
+   `.tres`: pisos, catálogos de arte, mecánicas, tipos de enemigo y objetos.
+4. **Un archivo por unidad de trabajo**, para que tres personas no se pisen.
+5. **Subir a GitHub después de cada cambio terminado**, sin que haga falta
+   pedirlo.
+
+## Cómo está montado
+
+| Qué | Dónde | Se amplía |
+|---|---|---|
+| Dificultad de cada piso | `resources/pisos/piso_NN_*.tres` | editando números |
+| Arte de un piso | `assets/<pack>/catalogo_*.tres` + `catalogo_arte` del piso | otro `.tres` |
+| Mecánicas | `resources/mecanicas/*.tres` (+ script que herede de `Mecanica`) | otro `.tres` |
+| Tipos de enemigo | `resources/enemigos/*.tres` (`TipoEnemigo`) | otro `.tres` |
+| Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
+
+`GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
+enemigo ni objeto concreto. `Principal.tscn` solo reacciona a sus señales.
 
 ## Cómo verificar los cambios (importante)
 
@@ -37,104 +57,100 @@ Godot **no está en el PATH**. El binario está en:
 Después de tocar scripts o `.tres`, **siempre**:
 
 1. `--headless --path <proyecto> --import` → registra los `class_name` nuevos y
-   saca los errores de parseo. Un `class_name` nuevo NO existe hasta que se
-   reimporta.
+   saca errores de parseo. Un `class_name` nuevo **no existe** hasta reimportar.
 2. Una escena de prueba temporal en la raíz (`prueba_temporal.gd/.tscn`, están
-   en `.gitignore`) que instancia `Principal.tscn`, recorre los 12 pisos e
-   imprime lo que haya que comprobar. Borrarla al terminar, **incluido su
-   `.gd.uid`**, que Godot genera aparte.
-3. Capturar stdout **y stderr**: los errores de GDScript van por stderr, y si
-   solo se redirige stdout parecen no existir.
+   en `.gitignore`) que instancia `Principal.tscn` y comprueba lo que toque.
+   Borrarla al terminar, **incluido su `.gd.uid`**, que Godot genera aparte.
+3. Capturar stdout **y stderr**: los errores de GDScript van por stderr y, si
+   solo se redirige stdout, parecen no existir.
 
 **Capturas de pantalla**: solo desde dentro del juego
 (`get_viewport().get_texture().get_image().save_png("user://...")`). Nunca con
-`CopyFromScreen` de Windows: copia la región de pantalla, y si el juego no está
-delante acaba capturando ventanas privadas del usuario. Ya pasó una vez.
+`CopyFromScreen` de Windows: copia la región de pantalla y, si el juego no está
+delante, captura ventanas privadas del usuario. Ya pasó una vez.
 
 **Verificar con datos antes que con capturas.** Varias veces la pantalla decía
-"falta algo" y lo que lo resolvió fue contar nodos o medir píxeles. Ejemplos
-reales: las plataformas que no aparecían (había 0 sprites con 8 texturas
-cargadas) y el contraste de las rocas (mi impresión visual era la contraria a
-lo que decía la medición).
+"falta algo" y lo resolvió contar nodos o medir píxeles: las plataformas que no
+aparecían (0 sprites con 8 texturas cargadas) y el contraste de las rocas (mi
+impresión visual era la contraria a la medición).
 
-## Estado actual
+Para lanzar el juego: `jugar.bat` en la raíz.
 
-El juego arranca en `MenuPrincipal.tscn` (jugar, controles, salir); la partida
-vive en `Principal.tscn` y se vuelve al menú desde la pantalla final.
+## Estado actual del juego
 
-Fase 1 cerrada y jugable: movimiento con inercia, vida con invulnerabilidad,
-cámara con zoom por piso, los 12 pisos, victoria y derrota, pooling de
-obstáculos. El jugador es el mago (BlueWizard) animado. Los obstáculos son
-rocas, plataformas y piedras pequeñas (las tres cosas quitan vida; lo único
-decorativo es la vegetación), con plantas encima de las plataformas y un borde de roca alrededor del área. Del piso 4 en adelante parte
-de las rocas se mueven, por la mecánica `rocas_moviles.tres`. El jugador dispara
-bolas mágicas con las flechas (cuatro direcciones) o con el clic izquierdo
-apuntando con el ratón; WASD mueve. Matan enemigos pero NO rompen rocas ni
-plataformas (`rompe_obstaculos` en `BolaMagica.tscn` devuelve eso).
+Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
+`Principal.tscn` y se vuelve al menú desde la pantalla final.
 
-**Las rocas y plataformas son `StaticBody2D` sólidos**, no áreas: se choca con
-ellas y no hacen daño. Las piedras pequeñas siguen siendo decoración sin
-colisión: treinta chinas sólidas por piso harían el movimiento un engancharse
-continuo. El daño viene solo de los enemigos. Del piso 2 en adelante hay enemigos que le persiguen
-(mecánica `enemigos.tres`): cuatro tipos definidos en `resources/enemigos/*.tres`
-como `TipoEnemigo`, que aparecen según la profundidad. Añadir uno nuevo es dejar
-otro `.tres` ahí, sin tocar código. Cada piso deja además un objeto recogible
-(`resources/objetos/*.tres`) que mejora al jugador para el resto de la partida.
-
-Las rocas móviles están desactivadas (`activa = false` en su `.tres`): no
-convencieron al jugarlas. El código sigue ahí.
-
-**Rumbo actual: acercar el juego a The Binding of Isaac.** Pedido por Matías el
-2026-09-18, en cuatro pasos: 1) disparo en cuatro direcciones (hecho),
-2) enemigos que persiguen (hecho), 3) objetos que mejoran (hecho), 4) salas
-con puertas. El piso 1 enseña los
-controles con carteles sobre el suelo. La vida se muestra con corazones
-dibujados por código: la fuente de Godot no tiene glifos de corazón ni emoji,
-así que un "♥" de texto saldría como un cuadradito.
-
-Arte por piso: piso 1 musgo (superficie), piso 2 cueva con vegetación, pisos
-3-12 roca de cueva pelada (esperando packs).
+- **Jugador**: mago animado (reposo y andar, las dos **de frente**). WASD mueve.
+- **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
+  ratón, con cadencia. Matan enemigos; **no** rompen rocas.
+- **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
+  hacen daño** y paran los disparos, así que sirven de parapeto.
+- **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
+  harían el movimiento un engancharse continuo.
+- **Enemigos**: desde el piso 2, cuatro tipos que persiguen dentro de su radio
+  de visión. Son lo único que quita vida.
+- **Objetos**: uno por piso, con icono de lo que hacen. Las mejoras se acumulan
+  toda la partida y se pierden al empezar otra.
+- **Vida**: corazones dibujados por código. La fuente de Godot no tiene glifos
+  de corazón ni emoji: un "♥" de texto sale como un cuadradito.
+- **Arte por piso**: 1 musgo, 2 cueva con vegetación, 3-12 roca de cueva pelada.
+- **Rocas móviles**: hechas pero **desactivadas** (`activa = false` en su
+  `.tres`), porque no convencieron al jugarlas. El código sigue ahí.
 
 ## Pendiente
 
-- **Licencias**: `CREDITS.md` tiene los packs, autores y URLs, pero la licencia
-  de cada uno está "sin verificar". No se pudo abrir itch.io desde aquí.
-- **Equilibrar la dificultad jugando**. Los valores de los 12 `.tres` se
-  pusieron a ojo el primer día y nadie los ha jugado del tirón.
-- **Fase 2**: los slimes del pack Mossy Cavern como enemigos (están dibujados
-  de frente, como el mago). Las rocas móviles ya están hechas: mecánica
-  `rocas_moviles.tres`, desde el piso 4.
-- Arte de los pisos 3 al 12 cuando Matías consiga más packs.
+- **Paso 4 del rumbo Isaac: salas con puertas.** Lo más grande que queda.
+- **Animación del personaje en 4 direcciones.** *Imposible con lo que hay*: el
+  pack BlueWizard solo trae Idle, Walk y Jump, las tres de frente. Hace falta
+  un pack de personaje top-down con 4 direcciones.
+- **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
+  cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí).
+- **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
+  primer día y el juego ha cambiado mucho desde entonces.
+- **Arte de los pisos 3 al 12**, cuando Matías consiga más packs.
+
+## Decisiones tomadas (no deshacerlas sin hablarlo)
+
+- **Las rocas no hacen daño.** Si no se pueden atravesar, cobrar vida además
+  castigaría por rozar una pared al esquivar. El daño viene de los enemigos.
+- **Los disparos no rompen rocas.** Las rocas son el terreno; si el disparo las
+  borra, el piso se limpia desde lejos y esquivar deja de importar.
+- **Los enemigos no se tintan con el color del piso**, las rocas sí. Con el
+  tinte rojo del piso 12 un slime verde se camuflaba con el suelo.
+- **Las plataformas se pintan a la misma luminosidad que las rocas** (factor
+  0,6 medido): lo que hace daño o estorba tiene que verse igual.
+- **Los niveles son deterministas.** Cada reparto usa una semilla derivada del
+  piso, así que los 12 pisos son idénticos en las tres máquinas del equipo.
+- **El pack pixel art de Zerie está descartado**: desentona con el arte
+  renderizado del resto.
 
 ## Trampas ya pisadas (no repetirlas)
 
 - **Editar por índices de texto es peligroso.** Dos veces, cortar un bloque de
-  `piso.gd` entre dos marcas se llevó por delante funciones que estaban en
-  medio (`_al_entrar_en_salida`, `_colocar_tutorial`). Reemplazar por bloques
-  exactos y comprobar después que la función sigue ahí.
+  `piso.gd` entre dos marcas se llevó funciones que estaban en medio
+  (`_al_entrar_en_salida`, `_colocar_tutorial`). Reemplazar bloques exactos y
+  comprobar después que la función sigue ahí.
 - **Un `replace` que no encuentra su ancla no falla, simplemente no hace nada.**
-  Pasó con `rocas_todas()`: se dio por añadida y no estaba. Verificar siempre
-  el resultado, no el mensaje de "hecho".
+  Pasó con `rocas_todas()`: se dio por añadida y no estaba. Verificar el
+  resultado, no el mensaje de "hecho".
 - **Cambiar de piso desde `body_entered` revienta.** Hay que diferirlo
-  (`call_deferred`), o el motor se queja de "flushing queries" al destruir los
+  (`call_deferred`) o el motor se queja de "flushing queries" al destruir los
   cuerpos en mitad del paso de física.
+- **Godot avisa de solapamientos con posiciones caducadas.** Como todos los
+  pisos se construyen en el origen, la salida del piso nuevo nacía donde estaba
+  la del anterior y el juego saltaba del piso 1 al 3. Por eso
+  `_al_entrar_en_salida()` comprueba la distancia real. **Y se mide contra
+  `centro_colision()`**, no contra el origen del nodo: el origen del jugador
+  está a los pies y su círculo 16 px más arriba.
+- **El tutorial se monta antes que los obstáculos**, para dejar apuntadas las
+  zonas de sus carteles en `_zonas_prohibidas` y que nada tape el texto.
+- **Un solo nodo `Decoracion` lo llenan tres funciones** (plataformas,
+  decoración suelta y borde). El vaciado se hace **una vez** en `configurar()`.
 - **En Python, `\` al final de línea dentro de una cadena normal es continuación
-  de línea**: se come la barra y el salto. Rompió una línea de GDScript al
-  generarla desde un script.
-- **Godot avisa de solapamientos con posiciones caducadas.** `body_entered`
-  puede llegar con la posición que el cuerpo tenía al empezar el paso de física,
-  no la que ya tiene. Como todos los pisos se construyen en el origen, la salida
-  del piso nuevo nacía donde estaba la del anterior y el juego saltaba del piso
-  1 al 3. Lo mismo con las rocas recicladas: golpes fantasma al entrar en un
-  piso. Por eso tanto `_al_entrar_en_salida()` como `_al_entrar_cuerpo()`
-  comprueban la distancia real antes de hacer nada. No quitar esas
-  comprobaciones. **Y esa distancia se mide contra `centro_colision()` del
-  cuerpo, no contra su origen**: el origen del jugador esta a los pies y su
-  circulo 16 px mas arriba, asi que midiendo desde el origen se descartaban
-  golpes buenos al acercarse a una roca por abajo.
-- El tutorial se monta **antes** que los obstáculos, no después: deja apuntadas
-  las zonas de sus carteles en `_zonas_prohibidas` para que ni rocas ni
-  plataformas se coloquen encima y tapen el texto.
-- Un solo nodo `Decoracion` lo llenan tres funciones (plataformas, decoración
-  suelta y borde). El vaciado se hace **una vez** en `configurar()`. Si alguna
-  vuelve a vaciarlo, borra el trabajo de las anteriores.
+  de línea**: se come la barra y el salto, y rompió una línea de GDScript
+  generada desde un script. Los heredoc de bash también se comen barras: para
+  scripts con barras, escribir el `.py` a archivo y ejecutarlo.
+- **Al cambiar una regla del juego, revisar los textos que la cuentan**: el
+  panel de controles del menú y los carteles del tutorial se quedaron diciendo
+  que las rocas quitaban vida mucho después de que dejaran de hacerlo.

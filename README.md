@@ -7,12 +7,11 @@ desciende piso a piso por una estructura con forma de embudo: 12 niveles fijos
 basados en las capas de la Tierra, de la corteza continental al núcleo interno.
 Cada piso es más estrecho, más denso y se ve menos que el anterior.
 
-Estado: **Fase 1 — base jugable**. Moverse, bajar del piso 1 al 12, vida,
-cámara y ancho reaccionando al piso, y pantalla de victoria al superar el 12.
-El jugador ya es el mago (BlueWizard) con animaciones de reposo y de andar, y
-los obstáculos son rocas con decoración repartida por el suelo. El piso 1
-enseña los controles y tiene arte de cueva; el piso 2, de musgo. El área de
-cada piso va rodeada de rocas del pack que le toque.
+Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
+*The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
+persiguen, objetos que te mejoran, victoria y derrota. El jugador es un mago
+(BlueWizard) animado; el piso 1 hace de tutorial con arte de musgo y el 2 de
+cueva; del 3 al 12 se reutiliza la roca de cueva hasta que haya más arte.
 
 ## Controles
 
@@ -28,14 +27,19 @@ cada uno donde hace falta.
 
 ## Cómo se juega ahora mismo
 
-Apareces arriba del piso. Bajas esquivando bloques (cada toque quita 1 de vida,
-con ~1 s de invulnerabilidad después) hasta el círculo de salida del fondo. Al
-tocarlo pasas al piso siguiente, con la vida que te quede. Disparas bolas
-mágicas para matar enemigos: con las flechas en las cuatro direcciones, o con
-el clic izquierdo apuntando donde quieras. Las rocas son sólidas, así que no se
-pueden cruzar y te sirven de parapeto. Del piso 2 en adelante hay enemigos que te persiguen, y van a más según bajas.
-En cada piso hay un objeto que te mejora para el resto de la partida. Superar el piso 12
-gana la partida; quedarte sin vida la termina.
+Apareces arriba del piso y bajas hasta el círculo de salida del fondo. Al
+tocarlo pasas al siguiente, con la vida que te quede.
+
+Las rocas y plataformas son sólidas: no se cruzan ni se rompen, pero te sirven
+de parapeto. Lo que te quita vida son los **enemigos** al tocarte, con ~1 s de
+invulnerabilidad después de cada golpe. Del piso 2 en adelante los hay, y van a
+más según bajas.
+
+Disparas bolas mágicas para matarlos, con las flechas en las cuatro direcciones
+o con el clic izquierdo apuntando donde quieras. En cada piso hay además un
+objeto que te mejora para el resto de la partida.
+
+Superar el piso 12 gana; quedarte sin vida termina la partida.
 
 ## Estructura del proyecto
 
