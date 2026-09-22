@@ -13,9 +13,12 @@ lados. 15 PNG de 108×134 (`abajo_0..3`, `izquierda_0..3`, `derecha_0..3`,
 Salieron de una hoja de 4×4 casillas rotuladas. Esa hoja traía dos defectos,
 los dos encontrados midiendo y no mirando:
 
-- **La fila DERECHA no estaba reflejada**: era la misma pose que IZQUIERDA
-  mirando al mismo lado (siluetas 93 % iguales tal cual y solo 62 % en espejo).
-  La derecha se genera reflejando la izquierda.
+- **Las dos filas de lado son la misma pose y miran al mismo sitio**: siluetas
+  93 % iguales tal cual y solo 62 % en espejo. Y miran a la **derecha**, no a la
+  izquierda que dice el rótulo: el centro de la piel de la cara cae 10 px a la
+  derecha del centro de la cabeza, mientras que en la fila frontal (que sabemos
+  que es de frente) ese desvío es de 4. Así que la fila de lado se usa tal cual
+  para la derecha y **reflejada** para la izquierda.
 - **El fotograma ARRIBA 3 tiene dos báculos**, uno en cada mano. Se descarta,
   así que andar hacia arriba usa tres poses en vez de cuatro. Para que el paso
   no vaya más rápido, esa animación va a 7,5 fps en vez de 10: el ciclo dura

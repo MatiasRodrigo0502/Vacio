@@ -135,9 +135,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   renderizado del resto.
 - **El mago BlueWizard se queda en el repositorio** aunque no se use. Cambiar
   de personaje es una línea de `Jugador.tscn`, y así volver atrás es gratis.
-- **La derecha del mago es la izquierda reflejada.** La fila «derecha» de la
-  hoja no estaba reflejada: era la misma pose mirando al mismo lado (siluetas
-  93% iguales tal cual, 62% en espejo). Reflejar garantiza el par.
+- **La izquierda del mago es la derecha reflejada.** Las dos filas de lado de
+  la hoja son la misma pose y las dos miran a la derecha, aunque una se
+  rotule «izquierda». Reflejar garantiza el par.
 - **Andar hacia arriba tiene tres poses y no cuatro**: el fotograma «arriba 3»
   de la hoja trae dos báculos. Esa animación va a 7,5 fps en vez de 10 para
   que el ciclo dure lo mismo (0,4 s) y el paso no se acelere.
@@ -179,6 +179,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   sobre la caja del alfa: debajo de los pies hay restos de sombra suave. La
   señal de que la referencia es buena es que las cuatro direcciones midan lo
   mismo de alto.
+- **Comprobar que dos poses son iguales no dice a dónde miran.** Con el mago
+  medí que las filas «izquierda» y «derecha» eran la misma pose, di por bueno
+  el rótulo y reflejé al revés: el mago andaba de espaldas al ir a la derecha,
+  y lo pilló Matías jugando. La medida que sí lo resuelve es dónde cae la piel
+  de la cara respecto al centro de la cabeza, con la vista frontal de
+  referencia. **Los rótulos de una hoja de sprites son una pista, no un dato.**
 - **La impresión visual vuelve a fallar con el contraste.** El nigromante
   parecía perderse contra el suelo más que el mago anterior; medido, es al
   revés: 1,81:1 contra 1,55:1. Tercera vez que la medición contradice al ojo.
