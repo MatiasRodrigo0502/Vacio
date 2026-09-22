@@ -3,31 +3,44 @@
 Arte del juego. Aquí entra **solo lo que se usa**, ya recortado y reescalado;
 los packs originales viven fuera del repositorio (ver `CREDITS.md` en la raíz).
 
+## mago/
+
+El personaje jugable **que se usa ahora**, y el primero que mira a los cuatro
+lados. 15 PNG de 108×134 (`abajo_0..3`, `izquierda_0..3`, `derecha_0..3`,
+`arriba_0..2`) y `animaciones_mago.tres`, con ocho animaciones: `caminar_` y
+`quieto_` por cada dirección.
+
+Salieron de una hoja de 4×4 casillas rotuladas. Esa hoja traía dos defectos,
+los dos encontrados midiendo y no mirando:
+
+- **La fila DERECHA no estaba reflejada**: era la misma pose que IZQUIERDA
+  mirando al mismo lado (siluetas 93 % iguales tal cual y solo 62 % en espejo).
+  La derecha se genera reflejando la izquierda.
+- **El fotograma ARRIBA 3 tiene dos báculos**, uno en cada mano. Se descarta,
+  así que andar hacia arriba usa tres poses en vez de cuatro. Para que el paso
+  no vaya más rápido, esa animación va a 7,5 fps en vez de 10: el ciclo dura
+  los mismos 0,4 s.
+
+Cada fila de la hoja tenía al mago a una altura distinta dentro de su casilla,
+así que la línea de suelo se mide **por dirección**; si se midiera para toda la
+hoja, el mago pegaría un salto vertical al girarse. La referencia son las filas
+con píxeles sólidos (alfa alto y anchura de bota), no la caja del alfa: debajo
+de los pies hay restos de sombra suave, distintos en cada fila. Con ese filtro
+las cuatro direcciones miden lo mismo de alto (221 px en la hoja), que es la
+señal de que la referencia es buena.
+
+El lienzo se centra en los pies y es simétrico, porque la derecha es la
+izquierda reflejada y el eje tiene que caer en el mismo sitio.
+
+**Contraste medido contra el suelo: 1,43:1.** Es el personaje más oscuro que ha
+tenido el juego (el nigromante daba 1,81:1 y el mago azul original 1,55:1). Se
+lee gracias al orbe morado y al ribete claro de la túnica.
+
 ## nigromante/
 
-El personaje jugable **que se usa ahora**. 6 PNG de 134×150 (`caminar_00..05`)
-y `animaciones_nigromante.tres`, que es lo que carga `Jugador.tscn`.
-
-Salieron de una hoja de 2172×724 con seis viñetas enmarcadas sobre fondo gris.
-Hubo que quitar dos cosas: el fondo (relleno por inundación desde el borde, con
-criterio local en vez de un umbral fijo, porque la sombra del suelo es un
-degradado y un umbral fijo dejaba un halo con borde duro) y los marcos (se
-descartan quedándose solo con la isla de píxeles más grande de cada viñeta).
-
-Los seis fotogramas comparten lienzo y **apoyan los pies en el borde de abajo**,
-así que el personaje no baila al cambiar de pose. El lienzo se centra en los
-pies y no en el dibujo: el báculo y el halo sobresalen a la derecha y, si se
-centrara en el dibujo, el cuerpo quedaría descolocado respecto a su círculo de
-colisión.
-
-La escala se eligió para que el cuerpo (de los pies a la capucha) midiera los
-mismos 128 px que tenía el mago anterior, o sea 64 px en pantalla. Los 150 px
-de alto del lienzo son cuerpo + el halo que asoma por arriba, y por eso el
-`offset` de la escena es −75 (la mitad del alto) y no −64.
-
-**Solo hay animación de andar**: la hoja trae seis poses de caminar y ninguna
-de reposo, así que `quieto` es un único fotograma, el de las piernas más
-juntas. Repetir las seis a poca velocidad se vería como andar sin moverse.
+**Fuera de uso** (no tenía más que vista de frente). 6 PNG de 134×150 más su
+`SpriteFrames`. Se deja para poder volver atrás cambiando una línea en
+`Jugador.tscn`.
 
 ## personaje/
 

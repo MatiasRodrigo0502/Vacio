@@ -64,6 +64,10 @@ var _fase_parpadeo: float = 0.0
 var _control_activo: bool = true
 ## Cuanto falta para poder volver a disparar.
 var _espera_disparo: float = 0.0
+## Direccion a la que mira el sprite: "abajo", "izquierda", "derecha", "arriba".
+## Se guarda en vez de recalcularse cada vez porque, al soltar los controles, el
+## mago tiene que quedarse mirando a donde estaba, no volver a una por defecto.
+var _mirando: StringName = &"abajo"
 
 ## El sprite se escala y se desplaza desde la escena, no desde aqui: el origen
 ## del nodo esta a los pies del personaje y la forma de colision cubre la base
@@ -103,37 +107,40 @@ func _physics_process(delta: float) -> void:
 	_actualizar_disparo(delta)
 
 
-## Dispara mientras se mantengan pulsadas las flechas, con una cadencia fija.
+## Hacia donde esta apuntando el jugador, sin mirar la cadencia.
 ##
-## POR QUE LAS FLECHAS Y NO EL RATON:
-## es el esquema de Isaac y de los twin-stick de teclado: una mano mueve y la
-## otra dispara. Con el raton habria que apuntar, y este juego va de esquivar
-## mientras bajas, no de apuntar fino.
-func _actualizar_disparo(delta: float) -> void:
-	_espera_disparo = maxf(_espera_disparo - delta, 0.0)
-	if not _control_activo or _espera_disparo > 0.0:
-		return
-
-	var direccion := Vector2.ZERO
+## Esta aparte del disparo porque la usan dos cosas: disparar y decidir a que
+## lado mira el sprite. Si estuviera dentro de _actualizar_disparo, el mago
+## dejaria de mirar al enemigo entre bala y bala, que es justo cuando se ve.
+func _direccion_apuntada() -> Vector2:
+	if not _control_activo:
+		return Vector2.ZERO
 
 	# El raton manda sobre las flechas: si estas apuntando, es lo que quieres.
 	# Con el raton se apunta libre, en cualquier angulo; con las flechas solo a
 	# las cuatro direcciones, que es el esquema clasico de teclado.
 	if Input.is_action_pressed("disparar_raton"):
 		var hacia := get_global_mouse_position() - centro_colision()
-		if hacia.length() > 1.0:
-			direccion = hacia.normalized()
-	else:
-		direccion = Input.get_vector(
-			"disparar_izquierda", "disparar_derecha", "disparar_arriba", "disparar_abajo")
-		if direccion != Vector2.ZERO:
-			# Con dos flechas a la vez manda la mas marcada: las diagonales
-			# harian el disparo de teclado mas facil de lo que toca.
-			if absf(direccion.x) > absf(direccion.y):
-				direccion = Vector2(signf(direccion.x), 0.0)
-			else:
-				direccion = Vector2(0.0, signf(direccion.y))
+		return hacia.normalized() if hacia.length() > 1.0 else Vector2.ZERO
 
+	var flechas := Input.get_vector(
+		"disparar_izquierda", "disparar_derecha", "disparar_arriba", "disparar_abajo")
+	if flechas == Vector2.ZERO:
+		return Vector2.ZERO
+	# Con dos flechas a la vez manda la mas marcada: las diagonales harian el
+	# disparo de teclado mas facil de lo que toca.
+	if absf(flechas.x) > absf(flechas.y):
+		return Vector2(signf(flechas.x), 0.0)
+	return Vector2(0.0, signf(flechas.y))
+
+
+## Dispara mientras se mantenga pulsado, con una cadencia fija.
+func _actualizar_disparo(delta: float) -> void:
+	_espera_disparo = maxf(_espera_disparo - delta, 0.0)
+	if not _control_activo or _espera_disparo > 0.0:
+		return
+
+	var direccion := _direccion_apuntada()
 	if direccion == Vector2.ZERO:
 		return
 
@@ -143,16 +150,46 @@ func _actualizar_disparo(delta: float) -> void:
 	bola_lanzada.emit(centro_colision(), direccion)
 
 
-## Elige la animacion segun el movimiento real, no segun la tecla pulsada: asi
-## el personaje sigue "andando" durante el deslizamiento por inercia, que es lo
+## Elige la animacion: accion (andar o estar quieto) por direccion.
+##
+## El movimiento se mira por la velocidad real y no por la tecla pulsada, para
+## que el mago siga "andando" durante el deslizamiento por inercia, que es lo
 ## que se ve en pantalla.
 ##
-## "quieto" es un unico fotograma: la hoja del nigromante solo trae poses de
-## andar. Reutilizar esas seis a poca velocidad se veria como andar sin avanzar.
+## Apuntar manda sobre moverse: si estas disparando a un enemigo, el mago tiene
+## que mirarlo aunque te estes alejando de el. Es como funciona Isaac, y sin
+## esto pelear retrocediendo se ve al reves de lo que estas haciendo.
 func _actualizar_animacion() -> void:
-	var animacion := &"caminar" if velocity.length() > VELOCIDAD_MINIMA_ANDAR else &"quieto"
-	if _sprite.animation != animacion:
-		_sprite.play(animacion)
+	var apuntando := _direccion_apuntada()
+	if apuntando != Vector2.ZERO:
+		_mirando = _lado(apuntando)
+	elif velocity.length() > VELOCIDAD_MINIMA_ANDAR:
+		_mirando = _lado(velocity)
+
+	var accion := "caminar" if velocity.length() > VELOCIDAD_MINIMA_ANDAR else "quieto"
+	var animacion := StringName(accion + "_" + _mirando)
+	if _sprite.animation == animacion:
+		return
+
+	# Al girarse se conserva el punto del ciclo de andar: si cada giro empezara
+	# la animacion de cero, el mago daria un tiron con cada cambio de rumbo.
+	# Se limita el indice porque "arriba" tiene una pose menos que las demas.
+	var marco := _sprite.frame
+	var avance := _sprite.frame_progress
+	_sprite.play(animacion)
+	if accion == "caminar":
+		var tope := _sprite.sprite_frames.get_frame_count(animacion) - 1
+		_sprite.set_frame_and_progress(mini(marco, tope), avance)
+
+
+## Traduce un vector a la direccion de la hoja de sprites.
+##
+## En empate (diagonal exacta) gana el eje horizontal: las vistas de lado
+## tienen mas detalle que la de espaldas y se lee mejor a quien estas mirando.
+func _lado(v: Vector2) -> StringName:
+	if absf(v.x) >= absf(v.y):
+		return &"derecha" if v.x > 0.0 else &"izquierda"
+	return &"abajo" if v.y > 0.0 else &"arriba"
 
 
 func _actualizar_invulnerabilidad(delta: float) -> void:
@@ -229,6 +266,8 @@ func reubicar(posicion: Vector2) -> void:
 	velocity = Vector2.ZERO
 	_control_activo = true
 	_espera_disparo = 0.0
+	# Cada piso empieza mirando hacia donde se baja.
+	_mirando = &"abajo"
 
 
 ## Deja al jugador como al empezar: vida llena y sin ninguna mejora recogida.

@@ -81,9 +81,10 @@ Para lanzar el juego: `jugar.bat` en la raíz.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
-- **Jugador**: nigromante animado, **de frente**. Solo tiene animación de
-  andar (6 fotogramas); `quieto` es un único fotograma porque la hoja no
-  trae pose de reposo. WASD mueve.
+- **Jugador**: mago animado **en las cuatro direcciones** (abajo, izquierda,
+  derecha, arriba), con `caminar_` y `quieto_` por cada una. WASD mueve.
+  Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
+  aunque te estés alejando.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
   ratón, con cadencia. Matan enemigos; **no** rompen rocas.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
@@ -103,11 +104,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 ## Pendiente
 
 - **Paso 4 del rumbo Isaac: salas con puertas.** Lo más grande que queda.
-- **Animación del personaje en 4 direcciones.** *Imposible con lo que hay*: ni
-  el BlueWizard ni la hoja del nigromante traen más que vistas de frente. Hace
-  falta un pack de personaje top-down con 4 direcciones.
-- **De dónde sale el nigromante.** Es el único asset sin autor ni origen
-  conocidos (ver `CREDITS.md`). Hay que aclararlo.
+- **De dónde salen las hojas del personaje.** Ni la del nigromante ni la del
+  mago de 4 direcciones traen autor ni origen (ver `CREDITS.md`). Son los
+  únicos assets así. Hay que aclararlo antes de entregar o publicar.
+- **Contraste del mago nuevo: 1,43:1** contra el suelo, el más bajo que ha
+  tenido el juego (nigromante 1,81:1, mago azul 1,55:1). Se lee por el orbe y
+  el ribete, pero si se pierde en los pisos oscuros hay que aclararlo un poco.
+- **Limpiar las carpetas de personajes.** Quedan tres (`mago/` en uso,
+  `nigromante/` y `personaje/` fuera de uso). Borrar las dos muertas cuando
+  Matías lo confirme.
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí).
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
@@ -130,6 +135,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   renderizado del resto.
 - **El mago BlueWizard se queda en el repositorio** aunque no se use. Cambiar
   de personaje es una línea de `Jugador.tscn`, y así volver atrás es gratis.
+- **La derecha del mago es la izquierda reflejada.** La fila «derecha» de la
+  hoja no estaba reflejada: era la misma pose mirando al mismo lado (siluetas
+  93% iguales tal cual, 62% en espejo). Reflejar garantiza el par.
+- **Andar hacia arriba tiene tres poses y no cuatro**: el fotograma «arriba 3»
+  de la hoja trae dos báculos. Esa animación va a 7,5 fps en vez de 10 para
+  que el ciclo dure lo mismo (0,4 s) y el paso no se acelere.
 - **El sprite del jugador se centra en los pies, no en el dibujo.** El báculo y
   el halo del nigromante sobresalen a la derecha; centrando el lienzo en el
   dibujo, el cuerpo se iría a la izquierda y dejaría de cuadrar con el círculo
@@ -161,6 +172,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de línea**: se come la barra y el salto, y rompió una línea de GDScript
   generada desde un script. Los heredoc de bash también se comen barras: para
   scripts con barras, escribir el `.py` a archivo y ejecutarlo.
+- **La línea de suelo de una hoja se mide por dirección, no para toda.** Cada
+  fila de la hoja del mago tenía al personaje a una altura distinta dentro de
+  su casilla; con una sola referencia, el mago pegaba un salto vertical al
+  girarse. Y se mide sobre píxeles sólidos (alfa alto y anchura de bota), no
+  sobre la caja del alfa: debajo de los pies hay restos de sombra suave. La
+  señal de que la referencia es buena es que las cuatro direcciones midan lo
+  mismo de alto.
 - **La impresión visual vuelve a fallar con el contraste.** El nigromante
   parecía perderse contra el suelo más que el mago anterior; medido, es al
   revés: 1,81:1 contra 1,55:1. Tercera vez que la medición contradice al ojo.

@@ -1,0 +1,117 @@
+[gd_resource type="SpriteFrames" load_steps=16 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/mago/abajo_0.png" id="aba_0"]
+[ext_resource type="Texture2D" path="res://assets/mago/abajo_1.png" id="aba_1"]
+[ext_resource type="Texture2D" path="res://assets/mago/abajo_2.png" id="aba_2"]
+[ext_resource type="Texture2D" path="res://assets/mago/abajo_3.png" id="aba_3"]
+[ext_resource type="Texture2D" path="res://assets/mago/izquierda_0.png" id="izq_0"]
+[ext_resource type="Texture2D" path="res://assets/mago/izquierda_1.png" id="izq_1"]
+[ext_resource type="Texture2D" path="res://assets/mago/izquierda_2.png" id="izq_2"]
+[ext_resource type="Texture2D" path="res://assets/mago/izquierda_3.png" id="izq_3"]
+[ext_resource type="Texture2D" path="res://assets/mago/derecha_0.png" id="der_0"]
+[ext_resource type="Texture2D" path="res://assets/mago/derecha_1.png" id="der_1"]
+[ext_resource type="Texture2D" path="res://assets/mago/derecha_2.png" id="der_2"]
+[ext_resource type="Texture2D" path="res://assets/mago/derecha_3.png" id="der_3"]
+[ext_resource type="Texture2D" path="res://assets/mago/arriba_0.png" id="arr_0"]
+[ext_resource type="Texture2D" path="res://assets/mago/arriba_1.png" id="arr_1"]
+[ext_resource type="Texture2D" path="res://assets/mago/arriba_2.png" id="arr_2"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("aba_0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("aba_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("aba_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("aba_3")
+}],
+"loop": true,
+"name": &"caminar_abajo",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("izq_0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("izq_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("izq_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("izq_3")
+}],
+"loop": true,
+"name": &"caminar_izquierda",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("der_0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("der_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("der_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("der_3")
+}],
+"loop": true,
+"name": &"caminar_derecha",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("arr_0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("arr_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("arr_2")
+}],
+"loop": true,
+"name": &"caminar_arriba",
+"speed": 7.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("aba_3")
+}],
+"loop": true,
+"name": &"quieto_abajo",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("izq_0")
+}],
+"loop": true,
+"name": &"quieto_izquierda",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("der_0")
+}],
+"loop": true,
+"name": &"quieto_derecha",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("arr_2")
+}],
+"loop": true,
+"name": &"quieto_arriba",
+"speed": 1.0
+}]

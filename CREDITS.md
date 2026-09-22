@@ -12,13 +12,29 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 
 ## En uso
 
-### Nigromante — personaje jugable
+### Mago de 4 direcciones — personaje jugable
+
+- **Pack**: sin identificar
+- **Autor**: sin identificar
+- **URL**: —
+- **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
+- **Archivos**: `assets/mago/*.png` (15 frames) + `animaciones_mago.tres`
+- **Procesado**: recortado de una hoja de 4×4 casillas rotuladas (1254×1254),
+  quitando rótulos y rejilla y reescalado a 108×134. La fila «derecha» de la
+  hoja no estaba reflejada, así que se genera reflejando la izquierda, y el
+  fotograma «arriba 3» se descarta porque trae dos báculos.
+- **Nota**: la imagen la aportó Matías en el chat, sin decir de dónde salía.
+  **Hay que averiguar de dónde viene.**
+
+### Nigromante — personaje jugable anterior (fuera de uso)
 
 - **Pack**: sin identificar
 - **Autor**: sin identificar
 - **URL**: —
 - **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
 - **Archivos**: `assets/nigromante/*.png` (6 frames) + `animaciones_nigromante.tres`
+- **Estado**: sustituido por el mago de 4 direcciones. Se conserva en el
+  repositorio para poder volver atrás.
 - **Procesado**: recortado de una hoja de 2172×724 con seis viñetas enmarcadas,
   quitando el fondo gris y los marcos, y reescalado a 134×150.
 - **Nota**: la imagen la aportó Matías en el chat, sin decir de dónde salía. Es

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/menu_principal.gd" id="1_menu"]
-[ext_resource type="Texture2D" path="res://assets/personaje/quieto_00.png" id="2_mago"]
+[ext_resource type="Texture2D" path="res://assets/mago/abajo_3.png" id="2_mago"]
 
 [node name="MenuPrincipal" type="Control"]
 anchors_preset = 15
