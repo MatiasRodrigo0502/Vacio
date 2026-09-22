@@ -87,6 +87,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   aunque te estés alejando.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
   ratón, con cadencia. Matan enemigos; **no** rompen rocas.
+- **Ataque cargado**: clic derecho mantenido. Se carga en `tiempo_carga`
+  (0,75 s), hay que **soltarlo** para que salga y soltarlo antes de tiempo no
+  dispara nada. Atraviesa enemigos y hace 3 de daño; las rocas lo paran igual.
+  Mientras cargas, el disparo normal se calla. El aviso visual lo dibuja
+  `scripts/carga_ataque.gd` en un nodo aparte del jugador.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
   hacen daño** y paran los disparos, así que sirven de parapeto.
 - **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
@@ -141,6 +146,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Andar hacia arriba tiene tres poses y no cuatro**: el fotograma «arriba 3»
   de la hoja trae dos báculos. Esa animación va a 7,5 fps en vez de 10 para
   que el ciclo dure lo mismo (0,4 s) y el paso no se acelere.
+- **El ataque cargado hay que soltarlo, no sale solo al cargarse.** Soltándolo
+  tú eliges el momento y puedes reapuntar mientras cargas. Si saliera solo,
+  cargar sería una cuenta atrás a la que llegas apuntando a donde sea. Cambiarlo
+  es una línea en `_actualizar_carga()`.
+- **Soltar el cargado antes de tiempo no dispara nada.** Un disparo flojo se
+  confundiría con el normal y no se sabría por qué sale una cosa u otra.
+- **El daño del cargado se reparte llamando `romper()` varias veces**, no
+  pasándole un parámetro: el contrato del proyecto es `romper()` sin argumentos,
+  y cambiarlo obligaría a tocar todo lo rompible, ahora y en el futuro.
 - **El sprite del jugador se centra en los pies, no en el dibujo.** El báculo y
   el halo del nigromante sobresalen a la derecha; centrando el lienzo en el
   dibujo, el cuerpo se iría a la izquierda y dejaría de cuadrar con el círculo
@@ -188,6 +202,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **La impresión visual vuelve a fallar con el contraste.** El nigromante
   parecía perderse contra el suelo más que el mago anterior; medido, es al
   revés: 1,81:1 contra 1,55:1. Tercera vez que la medición contradice al ojo.
+- **Un error de script en la escena de prueba la deja colgada**, no la hace
+  fallar: `_ready()` se corta antes del `quit()` y el proceso se queda ahí sin
+  decir nada (pasó llamando a `configurar()` en vez de `preparar()`). Vale la
+  pena meterle un `Timer` de vigía que llame a `quit()` pase lo que pase.
 - **Al cambiar una regla del juego, revisar los textos que la cuentan**: el
   panel de controles del menú y los carteles del tutorial se quedaron diciendo
   que las rocas quitaban vida mucho después de que dejaran de hacerlo.

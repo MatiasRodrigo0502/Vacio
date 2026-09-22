@@ -120,6 +120,7 @@ theme_override_constants/line_spacing = 12
 theme_override_font_sizes/font_size = 22
 text = "moverte
 disparar
+ataque cargado
 reiniciar
 cerrar esto"
 horizontal_alignment = 2
@@ -130,6 +131,7 @@ theme_override_constants/line_spacing = 12
 theme_override_font_sizes/font_size = 22
 text = "W A S D
 flechas o clic izq.
+clic der. (mantener)
 R
 Esc"
 
@@ -140,6 +142,8 @@ theme_override_constants/line_spacing = 8
 theme_override_font_sizes/font_size = 17
 text = "Baja hasta el círculo del fondo para pasar al piso siguiente.
 Disparas con las flechas o apuntando con el ratón: matan enemigos.
+Mantén el clic derecho para cargar un ataque: cuando el aro se cierre, suéltalo.
+El cargado atraviesa enemigos y mata de un golpe, pero las rocas lo paran igual.
 Las rocas son sólidas: no se pueden cruzar ni romper, pero te sirven de parapeto.
 Lo que te quita vida son los enemigos al tocarte.
 En cada piso hay un objeto que te mejora para el resto de la partida.

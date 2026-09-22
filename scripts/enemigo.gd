@@ -76,7 +76,14 @@ func _physics_process(delta: float) -> void:
 
 
 ## La llama la bola magica. Aguanta varios impactos.
+##
+## El ataque cargado reparte varios impactos de golpe, asi que puede llamar a
+## esto cuando el enemigo ya esta muerto: queue_free() no lo borra hasta el
+## final del fotograma y hasta entonces sigue siendo un objeto valido. Sin este
+## guardia, emitiria "muerto" mas de una vez.
 func romper() -> void:
+	if _vida <= 0:
+		return
 	_vida -= 1
 	if _vida > 0:
 		# Parpadeo blanco para que se vea que ha entrado el disparo.

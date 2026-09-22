@@ -74,7 +74,7 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 
 ## La bola cuelga del piso, no de Principal: asi al cambiar de piso se va con el
 ## y no queda ninguna volando de un piso al siguiente.
-func _al_lanzar_bola(desde: Vector2, direccion: Vector2) -> void:
+func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 	if _piso_actual == null:
 		return
 	var bola: BolaMagica = ESCENA_BOLA.instantiate()
@@ -82,6 +82,16 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2) -> void:
 	# La bola hereda lo que hayan mejorado los objetos recogidos.
 	bola.velocidad = _jugador.velocidad_bola
 	bola.radio = _jugador.radio_bola
+	if cargada:
+		# El ataque cargado parte de los numeros ya mejorados y los multiplica,
+		# para que los objetos recogidos tambien se noten en el.
+		bola.cargada = true
+		bola.radio *= _jugador.factor_radio_cargada
+		bola.velocidad *= _jugador.factor_velocidad_cargada
+		bola.dano = _jugador.dano_bola_cargada
+		# Atraviesa enemigos: es lo que hace que valga la pena esperar. Las
+		# rocas siguen parandola, como el disparo normal, porque son el terreno.
+		bola.atraviesa = true
 	_piso_actual.add_child(bola)
 	bola.global_position = desde
 

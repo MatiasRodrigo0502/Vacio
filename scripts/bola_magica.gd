@@ -22,6 +22,16 @@ signal impacto(objetivo: Node2D)
 ## que toca y se apaga.
 @export var atraviesa: bool = false
 
+## Cuantos impactos reparte a lo que toca. El disparo normal hace 1; el ataque
+## cargado, mas. No se pasa como argumento a romper() a proposito: el contrato
+## del proyecto es "romper() sin parametros", y cambiarlo obligaria a tocar
+## todo lo que sea rompible ahora y en el futuro.
+@export var dano: int = 1
+
+## Cambia el dibujo: la cargada sale morada y gorda, como la carga del baculo,
+## para que se distinga de un tiro normal grande por las mejoras.
+@export var cargada: bool = false
+
 ## Si es true, los disparos tambien destruyen rocas y plataformas. Esta en false
 ## porque las rocas son el terreno: si el disparo las borra, el piso se limpia
 ## solo y esquivar deja de importar. Ahora la roca para la bola y sirve de
@@ -71,7 +81,10 @@ func _al_tocar(area: Area2D) -> void:
 	# chocado, solo si eso se puede romper.
 	if not area.has_method("romper"):
 		return
-	area.romper()
+	for i in dano:
+		if not is_instance_valid(area):
+			break
+		area.romper()
 	impacto.emit(area)
 	if not atraviesa:
 		queue_free()
@@ -83,14 +96,17 @@ func _draw() -> void:
 	var pulso := 1.0 + sin(_fase * 22.0) * 0.12
 	# El rastro va siempre detras, sea cual sea la direccion del disparo.
 	var atras := -direccion
+	# Azul el disparo normal, morado el cargado.
+	var nucleo := Color(0.72, 0.52, 1.0) if cargada else Color(0.62, 0.84, 1.0)
+	var halo := Color(0.52, 0.28, 0.95) if cargada else Color(0.35, 0.60, 1.0)
 
 	for i in 5:
 		var t := float(i) / 5.0
 		draw_circle(atras * radio * (0.9 + i * 0.85),
 			radio * (0.72 - t * 0.5) * pulso,
-			Color(0.45, 0.72, 1.0, 0.30 - t * 0.24))
+			Color(halo.r, halo.g, halo.b, 0.30 - t * 0.24))
 
-	draw_circle(Vector2.ZERO, radio * 1.75 * pulso, Color(0.35, 0.60, 1.0, 0.22))
-	draw_circle(Vector2.ZERO, radio * pulso, Color(0.62, 0.84, 1.0, 0.95))
+	draw_circle(Vector2.ZERO, radio * 1.75 * pulso, Color(halo.r, halo.g, halo.b, 0.22))
+	draw_circle(Vector2.ZERO, radio * pulso, Color(nucleo.r, nucleo.g, nucleo.b, 0.95))
 	draw_circle(Vector2(-radio * 0.22, -radio * 0.22), radio * 0.42 * pulso,
 		Color(1.0, 1.0, 1.0, 0.95))

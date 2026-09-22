@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/jugador.gd" id="1_jugador"]
 [ext_resource type="SpriteFrames" path="res://assets/mago/animaciones_mago.tres" id="2_animaciones"]
+[ext_resource type="Script" path="res://scripts/carga_ataque.gd" id="3_carga"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jugador"]
 radius = 15.0
@@ -24,3 +25,8 @@ offset = Vector2(0, -67)
 [node name="Forma" type="CollisionShape2D" parent="."]
 position = Vector2(0, -16)
 shape = SubResource("CircleShape2D_jugador")
+
+[node name="Carga" type="Node2D" parent="."]
+position = Vector2(0, -16)
+z_index = 1
+script = ExtResource("3_carga")

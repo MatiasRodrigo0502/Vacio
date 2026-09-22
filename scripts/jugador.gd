@@ -10,8 +10,10 @@ extends CharacterBody2D
 signal vida_cambiada(vida_actual: int, vida_maxima: int)
 signal dano_recibido
 signal sin_vida
-## Se emite en cada disparo, con el punto de salida y hacia donde va.
-signal bola_lanzada(desde: Vector2, direccion: Vector2)
+## Se emite en cada disparo, con el punto de salida, hacia donde va y si es el
+## ataque cargado. Va en la misma senal y no en otra aparte porque quien la
+## escucha hace lo mismo en los dos casos: crear una bola, con otros numeros.
+signal bola_lanzada(desde: Vector2, direccion: Vector2, cargada: bool)
 ## Se emite al recoger un objeto, para que el HUD lo anuncie.
 signal mejora_recogida(mejora: ObjetoMejora)
 
@@ -36,6 +38,16 @@ signal mejora_recogida(mejora: ObjetoMejora)
 @export var velocidad_bola: float = 620.0
 ## Radio de las bolas. Tambien lo lee Principal.
 @export var radio_bola: float = 11.0
+
+@export_group("Ataque cargado")
+## Segundos que hay que mantener el boton derecho antes de poder soltarlo.
+@export var tiempo_carga: float = 0.75
+## Dano del disparo cargado. El normal hace 1, y los enemigos aguantan 2, asi
+## que con 3 el cargado mata de una a los tipos que hay ahora.
+@export var dano_bola_cargada: int = 3
+## Lo grande y lo rapida que sale respecto al disparo normal.
+@export var factor_radio_cargada: float = 2.1
+@export var factor_velocidad_cargada: float = 1.3
 
 ## Tope de cadencia: por debajo de esto el disparo se vuelve una manguera y el
 ## juego deja de tener tension.
@@ -64,6 +76,12 @@ var _fase_parpadeo: float = 0.0
 var _control_activo: bool = true
 ## Cuanto falta para poder volver a disparar.
 var _espera_disparo: float = 0.0
+## Segundos que se lleva cargando el ataque. 0 = no se esta cargando.
+var _carga: float = 0.0
+## True mientras el boton derecho esta pulsado. Lo miran el disparo normal (que
+## se calla mientras cargas) y la animacion (para mirar a donde cargas).
+var _cargando: bool = false
+
 ## Direccion a la que mira el sprite: "abajo", "izquierda", "derecha", "arriba".
 ## Se guarda en vez de recalcularse cada vez porque, al soltar los controles, el
 ## mago tiene que quedarse mirando a donde estaba, no volver a una por defecto.
@@ -74,6 +92,7 @@ var _mirando: StringName = &"abajo"
 ## de la tunica. Asi, en vista cenital, lo que choca es la "huella" en el suelo y no
 ## la cabeza, que es lo que espera el jugador.
 @onready var _sprite: AnimatedSprite2D = $Sprite
+@onready var _carga_visual: CargaAtaque = $Carga
 
 
 func _ready() -> void:
@@ -102,6 +121,9 @@ func _physics_process(delta: float) -> void:
 		velocity = velocity.move_toward(Vector2.ZERO, friccion * delta)
 
 	move_and_slide()
+	# La carga va antes de la animacion para que el mago mire ya hacia donde
+	# esta cargando, y antes del disparo normal, que se calla mientras cargas.
+	_actualizar_carga(delta)
 	_actualizar_animacion()
 
 	_actualizar_disparo(delta)
@@ -116,12 +138,16 @@ func _direccion_apuntada() -> Vector2:
 	if not _control_activo:
 		return Vector2.ZERO
 
+	# Cargando se apunta con el raton igual que disparando, asi que el mago
+	# mira hacia donde va a soltar el ataque.
+	if _cargando:
+		return _direccion_raton()
+
 	# El raton manda sobre las flechas: si estas apuntando, es lo que quieres.
 	# Con el raton se apunta libre, en cualquier angulo; con las flechas solo a
 	# las cuatro direcciones, que es el esquema clasico de teclado.
 	if Input.is_action_pressed("disparar_raton"):
-		var hacia := get_global_mouse_position() - centro_colision()
-		return hacia.normalized() if hacia.length() > 1.0 else Vector2.ZERO
+		return _direccion_raton()
 
 	var flechas := Input.get_vector(
 		"disparar_izquierda", "disparar_derecha", "disparar_arriba", "disparar_abajo")
@@ -134,10 +160,57 @@ func _direccion_apuntada() -> Vector2:
 	return Vector2(0.0, signf(flechas.y))
 
 
+## Del mago al cursor. Si el raton esta justo encima, no hay direccion fiable,
+## asi que se tira de la ultima a la que miraba: soltar el ataque hacia un lado
+## al azar seria peor que soltarlo hacia donde ya estabas mirando.
+func _direccion_raton() -> Vector2:
+	var hacia := get_global_mouse_position() - centro_colision()
+	if hacia.length() > 1.0:
+		return hacia.normalized()
+	return _vector_de(_mirando)
+
+
+## Ataque cargado: se mantiene el boton derecho y se suelta cuando esta listo.
+##
+## POR QUE HAY QUE SOLTARLO Y NO SALE SOLO AL CARGARSE:
+## soltandolo tu, eliges el momento y puedes reapuntar mientras cargas. Si
+## saliera solo, cargar seria una cuenta atras a la que llegas apuntando a
+## donde sea. Si quieres que salga solo, es una linea: lanzar en cuanto
+## _carga >= tiempo_carga en vez de esperar a que se suelte el boton.
+##
+## POR QUE SOLTARLO ANTES DE TIEMPO NO DISPARA NADA:
+## un disparo flojo por soltar pronto se confundiria con el disparo normal y no
+## se sabria nunca por que ha salido una cosa u otra. Asi la regla es una: o
+## esta cargado o no hay ataque.
+func _actualizar_carga(delta: float) -> void:
+	if not _control_activo:
+		_cancelar_carga()
+		return
+
+	if Input.is_action_pressed("cargar_ataque"):
+		_cargando = true
+		_carga = minf(_carga + delta, tiempo_carga)
+		_carga_visual.actualizar(_carga / tiempo_carga, _direccion_raton())
+		return
+
+	# Se ha soltado el boton (o no estaba pulsado).
+	if _cargando and _carga >= tiempo_carga:
+		bola_lanzada.emit(centro_colision(), _direccion_raton(), true)
+	_cancelar_carga()
+
+
+func _cancelar_carga() -> void:
+	_cargando = false
+	_carga = 0.0
+	_carga_visual.apagar()
+
+
 ## Dispara mientras se mantenga pulsado, con una cadencia fija.
 func _actualizar_disparo(delta: float) -> void:
 	_espera_disparo = maxf(_espera_disparo - delta, 0.0)
-	if not _control_activo or _espera_disparo > 0.0:
+	# Mientras cargas no sale el disparo normal: estas canalizando, y si salieran
+	# los dos a la vez no se sabria cual ha matado a que.
+	if not _control_activo or _cargando or _espera_disparo > 0.0:
 		return
 
 	var direccion := _direccion_apuntada()
@@ -147,7 +220,7 @@ func _actualizar_disparo(delta: float) -> void:
 	_espera_disparo = cadencia_disparo
 	# Sale del centro del cuerpo y no de los pies, para que se vea nacer del
 	# personaje y no del suelo.
-	bola_lanzada.emit(centro_colision(), direccion)
+	bola_lanzada.emit(centro_colision(), direccion, false)
 
 
 ## Elige la animacion: accion (andar o estar quieto) por direccion.
@@ -180,6 +253,19 @@ func _actualizar_animacion() -> void:
 	if accion == "caminar":
 		var tope := _sprite.sprite_frames.get_frame_count(animacion) - 1
 		_sprite.set_frame_and_progress(mini(marco, tope), avance)
+
+
+## Lo contrario de _lado(): del nombre de la direccion al vector.
+func _vector_de(lado: StringName) -> Vector2:
+	match lado:
+		&"izquierda":
+			return Vector2.LEFT
+		&"derecha":
+			return Vector2.RIGHT
+		&"arriba":
+			return Vector2.UP
+		_:
+			return Vector2.DOWN
 
 
 ## Traduce un vector a la direccion de la hoja de sprites.
@@ -266,6 +352,7 @@ func reubicar(posicion: Vector2) -> void:
 	velocity = Vector2.ZERO
 	_control_activo = true
 	_espera_disparo = 0.0
+	_cancelar_carga()
 	# Cada piso empieza mirando hacia donde se baja.
 	_mirando = &"abajo"
 
@@ -285,6 +372,7 @@ func restaurar_vida() -> void:
 	_control_activo = true
 	_sprite.modulate = Color.WHITE
 	_espera_disparo = 0.0
+	_cancelar_carga()
 	vida_cambiada.emit(vida_actual, vida_maxima)
 
 
@@ -292,3 +380,4 @@ func restaurar_vida() -> void:
 func bloquear_control() -> void:
 	_control_activo = false
 	velocity = Vector2.ZERO
+	_cancelar_carga()

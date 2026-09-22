@@ -19,6 +19,7 @@ cueva; del 3 al 12 se reutiliza la roca de cueva hasta que haya más arte.
 |---|---|
 | Moverse | WASD |
 | Disparar | Flechas, o clic izquierdo apuntando con el ratón |
+| Ataque cargado | Clic derecho **mantenido**: se suelta cuando el aro se cierra |
 | Reiniciar partida | R |
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
@@ -36,8 +37,17 @@ invulnerabilidad después de cada golpe. Del piso 2 en adelante los hay, y van a
 más según bajas.
 
 Disparas bolas mágicas para matarlos, con las flechas en las cuatro direcciones
-o con el clic izquierdo apuntando donde quieras. En cada piso hay además un
-objeto que te mejora para el resto de la partida.
+o con el clic izquierdo apuntando donde quieras.
+
+Manteniendo el **clic derecho** cargas un ataque más fuerte: delante del mago se
+forma una bola morada que crece, y un aro que se va cerrando dice cuánto falta.
+Cuando el aro se cierra, sueltas y sale. Atraviesa a los enemigos y mata de un
+golpe a los que hay ahora, pero las rocas lo paran igual que al disparo normal.
+Mientras cargas no puedes disparar, y si sueltas antes de tiempo no sale nada:
+o está cargado o no hay ataque.
+
+En cada piso hay además un objeto que te mejora para el resto de la partida, y
+las mejoras se notan también en el ataque cargado, que parte de esos números.
 
 Superar el piso 12 gana; quedarte sin vida termina la partida.
 

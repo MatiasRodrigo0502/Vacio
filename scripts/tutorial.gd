@@ -14,6 +14,7 @@ extends Node2D
 
 @onready var _mover: Label = $Mover
 @onready var _bola: Label = $Bola
+@onready var _cargado: Label = $Cargado
 @onready var _esquivar: Label = $Esquivar
 @onready var _bajar: Label = $Bajar
 @onready var _reiniciar: Label = $Reiniciar
@@ -24,6 +25,7 @@ func colocar(punto_entrada: Vector2, punto_salida: Vector2, alto_piso: float) ->
 	_centrar(_mover, punto_entrada + Vector2(0.0, 78.0))
 	_centrar(_reiniciar, punto_entrada + Vector2(0.0, 132.0))
 	_centrar(_bola, punto_entrada + Vector2(0.0, 200.0))
+	_centrar(_cargado, punto_entrada + Vector2(0.0, 256.0))
 	# A media altura entre la entrada y la salida: el jugador lo lee cuando ya
 	# se esta moviendo, justo antes de encontrarse las primeras rocas.
 	_centrar(_esquivar, Vector2(0.0, -alto_piso * 0.5 + 640.0))

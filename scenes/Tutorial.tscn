@@ -32,6 +32,15 @@ text = "flechas  o  clic izquierdo  ·  disparar"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Cargado" type="Label" parent="."]
+modulate = Color(0.815686, 0.686275, 1, 0.9)
+offset_right = 1200.0
+offset_bottom = 46.0
+theme_override_font_sizes/font_size = 32
+text = "clic derecho mantenido  ·  ataque cargado"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Esquivar" type="Label" parent="."]
 modulate = Color(1, 0.741176, 0.588235, 0.85)
 offset_right = 1200.0
