@@ -66,8 +66,8 @@ var _control_activo: bool = true
 var _espera_disparo: float = 0.0
 
 ## El sprite se escala y se desplaza desde la escena, no desde aqui: el origen
-## del nodo esta a los pies del mago y la forma de colision cubre la base de la
-## tunica. Asi, en vista cenital, lo que choca es la "huella" en el suelo y no
+## del nodo esta a los pies del personaje y la forma de colision cubre la base
+## de la tunica. Asi, en vista cenital, lo que choca es la "huella" en el suelo y no
 ## la cabeza, que es lo que espera el jugador.
 @onready var _sprite: AnimatedSprite2D = $Sprite
 
@@ -139,13 +139,16 @@ func _actualizar_disparo(delta: float) -> void:
 
 	_espera_disparo = cadencia_disparo
 	# Sale del centro del cuerpo y no de los pies, para que se vea nacer del
-	# mago y no del suelo.
+	# personaje y no del suelo.
 	bola_lanzada.emit(centro_colision(), direccion)
 
 
 ## Elige la animacion segun el movimiento real, no segun la tecla pulsada: asi
-## el mago sigue "andando" durante el deslizamiento por inercia, que es lo que
-## se ve en pantalla.
+## el personaje sigue "andando" durante el deslizamiento por inercia, que es lo
+## que se ve en pantalla.
+##
+## "quieto" es un unico fotograma: la hoja del nigromante solo trae poses de
+## andar. Reutilizar esas seis a poca velocidad se veria como andar sin avanzar.
 func _actualizar_animacion() -> void:
 	var animacion := &"caminar" if velocity.length() > VELOCIDAD_MINIMA_ANDAR else &"quieto"
 	if _sprite.animation != animacion:
@@ -160,8 +163,8 @@ func _actualizar_invulnerabilidad(delta: float) -> void:
 	_fase_parpadeo += delta
 
 	# Parpadeo rojo a ~10 Hz mientras dura la invulnerabilidad. Se hace con
-	# modulate y no cambiando de animacion porque este pack no trae pose de
-	# golpe: asi el aviso funciona sobre cualquier animacion.
+	# modulate y no cambiando de animacion porque ningun pack de los probados
+	# trae pose de golpe: asi el aviso funciona sobre cualquier animacion.
 	var encendido := fmod(_fase_parpadeo, 0.2) < 0.1
 	_sprite.modulate = Color(1.0, 0.4, 0.35, 1.0) if encendido else Color(1.0, 1.0, 1.0, 0.45)
 

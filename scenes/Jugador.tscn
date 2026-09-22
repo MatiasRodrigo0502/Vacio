@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/jugador.gd" id="1_jugador"]
-[ext_resource type="SpriteFrames" path="res://assets/personaje/animaciones_mago.tres" id="2_animaciones"]
+[ext_resource type="SpriteFrames" path="res://assets/nigromante/animaciones_nigromante.tres" id="2_animaciones"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jugador"]
 radius = 15.0
@@ -19,7 +19,7 @@ scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_animaciones")
 animation = &"quieto"
 autoplay = "quieto"
-offset = Vector2(0, -64)
+offset = Vector2(0, -75)
 
 [node name="Forma" type="CollisionShape2D" parent="."]
 position = Vector2(0, -16)

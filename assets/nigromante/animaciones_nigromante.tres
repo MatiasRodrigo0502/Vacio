@@ -1,0 +1,42 @@
+[gd_resource type="SpriteFrames" load_steps=7 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/nigromante/caminar_00.png" id="n_00"]
+[ext_resource type="Texture2D" path="res://assets/nigromante/caminar_01.png" id="n_01"]
+[ext_resource type="Texture2D" path="res://assets/nigromante/caminar_02.png" id="n_02"]
+[ext_resource type="Texture2D" path="res://assets/nigromante/caminar_03.png" id="n_03"]
+[ext_resource type="Texture2D" path="res://assets/nigromante/caminar_04.png" id="n_04"]
+[ext_resource type="Texture2D" path="res://assets/nigromante/caminar_05.png" id="n_05"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("n_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("n_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("n_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("n_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("n_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("n_05")
+}],
+"loop": true,
+"name": &"caminar",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("n_03")
+}],
+"loop": true,
+"name": &"quieto",
+"speed": 1.0
+}]

@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-09-21.**
+**Última actualización: 2026-09-22.**
 
 ---
 
@@ -81,7 +81,9 @@ Para lanzar el juego: `jugar.bat` en la raíz.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
-- **Jugador**: mago animado (reposo y andar, las dos **de frente**). WASD mueve.
+- **Jugador**: nigromante animado, **de frente**. Solo tiene animación de
+  andar (6 fotogramas); `quieto` es un único fotograma porque la hoja no
+  trae pose de reposo. WASD mueve.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
   ratón, con cadencia. Matan enemigos; **no** rompen rocas.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
@@ -101,9 +103,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 ## Pendiente
 
 - **Paso 4 del rumbo Isaac: salas con puertas.** Lo más grande que queda.
-- **Animación del personaje en 4 direcciones.** *Imposible con lo que hay*: el
-  pack BlueWizard solo trae Idle, Walk y Jump, las tres de frente. Hace falta
-  un pack de personaje top-down con 4 direcciones.
+- **Animación del personaje en 4 direcciones.** *Imposible con lo que hay*: ni
+  el BlueWizard ni la hoja del nigromante traen más que vistas de frente. Hace
+  falta un pack de personaje top-down con 4 direcciones.
+- **De dónde sale el nigromante.** Es el único asset sin autor ni origen
+  conocidos (ver `CREDITS.md`). Hay que aclararlo.
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí).
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
@@ -124,6 +128,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   piso, así que los 12 pisos son idénticos en las tres máquinas del equipo.
 - **El pack pixel art de Zerie está descartado**: desentona con el arte
   renderizado del resto.
+- **El mago BlueWizard se queda en el repositorio** aunque no se use. Cambiar
+  de personaje es una línea de `Jugador.tscn`, y así volver atrás es gratis.
+- **El sprite del jugador se centra en los pies, no en el dibujo.** El báculo y
+  el halo del nigromante sobresalen a la derecha; centrando el lienzo en el
+  dibujo, el cuerpo se iría a la izquierda y dejaría de cuadrar con el círculo
+  de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
 
@@ -151,6 +161,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de línea**: se come la barra y el salto, y rompió una línea de GDScript
   generada desde un script. Los heredoc de bash también se comen barras: para
   scripts con barras, escribir el `.py` a archivo y ejecutarlo.
+- **La impresión visual vuelve a fallar con el contraste.** El nigromante
+  parecía perderse contra el suelo más que el mago anterior; medido, es al
+  revés: 1,81:1 contra 1,55:1. Tercera vez que la medición contradice al ojo.
 - **Al cambiar una regla del juego, revisar los textos que la cuentan**: el
   panel de controles del menú y los carteles del tutorial se quedaron diciendo
   que las rocas quitaban vida mucho después de que dejaran de hacerlo.

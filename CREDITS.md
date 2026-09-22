@@ -12,13 +12,28 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 
 ## En uso
 
-### BlueWizard — personaje jugable
+### Nigromante — personaje jugable
+
+- **Pack**: sin identificar
+- **Autor**: sin identificar
+- **URL**: —
+- **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
+- **Archivos**: `assets/nigromante/*.png` (6 frames) + `animaciones_nigromante.tres`
+- **Procesado**: recortado de una hoja de 2172×724 con seis viñetas enmarcadas,
+  quitando el fondo gris y los marcos, y reescalado a 134×150.
+- **Nota**: la imagen la aportó Matías en el chat, sin decir de dónde salía. Es
+  el único asset del proyecto del que no consta ni autor ni origen, así que es
+  el que más riesgo tiene: **hay que averiguar de dónde viene**.
+
+### BlueWizard — personaje jugable anterior (fuera de uso)
 
 - **Pack**: Mossy Cavern
 - **Autor**: maaot
 - **URL**: https://maaot.itch.io/mossy-cavern
 - **Licencia**: sin verificar
 - **Archivos**: `assets/personaje/*.png` (40 frames) + `animaciones_mago.tres`
+- **Estado**: sustituido por el nigromante. Se conserva en el repositorio
+  para poder volver atrás.
 - **Procesado**: recortados de 512×512 a la caja útil del personaje (160×280) y
   reescalados a 73×128. Los originales no están en el repo (ver más abajo).
 

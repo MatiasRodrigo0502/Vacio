@@ -3,9 +3,36 @@
 Arte del juego. Aquí entra **solo lo que se usa**, ya recortado y reescalado;
 los packs originales viven fuera del repositorio (ver `CREDITS.md` en la raíz).
 
+## nigromante/
+
+El personaje jugable **que se usa ahora**. 6 PNG de 134×150 (`caminar_00..05`)
+y `animaciones_nigromante.tres`, que es lo que carga `Jugador.tscn`.
+
+Salieron de una hoja de 2172×724 con seis viñetas enmarcadas sobre fondo gris.
+Hubo que quitar dos cosas: el fondo (relleno por inundación desde el borde, con
+criterio local en vez de un umbral fijo, porque la sombra del suelo es un
+degradado y un umbral fijo dejaba un halo con borde duro) y los marcos (se
+descartan quedándose solo con la isla de píxeles más grande de cada viñeta).
+
+Los seis fotogramas comparten lienzo y **apoyan los pies en el borde de abajo**,
+así que el personaje no baila al cambiar de pose. El lienzo se centra en los
+pies y no en el dibujo: el báculo y el halo sobresalen a la derecha y, si se
+centrara en el dibujo, el cuerpo quedaría descolocado respecto a su círculo de
+colisión.
+
+La escala se eligió para que el cuerpo (de los pies a la capucha) midiera los
+mismos 128 px que tenía el mago anterior, o sea 64 px en pantalla. Los 150 px
+de alto del lienzo son cuerpo + el halo que asoma por arriba, y por eso el
+`offset` de la escena es −75 (la mitad del alto) y no −64.
+
+**Solo hay animación de andar**: la hoja trae seis poses de caminar y ninguna
+de reposo, así que `quieto` es un único fotograma, el de las piernas más
+juntas. Repetir las seis a poca velocidad se vería como andar sin moverse.
+
 ## personaje/
 
-El mago jugable (BlueWizard). 40 PNG de 73×128:
+El mago anterior (BlueWizard), **ya no se usa**: se deja para poder volver
+atrás cambiando una línea en `Jugador.tscn`. 40 PNG de 73×128:
 
 - `quieto_00..19.png` — animación de reposo
 - `caminar_00..19.png` — animación de andar

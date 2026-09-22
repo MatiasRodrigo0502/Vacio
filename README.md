@@ -9,8 +9,8 @@ Cada piso es más estrecho, más denso y se ve menos que el anterior.
 
 Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
-persiguen, objetos que te mejoran, victoria y derrota. El jugador es un mago
-(BlueWizard) animado; el piso 1 hace de tutorial con arte de musgo y el 2 de
+persiguen, objetos que te mejoran, victoria y derrota. El jugador es un nigromante
+animado; el piso 1 hace de tutorial con arte de musgo y el 2 de
 cueva; del 3 al 12 se reutiliza la roca de cueva hasta que haya más arte.
 
 ## Controles
@@ -75,7 +75,8 @@ Vacio/
 │   ├── objetos/           # un .tres por objeto recogible (ver su README)
 │   └── mecanicas/         # .tres de mecánicas (vacío en Fase 1, ver su README)
 └── assets/
-    ├── personaje/      # frames del mago + animaciones_mago.tres
+    ├── nigromante/    # frames del personaje jugable + su SpriteFrames
+    ├── personaje/     # el mago anterior, fuera de uso
     ├── cueva/          # rocas y vegetación del piso 1 (y base del 3 al 12)
     └── musgo/          # arte del piso 2
 ```
