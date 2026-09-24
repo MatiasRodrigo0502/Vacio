@@ -5,10 +5,11 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Astenosfera"
-ancho_area = 1240.0
+ancho_area = 1220.0
 velocidad_obstaculos = 130.0
 radio_vision = 445.0
 es_nivel_final = false
-alto_area = 1740.0
+alto_area = 760.0
 familia_obstaculos = "roca"
-cantidad_obstaculos = 8
+cantidad_salas = 6
+cantidad_obstaculos = 3

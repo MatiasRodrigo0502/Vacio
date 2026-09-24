@@ -5,10 +5,11 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Manto inferior"
-ancho_area = 900.0
+ancho_area = 1040.0
 velocidad_obstaculos = 200.0
 radio_vision = 370.0
 es_nivel_final = false
-alto_area = 1680.0
+alto_area = 700.0
 familia_obstaculos = "grupo"
-cantidad_obstaculos = 13
+cantidad_salas = 8
+cantidad_obstaculos = 4

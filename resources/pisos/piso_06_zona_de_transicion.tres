@@ -5,10 +5,11 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Zona de transición"
-ancho_area = 1000.0
+ancho_area = 1100.0
 velocidad_obstaculos = 175.0
 radio_vision = 395.0
 es_nivel_final = false
-alto_area = 1700.0
+alto_area = 720.0
 familia_obstaculos = "grupo"
-cantidad_obstaculos = 11
+cantidad_salas = 7
+cantidad_obstaculos = 4

@@ -15,21 +15,28 @@ extends Node2D
 @onready var _mover: Label = $Mover
 @onready var _bola: Label = $Bola
 @onready var _cargado: Label = $Cargado
+@onready var _puertas: Label = $Puertas
 @onready var _esquivar: Label = $Esquivar
 @onready var _bajar: Label = $Bajar
 @onready var _reiniciar: Label = $Reiniciar
 
 
-## Reparte los carteles por el piso. La llama Piso al construirse.
-func colocar(punto_entrada: Vector2, punto_salida: Vector2, alto_piso: float) -> void:
-	_centrar(_mover, punto_entrada + Vector2(0.0, 78.0))
-	_centrar(_reiniciar, punto_entrada + Vector2(0.0, 132.0))
-	_centrar(_bola, punto_entrada + Vector2(0.0, 200.0))
-	_centrar(_cargado, punto_entrada + Vector2(0.0, 256.0))
-	# A media altura entre la entrada y la salida: el jugador lo lee cuando ya
-	# se esta moviendo, justo antes de encontrarse las primeras rocas.
-	_centrar(_esquivar, Vector2(0.0, -alto_piso * 0.5 + 640.0))
-	_centrar(_bajar, punto_salida - Vector2(0.0, 130.0))
+## Reparte los carteles. La llama Piso al construirse, con el centro de la
+## sala de inicio, el tamano de las salas y el centro de la sala de salida,
+## todo en coordenadas del piso.
+##
+## Los de controles van en la sala de inicio, debajo de donde aparece el
+## jugador, que es lo primero que lee. El de las rocas arriba, y el de las
+## puertas abajo del todo: es lo ultimo que se lee antes de salir de la sala,
+## que es justo cuando hace falta saberlo. El de bajar, junto al agujero.
+func colocar(inicio: Vector2, tamano_sala: Vector2, salida: Vector2) -> void:
+	_centrar(_mover, inicio + Vector2(0.0, 78.0))
+	_centrar(_reiniciar, inicio + Vector2(0.0, 132.0))
+	_centrar(_bola, inicio + Vector2(0.0, 200.0))
+	_centrar(_cargado, inicio + Vector2(0.0, 256.0))
+	_centrar(_puertas, inicio + Vector2(0.0, tamano_sala.y * 0.5 - 70.0))
+	_centrar(_esquivar, inicio + Vector2(0.0, -tamano_sala.y * 0.5 + 90.0))
+	_centrar(_bajar, salida - Vector2(0.0, 130.0))
 
 
 ## Un Label coloca su esquina superior izquierda en position, asi que hay que

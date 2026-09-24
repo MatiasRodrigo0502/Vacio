@@ -47,6 +47,15 @@ signal impacto(objetivo: Node2D)
 ## Hacia donde va. La fija el jugador al dispararla.
 var direccion: Vector2 = Vector2.DOWN
 
+## Casilla de la sala desde la que se disparo (su suelo y su mitad de muro), en
+## coordenadas del mundo. La bola se apaga al salir de ella.
+##
+## POR QUE HACE FALTA:
+## las salas estan pegadas, y una bola que cruzara una puerta abierta seguiria
+## hasta la sala de al lado y mataria enemigos que el jugador ni ha visto. En
+## Isaac las lagrimas no salen de la sala; aqui tampoco. Vacio = sin limite.
+var limite: Rect2 = Rect2()
+
 var _recorrido: float = 0.0
 var _fase: float = 0.0
 
@@ -70,6 +79,9 @@ func _physics_process(delta: float) -> void:
 	_fase += delta
 	queue_redraw()
 	if _recorrido >= alcance:
+		queue_free()
+		return
+	if limite.has_area() and not limite.has_point(global_position):
 		queue_free()
 
 

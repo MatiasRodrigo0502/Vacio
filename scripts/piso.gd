@@ -6,27 +6,32 @@
 ## (y 12 focos de conflicto de merge). Aqui la geometria se genera en tiempo de
 ## ejecucion a partir del .tres, asi que el contenido de un piso se ajusta
 ## editando datos, nunca escenas.
+##
+## DE PASILLO A MAPA DE SALAS:
+## cada piso era un pasillo que se bajaba de arriba abajo. Ahora es un mapa de
+## salas unidas por puertas, como en The Binding of Isaac: MapaSalas decide la
+## forma, cada Sala se construye a si misma, y este script las coloca, las
+## llena de rocas y decoracion y sigue en cual esta el jugador. El embudo sigue
+## ahi: cuanto mas se baja, mas salas, mas pequenas y menos se ve de cada una.
 class_name Piso
 extends Node2D
 
 ## Se emite cuando el jugador alcanza la zona de salida.
 signal salida_alcanzada
+## Se emite cuando el jugador pasa de una sala a otra. Principal la usa para
+## encajar la camara en la sala nueva.
+signal sala_cambiada(sala: Sala)
 
-## Grosor de los muros de colision. Generoso a proposito: con muros finos y
-## velocidades altas el jugador puede atravesarlos (tunneling).
-const GROSOR_MURO: float = 64.0
-## Distancia desde el borde superior a la que aparece el jugador.
-const MARGEN_ENTRADA: float = 110.0
-## Distancia desde el borde inferior a la que se coloca la salida.
-const MARGEN_SALIDA: float = 110.0
-## Radio de la zona de salida.
-const RADIO_SALIDA: float = 46.0
-## Espacio libre alrededor de la entrada y de la salida donde no se colocan
-## obstaculos: sin esto el jugador podria aparecer dentro de uno.
-const DESPEJE_ENTRADA: float = 150.0
-const DESPEJE_SALIDA: float = 130.0
+## Espacio libre delante de cada puerta: nada que la tape por dentro.
+const DESPEJE_PUERTA: float = 190.0
+## Espacio libre alrededor del agujero de bajada.
+const DESPEJE_SALIDA: float = 150.0
 ## Margen que se deja libre por encima y por debajo de cada cartel del tutorial.
 const HOLGURA_CARTEL: float = 34.0
+## Cuanto tiene que haber entrado el jugador en una sala para que se cierren
+## las puertas: su radio (15) y un poco mas. Con menos, el cierre podria nacer
+## rozandole el cuerpo en el umbral.
+const MARGEN_ENTRAR: float = 26.0
 
 ## Catalogo de rocas por defecto. Cada piso puede sobreescribirlo desde su .tres.
 const CATALOGO_POR_DEFECTO := preload("res://assets/cueva/catalogo_cueva.tres")
@@ -45,7 +50,16 @@ var _salida_usada: bool = false
 ## tutorial. En coordenadas locales del piso.
 var _zonas_prohibidas: Array[Rect2] = []
 
-@onready var _muros: StaticBody2D = $Muros
+var _mapa: MapaSalas = null
+## Las salas por casilla, para encontrar en cual esta un punto sin recorrerlas.
+var _salas: Dictionary = {}
+## Las mismas, en el orden del mapa. Lo que se reparte al azar recorre esta
+## lista y no el diccionario, para que el orden sea el mismo en todas partes.
+var _orden_salas: Array[Sala] = []
+var _sala_actual: Sala = null
+var _jugador: Node2D = null
+
+@onready var _contenedor_salas: Node2D = $Salas
 @onready var _decoracion: Node2D = $Decoracion
 @onready var _zona_salida: Area2D = $ZonaSalida
 @onready var _forma_salida: CollisionShape2D = $ZonaSalida/Forma
@@ -71,31 +85,94 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	for hijo in _decoracion.get_children():
 		hijo.queue_free()
 
-	_construir_muros()
+	_construir_salas()
 	_colocar_salida()
-	# El tutorial va PRIMERO a proposito: deja apuntadas las zonas que ocupan sus
-	# carteles para que ni las rocas ni las plataformas se coloquen encima. Una
-	# plataforma tapando "las rocas te quitan vida" deja el piso escuela sin
-	# explicacion, y con el reparto aleatorio pasaba a la minima.
+	# El tutorial va ANTES que las rocas a proposito: deja apuntadas las zonas
+	# que ocupan sus carteles para que nada se coloque encima.
 	_colocar_tutorial()
 	_colocar_obstaculos()
 
-	# Las mecanicas se aplican al final, cuando el piso ya existe: asi pueden
-	# anadir o modificar lo que haga falta. El piso no sabe que hace cada una.
+	# Las mecanicas se aplican al final, cuando las salas ya existen: asi pueden
+	# repartir enemigos y objetos por ellas. El piso no sabe que hace cada una.
 	for mecanica in _mecanicas:
 		mecanica.aplicar_a_piso(self)
 
-	queue_redraw()
+	_sala_actual = sala_de_tipo(MapaSalas.Tipo.INICIO)
+	_sala_actual.activar()
+
+	# La bajada no se puede usar hasta limpiar su sala. En el piso 1, que no
+	# tiene enemigos, esta abierta desde el principio.
+	var salida := sala_de_tipo(MapaSalas.Tipo.SALIDA)
+	_zona_salida.set_deferred("monitoring", salida.esta_despejada())
+	salida.despejada.connect(_al_despejar_salida)
 
 
-## Punto de aparicion del jugador (arriba del piso, centrado).
+## Sigue en que sala esta el jugador.
+func _physics_process(_delta: float) -> void:
+	if _mapa == null:
+		return
+	if not is_instance_valid(_jugador):
+		_jugador = get_tree().get_first_node_in_group("jugador")
+		if _jugador == null:
+			return
+
+	var centro: Vector2 = _jugador.centro_colision()
+	var sala := sala_en(centro)
+	if sala != null and sala != _sala_actual:
+		_sala_actual = sala
+		sala.visitada = true
+		sala_cambiada.emit(sala)
+
+	# La camara cambia de sala a mitad del pasillo, pero las puertas no se
+	# cierran hasta que el jugador ha entrado del todo.
+	if not _sala_actual.esta_activada() \
+			and _sala_actual.contiene_del_todo(centro, MARGEN_ENTRAR):
+		_sala_actual.activar()
+
+
+## Punto de aparicion del jugador: el centro de la sala de inicio.
 func punto_entrada() -> Vector2:
-	return to_global(Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA))
+	return sala_de_tipo(MapaSalas.Tipo.INICIO).global_position
 
 
-## Punto central de la zona de salida.
+## Centro del agujero de bajada.
 func punto_salida() -> Vector2:
-	return to_global(Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA))
+	return sala_de_tipo(MapaSalas.Tipo.SALIDA).global_position
+
+
+## Todas las salas, en el orden del mapa. Lo usan las mecanicas para repartir
+## lo suyo sala por sala.
+func salas() -> Array[Sala]:
+	return _orden_salas
+
+
+func sala_actual() -> Sala:
+	return _sala_actual
+
+
+func mapa() -> MapaSalas:
+	return _mapa
+
+
+## La primera sala de ese tipo, o null si el mapa no tiene ninguna (puede
+## pasar con la del objeto en un piso de muy pocas salas).
+func sala_de_tipo(tipo: MapaSalas.Tipo) -> Sala:
+	for sala in _orden_salas:
+		if sala.tipo == tipo:
+			return sala
+	return null
+
+
+## La sala que contiene ese punto del mundo, o null si cae fuera de todas.
+##
+## Cada sala es duena de una casilla de la cuadricula de un paso de lado, asi
+## que basta con dividir y redondear. La frontera entre dos salas cae en mitad
+## del pasillo que las une, y ahi es donde la camara cambia de sala.
+func sala_en(punto_global: Vector2) -> Sala:
+	var local := to_local(punto_global)
+	var paso := _paso()
+	var celda := Vector2i(roundi(local.x / paso.x), roundi(local.y / paso.y))
+	return _salas.get(celda, null)
 
 
 ## Los obstaculos de este piso. Lo usan las mecanicas: es la unica forma que
@@ -113,54 +190,72 @@ func devolver_obstaculos() -> void:
 	_obstaculos.clear()
 
 
-func _ancho() -> float:
-	return datos.ancho_area if datos != null else 1200.0
+## Medidas del suelo de cada sala. Todas las salas de un piso miden lo mismo:
+## asi encajan en la cuadricula sin huecos ni solapes.
+func _tamano_sala() -> Vector2:
+	if datos == null:
+		return Vector2(1200.0, 700.0)
+	return Vector2(datos.ancho_area, datos.alto_area)
 
 
-func _alto() -> float:
-	return datos.alto_area if datos != null else 1700.0
+## Distancia entre los centros de dos salas vecinas: el suelo mas los dos
+## muros que las separan. Con este paso las salas quedan pegadas muro con muro.
+func _paso() -> Vector2:
+	return _tamano_sala() + Vector2.ONE * Sala.GROSOR_MURO * 2.0
 
 
 # --- Construccion -----------------------------------------------------------
 
-## Crea las cuatro paredes por codigo a partir del ancho/alto del .tres.
-## Se generan aqui y no en la escena porque sus medidas cambian en cada piso.
-func _construir_muros() -> void:
-	for hijo in _muros.get_children():
+func _construir_salas() -> void:
+	for hijo in _contenedor_salas.get_children():
 		hijo.queue_free()
+	_salas.clear()
+	_orden_salas.clear()
 
-	var mitad_ancho := _ancho() * 0.5
-	var mitad_alto := _alto() * 0.5
-	var medio_grosor := GROSOR_MURO * 0.5
+	var cantidad := datos.cantidad_salas if datos != null else 5
+	var nombre := datos.nombre_capa if datos != null else ""
+	# Semilla propia del mapa, distinta de la de las rocas: asi retocar el
+	# reparto de rocas no cambia la forma del mapa, ni al reves.
+	_mapa = MapaSalas.generar(cantidad, hash(nombre) + numero_piso * 15485863)
 
-	# Los muros se solapan en las esquinas para que no queden huecos.
-	_anadir_muro(Vector2(-mitad_ancho - medio_grosor, 0.0),
-		Vector2(GROSOR_MURO, _alto() + GROSOR_MURO * 2.0))
-	_anadir_muro(Vector2(mitad_ancho + medio_grosor, 0.0),
-		Vector2(GROSOR_MURO, _alto() + GROSOR_MURO * 2.0))
-	_anadir_muro(Vector2(0.0, -mitad_alto - medio_grosor),
-		Vector2(_ancho() + GROSOR_MURO * 2.0, GROSOR_MURO))
-	_anadir_muro(Vector2(0.0, mitad_alto + medio_grosor),
-		Vector2(_ancho() + GROSOR_MURO * 2.0, GROSOR_MURO))
-
-
-func _anadir_muro(posicion: Vector2, tamano: Vector2) -> void:
-	var forma := CollisionShape2D.new()
-	var rectangulo := RectangleShape2D.new()
-	rectangulo.size = tamano
-	forma.shape = rectangulo
-	forma.position = posicion
-	_muros.add_child(forma)
+	var colores := _colores_suelo()
+	for celda in _mapa.celdas:
+		var sala := Sala.new()
+		sala.name = "Sala_%d_%d" % [celda.x, celda.y]
+		sala.position = Vector2(celda) * _paso()
+		_contenedor_salas.add_child(sala)
+		sala.construir(celda, _mapa.tipo_de(celda), _tamano_sala(),
+			_mapa.puertas_de(celda), colores[0], colores[1])
+		_salas[celda] = sala
+		_orden_salas.append(sala)
 
 
+## Suelo y borde segun la profundidad: de marron de cueva a rojo incandescente.
+func _colores_suelo() -> Array[Color]:
+	var profundidad := clampf(float(numero_piso - 1) / 11.0, 0.0, 1.0)
+	return [
+		Color(0.16, 0.13, 0.12).lerp(Color(0.42, 0.13, 0.06), profundidad),
+		Color(0.55, 0.40, 0.28).lerp(Color(1.0, 0.72, 0.25), profundidad),
+	]
+
+
+## La zona de salida se coloca sobre el agujero de la sala de salida. El
+## agujero lo pinta la propia sala.
 func _colocar_salida() -> void:
 	var circulo := CircleShape2D.new()
-	circulo.radius = RADIO_SALIDA
+	circulo.radius = Sala.RADIO_SALIDA
 	_forma_salida.shape = circulo
-	_zona_salida.position = Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA)
+	_zona_salida.position = sala_de_tipo(MapaSalas.Tipo.SALIDA).position
 
 
-## Reparte los obstaculos del piso.
+## Solo las salas donde hay pelea llevan rocas. El inicio va limpio para
+## empezar cada piso con sitio, y la del objeto tambien: es una recompensa, no
+## un obstaculo mas.
+func _lleva_rocas(sala: Sala) -> bool:
+	return sala.tipo == MapaSalas.Tipo.NORMAL or sala.tipo == MapaSalas.Tipo.SALIDA
+
+
+## Reparte las rocas, sala por sala.
 ##
 ## POR QUE UNA SEMILLA FIJA:
 ## el encargo pide 12 niveles FIJOS. Con la semilla derivada del numero de piso,
@@ -183,12 +278,21 @@ func _colocar_obstaculos() -> void:
 	generador.seed = hash(datos.nombre_capa) + numero_piso * 7919
 	var tinte := tinte_profundidad()
 
-	var entrada := Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA)
-	var salida := Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA)
+	# Las rocas se encogen con la profundidad porque las salas tambien: si no,
+	# en el piso 12 no cabria nada jugable.
+	var lado_base := clampf(_tamano_sala().x * 0.075, 34.0, 96.0)
 
-	# Las rocas se encogen con la profundidad porque el area tambien se
-	# estrecha: si no, en el piso 12 no cabria nada jugable.
-	var lado_base := clampf(_ancho() * 0.075, 34.0, 96.0)
+	for sala in _orden_salas:
+		if _lleva_rocas(sala):
+			_rocas_en_sala(sala, generador, texturas, tinte, lado_base)
+
+	_colocar_plataformas(generador, tinte, catalogo)
+	_colocar_decoracion(generador, tinte, catalogo)
+	_colocar_borde(generador, tinte, catalogo)
+
+
+func _rocas_en_sala(sala: Sala, generador: RandomNumberGenerator,
+		texturas: Array[Texture2D], tinte: Color, lado_base: float) -> void:
 	var posiciones: Array[Vector2] = []
 	var lados: Array[float] = []
 
@@ -196,18 +300,16 @@ func _colocar_obstaculos() -> void:
 		var lado := lado_base * generador.randf_range(0.75, 1.6)
 
 		# Hasta 24 intentos de encontrar un hueco valido. Si no lo encuentra,
-		# se descarta esa roca: mejor un piso con una menos que un piso
-		# imposible de pasar.
+		# se descarta esa roca: mejor una sala con una menos que una puerta
+		# tapada.
 		for _intento in 24:
-			var candidata := Vector2(
-				generador.randf_range(-_ancho() * 0.5 + lado, _ancho() * 0.5 - lado),
-				generador.randf_range(entrada.y + DESPEJE_ENTRADA, salida.y - DESPEJE_SALIDA))
-
-			if candidata.distance_to(entrada) < DESPEJE_ENTRADA:
+			var local := sala.punto_al_azar(generador, lado)
+			if sala.cerca_de_puerta(local, DESPEJE_PUERTA):
 				continue
-			if candidata.distance_to(salida) < DESPEJE_SALIDA:
+			if sala.tipo == MapaSalas.Tipo.SALIDA and local.length() < DESPEJE_SALIDA:
 				continue
-			if _pisa_un_cartel(candidata, Vector2(lado, lado)):
+			var en_piso := sala.position + local
+			if _pisa_un_cartel(en_piso, Vector2(lado, lado)):
 				continue
 
 			# La separacion depende del tamano de las dos rocas implicadas, no
@@ -215,101 +317,77 @@ func _colocar_obstaculos() -> void:
 			# quedan absurdamente espaciadas.
 			var libre := true
 			for n in posiciones.size():
-				if candidata.distance_to(posiciones[n]) < (lado + lados[n]) * 0.6 + 40.0:
+				if en_piso.distance_to(posiciones[n]) < (lado + lados[n]) * 0.6 + 40.0:
 					libre = false
 					break
 			if not libre:
 				continue
 
 			var obstaculo := _pool.obtener()
-			obstaculo.preparar(to_global(candidata),
+			obstaculo.preparar(to_global(en_piso),
 				texturas[generador.randi() % texturas.size()],
 				lado, tinte, datos.velocidad_obstaculos)
 			_obstaculos.append(obstaculo)
-			posiciones.append(candidata)
+			posiciones.append(en_piso)
 			lados.append(lado)
 			break
 
-	_colocar_plataformas(generador, tinte, catalogo)
-	_colocar_decoracion(generador, tinte, catalogo)
-	_colocar_borde(generador, tinte, catalogo)
 
-
-## Reparte plataformas bajas por el suelo y hace crecer la vegetacion encima.
+## Pone, como mucho, una plataforma baja en cada sala de pelea, con vegetacion
+## encima.
 ##
 ## POR QUE AGRUPAR LAS PLANTAS EN PLATAFORMAS:
-## repartidas sueltas por todo el piso parecian puestas al azar, porque lo
-## estaban. Agrupadas sobre una repisa cuentan algo: ahi hay tierra y por eso
-## crece algo. Da estructura al suelo sin tocar la jugabilidad.
+## repartidas sueltas parecian puestas al azar, porque lo estaban. Agrupadas
+## sobre una repisa cuentan algo: ahi hay tierra y por eso crece algo.
 ##
-## Las plataformas HACEN DANO, igual que las rocas: pasan por el pool de
-## obstaculos en vez de ser Sprite2D sueltos. La vegetacion que crece encima si
-## es decoracion y no choca, para que el borde de la losa sea exactamente lo que
-## quita vida y el jugador pueda fiarse de lo que ve.
+## Las plataformas son solidas, igual que las rocas: pasan por el pool de
+## obstaculos. La vegetacion de encima es decoracion y no choca, para que el
+## borde de la losa sea exactamente lo que estorba y el jugador pueda fiarse de
+## lo que ve.
+##
+## Una como mucho y solo en la mitad de las salas: son anchas, y dos por sala
+## dejaban las salas pequenas sin sitio para pelear.
 func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 		catalogo: CatalogoObstaculos) -> void:
 	var losas := catalogo.texturas_de("plataforma")
 	if losas.is_empty():
 		return
 	var plantas := catalogo.texturas_de("vegetacion")
-
-	var entrada := Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA)
-	var salida := Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA)
-	# Una cada tanta superficie, como la decoracion: los pisos de arriba son
-	# mucho mas grandes y con un numero fijo quedarian vacios.
-	#
-	# El divisor subio de 380000 a 1000000 al convertirlas en obstaculo: siendo
-	# decoracion daba igual llenar el suelo, pero ahora cada losa quita vida y
-	# son grandes. Con las de antes el piso 1 pasaba de 4 obstaculos a 9 de
-	# golpe, y ese piso es el que hace de escuela.
-	var cuantas := int(_ancho() * _alto() / 1000000.0) + 1
-	var puestas: Array[Vector2] = []
+	var tamano := _tamano_sala()
 
 	# Las plataformas se oscurecen hasta la luminosidad de las rocas.
-	#
-	# Antes se pintaban mas claras, como diciendo "esto es terreno, puedes pasar
-	# por encima". Desde que hacen dano ese codigo visual mentia, asi que ahora
-	# lo que hace dano se ve igual, sea roca o losa.
 	#
 	# El 0.6 no es a ojo: la textura de las repisas es de por si mucho mas clara
 	# que la de las rocas, asi que darles el mismo tinte no bastaba. Medido sobre
 	# una captura del piso 1, el suelo esta en 34 de luminosidad, las rocas entre
 	# 18 y 53, y las losas se quedaban en 71. Con este factor caen a la mitad de
-	# ese rango y dejan de destacar como si fueran seguras.
+	# ese rango y no destacan como si fueran otra cosa.
 	var tinte_losa := Color(tinte.r * 0.6, tinte.g * 0.6, tinte.b * 0.6, 1.0)
 
-	for _i in cuantas:
-		var ancho_losa := clampf(_ancho() * 0.3, 210.0, 470.0) * generador.randf_range(0.8, 1.35)
+	for sala in _orden_salas:
+		if not _lleva_rocas(sala) or generador.randf() < 0.5:
+			continue
+		var ancho_losa := clampf(tamano.x * 0.3, 210.0, 470.0) * generador.randf_range(0.8, 1.35)
 
 		for _intento in 16:
-			var candidata := Vector2(
-				generador.randf_range(-_ancho() * 0.5 + ancho_losa * 0.6,
-					_ancho() * 0.5 - ancho_losa * 0.6),
-				generador.randf_range(entrada.y + DESPEJE_ENTRADA, salida.y - DESPEJE_SALIDA))
-			if candidata.distance_to(entrada) < DESPEJE_ENTRADA * 1.5:
+			var local := sala.punto_al_azar(generador, ancho_losa * 0.6)
+			if sala.cerca_de_puerta(local, DESPEJE_PUERTA + ancho_losa * 0.5):
 				continue
-			if candidata.distance_to(salida) < DESPEJE_SALIDA * 1.5:
+			if sala.tipo == MapaSalas.Tipo.SALIDA \
+					and local.length() < DESPEJE_SALIDA + ancho_losa * 0.5:
 				continue
+			var en_piso := sala.position + local
 			# El alto de la losa no se sabe hasta elegir textura, asi que se
 			# reserva un cuadrado de su ancho: es conservador y sale gratis.
-			if _pisa_un_cartel(candidata, Vector2(ancho_losa, ancho_losa)):
-				continue
-			var libre := true
-			for ocupada in puestas:
-				if candidata.distance_to(ocupada) < ancho_losa * 1.2:
-					libre = false
-					break
-			if not libre:
+			if _pisa_un_cartel(en_piso, Vector2(ancho_losa, ancho_losa)):
 				continue
 
 			var textura: Texture2D = losas[generador.randi() % losas.size()]
 			var losa := _pool.obtener()
-			losa.preparar(to_global(candidata), textura, ancho_losa, tinte_losa,
+			losa.preparar(to_global(en_piso), textura, ancho_losa, tinte_losa,
 				datos.velocidad_obstaculos)
 			_obstaculos.append(losa)
-
-			_plantar_encima(candidata, losa.tamano(), generador, tinte, plantas)
-			puestas.append(candidata)
+			_plantar_encima(en_piso, losa.tamano(), generador, tinte, plantas)
 			break
 
 
@@ -342,101 +420,96 @@ func _plantar_encima(centro_losa: Vector2, tamano_losa: Vector2,
 		_decoracion.add_child(planta)
 
 
-## Reparte piedras pequenas por el suelo. Son decoracion: ni chocan ni hacen dano.
+## Reparte piedras pequenas por el suelo de cada sala. Son decoracion: ni
+## chocan ni hacen dano.
 ##
 ## POR QUE NO SON SOLIDAS COMO LAS ROCAS GRANDES:
-## son unas treinta por piso y miden 16-34 px. Con colision, moverse por el piso
-## seria un engancharse continuo en chinas, y este juego va de deslizarse con
-## inercia. Las rocas grandes son terreno; estas son el suelo.
-##
-## Se generan con el MISMO generador que las rocas y despues que ellas, para no
-## alterar la secuencia de numeros: si no, anadir decoracion moveria de sitio
-## todos los obstaculos y los 12 pisos dejarian de ser los de siempre.
+## son muchas y miden 16-34 px. Con colision, moverse seria un engancharse
+## continuo en chinas, y este juego va de deslizarse con inercia. Las rocas
+## grandes son terreno; estas son el suelo.
 func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 		catalogo: CatalogoObstaculos) -> void:
-	# Solo piedras: la vegetacion va sobre las plataformas, agrupada. Repartirla
-	# tambien por aqui la devolveria al "puesto al azar" que queriamos quitar.
+	# Solo piedras: la vegetacion va sobre las plataformas, agrupada.
 	var piedras := catalogo.texturas_de("piedra")
 	if piedras.is_empty():
 		return
 
-	# La cantidad sale de la superficie del piso, no de un numero fijo: el piso 1
-	# tiene casi cuatro veces el area del 12, y con una cifra fija uno queda
-	# desierto y el otro abarrotado.
-	var cuantas := int(_ancho() * _alto() / 80000.0) + datos.cantidad_obstaculos
-	for _i in cuantas:
-		var lado := generador.randf_range(16.0, 34.0)
-		var sitio := Vector2(
-			generador.randf_range(-_ancho() * 0.5 + 24.0, _ancho() * 0.5 - 24.0),
-			generador.randf_range(-_alto() * 0.5 + 24.0, _alto() * 0.5 - 24.0))
-		if _pisa_un_cartel(sitio, Vector2(lado, lado)):
-			continue
+	var tamano := _tamano_sala()
+	# La cantidad sale de la superficie, no de un numero fijo: las salas del
+	# piso 1 tienen el doble de area que las del 12.
+	var por_sala := int(tamano.x * tamano.y / 80000.0) + datos.cantidad_obstaculos
+	for sala in _orden_salas:
+		for _i in por_sala:
+			var lado := generador.randf_range(16.0, 34.0)
+			var sitio := sala.position + sala.punto_al_azar(generador, 24.0)
+			if _pisa_un_cartel(sitio, Vector2(lado, lado)):
+				continue
 
-		var textura: Texture2D = piedras[generador.randi() % piedras.size()]
-		var adorno := Sprite2D.new()
-		adorno.texture = textura
-		adorno.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
-		# Volteo horizontal en vez de rotacion: el arte tiene la luz desde
-		# arriba y rotarlo delataria que son recortes de un atlas.
-		adorno.flip_h = generador.randf() < 0.5
-		adorno.modulate = Color(tinte.r, tinte.g, tinte.b, 0.8)
-		adorno.position = sitio
-		_decoracion.add_child(adorno)
+			var textura: Texture2D = piedras[generador.randi() % piedras.size()]
+			var adorno := Sprite2D.new()
+			adorno.texture = textura
+			adorno.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
+			# Volteo horizontal en vez de rotacion: el arte tiene la luz desde
+			# arriba y rotarlo delataria que son recortes de un atlas.
+			adorno.flip_h = generador.randf() < 0.5
+			adorno.modulate = Color(tinte.r, tinte.g, tinte.b, 0.8)
+			adorno.position = sitio
+			_decoracion.add_child(adorno)
 
 
-## Rodea el area jugable con rocas, para que el limite deje de ser una linea
-## dibujada y parezca la pared de la cueva.
+## Rodea cada sala con rocas, para que el limite deje de ser una linea dibujada
+## y parezca la pared de la cueva.
 ##
-## Van POR FUERA del borde, desplazadas hacia afuera: el suelo jugable tiene que
-## quedar limpio. La colision sigue siendo el muro invisible de _construir_muros,
-## estas piezas no chocan con nada.
+## Van en la franja de muro, por fuera del suelo, y no chocan con nada: la
+## colision la ponen los muros de la sala. Dejan libres los huecos de puerta.
 ##
-## Se dejan huecos en el centro de los lados corto: arriba aparece el jugador y
-## abajo esta el circulo de salida, y taparlos con rocas confundiria.
+## POR QUE TAN PEGADAS Y TAN PEQUENAS:
+## entre dos salas vecinas solo hay 128 px de muro (dos de 64). Una roca mas
+## grande o mas alejada asomaria en el suelo de la sala de al lado, y ahi
+## pareceria un obstaculo que luego no choca. El jugador tiene que poder
+## fiarse de lo que ve.
 func _colocar_borde(generador: RandomNumberGenerator, tinte: Color,
 		catalogo: CatalogoObstaculos) -> void:
 	var piezas := catalogo.rocas_todas()
 	if piezas.is_empty():
 		return
 
-	var mitad_ancho := _ancho() * 0.5
-	var mitad_alto := _alto() * 0.5
-	# Las piezas del borde son mayores que las del suelo: tienen que leerse como
-	# pared, no como piedras sueltas.
-	var lado_medio := clampf(_ancho() * 0.09, 56.0, 130.0)
+	var tamano := _tamano_sala()
+	var tope := Sala.GROSOR_MURO * 1.7
+	var lado_medio := clampf(tamano.x * 0.07, 50.0, 96.0)
 
-	for lado_n in 4:
-		var horizontal := lado_n < 2
-		var largo := _ancho() if horizontal else _alto()
-		var signo := 1.0 if lado_n % 2 == 0 else -1.0
-		var recorrido := -largo * 0.5
-		while recorrido < largo * 0.5:
-			var tamano := lado_medio * generador.randf_range(0.7, 1.5)
-			var salto := tamano * generador.randf_range(0.45, 0.8)
-			recorrido += salto
+	for sala in _orden_salas:
+		for direccion in MapaSalas.DIRECCIONES:
+			var horizontal := direccion == Vector2i.UP or direccion == Vector2i.DOWN
+			var largo := tamano.x if horizontal else tamano.y
+			var recorrido := -largo * 0.5 - Sala.GROSOR_MURO * 0.5
+			while recorrido < largo * 0.5 + Sala.GROSOR_MURO * 0.5:
+				var lado := minf(lado_medio * generador.randf_range(0.7, 1.4), tope)
+				recorrido += lado * generador.randf_range(0.45, 0.8)
 
-			# Hueco para la entrada (arriba) y la salida (abajo).
-			if horizontal and absf(recorrido) < DESPEJE_SALIDA:
-				continue
+				if direccion in sala.puertas \
+						and absf(recorrido) < Sala.ANCHO_PUERTA * 0.5 + lado * 0.5:
+					continue
 
-			var fuera := generador.randf_range(0.2, 0.55) * tamano
-			var posicion: Vector2
-			if horizontal:
-				posicion = Vector2(recorrido, signo * (mitad_alto + fuera))
-			else:
-				posicion = Vector2(signo * (mitad_ancho + fuera), recorrido)
+				var fuera := lado * generador.randf_range(0.45, 0.7)
+				var local: Vector2
+				if horizontal:
+					local = Vector2(recorrido, direccion.y * (tamano.y * 0.5 + fuera))
+				else:
+					local = Vector2(direccion.x * (tamano.x * 0.5 + fuera), recorrido)
 
-			var textura: Texture2D = piezas[generador.randi() % piezas.size()]
-			var roca := Sprite2D.new()
-			roca.texture = textura
-			roca.scale = Vector2.ONE * (tamano / maxf(textura.get_size().x, textura.get_size().y))
-			roca.flip_h = generador.randf() < 0.5
-			roca.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
-			roca.position = posicion
-			_decoracion.add_child(roca)
+				var textura: Texture2D = piezas[generador.randi() % piezas.size()]
+				var roca := Sprite2D.new()
+				roca.texture = textura
+				roca.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
+				roca.flip_h = generador.randf() < 0.5
+				roca.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
+				roca.position = sala.position + local
+				_decoracion.add_child(roca)
 
 
-## Pinta los carteles de controles si este piso los pide desde su .tres.
+## Pinta los carteles de controles si este piso los pide desde su .tres: los
+## de controles en la sala de inicio y el de bajar junto al agujero.
 func _colocar_tutorial() -> void:
 	_zonas_prohibidas.clear()
 	if datos == null or not datos.mostrar_tutorial:
@@ -445,10 +518,8 @@ func _colocar_tutorial() -> void:
 	# add_child antes de colocar(): los @onready del tutorial tienen que estar
 	# resueltos, y los Label necesitan estar en el arbol para saber su tamano.
 	add_child(tutorial)
-	tutorial.colocar(
-		Vector2(0.0, -_alto() * 0.5 + MARGEN_ENTRADA),
-		Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA),
-		_alto())
+	tutorial.colocar(sala_de_tipo(MapaSalas.Tipo.INICIO).position, _tamano_sala(),
+		sala_de_tipo(MapaSalas.Tipo.SALIDA).position)
 
 	# Cada cartel reserva su rectangulo, con holgura por arriba y por abajo para
 	# que nada quede pegado al texto y lo haga ilegible igualmente.
@@ -470,6 +541,16 @@ func _pisa_un_cartel(centro: Vector2, tamano: Vector2) -> bool:
 	return false
 
 
+## Al limpiar la sala de salida se destapa el agujero. set_deferred porque el
+## ultimo enemigo muere dentro del paso de fisica (lo mata una bola).
+##
+## Encender la zona con el jugador ya encima avisa igual de que ha entrado: si
+## estaba pisando el agujero tapado al matar al ultimo, baja sin tener que
+## salir y volver a entrar.
+func _al_despejar_salida(_sala: Sala) -> void:
+	_zona_salida.set_deferred("monitoring", true)
+
+
 func _al_entrar_en_salida(cuerpo: Node2D) -> void:
 	# La salida solo cuenta una vez: sin esta guarda, dos frames dentro del area
 	# emitirian dos avances de piso seguidos.
@@ -482,13 +563,11 @@ func _al_entrar_en_salida(cuerpo: Node2D) -> void:
 	#
 	# POR QUE HACE FALTA:
 	# Godot avisa del solapamiento con la posicion que el cuerpo tenia al empezar
-	# el paso de fisica, no con la que tiene ya. Al cambiar de piso eso pasaba
-	# siempre: el piso nuevo se construye en el origen, asi que su salida nace
-	# casi exactamente donde estaba la del piso anterior (y=780 frente a y=790),
-	# el jugador todavia figuraba ahi aunque ya lo habiamos movido arriba, y el
-	# piso nuevo se daba por superado al nacer. Se saltaba un piso entero: del 1
-	# al 3.
-	if cuerpo.global_position.distance_to(_zona_salida.global_position) > RADIO_SALIDA * 2.0:
+	# el paso de fisica, no con la que tiene ya. Al cambiar de piso la salida del
+	# piso nuevo puede nacer donde estaba el jugador en el anterior, el jugador
+	# todavia figura ahi aunque ya lo hemos movido, y el piso nuevo se daria por
+	# superado al nacer. Paso con el pasillo de antes: del piso 1 al 3.
+	if cuerpo.centro_colision().distance_to(_zona_salida.global_position) > Sala.RADIO_SALIDA * 2.0:
 		return
 
 	_salida_usada = true
@@ -506,35 +585,3 @@ func _al_entrar_en_salida(cuerpo: Node2D) -> void:
 func tinte_profundidad() -> Color:
 	var profundidad := clampf(float(numero_piso - 1) / 11.0, 0.0, 1.0)
 	return Color(0.92, 0.88, 0.84).lerp(Color(1.0, 0.52, 0.34), profundidad)
-
-
-# --- Pintado ----------------------------------------------------------------
-
-func _draw() -> void:
-	var profundidad := clampf(float(numero_piso - 1) / 11.0, 0.0, 1.0)
-	var color_suelo := Color(0.16, 0.13, 0.12).lerp(Color(0.42, 0.13, 0.06), profundidad)
-	var color_borde := Color(0.55, 0.40, 0.28).lerp(Color(1.0, 0.72, 0.25), profundidad)
-
-	var rectangulo := Rect2(Vector2(-_ancho() * 0.5, -_alto() * 0.5), Vector2(_ancho(), _alto()))
-	draw_rect(rectangulo, color_suelo)
-	# La linea del limite va tenue: desde que hay rocas rodeando el area, el
-	# borde ya se ve, y una linea marcada encima parecia un marco de interfaz.
-	# Se mantiene porque marca donde esta exactamente el muro invisible, que en
-	# un juego de precision el jugador agradece.
-	draw_rect(rectangulo, Color(color_borde.r, color_borde.g, color_borde.b, 0.35), false, 4.0)
-
-	# Lineas horizontales de referencia: sin ellas cuesta percibir el avance
-	# vertical sobre un fondo plano.
-	var paso := 220.0
-	var y := -_alto() * 0.5 + paso
-	while y < _alto() * 0.5:
-		draw_line(Vector2(-_ancho() * 0.5, y), Vector2(_ancho() * 0.5, y),
-			Color(color_borde.r, color_borde.g, color_borde.b, 0.10), 2.0)
-		y += paso
-
-	# Marca visual de la salida.
-	var centro_salida := Vector2(0.0, _alto() * 0.5 - MARGEN_SALIDA)
-	draw_circle(centro_salida, RADIO_SALIDA, Color(0.05, 0.03, 0.03, 0.9))
-	draw_arc(centro_salida, RADIO_SALIDA, 0.0, TAU, 32, color_borde, 4.0, true)
-	draw_arc(centro_salida, RADIO_SALIDA * 0.55, 0.0, TAU, 24,
-		Color(color_borde.r, color_borde.g, color_borde.b, 0.5), 3.0, true)

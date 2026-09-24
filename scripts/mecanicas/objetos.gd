@@ -9,11 +9,12 @@ extends Mecanica
 const ESCENA_OBJETO := preload("res://scenes/Objeto.tscn")
 const RUTA_OBJETOS := "res://resources/objetos"
 
-## Cuantos objetos deja por piso.
+## Cuantos objetos deja por piso. El primero va en la sala del objeto; los
+## demas, si los hay, en salas normales al azar.
 @export var por_piso: int = 1
 
-## Espacio libre alrededor de la entrada y de la salida. Un objeto pegado a la
-## salida se cogeria sin merito; pegado a la entrada, sin verlo.
+## Espacio libre delante de las puertas, para los objetos que van en salas
+## normales. Un objeto en el umbral se cogeria sin verlo.
 @export var despeje: float = 260.0
 
 var _objetos: Array[ObjetoMejora] = []
@@ -32,26 +33,36 @@ func aplicar_a_piso(piso: Node) -> void:
 	var generador := RandomNumberGenerator.new()
 	generador.seed = hash(nombre_mecanica) + piso.numero_piso * 60077
 
-	var entrada: Vector2 = piso.to_local(piso.punto_entrada())
-	var salida: Vector2 = piso.to_local(piso.punto_salida())
-	var mitad_ancho: float = piso.datos.ancho_area * 0.5
-	var mitad_alto: float = piso.datos.alto_area * 0.5
+	# El primero, en el centro de su sala: es un premio, se tiene que ver nada
+	# mas asomarse. Si el mapa no tiene sala de objeto (pocas salas), va al
+	# inicio, que es el unico sitio seguro que siempre existe.
+	var sala_objeto: Sala = piso.sala_de_tipo(MapaSalas.Tipo.OBJETO)
+	if sala_objeto == null:
+		sala_objeto = piso.sala_de_tipo(MapaSalas.Tipo.INICIO)
+	_dejar(sala_objeto, Vector2.ZERO, disponibles, generador)
 
-	for _i in por_piso:
+	var normales: Array[Sala] = []
+	for sala in piso.salas():
+		if sala.tipo == MapaSalas.Tipo.NORMAL:
+			normales.append(sala)
+	for _i in por_piso - 1:
+		if normales.is_empty():
+			return
+		var sala: Sala = normales[generador.randi() % normales.size()]
 		for _intento in 24:
-			var sitio := Vector2(
-				generador.randf_range(-mitad_ancho + 110.0, mitad_ancho - 110.0),
-				generador.randf_range(-mitad_alto + 200.0, mitad_alto - 200.0))
-			if sitio.distance_to(entrada) < despeje:
+			var sitio := sala.punto_al_azar(generador, 110.0)
+			if sala.cerca_de_puerta(sitio, despeje):
 				continue
-			if sitio.distance_to(salida) < despeje:
-				continue
-
-			var objeto: Objeto = ESCENA_OBJETO.instantiate()
-			piso.add_child(objeto)
-			objeto.preparar(disponibles[generador.randi() % disponibles.size()],
-				piso.to_global(sitio))
+			_dejar(sala, sitio, disponibles, generador)
 			break
+
+
+func _dejar(sala: Sala, sitio: Vector2, disponibles: Array[ObjetoMejora],
+		generador: RandomNumberGenerator) -> void:
+	var objeto: Objeto = ESCENA_OBJETO.instantiate()
+	sala.add_child(objeto)
+	objeto.preparar(disponibles[generador.randi() % disponibles.size()],
+		sala.to_global(sitio))
 
 
 func _cargar() -> Array[ObjetoMejora]:

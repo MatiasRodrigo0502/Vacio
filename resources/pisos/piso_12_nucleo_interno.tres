@@ -5,10 +5,11 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Núcleo interno"
-ancho_area = 460.0
+ancho_area = 740.0
 velocidad_obstaculos = 390.0
 radio_vision = 240.0
 es_nivel_final = true
-alto_area = 1580.0
+alto_area = 600.0
 familia_obstaculos = "bloque"
-cantidad_obstaculos = 18
+cantidad_salas = 10
+cantidad_obstaculos = 6

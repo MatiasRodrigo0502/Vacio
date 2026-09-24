@@ -19,8 +19,8 @@ extends Mecanica
 ## baja, las horizontales molestan mas y se leen mejor.
 @export_range(0.0, 1.0) var proporcion_horizontales: float = 0.7
 
-## Espacio que se respeta alrededor de la entrada y de la salida: ninguna roca
-## se acerca a menos de esto, ni siquiera en el extremo de su recorrido.
+## Espacio que se respeta alrededor de las puertas y del agujero de bajada:
+## ninguna roca se acerca a menos de esto, ni en el extremo de su recorrido.
 @export var despeje_extremos: float = 190.0
 
 ## Recorrido minimo util. Por debajo, la roca se queda quieta: un vaiven de
@@ -38,43 +38,47 @@ func aplicar_a_piso(piso: Node) -> void:
 	var generador := RandomNumberGenerator.new()
 	generador.seed = hash(nombre_mecanica) + piso.numero_piso * 104729
 
-	var entrada: Vector2 = piso.punto_entrada()
-	var salida: Vector2 = piso.punto_salida()
-	var mitad_ancho: float = piso.datos.ancho_area * 0.5
-	var mitad_alto: float = piso.datos.alto_area * 0.5
-
 	for obstaculo in obstaculos:
 		if generador.randf() > proporcion_moviles:
+			continue
+		# Cada roca va y viene dentro de SU sala. Con el pasillo de antes el
+		# limite era el piso entero; con salas, una roca que se saliera de la
+		# suya atravesaria el muro y apareceria en la de al lado.
+		var sala: Sala = piso.sala_en(obstaculo.global_position)
+		if sala == null:
 			continue
 
 		var horizontal := generador.randf() < proporcion_horizontales
 		var direccion := Vector2.RIGHT if horizontal else Vector2.DOWN
 		var amplitud := generador.randf_range(amplitud_minima, amplitud_maxima)
-		amplitud = _recortar(amplitud, obstaculo, direccion, entrada, salida,
-			mitad_ancho, mitad_alto, piso)
+		amplitud = _recortar(amplitud, obstaculo, direccion, sala)
 
 		if amplitud >= RECORRIDO_MINIMO:
 			obstaculo.activar_vaiven(direccion, amplitud)
 
 
-## Recorta el recorrido para que la roca no se salga del area ni invada la
-## entrada o la salida. Sin esto, una roca del borde se saldria del piso y otra
-## podria plantarse encima del circulo de salida, que es donde el jugador tiene
-## que llegar si o si.
+## Recorta el recorrido para que la roca no se salga de su sala ni se plante
+## delante de una puerta o encima del agujero de bajada, que son los sitios
+## por los que el jugador tiene que pasar si o si.
 func _recortar(amplitud: float, obstaculo: Node2D, direccion: Vector2,
-		entrada: Vector2, salida: Vector2, mitad_ancho: float, mitad_alto: float,
-		piso: Node) -> float:
-	var centro: Vector2 = piso.to_local(obstaculo.global_position)
+		sala: Sala) -> float:
+	var centro: Vector2 = sala.to_local(obstaculo.global_position)
 	var medio_tamano: Vector2 = obstaculo.tamano() * 0.5
+	var medio_sala: Vector2 = sala.tamano * 0.5
 
 	# Limite por los muros.
 	if direccion.x != 0.0:
-		amplitud = minf(amplitud, mitad_ancho - absf(centro.x) - medio_tamano.x - 20.0)
+		amplitud = minf(amplitud, medio_sala.x - absf(centro.x) - medio_tamano.x - 20.0)
 	else:
-		amplitud = minf(amplitud, mitad_alto - absf(centro.y) - medio_tamano.y - 20.0)
+		amplitud = minf(amplitud, medio_sala.y - absf(centro.y) - medio_tamano.y - 20.0)
 
-	# Limite por la entrada y la salida.
-	for punto in [piso.to_local(entrada), piso.to_local(salida)]:
+	# Limite por las puertas y el agujero.
+	var puntos: Array[Vector2] = []
+	for puerta in sala.puertas:
+		puntos.append(sala.punto_puerta(puerta))
+	if sala.tipo == MapaSalas.Tipo.SALIDA:
+		puntos.append(Vector2.ZERO)
+	for punto in puntos:
 		var distancia: float = centro.distance_to(punto)
 		amplitud = minf(amplitud, maxf(distancia - despeje_extremos, 0.0))
 

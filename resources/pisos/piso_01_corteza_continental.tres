@@ -6,12 +6,13 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Corteza continental"
-ancho_area = 1600.0
+ancho_area = 1400.0
 velocidad_obstaculos = 80.0
 radio_vision = 520.0
 es_nivel_final = false
-alto_area = 1800.0
+alto_area = 820.0
 mostrar_tutorial = true
 familia_obstaculos = "roca"
 catalogo_arte = ExtResource("2_catalogo")
-cantidad_obstaculos = 4
+cantidad_salas = 4
+cantidad_obstaculos = 2

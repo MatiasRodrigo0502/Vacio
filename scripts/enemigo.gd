@@ -19,6 +19,16 @@ var tipo: TipoEnemigo = null
 
 var _vida: int = 0
 var _objetivo: Node2D = null
+## Dormido no se mueve. La sala lo duerme al registrarlo y lo despierta cuando
+## el jugador entra.
+##
+## POR QUE HACE FALTA:
+## el enemigo es un Area2D que va directo hacia el jugador, sin chocar con
+## nada. Con salas pegadas, uno de la sala de al lado lo veria a traves del
+## muro y lo cruzaria para perseguirlo. Dormido hasta que entras, cada sala es
+## su propia pelea. Empieza despierto para que, suelto fuera de una sala,
+## siga funcionando como siempre.
+var _despierto: bool = true
 var _fase: float = 0.0
 
 @onready var _sprite: AnimatedSprite2D = $Sprite
@@ -60,6 +70,8 @@ func preparar(tipo_enemigo: TipoEnemigo, posicion: Vector2) -> void:
 
 func _physics_process(delta: float) -> void:
 	_fase += delta
+	if not _despierto:
+		return
 	if not is_instance_valid(_objetivo):
 		return
 
@@ -73,6 +85,18 @@ func _physics_process(delta: float) -> void:
 	# Mira hacia donde va: el slime es simetrico, pero el volteo da sensacion
 	# de intencion y sale gratis.
 	_sprite.flip_h = hacia.x < 0.0
+
+
+func dormir() -> void:
+	_despierto = false
+
+
+func despertar() -> void:
+	_despierto = true
+
+
+func esta_despierto() -> bool:
+	return _despierto
 
 
 ## La llama la bola magica. Aguanta varios impactos.

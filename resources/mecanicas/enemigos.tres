@@ -5,10 +5,10 @@
 [resource]
 script = ExtResource("1_enemigos")
 nombre_mecanica = "Enemigos"
-descripcion = "Reparte slimes que persiguen al jugador. Aparecen a partir del piso 2 y van a mas segun se baja."
+descripcion = "Reparte enemigos por las salas de pelea: de 1 a 4 por sala, mas cuanto mas se baja. Aparecen a partir del piso 2."
 piso_desbloqueo = 2
 activa = true
-base = 2
-por_piso = 0.6
-maximo = 9
-despeje = 240.0
+base = 1
+por_piso = 0.25
+maximo = 4
+despeje = 200.0

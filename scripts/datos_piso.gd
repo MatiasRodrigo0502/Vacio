@@ -12,8 +12,12 @@ extends Resource
 ## Nombre de la capa geologica. Se muestra en el HUD.
 @export var nombre_capa: String = "Capa sin nombre"
 
-## Ancho del area jugable en pixeles. El embudo se estrecha piso a piso,
-## asi que este valor debe ir bajando del piso 1 al 12.
+## Ancho del suelo de cada sala, en pixeles. El embudo se estrecha piso a
+## piso, asi que este valor debe ir bajando del piso 1 al 12.
+##
+## Antes era el ancho del pasillo entero; desde que cada piso es un mapa de
+## salas, es el de cada sala. Todas las salas de un piso miden lo mismo para
+## encajar en la cuadricula.
 @export var ancho_area: float = 1200.0
 
 ## Velocidad base de los obstaculos de este piso (px/s).
@@ -34,11 +38,21 @@ extends Resource
 # y el largo del piso quedarian codificados en GDScript, y el objetivo es que
 # TODA la dificultad de un piso se pueda tocar desde su .tres.
 
-## Largo del piso en pixeles (distancia de la entrada a la zona de salida).
-@export var alto_area: float = 1700.0
+## Alto del suelo de cada sala, en pixeles.
+##
+## OJO CON EL RADIO DE VISION: mientras la sala quepa en pantalla, la camara se
+## queda quieta y se ve entera. Cuando el radio de vision es menor que media
+## sala, la camara se mueve dentro de ella y ya no se ve toda: asi es como
+## "cada piso se ve menos" sigue siendo verdad con salas.
+@export var alto_area: float = 700.0
 
-## Cuantos obstaculos se colocan en el piso.
-@export var cantidad_obstaculos: int = 6
+## Cuantas salas tiene el piso, contando el inicio, la del objeto y la de la
+## salida. Mas salas es mas piso que cruzar y mas callejones que explorar.
+@export var cantidad_salas: int = 6
+
+## Cuantas rocas se colocan en CADA sala de pelea (el inicio y la del objeto
+## van limpias).
+@export var cantidad_obstaculos: int = 3
 
 ## Que familia de rocas usa este piso. Cambiarla es la forma mas barata de dar
 ## personalidad a una capa sin tocar nada mas.
