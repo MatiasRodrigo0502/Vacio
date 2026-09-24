@@ -12,6 +12,20 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 
 ## En uso
 
+### Mago rojo — personaje jugable
+
+- **Pack**: sin identificar (brújula animada de 8 direcciones)
+- **Autor**: sin identificar
+- **URL**: —
+- **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
+- **Archivos**: `assets/mago_rojo/atlas_8dir.png`, `animaciones_mago_rojo.tres`
+  y `retrato.png`
+- **Procesado**: extraído de un GIF de 576×648 y 6 fotogramas colocado como
+  brújula, dividiendo por 3 (el GIF es un 3× de píxel entero, así que no se
+  pierde nada), quitando el fondo y centrando cada dirección sobre sus botas.
+- **Nota**: lo aportó Matías, sin decir de dónde salía. **Hay que averiguar de
+  dónde viene.**
+
 ### Mago oscuro — personaje jugable
 
 - **Pack**: «Mago oscuro — sprites de caminata en 8 direcciones»

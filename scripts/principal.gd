@@ -32,6 +32,10 @@ func _ready() -> void:
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 
+	# El mago elegido en el menu, antes de que el HUD lea la vida: la ventaja
+	# puede cambiar cuantos corazones tiene.
+	_jugador.usar_personaje(GestorProgreso.personaje_elegido)
+
 	_pantalla_final.ocultar()
 	# El _ready() de los hijos se ejecuta antes que el del padre, asi que la
 	# primera senal vida_cambiada del jugador se emitio cuando aun no habia
@@ -121,6 +125,10 @@ func _volver_al_menu() -> void:
 
 
 func _reiniciar() -> void:
+	# El mago elegido en el menu, antes de que el HUD lea la vida: la ventaja
+	# puede cambiar cuantos corazones tiene.
+	_jugador.usar_personaje(GestorProgreso.personaje_elegido)
+
 	_pantalla_final.ocultar()
 	_jugador.restaurar_vida()
 	GestorProgreso.reiniciar_partida()

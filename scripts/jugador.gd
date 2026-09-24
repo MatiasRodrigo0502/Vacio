@@ -103,6 +103,33 @@ var _mirando: StringName = &"abajo"
 @onready var _carga_visual: CargaAtaque = $Carga
 
 
+## Deja al jugador siendo el mago elegido: su arte y su ventaja.
+##
+## La ventaja se mete en los valores DE FABRICA y no como una mejora recogida,
+## porque restaurar_vida() vuelve a esos valores al empezar otra partida: si se
+## aplicara como un objeto del piso, el mago perderia lo suyo al reiniciar.
+func usar_personaje(personaje: PersonajeJugable) -> void:
+	if personaje == null:
+		return
+
+	if personaje.animaciones != null:
+		_sprite.sprite_frames = personaje.animaciones
+
+	_base_vida_maxima += personaje.vida_maxima_extra
+	_base_velocidad += personaje.velocidad_extra
+	_base_cadencia = maxf(_base_cadencia * personaje.cadencia_multiplicador,
+		CADENCIA_MINIMA)
+	_base_velocidad_bola += personaje.velocidad_bola_extra
+	_base_radio_bola += personaje.radio_bola_extra
+
+	tiempo_carga *= personaje.tiempo_carga_multiplicador
+	dano_bola_cargada += personaje.dano_cargado_extra
+
+	# restaurar_vida() es lo que copia los valores de fabrica a los de verdad,
+	# asi que sirve igual para "empezar de cero" que para "estrenar mago".
+	restaurar_vida()
+
+
 func _ready() -> void:
 	_base_vida_maxima = vida_maxima
 	_base_velocidad = velocidad_maxima

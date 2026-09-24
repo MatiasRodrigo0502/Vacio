@@ -3,9 +3,31 @@
 Arte del juego. Aquí entra **solo lo que se usa**, ya recortado y reescalado;
 los packs originales viven fuera del repositorio (ver `CREDITS.md` en la raíz).
 
+## mago_rojo/
+
+El segundo mago elegible. Mismo formato que `mago_oscuro/`: `atlas_8dir.png`
+(8 direcciones × 6 poses de 64×72), su `SpriteFrames` y `retrato.png`.
+
+Vino como una **brújula animada** en un GIF de 576×648 y 6 fotogramas: 3×3
+celdas con el hueco del centro, cada celda a 3× de tamaño. El 3× resultó ser de
+píxel entero (comprobado: los 41.472 bloques de 3×3 son de un solo color), así
+que dividir por 3 recupera el original sin perder un píxel. El fondo se quita
+con un relleno desde el borde **por color exacto**, sin tolerancia: el GIF no
+tiene suavizado, y sin tolerancia no hay riesgo de comerse los píxeles oscuros
+del mago.
+
+Las direcciones se verificaron antes de fiarse del orden de la brújula, y la
+primera medida engañó: el desvío de la barba daba las diagonales al revés,
+porque el detector cazaba también la bolsa gris del cinturón. Lo que sí lo
+resuelve es comparar cada diagonal con los perfiles ya confirmados: cada una se
+parece un **94 %** a su lado y un **69 %** al contrario.
+
+Como el oscuro, cada dirección se ha centrado sobre el eje de sus botas con
+desplazamientos de píxeles enteros.
+
 ## mago_oscuro/
 
-El personaje jugable **que se usa ahora**, y el primero que mira a los **ocho**
+El primero de los dos magos elegibles, y el primero que mira a los **ocho**
 lados. Dos archivos:
 
 - `atlas_8dir.png` — 384×576: 8 filas (una por dirección) × 6 poses de 64×72.

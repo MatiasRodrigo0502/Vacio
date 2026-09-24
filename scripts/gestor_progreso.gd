@@ -13,6 +13,7 @@ extends Node
 ## mantener una lista hardcodeada: anadir o reordenar pisos no requiere tocar codigo.
 const RUTA_PISOS := "res://resources/pisos"
 const RUTA_MECANICAS := "res://resources/mecanicas"
+const RUTA_PERSONAJES := "res://resources/personajes"
 
 ## Numero total de pisos esperado. Solo sirve de aviso si falta algun .tres.
 const TOTAL_PISOS_ESPERADO := 12
@@ -38,10 +39,23 @@ var mecanicas: Array[Mecanica] = []
 ## true cuando la partida ha terminado (ganada o perdida): bloquea avances extra.
 var partida_terminada: bool = false
 
+## Los magos que se pueden elegir, en el orden de sus archivos.
+var personajes: Array[PersonajeJugable] = []
+
+## El mago elegido en el menu. Vive aqui y no en la escena del juego porque el
+## menu y la partida son escenas distintas: al entrar a jugar el menu se libera
+## entero, y la eleccion tiene que sobrevivir a eso.
+var personaje_elegido: PersonajeJugable = null
+
 
 func _ready() -> void:
 	pisos = _cargar_pisos()
 	mecanicas = _cargar_mecanicas()
+	personajes = _cargar_personajes()
+	# Si nadie ha elegido (por ejemplo al abrir Principal.tscn directamente
+	# desde el editor), se juega con el primero.
+	if not personajes.is_empty():
+		personaje_elegido = personajes[0]
 
 	if pisos.size() != TOTAL_PISOS_ESPERADO:
 		push_warning("Se esperaban %d pisos en %s y se han cargado %d."
@@ -111,6 +125,12 @@ func obtener_mecanicas_activas(numero_piso: int) -> Array[Mecanica]:
 	return activas
 
 
+## Guarda el mago con el que se va a jugar. La llama el menu.
+func elegir_personaje(personaje: PersonajeJugable) -> void:
+	if personaje != null:
+		personaje_elegido = personaje
+
+
 ## Cuantos pisos hay en total (para el HUD: "Piso 3 / 12").
 func total_pisos() -> int:
 	return pisos.size()
@@ -147,6 +167,22 @@ func _cargar_mecanicas() -> Array[Mecanica]:
 
 func _comparar_mecanicas(a: Mecanica, b: Mecanica) -> bool:
 	return a.piso_desbloqueo < b.piso_desbloqueo
+
+
+## Lee la carpeta de personajes. Igual que con los pisos, el orden alfabetico
+## manda: los archivos empiezan por un numero, asi que anadir un mago es dejar
+## su .tres ahi y ya sale en el menu.
+func _cargar_personajes() -> Array[PersonajeJugable]:
+	var resultado: Array[PersonajeJugable] = []
+	for ruta in _listar_recursos(RUTA_PERSONAJES):
+		var recurso := load(ruta)
+		if recurso is PersonajeJugable:
+			resultado.append(recurso)
+		else:
+			push_warning("El archivo %s no es un PersonajeJugable valido." % ruta)
+	if resultado.is_empty():
+		push_warning("No hay ningun personaje en %s." % RUTA_PERSONAJES)
+	return resultado
 
 
 ## Devuelve las rutas .tres de una carpeta, ordenadas alfabeticamente.

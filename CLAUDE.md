@@ -45,6 +45,7 @@ toca rehacer generación de piso, cámara y avance.
 | Mecánicas | `resources/mecanicas/*.tres` (+ script que herede de `Mecanica`) | otro `.tres` |
 | Tipos de enemigo | `resources/enemigos/*.tres` (`TipoEnemigo`) | otro `.tres` |
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
+| Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
 enemigo ni objeto concreto. `Principal.tscn` solo reacciona a sus señales.
@@ -81,7 +82,11 @@ Para lanzar el juego: `jugar.bat` en la raíz.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
-- **Jugador**: mago oscuro animado **en las ocho direcciones** (las cuatro
+- **Elección de mago**: al pulsar Jugar se elige entre los magos de
+  `resources/personajes/`. Cada uno trae su arte y su ventaja, y la ventaja va
+  a los valores **de fábrica** del jugador, así que sobrevive a reiniciar. El
+  menú monta una ficha por `.tres`, así que un mago nuevo no toca código.
+- **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve.
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
@@ -140,6 +145,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   renderizado del resto.
 - **El mago BlueWizard se queda en el repositorio** aunque no se use. Cambiar
   de personaje es una línea de `Jugador.tscn`, y así volver atrás es gratis.
+- **La ventaja de un mago se suma a los valores de fábrica, no se aplica como
+  un objeto recogido.** `restaurar_vida()` vuelve a esos valores al empezar
+  otra partida: si la ventaja fuera un objeto del piso, el mago perdería lo
+  suyo al reiniciar.
+- **Cada mago tiene también una pega, y se enseña.** Si uno fuera mejor a
+  secas, elegir dejaría de ser una decisión.
 - **El mago se gira por ángulo, no comparando x contra y.** Con cuatro
   direcciones bastaba un `if`; con ocho, la misma idea sería una escalera de
   comparaciones. `_lado()` redondea el ángulo al sector de 45° más cercano y
@@ -194,6 +205,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de línea**: se come la barra y el salto, y rompió una línea de GDScript
   generada desde un script. Los heredoc de bash también se comen barras: para
   scripts con barras, escribir el `.py` a archivo y ejecutarlo.
+- **Que dos poses sean espejo no dice cuál es cuál, y la cara tampoco siempre.**
+  Con el mago rojo, el desvío de la barba daba las diagonales invertidas porque
+  el detector cazaba también la bolsa gris del cinturón. Lo que sí lo resuelve
+  es comparar cada diagonal con los perfiles ya confirmados: 94 % con su lado
+  contra 69 % con el contrario. **Dos medidas independientes o ninguna.**
 - **El eje de los pies también se mide por dirección.** En el atlas del mago
   oscuro estaba a 23,7 px mirando a la derecha y a 39,3 mirando a la izquierda:
   el mago se corría 15 px de lado al girarse. Y se mide sobre las **botas**

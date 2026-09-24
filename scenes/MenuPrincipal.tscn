@@ -156,3 +156,50 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 18
 text = "Volver"
+
+[node name="PanelPersonajes" type="Control" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Fondo" type="ColorRect" parent="PanelPersonajes"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0627451, 0.0470588, 0.0431373, 1)
+
+[node name="Centro" type="CenterContainer" parent="PanelPersonajes"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Caja" type="VBoxContainer" parent="PanelPersonajes/Centro"]
+layout_mode = 2
+theme_override_constants/separation = 26
+alignment = 1
+
+[node name="Titulo" type="Label" parent="PanelPersonajes/Centro/Caja"]
+modulate = Color(1, 0.741176, 0.360784, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "ELIGE TU MAGO"
+horizontal_alignment = 1
+
+[node name="Fichas" type="HBoxContainer" parent="PanelPersonajes/Centro/Caja"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="BotonVolver" type="Button" parent="PanelPersonajes/Centro/Caja"]
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Volver"
