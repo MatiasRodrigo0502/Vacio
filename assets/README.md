@@ -202,3 +202,64 @@ está `_colocar_borde()` en `scripts/piso.gd`.
 Las rocas y plantas se tintan en tiempo de ejecución según la profundidad. Ese
 tinte no es decorativo: decide si el obstáculo se distingue del suelo. Está
 explicado y medido en `tinte_profundidad()`, en `scripts/piso.gd`.
+
+## manto/
+
+Pack propio para los pisos del **manto**, el siguiente paso bajando desde la
+cueva. Mismas familias y prefijos que `cueva/`, así que no hay que tocar
+GDScript: basta con apuntar `catalogo_arte` del piso a su catálogo.
+
+| Familia | Piezas | Qué es |
+|---|---|---|
+| `piedra_*` | 8 | basalto pequeño, algunas con grieta de magma |
+| `roca_*` | 10 | montículos de basalto con grietas incandescentes |
+| `bloque_*` | 7 | **columnas de basalto** hexagonales, de 1 a 3 juntas |
+| `grupo_*` | 6 | montones de 3-5 rocas solapadas |
+| `plataforma_*` | 5 | costra de lava enfriada: placas con juntas de magma |
+| `vegetacion_*` | 6 | **cristales de olivino** (verdes) y espinela (naranja) |
+
+Dos catálogos:
+
+- `catalogo_manto.tres`: con los cristales en la lista `vegetacion`. Crecen
+  sobre las plataformas y no chocan, igual que las plantas: en el manto no hay
+  plantas, pero sí minerales.
+- `catalogo_manto_sin_cristales.tres`: roca pelada, con `vegetacion` vacía.
+
+**Luminosidad medida**: las rocas del manto tienen una media de 31 en lo
+opaco, frente a 33 de las de cueva. Es a propósito: el tinte por
+profundidad de `tinte_profundidad()` está calibrado para ese brillo, y lo
+que hace daño tiene que verse igual en todos los pisos. Las grietas de magma
+son finas para no subir esa media: se leen por el color, no por la cantidad
+de luz.
+
+Como la vegetación de `cueva/`, los cristales conservan su lienzo de
+192×192 con aire alrededor; el resto de piezas va recortado a su contenido.
+
+Todo sale de un generador procedural con semillas fijas: volver a ejecutarlo
+da exactamente los mismos PNG en las tres máquinas.
+
+## enemigos/ (nuevos)
+
+Siete enemigos más, en el mismo formato que los slimes y las plantas:
+10 fotogramas `<nombre>_00..09.png` y un `animaciones_<nombre>.tres` con la
+animación `moverse` a 12 fps en bucle.
+
+| Enemigo | Tamaño | Movimiento | Encaja en |
+|---|---|---|---|
+| `slime_magma` | 128×85 | respira como `slime_verde`, la costra se agrieta al estirarse | manto |
+| `murcielago` | 128×96 | aleteo con subida y bajada | cueva |
+| `golem_roca` | 128×96 | dos saltitos por ciclo, se aplasta al aterrizar | cueva / manto |
+| `cristal_vivo` | 128×96 | estático, late y brilla (trampa fija, como las plantas) | manto |
+| `rata` | 128×96 | anda con paso alternado y cola ondulante | musgo / cueva |
+| `serpiente` | 128×96 | reptar con una onda que viaja hacia la cola, saca la lengua | musgo |
+| `fantasma` | 128×96 | flota, semitransparente, el faldón ondea | cualquiera (pisos oscuros) |
+
+`slime_magma` usa la misma caja de 128×85 que `slime_verde`, así que puede
+sustituirlo sin tocar su forma de colisión.
+
+**La rata y la serpiente miran a la derecha.** Cuando se muevan hacia la
+izquierda, `flip_h = true` en el `AnimatedSprite2D`. El resto son simétricos
+o se ven de frente.
+
+Todos los ciclos son funciones periódicas de la fase del fotograma, así que
+el 09 enlaza con el 00 sin tirón.

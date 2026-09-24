@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_00.png" id="slime_magma_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_01.png" id="slime_magma_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_02.png" id="slime_magma_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_03.png" id="slime_magma_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_04.png" id="slime_magma_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_05.png" id="slime_magma_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_06.png" id="slime_magma_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_07.png" id="slime_magma_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_08.png" id="slime_magma_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/slime_magma_09.png" id="slime_magma_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("slime_magma_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("slime_magma_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]

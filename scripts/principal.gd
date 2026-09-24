@@ -77,6 +77,7 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	_camara.seguir(_jugador, true)
 
 	_hud.actualizar_piso(numero_piso, GestorProgreso.total_pisos(), datos.nombre_capa)
+	_hud.mostrar_mapa(piso)
 
 
 ## La bola cuelga del piso, no de Principal: asi al cambiar de piso se va con el

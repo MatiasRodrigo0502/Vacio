@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_00.png" id="serpiente_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_01.png" id="serpiente_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_02.png" id="serpiente_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_03.png" id="serpiente_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_04.png" id="serpiente_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_05.png" id="serpiente_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_06.png" id="serpiente_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_07.png" id="serpiente_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_08.png" id="serpiente_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/serpiente_09.png" id="serpiente_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("serpiente_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("serpiente_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]

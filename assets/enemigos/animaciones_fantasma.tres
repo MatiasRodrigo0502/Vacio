@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_00.png" id="fantasma_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_01.png" id="fantasma_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_02.png" id="fantasma_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_03.png" id="fantasma_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_04.png" id="fantasma_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_05.png" id="fantasma_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_06.png" id="fantasma_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_07.png" id="fantasma_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_08.png" id="fantasma_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/fantasma_09.png" id="fantasma_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("fantasma_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("fantasma_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]

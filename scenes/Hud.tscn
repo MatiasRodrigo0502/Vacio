@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
 [ext_resource type="Script" path="res://scripts/corazones.gd" id="2_corazones"]
+[ext_resource type="Script" path="res://scripts/minimapa.gd" id="3_minimapa"]
 
 [node name="Hud" type="CanvasLayer"]
 layer = 2
@@ -49,3 +50,15 @@ offset_bottom = 188.0
 theme_override_font_sizes/font_size = 19
 text = "objeto"
 vertical_alignment = 1
+
+[node name="Minimapa" type="Control" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -208.0
+offset_top = 18.0
+offset_right = -18.0
+offset_bottom = 152.0
+grow_horizontal = 0
+mouse_filter = 2
+script = ExtResource("3_minimapa")

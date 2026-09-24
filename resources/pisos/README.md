@@ -15,11 +15,12 @@ de pisos en el código.
 | Campo | Qué hace |
 |---|---|
 | `nombre_capa` | Texto que aparece en el HUD. |
-| `ancho_area` | Ancho del área jugable en píxeles. Es el embudo: baja piso a piso. |
-| `alto_area` | Largo del descenso, de la entrada a la salida. |
+| `ancho_area` | Ancho del suelo de **cada sala**, en píxeles. Es el embudo: baja piso a piso. |
+| `alto_area` | Alto del suelo de cada sala. |
+| `cantidad_salas` | Cuántas salas tiene el piso, contando el inicio, la del objeto y la de salida. |
 | `velocidad_obstaculos` | Velocidad base de los obstáculos (px/s). En Fase 1 las rocas son estáticas, pero el valor ya llega hasta ellas. |
 | `radio_vision` | Media altura visible de la cámara, en píxeles. Menor = zoom más cerrado = se ve menos. |
-| `cantidad_obstaculos` | Cuántas rocas se reparten por el piso. |
+| `cantidad_obstaculos` | Cuántas rocas lleva **cada sala de pelea** (el inicio y la del objeto van limpias). |
 | `es_nivel_final` | Solo `true` en el piso 12. Al superarlo se gana la partida. |
 | `familia_obstaculos` | Qué rocas usa el piso: `roca`, `bloque`, `grupo` o `piedra`. |
 | `catalogo_arte` | Pack de arte del piso (rocas, piedras, plataformas y vegetación). Vacío = el de la cueva sin vegetación. |
@@ -27,28 +28,33 @@ de pisos en el código.
 
 ## Valores de partida (sin jugar todavía, pendientes de ajuste)
 
-| # | Capa | ancho | alto | vel. | visión | obst. |
+| # | Capa | sala (ancho × alto) | salas | rocas/sala | vel. | visión |
 |---|---|---|---|---|---|---|
-| 01 | Corteza continental | 1600 | 1800 | 80 | 520 | 4 |
-| 02 | Corteza oceánica | 1480 | 1780 | 95 | 495 | 5 |
-| 03 | Litosfera superior | 1360 | 1760 | 110 | 470 | 6 |
-| 04 | Astenosfera | 1240 | 1740 | 130 | 445 | 8 |
-| 05 | Manto superior | 1120 | 1720 | 150 | 420 | 9 |
-| 06 | Zona de transición | 1000 | 1700 | 175 | 395 | 11 |
-| 07 | Manto inferior | 900 | 1680 | 200 | 370 | 13 |
-| 08 | Capa D'' | 800 | 1660 | 230 | 345 | 15 |
-| 09 | Núcleo externo exterior | 700 | 1640 | 265 | 320 | 16 |
-| 10 | Núcleo externo interior | 610 | 1620 | 300 | 295 | 17 |
-| 11 | Límite del núcleo interno | 530 | 1600 | 340 | 270 | 18 |
-| 12 | Núcleo interno | 460 | 1580 | 390 | 240 | 18 |
+| 01 | Corteza continental | 1400 × 820 | 4 | 2 | 80 | 520 |
+| 02 | Corteza oceánica | 1340 × 800 | 5 | 3 | 95 | 495 |
+| 03 | Litosfera superior | 1280 × 780 | 6 | 3 | 110 | 470 |
+| 04 | Astenosfera | 1220 × 760 | 6 | 3 | 130 | 445 |
+| 05 | Manto superior | 1160 × 740 | 7 | 4 | 150 | 420 |
+| 06 | Zona de transición | 1100 × 720 | 7 | 4 | 175 | 395 |
+| 07 | Manto inferior | 1040 × 700 | 8 | 4 | 200 | 370 |
+| 08 | Capa D'' | 980 × 680 | 8 | 5 | 230 | 345 |
+| 09 | Núcleo externo exterior | 920 × 660 | 9 | 5 | 265 | 320 |
+| 10 | Núcleo externo interior | 860 × 640 | 9 | 5 | 300 | 295 |
+| 11 | Límite del núcleo interno | 800 × 620 | 10 | 6 | 340 | 270 |
+| 12 | Núcleo interno | 740 × 600 | 10 | 6 | 390 | 240 |
 
 Notas de diseño de la curva:
 
-- El piso 1 es una escuela: sitio de sobra para entender la inercia.
-- El 4 (astenosfera) es el primer salto real de densidad.
-- El 6 (zona de transición) es el punto de inflexión de la curva.
-- Del 9 en adelante la visión ya está muy cerrada; la dificultad viene tanto de
-  no ver como de no caber.
+- El piso 1 es una escuela: cuatro salas, sin enemigos, y los carteles de
+  controles en la sala de inicio.
+- **La visión cae más deprisa que el tamaño de las salas.** Medido con la
+  ventana de 1152×648: en los pisos 1 a 4 la sala cabe entera en pantalla,
+  muros incluidos, y la cámara se queda quieta. Del 5 al 8 cabe el suelo pero
+  no los muros, y la cámara se mueve un poco. Del 9 en adelante ya no cabe ni
+  el suelo: en el 12 se ve el 80 % del alto de la sala. Es como sigue siendo
+  verdad lo de «cada piso se ve menos» ahora que hay salas; para apretarlo más,
+  bajar `radio_vision`.
+- Las salas se encogen y las rocas por sala suben: cada sala es más densa.
 
 ## Ajustar un piso
 
@@ -57,13 +63,20 @@ cambia los números y guarda. No hay que recompilar ni tocar GDScript.
 
 Cuidado con dos cosas:
 
-- `ancho_area` por debajo de ~420 px deja el piso casi intransitable con el
-  tamaño actual del jugador (radio 13) y de los bloques.
+- `ancho_area` o `alto_area` por debajo de ~600 px dejan poco sitio para
+  pelear, y las rocas y los enemigos no pueden ponerse delante de las puertas
+  (se reservan 190 px), así que en salas muy pequeñas salen menos de los que
+  pides.
+- Cuando `radio_vision` es menor que media sala (`alto_area / 2`), el suelo ya
+  no cabe en pantalla y se pierden de vista partes de la sala. Es a propósito
+  en los pisos hondos, pero bajarlo mucho deja enemigos atacando desde fuera
+  de la vista.
 - Subir mucho `cantidad_obstaculos` sin subir `ancho_area`/`alto_area` no
   rompe nada: el repartidor descarta los bloques que no encuentran hueco libre
   tras 24 intentos. Si un piso te sale con menos bloques de los que pediste, es
   eso.
 
-El reparto de obstáculos usa una semilla derivada del nombre de la capa y del
-número de piso, así que **el piso es siempre idéntico** en todas las partidas y
-en las tres máquinas del equipo. Si cambias `nombre_capa`, cambia el reparto.
+El mapa de salas y el reparto de rocas usan semillas derivadas del nombre de
+la capa y del número de piso, así que **el piso es siempre idéntico** en todas
+las partidas y en las tres máquinas del equipo. Si cambias `nombre_capa` o
+`cantidad_salas`, cambia el mapa.

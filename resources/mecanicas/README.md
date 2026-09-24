@@ -31,8 +31,8 @@ una mecánica nueva no obliga a tocar su código.
 
 | Archivo | Qué hace | Desde el piso |
 |---|---|---|
-| `objetos.tres` | Deja un objeto recogible por piso | 1 |
-| `enemigos.tres` | Reparte enemigos que persiguen al jugador | 2 |
+| `objetos.tres` | Deja un objeto recogible por piso, en el centro de la sala del objeto | 1 |
+| `enemigos.tres` | Reparte enemigos por las salas de pelea, de 1 a 4 por sala. Duermen hasta que entras en su sala | 2 |
 | `rocas_moviles.tres` | Parte de las rocas van y vienen en línea recta | 4 (**desactivada**) |
 
 `rocas_moviles.tres` está con `activa = false` porque a Matías no le convenció

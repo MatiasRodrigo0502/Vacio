@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_00.png" id="murcielago_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_01.png" id="murcielago_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_02.png" id="murcielago_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_03.png" id="murcielago_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_04.png" id="murcielago_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_05.png" id="murcielago_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_06.png" id="murcielago_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_07.png" id="murcielago_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_08.png" id="murcielago_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/murcielago_09.png" id="murcielago_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("murcielago_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("murcielago_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]

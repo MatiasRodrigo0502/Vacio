@@ -11,7 +11,8 @@ explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidi�
 
 Juego 2D top-down en **Godot 4.7** (GDScript). Se desciende piso a piso por un
 embudo: **12 niveles fijos** basados en las capas de la Tierra, de la corteza al
-núcleo interno. Cada piso es más estrecho, más denso y se ve menos.
+núcleo interno. Cada piso es un **mapa de salas unidas por puertas**, y cada uno
+tiene más salas, más pequeñas, y se ve menos.
 
 Proyecto de clase (1 DAM). Lo trabajan **3 personas en paralelo**.
 
@@ -21,8 +22,8 @@ Proyecto de clase (1 DAM). Lo trabajan **3 personas en paralelo**.
 
 **Rumbo actual: parecerse a The Binding of Isaac.** Pedido el 2026-09-18 en
 cuatro pasos: 1) disparo en cuatro direcciones ✅, 2) enemigos que persiguen ✅,
-3) objetos que mejoran ✅, 4) **salas con puertas — pendiente y es el gordo**:
-toca rehacer generación de piso, cámara y avance.
+3) objetos que mejoran ✅, 4) salas con puertas ✅ (2026-09-24). Los cuatro
+hechos.
 
 ## Reglas de este proyecto
 
@@ -49,6 +50,19 @@ toca rehacer generación de piso, cámara y avance.
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
 enemigo ni objeto concreto. `Principal.tscn` solo reacciona a sus señales.
+
+**Cómo se construye un piso con salas** (tres archivos, cada uno a lo suyo):
+
+- `scripts/mapa_salas.gd` (`MapaSalas`, sin nodos): el plano. Qué casillas
+  hay, de qué tipo es cada una (inicio, normal, objeto, salida) y dónde hay
+  puerta. Se puede probar sin montar ninguna escena.
+- `scripts/sala.gd` (`Sala`): una sala se construye sola: suelo, muros con los
+  huecos de puerta, un cierre por puerta, sus enemigos y si está cerrada.
+- `scripts/piso.gd` (`Piso`): coloca las salas en la cuadrícula, reparte rocas
+  y decoración sala por sala, y sigue en qué sala está el jugador. Emite
+  `sala_cambiada`, que Principal usa para encajar la cámara.
+
+Las mecánicas reparten lo suyo recorriendo `piso.salas()`.
 
 ## Cómo verificar los cambios (importante)
 
@@ -100,13 +114,22 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   dispara nada. Atraviesa enemigos y hace 3 de daño; las rocas lo paran igual.
   Mientras cargas, el disparo normal se calla. El aviso visual lo dibuja
   `scripts/carga_ataque.gd` en un nodo aparte del jugador.
+- **Salas**: cada piso es un mapa de 4 a 10 salas en cuadrícula, con forma de
+  árbol (un solo camino entre dos salas). La salida es la sala más lejana del
+  inicio; el objeto va en el callejón más lejano. Al entrar **del todo** en una
+  sala con enemigos, sus puertas se cierran (rejas) hasta limpiarla; los
+  enemigos duermen hasta entonces. La bajada está tapada hasta limpiar su
+  sala. La cámara se encaja en la sala: si cabe se queda quieta, si no se
+  mueve dentro. Las bolas se apagan al salir de la casilla de su sala.
+- **Minimapa** arriba a la derecha (`scripts/minimapa.gd`): visitadas
+  rellenas, vecinas en contorno, objeto y bajada marcados en cuanto se conocen.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
   hacen daño** y paran los disparos, así que sirven de parapeto.
 - **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
   harían el movimiento un engancharse continuo.
 - **Enemigos**: desde el piso 2, cuatro tipos que persiguen dentro de su radio
-  de visión. Son lo único que quita vida.
-- **Objetos**: uno por piso, con icono de lo que hacen. Las mejoras se acumulan
+  de visión, de 1 a 4 por sala de pelea. Son lo único que quita vida.
+- **Objetos**: uno por piso, en el centro de su sala, con icono de lo que hacen. Las mejoras se acumulan
   toda la partida y se pierden al empezar otra.
 - **Vida**: corazones dibujados por código. La fuente de Godot no tiene glifos
   de corazón ni emoji: un "♥" de texto sale como un cuadradito.
@@ -116,7 +139,6 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Pendiente
 
-- **Paso 4 del rumbo Isaac: salas con puertas.** Lo más grande que queda.
 - **De dónde salen las hojas del personaje.** Ni la del nigromante ni la del
   mago de 4 direcciones traen autor ni origen (ver `CREDITS.md`). Son los
   únicos assets así. Hay que aclararlo antes de entregar o publicar.
@@ -128,7 +150,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí).
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
-  primer día y el juego ha cambiado mucho desde entonces.
+  primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
+  enemigos: con salas, el total por piso ha pasado de 2-9 a 4-28 (de 1 a 4 por
+  sala de pelea). Nadie lo ha jugado entero todavía.
+- **Posibles mejoras de las salas**, no pedidas: oscurecer las salas vecinas
+  (cuando la vista es más ancha o más alta que la sala, se asoma un trozo de
+  las de al lado), una sala de jefe en el piso 12, y salas de otras formas.
 - **Arte de los pisos 3 al 12**, cuando Matías consiga más packs.
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
@@ -147,6 +174,25 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   renderizado del resto.
 - **El mago BlueWizard se queda en el repositorio** aunque no se use. Cambiar
   de personaje es una línea de `Jugador.tscn`, y así volver atrás es gratis.
+- **El mapa de salas es un árbol.** Una casilla nueva solo se acepta si toca a
+  una sola sala: sale ramificado, con callejones, y entre dos salas hay un solo
+  camino. Los callejones son los que dan sitio a la sala del objeto.
+- **La salida es la sala más lejana y el objeto va en un callejón.** Así hay
+  que cruzar el piso para bajar, y coger el objeto es desviarse a propósito.
+- **Todas las salas de un piso miden lo mismo** (`ancho_area` × `alto_area`).
+  Es lo que las deja encajar en la cuadrícula muro con muro, sin huecos.
+- **Los enemigos duermen hasta que entras en su sala.** Son `Area2D` que van
+  directos al jugador sin chocar con nada; despiertos, los de la sala de al
+  lado cruzaban el muro para perseguirte.
+- **Las puertas se cierran al entrar DEL TODO, no al cruzar el umbral.** La
+  cámara cambia de sala a mitad del pasillo, pero el cierre espera a que el
+  jugador esté dentro con margen (`MARGEN_ENTRAR`), o nacería encima de él.
+- **Las bolas no salen de la casilla de su sala.** Si no, por una puerta
+  abierta matarían enemigos de la sala de al lado que ni has visto.
+- **La cámara se encaja en la sala; los radios de visión no se han tocado.**
+  Pisos 1-4: la sala cabe entera y la cámara se queda quieta. 5-8: cabe el
+  suelo, no los muros. 9-12: ni el suelo (en el 12 se ve el 80 % del alto).
+  Medido con la ventana de 1152×648.
 - **La ventaja de un mago se suma a los valores de fábrica, no se aplica como
   un objeto recogido.** `restaurar_vida()` vuelve a esos valores al empezar
   otra partida: si la ventaja fuera un objeto del piso, el mago perdería lo
@@ -244,6 +290,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Una afirmación en un comentario también se comprueba.** Escribí que la
   fórmula del halo reproducía los colores de antes; el test lo desmintió. Si un
   comentario dice «da lo mismo que antes», el test tiene que medirlo.
+- **Los números de un texto se calculan antes de escribirlos.** Al documentar
+  las salas escribí de memoria «la sala cabe entera hasta el piso 7» y «en el
+  12 se ve media sala»; calculado, era hasta el 4 y el 80 %. Igual que con los
+  comentarios: si un texto da un número, sale de una medida.
 - **Al cambiar una regla del juego, revisar los textos que la cuentan**: el
   panel de controles del menú y los carteles del tutorial se quedaron diciendo
   que las rocas quitaban vida mucho después de que dejaran de hacerlo.

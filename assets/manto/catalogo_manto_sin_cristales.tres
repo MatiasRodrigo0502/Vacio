@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=38 format=3]
+
+[ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="0_catalogo"]
+[ext_resource type="Texture2D" path="res://assets/manto/piedra_00.png" id="mans_piedra_00"]
+[ext_resource type="Texture2D" path="res://assets/manto/piedra_01.png" id="mans_piedra_01"]
+[ext_resource type="Texture2D" path="res://assets/manto/piedra_02.png" id="mans_piedra_02"]
+[ext_resource type="Texture2D" path="res://assets/manto/piedra_03.png" id="mans_piedra_03"]
+[ext_resource type="Texture2D" path="res://assets/manto/piedra_04.png" id="mans_piedra_04"]
+[ext_resource type="Texture2D" path="res://assets/manto/piedra_05.png" id="mans_piedra_05"]
+[ext_resource type="Texture2D" path="res://assets/manto/piedra_06.png" id="mans_piedra_06"]
+[ext_resource type="Texture2D" path="res://assets/manto/piedra_07.png" id="mans_piedra_07"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_00.png" id="mans_roca_00"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_01.png" id="mans_roca_01"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_02.png" id="mans_roca_02"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_03.png" id="mans_roca_03"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_04.png" id="mans_roca_04"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_05.png" id="mans_roca_05"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_06.png" id="mans_roca_06"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_07.png" id="mans_roca_07"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_08.png" id="mans_roca_08"]
+[ext_resource type="Texture2D" path="res://assets/manto/roca_09.png" id="mans_roca_09"]
+[ext_resource type="Texture2D" path="res://assets/manto/bloque_00.png" id="mans_bloque_00"]
+[ext_resource type="Texture2D" path="res://assets/manto/bloque_01.png" id="mans_bloque_01"]
+[ext_resource type="Texture2D" path="res://assets/manto/bloque_02.png" id="mans_bloque_02"]
+[ext_resource type="Texture2D" path="res://assets/manto/bloque_03.png" id="mans_bloque_03"]
+[ext_resource type="Texture2D" path="res://assets/manto/bloque_04.png" id="mans_bloque_04"]
+[ext_resource type="Texture2D" path="res://assets/manto/bloque_05.png" id="mans_bloque_05"]
+[ext_resource type="Texture2D" path="res://assets/manto/bloque_06.png" id="mans_bloque_06"]
+[ext_resource type="Texture2D" path="res://assets/manto/grupo_00.png" id="mans_grupo_00"]
+[ext_resource type="Texture2D" path="res://assets/manto/grupo_01.png" id="mans_grupo_01"]
+[ext_resource type="Texture2D" path="res://assets/manto/grupo_02.png" id="mans_grupo_02"]
+[ext_resource type="Texture2D" path="res://assets/manto/grupo_03.png" id="mans_grupo_03"]
+[ext_resource type="Texture2D" path="res://assets/manto/grupo_04.png" id="mans_grupo_04"]
+[ext_resource type="Texture2D" path="res://assets/manto/grupo_05.png" id="mans_grupo_05"]
+[ext_resource type="Texture2D" path="res://assets/manto/plataforma_00.png" id="mans_plataforma_00"]
+[ext_resource type="Texture2D" path="res://assets/manto/plataforma_01.png" id="mans_plataforma_01"]
+[ext_resource type="Texture2D" path="res://assets/manto/plataforma_02.png" id="mans_plataforma_02"]
+[ext_resource type="Texture2D" path="res://assets/manto/plataforma_03.png" id="mans_plataforma_03"]
+[ext_resource type="Texture2D" path="res://assets/manto/plataforma_04.png" id="mans_plataforma_04"]
+
+[resource]
+script = ExtResource("0_catalogo")
+piedras = Array[Texture2D]([ExtResource("mans_piedra_00"), ExtResource("mans_piedra_01"), ExtResource("mans_piedra_02"), ExtResource("mans_piedra_03"), ExtResource("mans_piedra_04"), ExtResource("mans_piedra_05"), ExtResource("mans_piedra_06"), ExtResource("mans_piedra_07")])
+rocas = Array[Texture2D]([ExtResource("mans_roca_00"), ExtResource("mans_roca_01"), ExtResource("mans_roca_02"), ExtResource("mans_roca_03"), ExtResource("mans_roca_04"), ExtResource("mans_roca_05"), ExtResource("mans_roca_06"), ExtResource("mans_roca_07"), ExtResource("mans_roca_08"), ExtResource("mans_roca_09")])
+bloques = Array[Texture2D]([ExtResource("mans_bloque_00"), ExtResource("mans_bloque_01"), ExtResource("mans_bloque_02"), ExtResource("mans_bloque_03"), ExtResource("mans_bloque_04"), ExtResource("mans_bloque_05"), ExtResource("mans_bloque_06")])
+grupos = Array[Texture2D]([ExtResource("mans_grupo_00"), ExtResource("mans_grupo_01"), ExtResource("mans_grupo_02"), ExtResource("mans_grupo_03"), ExtResource("mans_grupo_04"), ExtResource("mans_grupo_05")])
+vegetacion = Array[Texture2D]([])
+plataformas = Array[Texture2D]([ExtResource("mans_plataforma_00"), ExtResource("mans_plataforma_01"), ExtResource("mans_plataforma_02"), ExtResource("mans_plataforma_03"), ExtResource("mans_plataforma_04")])

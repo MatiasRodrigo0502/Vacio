@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_00.png" id="cristal_vivo_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_01.png" id="cristal_vivo_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_02.png" id="cristal_vivo_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_03.png" id="cristal_vivo_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_04.png" id="cristal_vivo_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_05.png" id="cristal_vivo_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_06.png" id="cristal_vivo_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_07.png" id="cristal_vivo_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_08.png" id="cristal_vivo_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/cristal_vivo_09.png" id="cristal_vivo_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("cristal_vivo_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]

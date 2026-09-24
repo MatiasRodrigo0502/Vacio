@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_00.png" id="golem_roca_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_01.png" id="golem_roca_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_02.png" id="golem_roca_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_03.png" id="golem_roca_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_04.png" id="golem_roca_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_05.png" id="golem_roca_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_06.png" id="golem_roca_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_07.png" id="golem_roca_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_08.png" id="golem_roca_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/golem_roca_09.png" id="golem_roca_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("golem_roca_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("golem_roca_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]

@@ -5,7 +5,8 @@
 Juego 2D top-down de habilidad hecho en **Godot 4.7** (GDScript). El jugador
 desciende piso a piso por una estructura con forma de embudo: 12 niveles fijos
 basados en las capas de la Tierra, de la corteza continental al núcleo interno.
-Cada piso es más estrecho, más denso y se ve menos que el anterior.
+Cada piso es un mapa de salas unidas por puertas, y cada uno tiene más salas,
+más pequeñas, y se ve menos que el anterior.
 
 Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
@@ -28,8 +29,21 @@ cada uno donde hace falta.
 
 ## Cómo se juega ahora mismo
 
-Apareces arriba del piso y bajas hasta el círculo de salida del fondo. Al
-tocarlo pasas al siguiente, con la vida que te quede.
+Cada piso es un **mapa de salas** unidas por puertas, como en *Isaac*. Empiezas
+en una sala tranquila y tienes que encontrar la que tiene el **agujero** para
+bajar al siguiente piso, con la vida que te quede.
+
+- **Al entrar en una sala con enemigos, las puertas se cierran** y no se abren
+  hasta que acabas con todos. Los enemigos duermen hasta que entras.
+- **La bajada está tapada** hasta que limpias su sala, que siempre es la más
+  lejana del inicio.
+- En cada piso hay una **sala con un objeto** en algún callejón: cogerlo es
+  desviarte del camino.
+- Arriba a la derecha va un **minimapa**: las salas en las que has estado, las
+  de al lado en contorno, y el objeto y la bajada marcados en cuanto las
+  conoces. El resto se descubre andando.
+- Cuanto más bajas, más salas y más pequeñas, y la cámara se cierra más: en
+  los pisos hondos ya no ves la sala entera.
 
 Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 

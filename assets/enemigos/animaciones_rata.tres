@@ -1,0 +1,50 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_00.png" id="rata_00"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_01.png" id="rata_01"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_02.png" id="rata_02"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_03.png" id="rata_03"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_04.png" id="rata_04"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_05.png" id="rata_05"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_06.png" id="rata_06"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_07.png" id="rata_07"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_08.png" id="rata_08"]
+[ext_resource type="Texture2D" path="res://assets/enemigos/rata_09.png" id="rata_09"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("rata_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("rata_09")
+}],
+"loop": true,
+"name": &"moverse",
+"speed": 12.0
+}]
