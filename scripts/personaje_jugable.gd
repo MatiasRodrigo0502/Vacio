@@ -26,6 +26,20 @@ extends Resource
 ## Color del nombre en la pantalla de seleccion.
 @export var color: Color = Color.WHITE
 
+@export_group("Colores del disparo")
+## Centro y resplandor de las bolas del disparo normal.
+##
+## El resplandor se pide aparte y no se deduce del centro con una formula: se
+## probo, y la formula cambiaba el halo del mago oscuro (0,10 en un canal), que
+## estaba ajustado a mano. Dos colores por ataque es poco trabajo y deja cada
+## mago exactamente como se quiere.
+@export var color_disparo: Color = Color(0.62, 0.84, 1.0)
+@export var halo_disparo: Color = Color(0.35, 0.60, 1.0)
+## Lo mismo para el ataque cargado: la bola que se forma al cargar y la que
+## sale. Conviene que se distinga del normal, para saber que ha salido.
+@export var color_cargado: Color = Color(0.72, 0.52, 1.0)
+@export var halo_cargado: Color = Color(0.52, 0.28, 0.95)
+
 @export_group("Ventajas")
 ## Corazones de mas (o de menos) con los que empieza.
 @export var vida_maxima_extra: int = 0

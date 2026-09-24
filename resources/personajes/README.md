@@ -27,6 +27,18 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
    empiece por el número que le toque, y rellena los campos.
 3. Ya está. Arranca el juego y su ficha sale en «Elegir mago».
 
+## Colores del disparo
+
+Cada mago dispara de su color: el oscuro en azul (y morado el cargado), el rojo
+en rojo. Son cuatro campos, centro y resplandor para cada ataque
+(`color_disparo`, `halo_disparo`, `color_cargado`, `halo_cargado`). La bola que
+se forma mientras cargas sale de los dos del cargado, así que lo que se forma y
+lo que sale al soltar son la misma cosa.
+
+El resplandor se pide aparte en vez de deducirlo del centro con una fórmula. Se
+probó, y la fórmula movía el halo del mago oscuro 0,10 en un canal: estaba
+ajustado a mano y no había por qué tocarlo.
+
 ## Sobre las ventajas
 
 Los campos de ventaja se **suman a los valores de fábrica** del jugador, no se

@@ -13,10 +13,11 @@
 class_name CargaAtaque
 extends Node2D
 
-## Color de la carga. Morado como el orbe del baculo, para que se distinga del
-## disparo normal, que es azul.
-const COLOR_CARGA := Color(0.62, 0.36, 0.95)
-const COLOR_LISTO := Color(0.80, 0.62, 1.0)
+## Colores de la carga: arranca en _color_carga y acaba en _color_listo. Salen del
+## color del disparo cargado del mago (ver pintar_con()); estos son los del mago
+## oscuro, por si nadie llama a pintar_con().
+var _color_carga := Color(0.62, 0.36, 0.95)
+var _color_listo := Color(0.80, 0.62, 1.0)
 
 ## Cuanto llevas cargado, de 0 a 1. Lo pone el jugador.
 var progreso: float = 0.0
@@ -49,6 +50,18 @@ func actualizar(nuevo_progreso: float, nueva_direccion: Vector2) -> void:
 	queue_redraw()
 
 
+## Tine la carga con los colores del disparo cargado del mago, para que la bola
+## que se forma y la que sale al soltar sean la misma cosa.
+##
+## Arranca a medio camino entre el halo y el color, y acaba en el color un poco
+## aclarado: "aclararse" es parte de la senal de que ya esta lista. Con los
+## colores del mago oscuro da, a menos de 0,05 por canal, los que estaban
+## puestos a mano antes de que hubiera magos.
+func pintar_con(color_cargado: Color, halo_cargado: Color) -> void:
+	_color_carga = halo_cargado.lerp(color_cargado, 0.5)
+	_color_listo = color_cargado.lightened(0.25)
+
+
 func apagar() -> void:
 	progreso = 0.0
 	visible = false
@@ -67,7 +80,7 @@ func _draw() -> void:
 	# que el tamano solo, sobre todo con el sprite tan oscuro de fondo.
 	var centro := direccion * (15.0 + 13.0 * progreso)
 	var radio := 2.5 + 9.5 * progreso
-	var color := COLOR_CARGA.lerp(COLOR_LISTO, progreso)
+	var color := _color_carga.lerp(_color_listo, progreso)
 
 	# Cuando esta lista late, y solo entonces: el latido es la senal de "ya".
 	# Mientras carga se mantiene quieta para que crecer sea lo unico que se vea.
@@ -87,7 +100,7 @@ func _draw() -> void:
 	if esta_lista():
 		# Aro de "cargada": cerrado del todo, frente al arco de mientras carga.
 		draw_arc(centro, radio * 2.9 * pulso, 0.0, TAU, 28,
-			Color(COLOR_LISTO.r, COLOR_LISTO.g, COLOR_LISTO.b, 0.75), 2.0, true)
+			Color(_color_listo.r, _color_listo.g, _color_listo.b, 0.75), 2.0, true)
 	else:
 		# Arco que se va cerrando: dice cuanto falta sin numeros ni barra.
 		draw_arc(centro, radio * 2.9, -PI * 0.5, -PI * 0.5 + TAU * progreso, 24,

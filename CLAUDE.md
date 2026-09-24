@@ -86,6 +86,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `resources/personajes/`. Cada uno trae su arte y su ventaja, y la ventaja va
   a los valores **de fábrica** del jugador, así que sobrevive a reiniciar. El
   menú monta una ficha por `.tres`, así que un mago nuevo no toca código.
+  Cada mago trae también **el color de sus disparos** (centro y resplandor del
+  normal y del cargado): el oscuro azul y morado, el rojo en rojo.
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve.
@@ -149,6 +151,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   un objeto recogido.** `restaurar_vida()` vuelve a esos valores al empezar
   otra partida: si la ventaja fuera un objeto del piso, el mago perdería lo
   suyo al reiniciar.
+- **El resplandor de las bolas se declara, no se deduce.** Una fórmula que
+  sacaba el halo del color del centro movía el del mago oscuro 0,10 en un
+  canal, y ese estaba ajustado a mano. Dos colores por ataque y cada mago queda
+  exactamente como se quiere.
 - **Cada mago tiene también una pega, y se enseña.** Si uno fuera mejor a
   secas, elegir dejaría de ser una decisión.
 - **El mago se gira por ángulo, no comparando x contra y.** Con cuatro
@@ -235,6 +241,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   fallar: `_ready()` se corta antes del `quit()` y el proceso se queda ahí sin
   decir nada (pasó llamando a `configurar()` en vez de `preparar()`). Vale la
   pena meterle un `Timer` de vigía que llame a `quit()` pase lo que pase.
+- **Una afirmación en un comentario también se comprueba.** Escribí que la
+  fórmula del halo reproducía los colores de antes; el test lo desmintió. Si un
+  comentario dice «da lo mismo que antes», el test tiene que medirlo.
 - **Al cambiar una regla del juego, revisar los textos que la cuentan**: el
   panel de controles del menú y los carteles del tutorial se quedaron diciendo
   que las rocas quitaban vida mucho después de que dejaran de hacerlo.

@@ -86,6 +86,9 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 	# La bola hereda lo que hayan mejorado los objetos recogidos.
 	bola.velocidad = _jugador.velocidad_bola
 	bola.radio = _jugador.radio_bola
+	# Cada mago dispara de su color.
+	bola.color = _jugador.color_cargado if cargada else _jugador.color_disparo
+	bola.color_halo = _jugador.halo_cargado if cargada else _jugador.halo_disparo
 	if cargada:
 		# El ataque cargado parte de los numeros ya mejorados y los multiplica,
 		# para que los objetos recogidos tambien se noten en el.

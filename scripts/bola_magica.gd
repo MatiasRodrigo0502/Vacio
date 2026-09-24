@@ -28,9 +28,15 @@ signal impacto(objetivo: Node2D)
 ## todo lo que sea rompible ahora y en el futuro.
 @export var dano: int = 1
 
-## Cambia el dibujo: la cargada sale morada y gorda, como la carga del baculo,
-## para que se distinga de un tiro normal grande por las mejoras.
+## Marca el disparo cargado. Ya no decide el color (eso lo hace `color`), pero
+## sirve para saber que bola es cual sin mirar su tamano.
 @export var cargada: bool = false
+
+## Color del centro de la bola y de su resplandor. Los pone Principal con los
+## del mago que dispara, asi que cada mago tiene sus bolas sin que la bola sepa
+## de magos. Por defecto, los del disparo normal del mago oscuro.
+@export var color: Color = Color(0.62, 0.84, 1.0)
+@export var color_halo: Color = Color(0.35, 0.60, 1.0)
 
 ## Si es true, los disparos tambien destruyen rocas y plataformas. Esta en false
 ## porque las rocas son el terreno: si el disparo las borra, el piso se limpia
@@ -96,9 +102,8 @@ func _draw() -> void:
 	var pulso := 1.0 + sin(_fase * 22.0) * 0.12
 	# El rastro va siempre detras, sea cual sea la direccion del disparo.
 	var atras := -direccion
-	# Azul el disparo normal, morado el cargado.
-	var nucleo := Color(0.72, 0.52, 1.0) if cargada else Color(0.62, 0.84, 1.0)
-	var halo := Color(0.52, 0.28, 0.95) if cargada else Color(0.35, 0.60, 1.0)
+	var nucleo := color
+	var halo := color_halo
 
 	for i in 5:
 		var t := float(i) / 5.0

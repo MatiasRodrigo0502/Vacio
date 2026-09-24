@@ -49,6 +49,13 @@ signal mejora_recogida(mejora: ObjetoMejora)
 @export var factor_radio_cargada: float = 2.1
 @export var factor_velocidad_cargada: float = 1.3
 
+@export_group("Colores del disparo")
+## Los pone el mago elegido. Los lee Principal al crear cada bola.
+@export var color_disparo: Color = Color(0.62, 0.84, 1.0)
+@export var halo_disparo: Color = Color(0.35, 0.60, 1.0)
+@export var color_cargado: Color = Color(0.72, 0.52, 1.0)
+@export var halo_cargado: Color = Color(0.52, 0.28, 0.95)
+
 ## Tope de cadencia: por debajo de esto el disparo se vuelve una manguera y el
 ## juego deja de tener tension.
 const CADENCIA_MINIMA: float = 0.09
@@ -114,6 +121,12 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 
 	if personaje.animaciones != null:
 		_sprite.sprite_frames = personaje.animaciones
+
+	color_disparo = personaje.color_disparo
+	halo_disparo = personaje.halo_disparo
+	color_cargado = personaje.color_cargado
+	halo_cargado = personaje.halo_cargado
+	_carga_visual.pintar_con(color_cargado, halo_cargado)
 
 	_base_vida_maxima += personaje.vida_maxima_extra
 	_base_velocidad += personaje.velocidad_extra
