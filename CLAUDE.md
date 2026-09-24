@@ -233,6 +233,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Trampas ya pisadas (no repetirlas)
 
+- **Nunca `git add -A` en este repo: se añaden los archivos por su ruta.** En
+  esta carpeta trabaja más de uno a la vez. El 2026-09-24, mientras se hacían
+  las salas, aparecieron 121 archivos de otro trabajo (7 enemigos nuevos en
+  `assets/enemigos/` y el pack `assets/manto/`) y un `git add -A` los subió
+  dentro del commit del minimapa (`cb5a4f6`), con un mensaje que no los
+  menciona. Antes de cada commit: `git status`, y añadir solo lo propio.
 - **Editar por índices de texto es peligroso.** Dos veces, cortar un bloque de
   `piso.gd` entre dos marcas se llevó funciones que estaban en medio
   (`_al_entrar_en_salida`, `_colocar_tutorial`). Reemplazar bloques exactos y
