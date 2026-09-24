@@ -12,13 +12,28 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 
 ## En uso
 
-### Mago de 4 direcciones — personaje jugable
+### Mago oscuro — personaje jugable
+
+- **Pack**: «Mago oscuro — sprites de caminata en 8 direcciones»
+- **Autor**: sin identificar
+- **URL**: —
+- **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
+- **Archivos**: `assets/mago_oscuro/atlas_8dir.png` (8×6 fotogramas de 64×72),
+  `animaciones_mago_oscuro.tres` y `retrato.png`
+- **Procesado**: se parte del `atlas_8dir_64px.png` del pack. Solo se ha
+  centrado cada dirección sobre el eje de sus botas, desplazando un número
+  entero de píxeles; no se ha reescalado ni recoloreado nada.
+- **Nota**: lo aportó Matías, sin decir de dónde salía. **Hay que averiguar de
+  dónde viene.**
+
+### Mago de 4 direcciones — personaje jugable anterior (fuera de uso)
 
 - **Pack**: sin identificar
 - **Autor**: sin identificar
 - **URL**: —
 - **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
 - **Archivos**: `assets/mago/*.png` (15 frames) + `animaciones_mago.tres`
+- **Estado**: sustituido por el mago oscuro de 8 direcciones.
 - **Procesado**: recortado de una hoja de 4×4 casillas rotuladas (1254×1254),
   quitando rótulos y rejilla y reescalado a 108×134. Las dos filas de lado de
   la hoja son la misma pose mirando a la derecha, así que la izquierda se

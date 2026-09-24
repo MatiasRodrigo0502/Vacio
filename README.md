@@ -10,7 +10,7 @@ Cada piso es más estrecho, más denso y se ve menos que el anterior.
 Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
 persiguen, objetos que te mejoran, victoria y derrota. El jugador es un mago
-animado que mira a los cuatro lados; el piso 1 hace de tutorial con arte de musgo y el 2 de
+oscuro animado que mira a los ocho lados; el piso 1 hace de tutorial con arte de musgo y el 2 de
 cueva; del 3 al 12 se reutiliza la roca de cueva hasta que haya más arte.
 
 ## Controles
@@ -30,6 +30,10 @@ cada uno donde hace falta.
 
 Apareces arriba del piso y bajas hasta el círculo de salida del fondo. Al
 tocarlo pasas al siguiente, con la vida que te quede.
+
+El mago se gira a **ocho direcciones**, diagonales incluidas, y mira hacia donde
+disparas antes que hacia donde andas: si estás peleando de espaldas, te ve a ti
+y no a la salida.
 
 Las rocas y plataformas son sólidas: no se cruzan ni se rompen, pero te sirven
 de parapeto. Lo que te quita vida son los **enemigos** al tocarte, con ~1 s de
@@ -85,8 +89,9 @@ Vacio/
 │   ├── objetos/           # un .tres por objeto recogible (ver su README)
 │   └── mecanicas/         # .tres de mecánicas (vacío en Fase 1, ver su README)
 └── assets/
-    ├── mago/          # frames del personaje jugable (4 direcciones)
-    ├── nigromante/    # personaje anterior, fuera de uso
+    ├── mago_oscuro/   # personaje jugable: atlas de 8 direcciones + su SpriteFrames
+    ├── mago/          # mago morado de 4 direcciones, fuera de uso
+    ├── nigromante/    # fuera de uso
     ├── personaje/     # el mago azul original, fuera de uso
     ├── cueva/          # rocas y vegetación del piso 1 (y base del 3 al 12)
     └── musgo/          # arte del piso 2

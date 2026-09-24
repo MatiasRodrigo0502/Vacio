@@ -57,6 +57,14 @@ const CADENCIA_MINIMA: float = 0.09
 ## pasa a la animacion de reposo. No es 0 porque la friccion deja residuos.
 const VELOCIDAD_MINIMA_ANDAR: float = 12.0
 
+## Las ocho direcciones del mago, en el orden de los sectores de 45 grados que
+## devuelve Vector2.angle(): empieza en la derecha y gira en el sentido de las
+## agujas del reloj, porque en pantalla la y crece hacia abajo.
+const LADOS: Array[StringName] = [
+	&"derecha", &"abajo_derecha", &"abajo", &"abajo_izquierda",
+	&"izquierda", &"arriba_izquierda", &"arriba", &"arriba_derecha",
+]
+
 var vida_actual: int = 0
 
 ## Valores de fabrica, para poder devolver al jugador a como empezo cuando se
@@ -255,27 +263,24 @@ func _actualizar_animacion() -> void:
 		_sprite.set_frame_and_progress(mini(marco, tope), avance)
 
 
-## Lo contrario de _lado(): del nombre de la direccion al vector.
+## Lo contrario de _lado(): del nombre de la direccion al vector que la
+## representa. Si el nombre no existe, se mira hacia abajo, que es como empieza
+## cada piso.
 func _vector_de(lado: StringName) -> Vector2:
-	match lado:
-		&"izquierda":
-			return Vector2.LEFT
-		&"derecha":
-			return Vector2.RIGHT
-		&"arriba":
-			return Vector2.UP
-		_:
-			return Vector2.DOWN
+	var sector := LADOS.find(lado)
+	if sector < 0:
+		return Vector2.DOWN
+	return Vector2.RIGHT.rotated(sector * TAU / 8.0)
 
 
-## Traduce un vector a la direccion de la hoja de sprites.
+## Traduce un vector a una de las ocho direcciones del mago.
 ##
-## En empate (diagonal exacta) gana el eje horizontal: las vistas de lado
-## tienen mas detalle que la de espaldas y se lee mejor a quien estas mirando.
+## POR QUE POR ANGULO Y NO COMPARANDO x CONTRA y:
+## con cuatro direcciones bastaba un if; con ocho, la misma idea se convierte en
+## una escalera de comparaciones que no se lee ni se comprueba. Redondear el
+## angulo al sector de 45 grados mas cercano es la misma regla escrita una vez.
 func _lado(v: Vector2) -> StringName:
-	if absf(v.x) >= absf(v.y):
-		return &"derecha" if v.x > 0.0 else &"izquierda"
-	return &"abajo" if v.y > 0.0 else &"arriba"
+	return LADOS[posmod(int(roundf(v.angle() / (TAU / 8.0))), 8)]
 
 
 func _actualizar_invulnerabilidad(delta: float) -> void:

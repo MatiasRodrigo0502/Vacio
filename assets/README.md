@@ -3,9 +3,45 @@
 Arte del juego. Aquí entra **solo lo que se usa**, ya recortado y reescalado;
 los packs originales viven fuera del repositorio (ver `CREDITS.md` en la raíz).
 
+## mago_oscuro/
+
+El personaje jugable **que se usa ahora**, y el primero que mira a los **ocho**
+lados. Dos archivos:
+
+- `atlas_8dir.png` — 384×576: 8 filas (una por dirección) × 6 poses de 64×72.
+- `animaciones_mago_oscuro.tres` — 48 `AtlasTexture` recortadas de ese atlas y
+  16 animaciones: `caminar_` y `quieto_` por dirección. Es lo que carga
+  `Jugador.tscn`.
+
+Un atlas y no 48 PNG sueltos porque el pack ya venía así y porque es un archivo
+en vez de 48 en el repositorio. Las regiones las define el `.tres`.
+
+El pack vino limpio: fondo transparente, tamaños iguales y **los rótulos del
+orden de filas dicen la verdad** (comprobado: los pares opuestos son espejo
+exacto al 100 %, y la cara se desplaza ±7,5 px justo a los lados que dice).
+
+Lo único que hubo que arreglar es que **el eje de los pies no estaba en el mismo
+sitio en cada dirección**: 23,7 px mirando a la derecha y 39,3 mirando a la
+izquierda, o sea que el mago se corría 15 px de lado al girarse. Cada dirección
+se ha centrado sobre sus botas, con desplazamientos de un número entero de
+píxeles: esto es pixel art de verdad y cualquier reescalado o decimal
+emborronaría los bordes duros. Después del centrado el eje va de 31,2 a 32,0 en
+las ocho, y el espejo entre opuestas sigue siendo exacto.
+
+**Tamaño en pantalla**: se dibuja a escala 1, sin escalar, porque es pixel art.
+El dibujo ocupa hasta la fila 68 de un fotograma de 72, así que el `offset` de
+la escena es −33 (y no −36) para que el borde de abajo del dibujo caiga en el
+origen del nodo, que es donde están los pies.
+
+**Contraste medido contra el suelo: 1,66:1**, mejor que el mago morado anterior
+(1,40) aunque por debajo del nigromante (1,81).
+
+`retrato.png` es la pose de reposo de frente recortada, solo para el menú: un
+`TextureRect` necesita una textura suelta, no una animación.
+
 ## mago/
 
-El personaje jugable **que se usa ahora**, y el primero que mira a los cuatro
+**Fuera de uso.** El personaje anterior, el primero que miró a los cuatro
 lados. 15 PNG de 108×134 (`abajo_0..3`, `izquierda_0..3`, `derecha_0..3`,
 `arriba_0..2`) y `animaciones_mago.tres`, con ocho animaciones: `caminar_` y
 `quieto_` por cada dirección.

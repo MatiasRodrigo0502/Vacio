@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/jugador.gd" id="1_jugador"]
-[ext_resource type="SpriteFrames" path="res://assets/mago/animaciones_mago.tres" id="2_animaciones"]
+[ext_resource type="SpriteFrames" path="res://assets/mago_oscuro/animaciones_mago_oscuro.tres" id="2_animaciones"]
 [ext_resource type="Script" path="res://scripts/carga_ataque.gd" id="3_carga"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jugador"]
@@ -16,11 +16,10 @@ script = ExtResource("1_jugador")
 metadata/_edit_group_ = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_animaciones")
 animation = &"quieto_abajo"
 autoplay = "quieto_abajo"
-offset = Vector2(0, -67)
+offset = Vector2(0, -33)
 
 [node name="Forma" type="CollisionShape2D" parent="."]
 position = Vector2(0, -16)

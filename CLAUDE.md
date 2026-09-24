@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-09-22.**
+**Última actualización: 2026-09-24.**
 
 ---
 
@@ -81,8 +81,9 @@ Para lanzar el juego: `jugar.bat` en la raíz.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
-- **Jugador**: mago animado **en las cuatro direcciones** (abajo, izquierda,
-  derecha, arriba), con `caminar_` y `quieto_` por cada una. WASD mueve.
+- **Jugador**: mago oscuro animado **en las ocho direcciones** (las cuatro
+  cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
+  16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve.
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
   aunque te estés alejando.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
@@ -112,12 +113,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **De dónde salen las hojas del personaje.** Ni la del nigromante ni la del
   mago de 4 direcciones traen autor ni origen (ver `CREDITS.md`). Son los
   únicos assets así. Hay que aclararlo antes de entregar o publicar.
-- **Contraste del mago nuevo: 1,43:1** contra el suelo, el más bajo que ha
-  tenido el juego (nigromante 1,81:1, mago azul 1,55:1). Se lee por el orbe y
-  el ribete, pero si se pierde en los pisos oscuros hay que aclararlo un poco.
-- **Limpiar las carpetas de personajes.** Quedan tres (`mago/` en uso,
-  `nigromante/` y `personaje/` fuera de uso). Borrar las dos muertas cuando
-  Matías lo confirme.
+- **Contraste del mago oscuro: 1,66:1** contra el suelo. Mejor que el mago
+  morado al que sustituye (1,40:1), por debajo del nigromante (1,81:1).
+- **Limpiar las carpetas de personajes.** Ya son cuatro: `mago_oscuro/` en uso
+  y `mago/`, `nigromante/` y `personaje/` muertas. Borrar las tres muertas en
+  cuanto Matías lo confirme; el historial de git las conserva.
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí).
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
@@ -140,7 +140,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   renderizado del resto.
 - **El mago BlueWizard se queda en el repositorio** aunque no se use. Cambiar
   de personaje es una línea de `Jugador.tscn`, y así volver atrás es gratis.
-- **La izquierda del mago es la derecha reflejada.** Las dos filas de lado de
+- **El mago se gira por ángulo, no comparando x contra y.** Con cuatro
+  direcciones bastaba un `if`; con ocho, la misma idea sería una escalera de
+  comparaciones. `_lado()` redondea el ángulo al sector de 45° más cercano y
+  `LADOS` da el nombre. `_vector_de()` es la vuelta, girando `Vector2.RIGHT`.
+- **El pixel art se mueve en píxeles enteros y se dibuja a escala 1.** El atlas
+  del mago oscuro es pixel art de verdad (64×72): centrar cada dirección se
+  hizo desplazando un número entero de píxeles, y la escena lo dibuja sin
+  escalar. Un decimal en cualquiera de los dos sitios emborrona los bordes.
+- **La izquierda del mago morado (fuera de uso) era la derecha reflejada.** Las dos filas de lado de
   la hoja son la misma pose y las dos miran a la derecha, aunque una se
   rotule «izquierda». Reflejar garantiza el par.
 - **Andar hacia arriba tiene tres poses y no cuatro**: el fotograma «arriba 3»
@@ -186,6 +194,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de línea**: se come la barra y el salto, y rompió una línea de GDScript
   generada desde un script. Los heredoc de bash también se comen barras: para
   scripts con barras, escribir el `.py` a archivo y ejecutarlo.
+- **El eje de los pies también se mide por dirección.** En el atlas del mago
+  oscuro estaba a 23,7 px mirando a la derecha y a 39,3 mirando a la izquierda:
+  el mago se corría 15 px de lado al girarse. Y se mide sobre las **botas**
+  (alfa ≥ 230 en las filas de abajo), no sobre toda la silueta: la sombra es
+  más ancha que los pies y arrastra el eje.
 - **La línea de suelo de una hoja se mide por dirección, no para toda.** Cada
   fila de la hoja del mago tenía al personaje a una altura distinta dentro de
   su casilla; con una sola referencia, el mago pegaba un salto vertical al
