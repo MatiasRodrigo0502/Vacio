@@ -139,6 +139,31 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Pendiente
 
+- **PARA LA PRÓXIMA SESIÓN (pedido por Matías el 2026-09-24): meter los 7
+  enemigos nuevos y el pack del manto.** Los hizo Matías y ya están en el repo
+  (`assets/enemigos/` y `assets/manto/`, documentados en `assets/README.md`),
+  pero no los usa nada todavía. Lo que falta:
+  1. **Un `TipoEnemigo` por enemigo** en `resources/enemigos/` (copiar
+     `slime_verde.tres` y cambiar nombre, animaciones y números). Solo datos:
+     las animaciones ya se llaman `moverse` con 10 fotogramas, que es lo que
+     espera `enemigo.gd`. La rata y la serpiente miran a la derecha, y
+     `enemigo.gd` ya voltea el sprite al ir a la izquierda: no hay que tocar
+     nada para eso.
+  2. **Decidir con Matías si hace falta `piso_maximo`.** Ahora un enemigo solo
+     tiene `piso_minimo`: sin tope, la rata y el murciélago (de cueva) saldrían
+     también en el núcleo. Añadirlo son unas líneas en `tipo_enemigo.gd` y en el
+     filtro de `scripts/mecanicas/enemigos.gd`.
+  3. **Aclarar el cristal vivo.** El README dice que es «fijo, como las
+     plantas», pero las plantas SÍ se mueven (velocidad 46 y 132). Si tiene que
+     ser fijo, `velocidad = 0`.
+  4. **Manto**: apuntar `catalogo_arte` de los pisos del manto (4-8: astenosfera,
+     manto superior, zona de transición, manto inferior, capa D'') a
+     `catalogo_manto.tres` o a `catalogo_manto_sin_cristales.tres`. Solo datos.
+     Después, **medir el contraste de las rocas con el tinte de esos pisos**,
+     como se hizo con la cueva (ver `tinte_profundidad()`).
+  5. **CREDITS.md**: los dos packs son propios (generador procedural de
+     Matías), así que no tienen problema de licencia. Apuntarlo.
+  6. Probar los 12 pisos, capturar cada enemigo nuevo en su piso y subir.
 - **De dónde salen las hojas del personaje.** Ni la del nigromante ni la del
   mago de 4 direcciones traen autor ni origen (ver `CREDITS.md`). Son los
   únicos assets así. Hay que aclararlo antes de entregar o publicar.
@@ -235,10 +260,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 - **Nunca `git add -A` en este repo: se añaden los archivos por su ruta.** En
   esta carpeta trabaja más de uno a la vez. El 2026-09-24, mientras se hacían
-  las salas, aparecieron 121 archivos de otro trabajo (7 enemigos nuevos en
+  las salas, Matías añadió 121 archivos (7 enemigos nuevos en
   `assets/enemigos/` y el pack `assets/manto/`) y un `git add -A` los subió
   dentro del commit del minimapa (`cb5a4f6`), con un mensaje que no los
-  menciona. Antes de cada commit: `git status`, y añadir solo lo propio.
+  menciona. Se quedan ahí, porque son suyos y los quería subidos, pero pudo no
+  ser así. Antes de cada commit: `git status`, y añadir solo lo propio.
 - **Editar por índices de texto es peligroso.** Dos veces, cortar un bloque de
   `piso.gd` entre dos marcas se llevó funciones que estaban en medio
   (`_al_entrar_en_salida`, `_colocar_tutorial`). Reemplazar bloques exactos y
