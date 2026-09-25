@@ -55,6 +55,9 @@ Notas de diseño de la curva:
   verdad lo de «cada piso se ve menos» ahora que hay salas; para apretarlo más,
   bajar `radio_vision`.
 - Las salas se encogen y las rocas por sala suben: cada sala es más densa.
+- **Arte por capa**: 1 musgo, 2-3 cueva, 4-8 manto (con cristales hasta el 6),
+  9-12 núcleo (con cristales de hierro en el 11 y el 12). Se cambia con
+  `catalogo_arte`.
 
 ## Ajustar un piso
 

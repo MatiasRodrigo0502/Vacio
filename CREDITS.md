@@ -83,7 +83,7 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Procesado**: recortados de 512×512 a la caja útil del personaje (160×280) y
   reescalados a 73×128. Los originales no están en el repo (ver más abajo).
 
-### Musgo — arte del piso 2
+### Musgo — arte del piso 1
 
 - **Pack**: Mossy Cavern
 - **Autor**: maaot
@@ -95,7 +95,7 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
   con musgo y lianas con pinchos (que en el pack original ya son peligros, así
   que aquí también hacen daño). Las plantas animadas aportan un frame cada una.
 
-### Cueva — arte del piso 1 y base de los pisos 3 al 12
+### Cueva — arte de los pisos 2 y 3
 
 - **Pack**: 2D Brown Cave Assets
 - **Autor**: maaot
@@ -108,6 +108,30 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
   que funcionan en vista cenital: cantos rodados, bloques, grupos de rocas y
   repisas planas para plataformas. Se descartaron estalagmitas, estalactitas y
   esquirlas, porque delatan la vista lateral. Más su vegetación seca.
+
+### Manto — arte de los pisos 4 a 8
+
+- **Autor**: Matías (pack propio, sale de su generador procedural)
+- **Licencia**: propio, sin problema de licencia
+- **Archivos**: `assets/manto/` (42 piezas y dos catálogos: con cristales de
+  olivino para los pisos 4-6 y pelado para los 7-8)
+
+### Núcleo — arte de los pisos 9 a 12
+
+- **Autor**: hecho para el proyecto, con `herramientas/generar_nucleo.py`
+- **Licencia**: propio, sin problema de licencia
+- **Archivos**: `assets/nucleo/` (42 piezas y dos catálogos: pelado para el
+  núcleo externo, pisos 9-10, y con cristales de hierro para el interno,
+  pisos 11-12)
+- **Nota**: sigue el estilo del pack del manto. Volver a ejecutar el script da
+  exactamente los mismos PNG.
+
+### Enemigos nuevos — rata, serpiente, murciélago, gólem, slime de magma, cristal vivo y fantasma
+
+- **Autor**: Matías (propio)
+- **Licencia**: propio, sin problema de licencia
+- **Archivos**: `assets/enemigos/<nombre>_00..09.png` y
+  `animaciones_<nombre>.tres`
 
 ## Descargado y descartado
 

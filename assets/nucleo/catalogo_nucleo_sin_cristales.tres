@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=38 format=3]
+
+[ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="0_catalogo"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/piedra_00.png" id="nuc_piedra_00"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/piedra_01.png" id="nuc_piedra_01"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/piedra_02.png" id="nuc_piedra_02"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/piedra_03.png" id="nuc_piedra_03"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/piedra_04.png" id="nuc_piedra_04"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/piedra_05.png" id="nuc_piedra_05"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/piedra_06.png" id="nuc_piedra_06"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/piedra_07.png" id="nuc_piedra_07"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_00.png" id="nuc_roca_00"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_01.png" id="nuc_roca_01"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_02.png" id="nuc_roca_02"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_03.png" id="nuc_roca_03"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_04.png" id="nuc_roca_04"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_05.png" id="nuc_roca_05"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_06.png" id="nuc_roca_06"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_07.png" id="nuc_roca_07"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_08.png" id="nuc_roca_08"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/roca_09.png" id="nuc_roca_09"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/bloque_00.png" id="nuc_bloque_00"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/bloque_01.png" id="nuc_bloque_01"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/bloque_02.png" id="nuc_bloque_02"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/bloque_03.png" id="nuc_bloque_03"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/bloque_04.png" id="nuc_bloque_04"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/bloque_05.png" id="nuc_bloque_05"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/bloque_06.png" id="nuc_bloque_06"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/grupo_00.png" id="nuc_grupo_00"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/grupo_01.png" id="nuc_grupo_01"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/grupo_02.png" id="nuc_grupo_02"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/grupo_03.png" id="nuc_grupo_03"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/grupo_04.png" id="nuc_grupo_04"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/grupo_05.png" id="nuc_grupo_05"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/plataforma_00.png" id="nuc_plataforma_00"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/plataforma_01.png" id="nuc_plataforma_01"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/plataforma_02.png" id="nuc_plataforma_02"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/plataforma_03.png" id="nuc_plataforma_03"]
+[ext_resource type="Texture2D" path="res://assets/nucleo/plataforma_04.png" id="nuc_plataforma_04"]
+
+[resource]
+script = ExtResource("0_catalogo")
+piedras = Array[Texture2D]([ExtResource("nuc_piedra_00"), ExtResource("nuc_piedra_01"), ExtResource("nuc_piedra_02"), ExtResource("nuc_piedra_03"), ExtResource("nuc_piedra_04"), ExtResource("nuc_piedra_05"), ExtResource("nuc_piedra_06"), ExtResource("nuc_piedra_07")])
+rocas = Array[Texture2D]([ExtResource("nuc_roca_00"), ExtResource("nuc_roca_01"), ExtResource("nuc_roca_02"), ExtResource("nuc_roca_03"), ExtResource("nuc_roca_04"), ExtResource("nuc_roca_05"), ExtResource("nuc_roca_06"), ExtResource("nuc_roca_07"), ExtResource("nuc_roca_08"), ExtResource("nuc_roca_09")])
+bloques = Array[Texture2D]([ExtResource("nuc_bloque_00"), ExtResource("nuc_bloque_01"), ExtResource("nuc_bloque_02"), ExtResource("nuc_bloque_03"), ExtResource("nuc_bloque_04"), ExtResource("nuc_bloque_05"), ExtResource("nuc_bloque_06")])
+grupos = Array[Texture2D]([ExtResource("nuc_grupo_00"), ExtResource("nuc_grupo_01"), ExtResource("nuc_grupo_02"), ExtResource("nuc_grupo_03"), ExtResource("nuc_grupo_04"), ExtResource("nuc_grupo_05")])
+vegetacion = Array[Texture2D]([])
+plataformas = Array[Texture2D]([ExtResource("nuc_plataforma_00"), ExtResource("nuc_plataforma_01"), ExtResource("nuc_plataforma_02"), ExtResource("nuc_plataforma_03"), ExtResource("nuc_plataforma_04")])

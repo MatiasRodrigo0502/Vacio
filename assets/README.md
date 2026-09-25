@@ -238,6 +238,40 @@ Como la vegetación de `cueva/`, los cristales conservan su lienzo de
 Todo sale de un generador procedural con semillas fijas: volver a ejecutarlo
 da exactamente los mismos PNG en las tres máquinas.
 
+## nucleo/
+
+Pack para los pisos del **núcleo** (9 a 12), hecho con
+`herramientas/generar_nucleo.py` siguiendo el estilo del pack del manto:
+sombreado suave de arriba (claro) a abajo (oscuro), contorno oscuro y vetas
+incandescentes. Mismas familias, prefijos y cantidades que `manto/`.
+
+Cambia el material. El núcleo es **hierro y níquel**, así que la roca es metal:
+más fría, con un brillo cepillado en horizontal. Las vetas son más calientes que
+las del manto, casi blancas. En lugar de olivino, **cristales de hierro**: agujas
+plateadas, y una de cada tres al rojo blanco. Las columnas siguen siendo
+hexagonales, porque el hierro del núcleo interno cristaliza en red hexagonal.
+
+Dos catálogos:
+
+- `catalogo_nucleo_sin_cristales.tres`: pisos 9 y 10, el núcleo **externo**.
+  Es metal líquido: ahí no cristaliza nada.
+- `catalogo_nucleo.tres`: pisos 11 y 12, el núcleo **interno**, donde el hierro
+  está sólido. Los cristales crecen sobre las losas.
+
+**Luminosidad medida** con la misma cuenta que la nota de `tinte_profundidad()`
+en `scripts/piso.gd` (luminosidad de la roca tintada entre la del suelo). Con
+la cueva, la roca del piso 9 da 0,32, y la nota dice que a partir de 0,48 se
+funde con el suelo. Con el metal normal, las columnas daban 0,55, así que se
+han oscurecido hasta quedar a la par que la cueva: 0,32 / 0,30 / 0,28 / 0,26
+en los pisos 9 a 12. Las columnas son las que importan, porque son la roca de
+esos pisos (`familia_obstaculos = "bloque"`). Las losas se han oscurecido igual:
+`piso.gd` las pinta con un 0,6 para que queden tan claras como las rocas, y así
+dan 23 frente a los 22 de las columnas.
+
+Para cambiar algo, se edita el script y se vuelve a ejecutar desde la raíz del
+proyecto (`python herramientas/generar_nucleo.py`). Sale lo mismo en las tres
+máquinas: todo va con semillas fijas. Solo usa PIL.
+
 ## enemigos/ (nuevos)
 
 Siete enemigos más, en el mismo formato que los slimes y las plantas:

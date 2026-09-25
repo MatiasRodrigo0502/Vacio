@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-09-24.**
+**Última actualización: 2026-09-25.**
 
 ---
 
@@ -47,6 +47,7 @@ hechos.
 | Tipos de enemigo | `resources/enemigos/*.tres` (`TipoEnemigo`) | otro `.tres` |
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
+| Pack de arte del núcleo | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
 enemigo ni objeto concreto. `Principal.tscn` solo reacciona a sus señales.
@@ -127,43 +128,23 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   hacen daño** y paran los disparos, así que sirven de parapeto.
 - **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
   harían el movimiento un engancharse continuo.
-- **Enemigos**: desde el piso 2, cuatro tipos que persiguen dentro de su radio
-  de visión, de 1 a 4 por sala de pelea. Son lo único que quita vida.
+- **Enemigos**: desde el piso 2, **once tipos** que salen al azar entre los
+  que ya pueden aparecer a esa profundidad (`piso_minimo`), de 1 a 4 por sala
+  de pelea. Los siete últimos los dibujó Matías. El cristal vivo no se mueve.
+  Son lo único que quita vida.
 - **Objetos**: uno por piso, en el centro de su sala, con icono de lo que hacen. Las mejoras se acumulan
   toda la partida y se pierden al empezar otra.
 - **Vida**: corazones dibujados por código. La fuente de Godot no tiene glifos
   de corazón ni emoji: un "♥" de texto sale como un cuadradito.
-- **Arte por piso**: 1 musgo, 2 cueva con vegetación, 3-12 roca de cueva pelada.
+- **Arte por piso**: 1 musgo, 2 cueva con vegetación, 3 cueva pelada, 4-8
+  manto (pack de Matías; con cristales de olivino hasta el 6), 9-12 núcleo
+  (pack generado con `herramientas/generar_nucleo.py`; cristales de hierro en
+  el 11 y el 12).
 - **Rocas móviles**: hechas pero **desactivadas** (`activa = false` en su
   `.tres`), porque no convencieron al jugarlas. El código sigue ahí.
 
 ## Pendiente
 
-- **PARA LA PRÓXIMA SESIÓN (pedido por Matías el 2026-09-24): meter los 7
-  enemigos nuevos y el pack del manto.** Los hizo Matías y ya están en el repo
-  (`assets/enemigos/` y `assets/manto/`, documentados en `assets/README.md`),
-  pero no los usa nada todavía. Lo que falta:
-  1. **Un `TipoEnemigo` por enemigo** en `resources/enemigos/` (copiar
-     `slime_verde.tres` y cambiar nombre, animaciones y números). Solo datos:
-     las animaciones ya se llaman `moverse` con 10 fotogramas, que es lo que
-     espera `enemigo.gd`. La rata y la serpiente miran a la derecha, y
-     `enemigo.gd` ya voltea el sprite al ir a la izquierda: no hay que tocar
-     nada para eso.
-  2. **Decidir con Matías si hace falta `piso_maximo`.** Ahora un enemigo solo
-     tiene `piso_minimo`: sin tope, la rata y el murciélago (de cueva) saldrían
-     también en el núcleo. Añadirlo son unas líneas en `tipo_enemigo.gd` y en el
-     filtro de `scripts/mecanicas/enemigos.gd`.
-  3. **Aclarar el cristal vivo.** El README dice que es «fijo, como las
-     plantas», pero las plantas SÍ se mueven (velocidad 46 y 132). Si tiene que
-     ser fijo, `velocidad = 0`.
-  4. **Manto**: apuntar `catalogo_arte` de los pisos del manto (4-8: astenosfera,
-     manto superior, zona de transición, manto inferior, capa D'') a
-     `catalogo_manto.tres` o a `catalogo_manto_sin_cristales.tres`. Solo datos.
-     Después, **medir el contraste de las rocas con el tinte de esos pisos**,
-     como se hizo con la cueva (ver `tinte_profundidad()`).
-  5. **CREDITS.md**: los dos packs son propios (generador procedural de
-     Matías), así que no tienen problema de licencia. Apuntarlo.
-  6. Probar los 12 pisos, capturar cada enemigo nuevo en su piso y subir.
 - **De dónde salen las hojas del personaje.** Ni la del nigromante ni la del
   mago de 4 direcciones traen autor ni origen (ver `CREDITS.md`). Son los
   únicos assets así. Hay que aclararlo antes de entregar o publicar.
@@ -178,10 +159,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
   enemigos: con salas, el total por piso ha pasado de 2-9 a 4-28 (de 1 a 4 por
   sala de pelea). Nadie lo ha jugado entero todavía.
+- **Contraste del manto en los pisos 5-8 (decide Matías).** Esos pisos usan
+  la familia `grupo`, y los montones del manto salen más claros respecto al
+  suelo que los de la cueva: 0,67 / 0,63 / 0,59 / 0,55 frente a 0,52 / 0,49 /
+  0,46 / 0,43 (la cueva ya pasaba de 0,48 en los pisos 5-6, porque el suelo de
+  arriba es más oscuro). Matías calibró las rocas sueltas (31 frente a 33),
+  pero no los montones (34,5 frente a 26,5). No se ha tocado su arte. Opciones:
+  oscurecer los `grupo` en su generador hasta ~26, o pasar esos pisos a la
+  familia `roca`, que mejora pero no llega (0,59 → 0,49 en el 8). En las
+  capturas se leen bien.
 - **Posibles mejoras de las salas**, no pedidas: oscurecer las salas vecinas
   (cuando la vista es más ancha o más alta que la sala, se asoma un trozo de
   las de al lado), una sala de jefe en el piso 12, y salas de otras formas.
-- **Arte de los pisos 3 al 12**, cuando Matías consiga más packs.
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
 
@@ -251,6 +240,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **El daño del cargado se reparte llamando `romper()` varias veces**, no
   pasándole un parámetro: el contrato del proyecto es `romper()` sin argumentos,
   y cambiarlo obligaría a tocar todo lo rompible, ahora y en el futuro.
+- **Las rocas de un pack nuevo se calibran contra las de la cueva.** La cuenta
+  es la de la nota de `tinte_profundidad()`: luminosidad de la roca tintada
+  entre la del suelo. La cueva da 0,32 en el piso 9; a partir de 0,48 la roca
+  se funde con el suelo. El núcleo se oscureció hasta igualarla (0,32 / 0,30 /
+  0,28 / 0,26), y sus losas hasta que con el 0,6 de `piso.gd` queden como las
+  rocas. Ojo: la cuenta tiene que ser esta (gamma, la de la nota); con
+  luminancia lineal salen otros números que no cuadran con los 0,33 de la nota.
+- **Los enemigos salen al azar**, como pidió Matías: cada sala elige entre los
+  tipos cuyo `piso_minimo` ya se alcanzó, sin tope por abajo. El piso mínimo
+  solo escalona la dificultad.
 - **El sprite del jugador se centra en los pies, no en el dibujo.** El báculo y
   el halo del nigromante sobresalen a la derecha; centrando el lienzo en el
   dibujo, el cuerpo se iría a la izquierda y dejaría de cuadrar con el círculo
