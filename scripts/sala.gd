@@ -173,7 +173,11 @@ func activar() -> void:
 		return
 	cerrar_puertas(true)
 	for enemigo in _enemigos:
-		enemigo.despertar()
+		# En el juego un enemigo solo desaparece muriendo, y al morir sale de la
+		# lista. La guarda es por si algun dia algo lo quita de otra forma:
+		# despertar a un nodo liberado revienta el juego.
+		if is_instance_valid(enemigo):
+			enemigo.despertar()
 
 
 ## True si el circulo (centro global, radio) cabe entero en el suelo. Las

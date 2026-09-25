@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_rata.tres" id="2_anim"]
+
+[resource]
+script = ExtResource("1_tipo")
+nombre = "Rata"
+animaciones = ExtResource("2_anim")
+vida = 1
+velocidad = 125.0
+dano = 1
+alto = 40.0
+radio_vision = 560.0
+piso_minimo = 2
