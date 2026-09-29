@@ -50,6 +50,7 @@ hechos.
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
 | Pack de arte del núcleo | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
+| Arte de lava y pinchos | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
 enemigo ni objeto concreto. `Principal.tscn` solo reacciona a sus señales.
@@ -305,6 +306,17 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **En el `fragment()` de un shader de canvas, `COLOR` ya trae la textura
+  multiplicada.** El de la lava hacía `COLOR = texture(TEXTURE, UV) * COLOR`
+  y pintaba la textura al cuadrado: el borde de basalto salía negro y el
+  resplandor, que es semitransparente, desaparecía. Se vio comparando el mismo
+  charco con y sin shader en una captura. El tinte se coge en `vertex()` y se
+  pasa con un `varying`.
+- **Para medir si algo se anima, la cámara tiene que estar quieta.** La
+  primera medida de la lava daba mucho cambio entre dos capturas, pero las
+  rocas también cambiaban: era la cámara acabando de moverse. Con una zona de
+  control (suelo y rocas a 0) se ve lo que es de verdad animación.
 
 - **Un `Area2D` no detecta los `StaticBody2D` en Godot 4.7.** Las bolas son
   `Area2D` y las rocas `StaticBody2D`, así que las rocas **nunca** pararon

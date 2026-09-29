@@ -112,6 +112,7 @@ func _colocar(piso: Node, sala: Sala, clase: String, sitio: Vector2, tamano: Vec
 			var pinchos := Pinchos.new()
 			# Cada trampa con su ritmo: todas a la vez serian un semaforo.
 			pinchos.desfase = generador.randf() * (Pinchos.DENTRO + Pinchos.AVISO + Pinchos.FUERA)
+			pinchos.tinte = piso.tinte_profundidad()
 			peligro = pinchos
 		"vacio":
 			peligro = Vacio.new()
@@ -127,4 +128,5 @@ func _colocar(piso: Node, sala: Sala, clase: String, sitio: Vector2, tamano: Vec
 	# El primero de la sala: se pinta justo encima del suelo y debajo de los
 	# enemigos, que son hijos de la sala igual que el.
 	sala.move_child(peligro, 0)
-	piso.despejar_decoracion(Rect2(sala.to_global(sitio) - tamano * 0.5, tamano))
+	# Con un margen: una china pegada al borde tambien se veria encima.
+	piso.despejar_decoracion(Rect2(sala.to_global(sitio) - tamano * 0.5, tamano).grow(14.0))

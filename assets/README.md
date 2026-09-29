@@ -272,6 +272,32 @@ Para cambiar algo, se edita el script y se vuelve a ejecutar desde la raíz del
 proyecto (`python herramientas/generar_nucleo.py`). Sale lo mismo en las tres
 máquinas: todo va con semillas fijas. Solo usa PIL.
 
+## peligros/
+
+Arte de la lava y los pinchos, hecho con `herramientas/generar_peligros.py`
+en el estilo de los packs del manto y del núcleo: volumen con luz desde arriba
+a la izquierda, contorno oscuro y brillo incandescente.
+
+- `lava_00..02.png`: tres charcos distintos. Reborde de basalto (la misma
+  piedra que las rocas del manto), placas de costra al rojo en el borde y
+  oscuras por dentro, y grietas brillantes entre ellas. Lo de fuera del
+  charco es el resplandor sobre el suelo.
+- `lava_00..02_calor.png`: qué parte de cada charco está fundida (blanco) y
+  cuál es roca o costra (negro). La usa `shaders/lava.gdshader` para que solo
+  lo caliente lata y ondule.
+- `pinchos_base.png`: la placa remachada con sus nueve agujeros, en 3/4 (se
+  ve el canto de delante).
+- `pincho.png`: un pincho de acero suelto. `pinchos.gd` lo pinta saliendo de
+  cada agujero, primero la punta.
+- `pinchos_frente.png`: solo el labio de delante de los agujeros. Va encima
+  del pincho, para que salga de dentro del agujero y no aparezca encima.
+
+La placa se tiñe con el color del piso, como las rocas; la lava no, porque
+brilla con luz propia. Para cambiar algo, se edita el script y se vuelve a
+ejecutar: sale lo mismo en las tres máquinas. **Ojo**: dónde están los
+agujeros lo repite `scripts/pinchos.gd` (sus constantes `MARGEN`, `GROSOR`,
+`FILAS` y `AGUJERO_*`); si se cambia en uno, se cambia en el otro.
+
 ## enemigos/ (nuevos)
 
 Siete enemigos más, en el mismo formato que los slimes y las plantas:
