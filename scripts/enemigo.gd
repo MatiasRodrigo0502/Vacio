@@ -36,7 +36,6 @@ var _fase: float = 0.0
 
 
 func _ready() -> void:
-	body_entered.connect(_al_tocar_cuerpo)
 	# El enemigo busca al jugador por grupo en vez de que se lo pasen: asi la
 	# mecanica que los coloca no necesita conocer la escena del juego.
 	_objetivo = get_tree().get_first_node_in_group("jugador")
@@ -70,6 +69,7 @@ func preparar(tipo_enemigo: TipoEnemigo, posicion: Vector2) -> void:
 
 func _physics_process(delta: float) -> void:
 	_fase += delta
+	_golpear_lo_que_toca()
 	if not _despierto:
 		return
 	if not is_instance_valid(_objetivo):
@@ -121,6 +121,17 @@ func romper() -> void:
 	queue_free()
 
 
-func _al_tocar_cuerpo(cuerpo: Node2D) -> void:
-	if tipo != null and cuerpo.has_method("recibir_dano"):
-		cuerpo.recibir_dano(tipo.dano)
+## Hace dano a todo lo que este tocando, en cada paso de fisica.
+##
+## POR QUE MIRANDO EL SOLAPE Y NO CON body_entered:
+## body_entered avisa una sola vez, al entrar. El enemigo va directo hacia el
+## jugador y se le queda encima, asi que solo le pegaba al primer contacto:
+## quedarse quieto con un slime encima costaba un corazon y ya. Mirando el
+## solape en cada paso vuelve a pegar en cuanto acaba la invulnerabilidad, y
+## no pega de mas porque recibir_dano() ignora los golpes mientras dura.
+func _golpear_lo_que_toca() -> void:
+	if tipo == null:
+		return
+	for cuerpo in get_overlapping_bodies():
+		if cuerpo.has_method("recibir_dano"):
+			cuerpo.recibir_dano(tipo.dano)

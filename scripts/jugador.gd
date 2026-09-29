@@ -42,8 +42,9 @@ signal mejora_recogida(mejora: ObjetoMejora)
 @export_group("Ataque cargado")
 ## Segundos que hay que mantener el boton derecho antes de poder soltarlo.
 @export var tiempo_carga: float = 0.75
-## Dano del disparo cargado. El normal hace 1, y los enemigos aguantan 2, asi
-## que con 3 el cargado mata de una a los tipos que hay ahora.
+## Dano del disparo cargado. El normal hace 1. Con 3 mata de una a todos los
+## enemigos menos al golem, que aguanta 5 (el del mago rojo, con +2, tambien a
+## ese).
 @export var dano_bola_cargada: int = 3
 ## Lo grande y lo rapida que sale respecto al disparo normal.
 @export var factor_radio_cargada: float = 2.1
@@ -82,6 +83,19 @@ var _base_velocidad: float = 0.0
 var _base_cadencia: float = 0.0
 var _base_velocidad_bola: float = 0.0
 var _base_radio_bola: float = 0.0
+
+## Los valores de la escena, sin mago ni mejoras. Hacen falta aparte de los de
+## fabrica porque la ventaja del mago se calcula desde aqui: si se sumara a los
+## de fabrica, cada reinicio (que vuelve a llamar a usar_personaje) la sumaria
+## otra vez. Paso: tres reinicios dejaban al mago rojo con 7 corazones y una
+## carga de 0,05 s.
+var _escena_vida_maxima: int = 0
+var _escena_velocidad: float = 0.0
+var _escena_cadencia: float = 0.0
+var _escena_velocidad_bola: float = 0.0
+var _escena_radio_bola: float = 0.0
+var _escena_tiempo_carga: float = 0.0
+var _escena_dano_cargado: int = 0
 
 ## Tiempo que queda de invulnerabilidad. > 0 significa invulnerable.
 var _tiempo_invulnerable: float = 0.0
@@ -128,15 +142,17 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 	halo_cargado = personaje.halo_cargado
 	_carga_visual.pintar_con(color_cargado, halo_cargado)
 
-	_base_vida_maxima += personaje.vida_maxima_extra
-	_base_velocidad += personaje.velocidad_extra
-	_base_cadencia = maxf(_base_cadencia * personaje.cadencia_multiplicador,
+	# Siempre desde los valores de la escena, nunca desde los de ahora: asi
+	# llamarla dos veces con el mismo mago deja al jugador igual.
+	_base_vida_maxima = _escena_vida_maxima + personaje.vida_maxima_extra
+	_base_velocidad = _escena_velocidad + personaje.velocidad_extra
+	_base_cadencia = maxf(_escena_cadencia * personaje.cadencia_multiplicador,
 		CADENCIA_MINIMA)
-	_base_velocidad_bola += personaje.velocidad_bola_extra
-	_base_radio_bola += personaje.radio_bola_extra
+	_base_velocidad_bola = _escena_velocidad_bola + personaje.velocidad_bola_extra
+	_base_radio_bola = _escena_radio_bola + personaje.radio_bola_extra
 
-	tiempo_carga *= personaje.tiempo_carga_multiplicador
-	dano_bola_cargada += personaje.dano_cargado_extra
+	tiempo_carga = _escena_tiempo_carga * personaje.tiempo_carga_multiplicador
+	dano_bola_cargada = _escena_dano_cargado + personaje.dano_cargado_extra
 
 	# restaurar_vida() es lo que copia los valores de fabrica a los de verdad,
 	# asi que sirve igual para "empezar de cero" que para "estrenar mago".
@@ -144,6 +160,14 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 
 
 func _ready() -> void:
+	_escena_vida_maxima = vida_maxima
+	_escena_velocidad = velocidad_maxima
+	_escena_cadencia = cadencia_disparo
+	_escena_velocidad_bola = velocidad_bola
+	_escena_radio_bola = radio_bola
+	_escena_tiempo_carga = tiempo_carga
+	_escena_dano_cargado = dano_bola_cargada
+
 	_base_vida_maxima = vida_maxima
 	_base_velocidad = velocidad_maxima
 	_base_cadencia = cadencia_disparo

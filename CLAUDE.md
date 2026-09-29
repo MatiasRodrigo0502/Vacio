@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-09-25.**
+**Última actualización: 2026-09-29.**
 
 ---
 
@@ -210,7 +210,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **La ventaja de un mago se suma a los valores de fábrica, no se aplica como
   un objeto recogido.** `restaurar_vida()` vuelve a esos valores al empezar
   otra partida: si la ventaja fuera un objeto del piso, el mago perdería lo
-  suyo al reiniciar.
+  suyo al reiniciar. Se calcula **desde los valores de la escena**
+  (`_escena_*`), nunca sumándola a los de ahora: `usar_personaje()` se vuelve
+  a llamar en cada reinicio.
 - **El resplandor de las bolas se declara, no se deduce.** Una fórmula que
   sacaba el halo del color del centro movía el del mago oscuro 0,10 en un
   canal, y ese estaba ajustado a mano. Dos colores por ataque y cada mago queda
@@ -257,6 +259,20 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Trampas ya pisadas (no repetirlas)
 
+- **Lo que se vuelve a llamar al reiniciar tiene que partir de valores fijos.**
+  `usar_personaje()` sumaba la ventaja a los valores de fábrica, y Principal la
+  llama también en cada reinicio: tres reinicios dejaban al mago rojo con 7
+  corazones, 165 de velocidad y una carga de 0,05 s. Lo encontró la revisión
+  del 2026-09-29, no jugando: nadie reinicia tres veces seguidas probando.
+- **`body_entered` avisa una vez, al entrar.** El daño de los enemigos iba por
+  ahí, y como se quedan encima del jugador, solo pegaban al primer contacto:
+  cuatro segundos con un enemigo encima costaban un corazón. Para «mientras
+  toque», `get_overlapping_bodies()` en cada paso.
+- **Lo que se reparte después de las rocas tiene que mirarlas.** Los enemigos
+  se colocaban sin mirarlas: 38 de 164 salían encima de una y 3 enterrados. Con
+  el cristal vivo, que no se mueve, la bola choca con la roca antes de
+  llegarle: enterrado del todo, la sala podría no abrirse nunca (no se llegó a
+  ver pasar; se arregló al medir el solape).
 - **Nunca `git add -A` en este repo: se añaden los archivos por su ruta.** En
   esta carpeta trabaja más de uno a la vez. El 2026-09-24, mientras se hacían
   las salas, Matías añadió 121 archivos (7 enemigos nuevos en

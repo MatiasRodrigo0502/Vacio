@@ -57,22 +57,46 @@ func aplicar_a_piso(piso: Node) -> void:
 		# Uno de mas en algunas salas, para que no todas pesen igual.
 		var cuantos: int = mini(por_sala + generador.randi_range(0, 1), maximo)
 		for _i in cuantos:
-			for _intento in 20:
+			# El tipo se elige antes que el sitio: el hueco que necesita
+			# depende de lo grande que sea.
+			var tipo: TipoEnemigo = disponibles[generador.randi() % disponibles.size()]
+			for _intento in 30:
 				var sitio: Vector2 = sala.punto_al_azar(generador, 90.0)
 				if sala.cerca_de_puerta(sitio, despeje):
 					continue
 				# En la sala de salida, tampoco encima del agujero.
 				if sala.tipo == MapaSalas.Tipo.SALIDA and sitio.length() < despeje * 0.6:
 					continue
+				if _pisa_una_roca(piso, sala.to_global(sitio), tipo.alto * 0.5):
+					continue
 
 				var enemigo: Enemigo = ESCENA_ENEMIGO.instantiate()
 				# Hijo de su sala y no del piso: asi la sala sabe quien vive en
 				# ella y puede despertarlos al entrar el jugador.
 				sala.add_child(enemigo)
-				enemigo.preparar(disponibles[generador.randi() % disponibles.size()],
-					sala.to_global(sitio))
+				enemigo.preparar(tipo, sala.to_global(sitio))
 				sala.registrar_enemigo(enemigo)
 				break
+
+
+## True si un enemigo de ese radio en ese punto (global) quedaria encima de una
+## roca o una plataforma.
+##
+## POR QUE HACE FALTA:
+## las rocas ya estan puestas cuando se reparten los enemigos, y antes no se
+## miraban: salian enemigos metidos en rocas. Los que se mueven acaban saliendo
+## al perseguirte, pero el cristal vivo no se mueve nunca, y la bola choca con
+## la roca antes de llegar a el: enterrado en una, la sala podria no abrirse.
+##
+## Se mide contra el dibujo entero de la roca, no contra su colision, que es
+## mas pequena: un enemigo medio tapado por una roca tampoco se lee bien.
+func _pisa_una_roca(piso: Node, punto: Vector2, radio: float) -> bool:
+	for obstaculo in piso.obstaculos():
+		var caja := Rect2(obstaculo.global_position - obstaculo.tamano() * 0.5,
+			obstaculo.tamano()).grow(radio + 12.0)
+		if caja.has_point(punto):
+			return true
+	return false
 
 
 ## Lee la carpeta de tipos, ordenada por nombre de archivo para que el reparto

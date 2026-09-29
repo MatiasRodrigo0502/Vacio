@@ -3,7 +3,7 @@
 ## POR QUE UN RESOURCE Y NO UNA ESCENA POR ENEMIGO:
 ## todos los enemigos se comportan igual (perseguir y hacer dano al tocar); lo
 ## unico que cambia son los numeros y el dibujo. Con una escena por enemigo
-## habria que mantener cuatro archivos casi identicos. Asi, anadir un enemigo
+## habria que mantener once archivos casi identicos. Asi, anadir un enemigo
 ## nuevo es crear un .tres y dejarlo en resources/enemigos/: la mecanica lee la
 ## carpeta entera y no hay que tocar ni una linea de codigo.
 class_name TipoEnemigo
