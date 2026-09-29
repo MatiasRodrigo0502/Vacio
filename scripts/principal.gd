@@ -16,6 +16,7 @@ const ESCENA_BOLA := preload("res://scenes/BolaMagica.tscn")
 @onready var _camara: CamaraJuego = $CamaraJuego
 @onready var _hud: Hud = $Hud
 @onready var _pantalla_final: PantallaFinal = $PantallaFinal
+@onready var _menu_pausa: MenuPausa = $MenuPausa
 
 var _piso_actual: Piso = null
 
@@ -31,6 +32,8 @@ func _ready() -> void:
 	_jugador.mejora_recogida.connect(_hud.anunciar_mejora)
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
+	_menu_pausa.reinicio_solicitado.connect(_reiniciar)
+	_menu_pausa.menu_solicitado.connect(_volver_al_menu)
 
 	# El mago elegido en el menu, antes de que el HUD lea la vida: la ventaja
 	# puede cambiar cuantos corazones tiene.
@@ -135,6 +138,9 @@ func _al_perder() -> void:
 ## Vuelve al menu. Cambiar de escena tira la partida entera, que es justo lo que
 ## queremos: no hay estado que limpiar a mano.
 func _volver_al_menu() -> void:
+	# La pausa no es de la escena sino del arbol: si se cambiara de escena con
+	# el arbol en pausa, el menu naceria congelado.
+	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/MenuPrincipal.tscn")
 
 

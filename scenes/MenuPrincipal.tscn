@@ -122,7 +122,7 @@ text = "moverte
 disparar
 ataque cargado
 reiniciar
-cerrar esto"
+pausa  ·  cerrar esto"
 horizontal_alignment = 2
 
 [node name="Botones" type="Label" parent="PanelControles/Centro/Caja/Teclas"]
@@ -144,7 +144,7 @@ text = "Cada piso es un mapa de salas: busca la del agujero para bajar al siguie
 Al entrar en una sala con enemigos se cierran las puertas hasta que acabes con ellos.
 Disparas con las flechas o apuntando con el ratón: matan enemigos.
 Mantén el clic derecho para cargar un ataque: cuando el aro se cierre, suéltalo.
-El cargado atraviesa enemigos y mata de un golpe, pero las rocas lo paran igual.
+El cargado atraviesa enemigos y pega más fuerte, pero las rocas lo paran igual.
 Las rocas son sólidas: no se pueden cruzar ni romper, pero te sirven de parapeto.
 Lo que te quita vida son los enemigos al tocarte.
 En cada piso hay un objeto que te mejora para el resto de la partida.

@@ -409,6 +409,14 @@ func aplicar_mejora(mejora: ObjetoMejora) -> void:
 	mejora_recogida.emit(mejora)
 
 
+## Al pausar se tira la carga. Si no, soltar el boton durante la pausa haria
+## salir el ataque cargado nada mas continuar, hacia donde estuviera el raton
+## al pulsar "Continuar", que no es donde apuntabas.
+func _notification(que: int) -> void:
+	if que == NOTIFICATION_PAUSED:
+		_cancelar_carga()
+
+
 func esta_invulnerable() -> bool:
 	return _tiempo_invulnerable > 0.0
 

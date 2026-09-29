@@ -10,9 +10,9 @@ más pequeñas, y se ve menos que el anterior.
 
 Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
-persiguen, objetos que te mejoran, victoria y derrota. Se elige entre **dos magos**, cada uno con
+persiguen, objetos que te mejoran, pausa, victoria y derrota. Se elige entre **dos magos**, cada uno con
 sus ventajas, y miran a los ocho lados; el piso 1 hace de tutorial con arte de musgo y el 2 de
-cueva; del 3 al 12 se reutiliza la roca de cueva hasta que haya más arte.
+cueva; el 3 es cueva pelada, del 4 al 8 el manto y del 9 al 12 el núcleo.
 
 ## Controles
 
@@ -22,6 +22,7 @@ cueva; del 3 al 12 se reutiliza la roca de cueva hasta que haya más arte.
 | Disparar | Flechas, o clic izquierdo apuntando con el ratón |
 | Ataque cargado | Clic derecho **mantenido**: se suelta cuando el aro se cierra |
 | Reiniciar partida | R |
+| Pausa | Esc |
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
 el piso 1 hace de tutorial y los explica con carteles pintados sobre el suelo,

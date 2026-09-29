@@ -122,6 +122,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   enemigos duermen hasta entonces. La bajada está tapada hasta limpiar su
   sala. La cámara se encaja en la sala: si cabe se queda quieta, si no se
   mueve dentro. Las bolas se apagan al salir de la casilla de su sala.
+- **Pausa con Escape** (`scripts/menu_pausa.gd`, `scenes/MenuPausa.tscn`):
+  continuar, reiniciar o volver al menú. Pausa el árbol entero
+  (`get_tree().paused`), así que todo se congela sin que ningún script sepa
+  de la pausa; el menú es lo único con `process_mode = ALWAYS`. No se abre con
+  la pantalla final puesta. Al pausar se tira la carga del ataque: si no,
+  soltar el botón en pausa lo disparaba al continuar.
 - **Minimapa** arriba a la derecha (`scripts/minimapa.gd`): visitadas
   rellenas, vecinas en contorno, objeto y bajada marcados en cuanto se conocen.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
