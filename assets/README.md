@@ -291,9 +291,15 @@ a la izquierda, contorno oscuro y brillo incandescente.
   cada agujero, primero la punta.
 - `pinchos_frente.png`: solo el labio de delante de los agujeros. Va encima
   del pincho, para que salga de dentro del agujero y no aparezca encima.
+- `vacio.png`: el agujero. Piedras sueltas alrededor (lo que queda del suelo
+  que se hundió), la pared del fondo a la vista con sus vetas perdiéndose en
+  lo negro, y negro en el centro. `vacio.gd` lo pinta **en nueve trozos**
+  (`StyleBoxTexture`): esquinas y bordes a su tamaño y solo el centro
+  estirado, porque cada agujero mide lo suyo. Los cortes (`VACIO_*` en el
+  generador) los repite `vacio.gd`.
 
-La placa se tiñe con el color del piso, como las rocas; la lava no, porque
-brilla con luz propia. Para cambiar algo, se edita el script y se vuelve a
+La placa de los pinchos y el reborde del agujero se tiñen con el color del
+piso, como las rocas; la lava no, porque brilla con luz propia. Para cambiar algo, se edita el script y se vuelve a
 ejecutar: sale lo mismo en las tres máquinas. **Ojo**: dónde están los
 agujeros lo repite `scripts/pinchos.gd` (sus constantes `MARGEN`, `GROSOR`,
 `FILAS` y `AGUJERO_*`); si se cambia en uno, se cambia en el otro.

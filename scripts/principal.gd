@@ -160,6 +160,8 @@ func _reiniciar() -> void:
 
 	_pantalla_final.ocultar()
 	_jugador.restaurar_vida()
+	# Las mejoras se pierden al empezar otra partida; sus iconos tambien.
+	_hud.vaciar_mejoras()
 	GestorProgreso.reiniciar_partida()
 
 

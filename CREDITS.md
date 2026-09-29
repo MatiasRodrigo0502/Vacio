@@ -116,7 +116,7 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Archivos**: `assets/manto/` (42 piezas y dos catálogos: con cristales de
   olivino para los pisos 4-6 y pelado para los 7-8)
 
-### Peligros — lava y pinchos
+### Peligros — lava, pinchos y vacío
 
 - **Autor**: hecho para el proyecto, con `herramientas/generar_peligros.py`
 - **Licencia**: propio, sin problema de licencia

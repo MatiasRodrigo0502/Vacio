@@ -50,7 +50,7 @@ hechos.
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
 | Pack de arte del núcleo | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
-| Arte de lava y pinchos | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
+| Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
 enemigo ni objeto concreto. `Principal.tscn` solo reacciona a sus señales.
@@ -132,6 +132,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de la pausa; el menú es lo único con `process_mode = ALWAYS`. No se abre con
   la pantalla final puesta. Al pausar se tira la carga del ataque: si no,
   soltar el botón en pausa lo disparaba al continuar.
+- **Ventajas en el HUD** (`scripts/mejoras_recogidas.gd`), debajo de los
+  corazones: el icono de cada objeto recogido con un aro de su color, y
+  «x2» si se repite. Solo las que duran: el vendaje, que solo cura, no sale.
+  Se vacía al reiniciar.
 - **Minimapa** arriba a la derecha (`scripts/minimapa.gd`): visitadas
   rellenas, vecinas en contorno, objeto y bajada marcados en cuanto se conocen.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no

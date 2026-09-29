@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Genera el arte de la lava y los pinchos en assets/peligros/.
+"""Genera el arte de la lava, los pinchos y el vacio en assets/peligros/.
 
 Mismo estilo que los packs del manto y del nucleo: volumen suave con luz desde
 arriba a la izquierda, contorno oscuro y brillo incandescente. Se dibuja al
@@ -325,6 +325,117 @@ def generar_pincho(ancho_final=32, alto_final=80):
     return imagen.resize((ancho_final, alto_final), Image.LANCZOS)
 
 
+# --- Vacio --------------------------------------------------------------------
+
+# Medidas del agujero, en pixeles de la textura final. Se pinta en nueve trozos
+# (StyleBoxTexture): las esquinas y los bordes no se estiran, solo el centro.
+# Asi un agujero grande y uno pequeno tienen el mismo reborde. Los MARGENES
+# los repite scripts/vacio.gd; si se cambian aqui, alli tambien.
+VACIO_LADO = 160
+VACIO_LABIO = 8          # reborde que queda por FUERA del agujero
+VACIO_MARGEN_ARRIBA = 48  # incluye la pared del fondo, que se ve en 3/4
+VACIO_MARGEN_LADOS = 24
+VACIO_MARGEN_ABAJO = 22
+
+
+def generar_vacio(semilla=5):
+    """El agujero: negro por dentro, con la pared del fondo a la vista (vista
+    en 3/4) y rodeado de piedras sueltas, que es lo que queda del suelo que se
+    hundio. Las piedras son las que le quitan el aire de marco de cuadro que
+    tenia con un reborde liso."""
+    lado = VACIO_LADO * SUPER
+    labio = VACIO_LABIO * SUPER
+    pared = (VACIO_MARGEN_ARRIBA - 6) * SUPER   # donde la pared del fondo ya es negra
+    lado_pared = (VACIO_MARGEN_LADOS - 4) * SUPER
+    imagen = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
+    pixeles = imagen.load()
+    aleatorio = random.Random(semilla)
+
+    # Piedras repartidas por el reborde, con tamanos y sitios algo al azar.
+    piedras = []
+    # La linea de piedras va por el filo del agujero, lo bastante dentro del
+    # lienzo para que ninguna piedra quede cortada por el borde de la imagen:
+    # cortadas, el contorno salia recto y el agujero parecia una caja.
+    borde = labio * 0.95
+    paso = 7.5 * SUPER
+    tramos = [((borde, borde), (lado - borde, borde)), ((lado - borde, borde), (lado - borde, lado - borde)),
+              ((lado - borde, lado - borde), (borde, lado - borde)), ((borde, lado - borde), (borde, borde))]
+    for (x0, y0), (x1, y1) in tramos:
+        largo = math.hypot(x1 - x0, y1 - y0)
+        n = int(largo / paso)
+        for i in range(n):
+            t = (i + aleatorio.uniform(0.1, 0.9)) / n
+            px = x0 + (x1 - x0) * t + aleatorio.uniform(-1.5, 1.5) * SUPER
+            py = y0 + (y1 - y0) * t + aleatorio.uniform(-1.5, 1.5) * SUPER
+            # Cada piedra con su tono: todas iguales parecerian adoquines.
+            piedras.append((px, py, aleatorio.uniform(4.5, 6.2) * SUPER, aleatorio.uniform(0.8, 1.12)))
+
+    luz = (-0.45, -0.65, 0.6)
+    largo_luz = math.sqrt(sum(v * v for v in luz))
+    luz = tuple(v / largo_luz for v in luz)
+    negro = (5, 3, 6)
+
+    for y in range(lado):
+        for x in range(lado):
+            # El agujero, con el filo algo roto.
+            roto = (fbm(x * 0.05, y * 0.05, semilla) - 0.5) * 3.0 * SUPER
+            dentro_x = min(x, lado - 1 - x) - labio + roto
+            dentro_y_arriba = y - labio + roto
+            dentro_y_abajo = (lado - 1 - y) - labio + roto
+            dentro = min(dentro_x, dentro_y_arriba, dentro_y_abajo)
+
+            c = None
+            if dentro >= 0:
+                c = negro
+                if dentro_y_arriba < pared and dentro_y_arriba <= dentro_x + pared * 0.4:
+                    # Pared del fondo: vetas de roca que se pierden en lo negro.
+                    t = dentro_y_arriba / pared
+                    veta = 0.75 + 0.5 * fbm(x * 0.012, y * 0.22, semilla + 7)
+                    grieta = fbm(x * 0.05, y * 0.05, semilla + 8)
+                    # Mas clara que la roca de fuera: le da la luz de arriba de
+                    # lleno. Con el tinte de los pisos hondos, si fuera igual de
+                    # oscura no se veria, y es la pared la que dice "hondo".
+                    pared_color = tuple(v * veta for v in mezclar((128, 112, 126), (40, 32, 42), t * 0.8))
+                    if 0.47 < grieta < 0.5:
+                        pared_color = tuple(v * 0.45 for v in pared_color)
+                    c = mezclar(pared_color, negro, t ** 1.3)
+                elif dentro_x < lado_pared:
+                    t = dentro_x / lado_pared
+                    lateral = mezclar((70, 60, 72), negro, 0.2 + 0.8 * t)
+                    c = mezclar(lateral, negro, max(0.0, min(1.0, (y - labio - pared) / (lado * 0.3))))
+                if dentro_y_abajo < 6 * SUPER:
+                    c = mezclar(c, (0, 0, 0), 1.0 - dentro_y_abajo / (6 * SUPER))
+
+            # Las piedras del reborde, encima. La mas cercana manda; entre dos
+            # piedras queda una junta oscura.
+            if dentro < 9 * SUPER:
+                d1, d2, cerca = 1e9, 1e9, None
+                for piedra in piedras:
+                    d = math.hypot(x - piedra[0], y - piedra[1])
+                    if d < d1:
+                        d2, d1, cerca = d1, d, piedra
+                    elif d < d2:
+                        d2 = d
+                if cerca is not None and d1 < cerca[2]:
+                    if d1 > cerca[2] - 1.3 * SUPER or d2 - d1 < 1.2 * SUPER:
+                        c = CONTORNO
+                    else:
+                        # Cada piedra, abombada y con la luz de arriba a la
+                        # izquierda: asi se leen como bultos y no como manchas.
+                        nx = (x - cerca[0]) / cerca[2]
+                        ny = (y - cerca[1]) / cerca[2]
+                        nz = math.sqrt(max(0.0, 1.0 - nx * nx - ny * ny))
+                        brillo = nx * luz[0] + ny * luz[1] + nz * luz[2]
+                        base = mezclar(ROCA_ABAJO, ROCA_ARRIBA, 0.25 + 0.75 * brillo)
+                        grano = 0.88 + 0.24 * fbm(x * 0.12, y * 0.12, semilla + 4)
+                        c = tuple(v * grano * cerca[3] for v in base)
+
+            if c is not None:
+                pixeles[x, y] = a_bytes(c) + (255,)
+
+    return imagen.resize((VACIO_LADO, VACIO_LADO), Image.LANCZOS)
+
+
 def main():
     os.makedirs(SALIDA, exist_ok=True)
     for n, semilla in enumerate((7, 29, 83)):
@@ -337,6 +448,8 @@ def main():
     frente.save(os.path.join(SALIDA, "pinchos_frente.png"))
     generar_pincho().save(os.path.join(SALIDA, "pincho.png"))
     print("pinchos")
+    generar_vacio().save(os.path.join(SALIDA, "vacio.png"))
+    print("vacio")
 
 
 if __name__ == "__main__":

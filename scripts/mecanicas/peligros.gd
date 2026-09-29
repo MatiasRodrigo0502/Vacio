@@ -115,7 +115,9 @@ func _colocar(piso: Node, sala: Sala, clase: String, sitio: Vector2, tamano: Vec
 			pinchos.tinte = piso.tinte_profundidad()
 			peligro = pinchos
 		"vacio":
-			peligro = Vacio.new()
+			var vacio := Vacio.new()
+			vacio.tinte = piso.tinte_profundidad()
+			peligro = vacio
 		_:
 			var lava := Lava.new()
 			lava.radio = tamano.x * 0.5

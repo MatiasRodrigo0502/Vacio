@@ -1,4 +1,4 @@
-## HUD: piso actual, nombre de la capa, vida y minimapa.
+## HUD: piso actual, nombre de la capa, vida, ventajas recogidas y minimapa.
 ## Es una CanvasLayer para que no le afecten ni el zoom ni el movimiento de la
 ## camara: el interfaz debe quedarse quieto mientras el mundo se estrecha.
 class_name Hud
@@ -9,6 +9,7 @@ extends CanvasLayer
 @onready var _corazones: Corazones = $Corazones
 @onready var _aviso: Label = $Aviso
 @onready var _minimapa: Minimapa = $Minimapa
+@onready var _mejoras: MejorasRecogidas = $Mejoras
 
 ## Cuanto dura en pantalla el aviso de un objeto recogido.
 const DURACION_AVISO: float = 2.6
@@ -28,9 +29,16 @@ func actualizar_vida(vida_actual: int, vida_maxima: int) -> void:
 	_corazones.actualizar(vida_actual, vida_maxima)
 
 
+## Vacia la fila de ventajas. Principal la llama al empezar otra partida.
+func vaciar_mejoras() -> void:
+	_mejoras.vaciar()
+
+
 ## Anuncia un objeto recien recogido. Sin esto, el jugador ve desaparecer algo
-## del suelo y no se entera de que le ha tocado.
+## del suelo y no se entera de que le ha tocado. Y lo deja en la fila de
+## ventajas, que no se va.
 func anunciar_mejora(mejora: ObjetoMejora) -> void:
+	_mejoras.anadir(mejora)
 	_aviso.text = "%s  ·  %s" % [mejora.nombre, mejora.descripcion]
 	_aviso.modulate = mejora.color
 	_aviso.show()

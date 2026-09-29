@@ -41,3 +41,11 @@ extends Resource
 @export_group("Cuando aparece")
 ## Primer piso en el que puede salir.
 @export_range(1, 12) var piso_minimo: int = 1
+
+
+## True si deja algo que dura toda la partida. El HUD solo ensena estas: lo
+## que solo cura se gasta al cogerlo.
+func es_permanente() -> bool:
+	return vida_maxima_extra != 0 or velocidad_extra != 0.0 \
+		or not is_equal_approx(cadencia_multiplicador, 1.0) \
+		or velocidad_bola_extra != 0.0 or radio_bola_extra != 0.0
