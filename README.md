@@ -10,7 +10,8 @@ más pequeñas, y se ve menos que el anterior.
 
 Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
-persiguen, objetos que te mejoran, pausa, victoria y derrota. Se elige entre **dos magos**, cada uno con
+persiguen o te disparan de lejos, pinchos, lava y agujeros en el suelo, objetos
+que te mejoran, pausa, victoria y derrota. Se elige entre **dos magos**, cada uno con
 sus ventajas, y miran a los ocho lados; el piso 1 hace de tutorial con arte de musgo y el 2 de
 cueva; el 3 es cueva pelada, del 4 al 8 el manto y del 9 al 12 el núcleo.
 

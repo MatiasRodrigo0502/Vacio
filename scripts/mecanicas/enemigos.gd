@@ -14,11 +14,16 @@ const ESCENA_ENEMIGO := preload("res://scenes/Enemigo.tscn")
 const RUTA_TIPOS := "res://resources/enemigos"
 
 ## Enemigos por sala en el primer piso en el que aparecen.
-@export var base: int = 1
+@export var base: int = 2
 ## Cuantos mas por sala se anaden por cada piso que se baja.
-@export var por_piso: float = 0.25
-## Tope por sala. Isaac pone entre dos y seis; aqui las salas son mas pequenas.
-@export var maximo: int = 4
+@export var por_piso: float = 0.4
+## Tope por sala. Isaac pone entre dos y seis.
+@export var maximo: int = 7
+
+## Que parte de cada sala pueden ser enemigos a distancia, como mucho. Una sala
+## solo de tiradores es una lluvia de disparos desde todas partes; con la mitad
+## como tope, siempre hay alguien que viene a por ti y alguien que te cubre.
+@export_range(0.0, 1.0) var proporcion_distancia: float = 0.5
 
 ## Espacio libre delante de cada puerta. Encontrarse un enemigo pegado a la
 ## puerta nada mas cruzarla seria un golpe sin tiempo de reaccionar.
@@ -45,21 +50,34 @@ func aplicar_a_piso(piso: Node) -> void:
 	if disponibles.is_empty():
 		return
 
+	# Separados por forma de pelear, para poder limitar los de distancia.
+	var cuerpo_a_cuerpo: Array[TipoEnemigo] = []
+	var a_distancia: Array[TipoEnemigo] = []
+	for tipo in disponibles:
+		if tipo.es_a_distancia():
+			a_distancia.append(tipo)
+		else:
+			cuerpo_a_cuerpo.append(tipo)
+
 	var generador := RandomNumberGenerator.new()
 	# Semilla propia derivada del piso: los 12 niveles siguen siendo iguales en
 	# todas las partidas y en las tres maquinas del equipo.
 	generador.seed = hash(nombre_mecanica) + piso.numero_piso * 31013
-	var por_sala: int = base + int((piso.numero_piso - piso_desbloqueo) * por_piso)
+	var esperados := media_por_sala(piso.numero_piso)
 
 	for sala in piso.salas():
 		if not sala.admite_enemigos():
 			continue
-		# Uno de mas en algunas salas, para que no todas pesen igual.
-		var cuantos: int = mini(por_sala + generador.randi_range(0, 1), maximo)
+		var cuantos := _redondear_al_azar(esperados, generador)
+		var tope_distancia := ceili(cuantos * proporcion_distancia)
+		var de_distancia := 0
 		for _i in cuantos:
 			# El tipo se elige antes que el sitio: el hueco que necesita
-			# depende de lo grande que sea.
+			# depende de lo grande que sea. Al azar entre todos, salvo que la
+			# sala ya tenga su cupo de tiradores.
 			var tipo: TipoEnemigo = disponibles[generador.randi() % disponibles.size()]
+			if tipo.es_a_distancia() and de_distancia >= tope_distancia 					and not cuerpo_a_cuerpo.is_empty():
+				tipo = cuerpo_a_cuerpo[generador.randi() % cuerpo_a_cuerpo.size()]
 			for _intento in 30:
 				var sitio: Vector2 = sala.punto_al_azar(generador, 90.0)
 				if sala.cerca_de_puerta(sitio, despeje):
@@ -67,7 +85,11 @@ func aplicar_a_piso(piso: Node) -> void:
 				# En la sala de salida, tampoco encima del agujero.
 				if sala.tipo == MapaSalas.Tipo.SALIDA and sitio.length() < despeje * 0.6:
 					continue
-				if _pisa_una_roca(piso, sala.to_global(sitio), tipo.alto * 0.5):
+				# Ni encima de rocas, peligros u otros enemigos. Las rocas
+				# importan mas de lo que parece: el cristal vivo no se mueve, y
+				# enterrado en una, la bola chocaria con la roca antes de
+				# llegarle y la sala podria no abrirse.
+				if not piso.lugar_libre(sala.to_global(sitio), tipo.alto * 0.5):
 					continue
 
 				var enemigo: Enemigo = ESCENA_ENEMIGO.instantiate()
@@ -76,27 +98,29 @@ func aplicar_a_piso(piso: Node) -> void:
 				sala.add_child(enemigo)
 				enemigo.preparar(tipo, sala.to_global(sitio))
 				sala.registrar_enemigo(enemigo)
+				if tipo.es_a_distancia():
+					de_distancia += 1
 				break
 
 
-## True si un enemigo de ese radio en ese punto (global) quedaria encima de una
-## roca o una plataforma.
+## Cuantos enemigos salen de media en cada sala de ese piso.
 ##
-## POR QUE HACE FALTA:
-## las rocas ya estan puestas cuando se reparten los enemigos, y antes no se
-## miraban: salian enemigos metidos en rocas. Los que se mueven acaban saliendo
-## al perseguirte, pero el cristal vivo no se mueve nunca, y la bola choca con
-## la roca antes de llegar a el: enterrado en una, la sala podria no abrirse.
-##
-## Se mide contra el dibujo entero de la roca, no contra su colision, que es
-## mas pequena: un enemigo medio tapado por una roca tampoco se lee bien.
-func _pisa_una_roca(piso: Node, punto: Vector2, radio: float) -> bool:
-	for obstaculo in piso.obstaculos():
-		var caja := Rect2(obstaculo.global_position - obstaculo.tamano() * 0.5,
-			obstaculo.tamano()).grow(radio + 12.0)
-		if caja.has_point(punto):
-			return true
-	return false
+## Sube lo mismo en cada piso (`por_piso`), sin saltos: la media de un piso
+## nunca es menor que la del de arriba. Antes se sumaba un enemigo de mas al
+## azar en algunas salas, y eso hacia que un piso pudiera salir mas flojo que
+## el anterior (del 7 al 9 la media bajaba: 4,7 / 4,5 / 4,3).
+func media_por_sala(numero_piso: int) -> float:
+	return minf(base + (numero_piso - piso_desbloqueo) * por_piso, maximo)
+
+
+## La parte entera siempre, y uno mas con la probabilidad de la parte
+## decimal: con 2,4 de media, el 60 % de las salas tienen 2 y el 40 % tienen 3.
+## Asi hay salas mas cargadas que otras y la media es justo la que toca.
+func _redondear_al_azar(media: float, generador: RandomNumberGenerator) -> int:
+	var cuantos := int(media)
+	if generador.randf() < media - cuantos:
+		cuantos += 1
+	return mini(cuantos, maximo)
 
 
 ## Lee la carpeta de tipos, ordenada por nombre de archivo para que el reparto

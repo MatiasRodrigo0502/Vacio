@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MecanicaPeligros" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/mecanicas/peligros.gd" id="1_peligros"]
+
+[resource]
+script = ExtResource("1_peligros")
+nombre_mecanica = "Peligros"
+descripcion = "Pinchos que salen a ratos (desde el piso 2), agujeros por los que caerse (desde el 3) y lava (desde el 4), de 1 a 3 por sala de pelea."
+piso_desbloqueo = 2
+activa = true
+piso_pinchos = 2
+piso_vacio = 3
+piso_lava = 4
+base = 1
+por_piso = 0.25
+maximo = 3
+despeje_puerta = 210.0
+ancho_paso = 160.0
+despeje_salida = 170.0

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TipoProyectil" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_proyectil.gd" id="1_proyectil"]
+
+[resource]
+script = ExtResource("1_proyectil")
+nombre = "Magma"
+estilo = 2
+color = Color(1.0, 0.62, 0.16, 1)
+color_halo = Color(0.92, 0.26, 0.05, 1)
+velocidad = 330.0
+radio = 13.0
+dano = 2
+alcance = 900.0
+ralentiza = 0.0
+charco_radio = 42.0
+charco_duracion = 3.5

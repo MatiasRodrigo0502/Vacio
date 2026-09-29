@@ -1,15 +1,25 @@
-[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
 [ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_serpiente.tres" id="2_anim"]
+[ext_resource type="Resource" path="res://resources/proyectiles/veneno.tres" id="3_proyectil"]
 
 [resource]
 script = ExtResource("1_tipo")
 nombre = "Serpiente"
 animaciones = ExtResource("2_anim")
 vida = 2
-velocidad = 95.0
+velocidad = 55.0
 dano = 1
 alto = 44.0
-radio_vision = 520.0
+radio_vision = 560.0
 piso_minimo = 2
+color_efectos = Color(0.62, 1.0, 0.32, 1)
+ataque = 1
+proyectil = ExtResource("3_proyectil")
+cadencia = 1.90
+tiempo_apuntar = 0.45
+distancia_preferida = 300.0
+division = 0
+radio_explosion = 0.0
+dano_explosion = 1

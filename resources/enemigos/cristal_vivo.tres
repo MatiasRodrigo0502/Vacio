@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
 [ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_cristal_vivo.tres" id="2_anim"]
+[ext_resource type="Resource" path="res://resources/proyectiles/rayo.tres" id="3_proyectil"]
 
 [resource]
 script = ExtResource("1_tipo")
@@ -11,5 +12,14 @@ vida = 3
 velocidad = 0.0
 dano = 1
 alto = 56.0
-radio_vision = 400.0
+radio_vision = 560.0
 piso_minimo = 5
+color_efectos = Color(0.8, 0.7, 1.0, 1)
+ataque = 1
+proyectil = ExtResource("3_proyectil")
+cadencia = 2.60
+tiempo_apuntar = 0.80
+distancia_preferida = 300.0
+division = 0
+radio_explosion = 0.0
+dano_explosion = 1

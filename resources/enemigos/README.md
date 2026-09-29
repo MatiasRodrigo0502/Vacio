@@ -9,45 +9,49 @@ profundidad. Basta con dejar aquí otro `.tres`.
 
 ## Los que hay
 
-| Tipo | Vida | Velocidad | Visión | Alto | Desde el piso |
-|---|---|---|---|---|---|
-| Slime verde | 2 | 78 | 620 | 54 | 1 |
-| Rata | 1 | 125 | 560 | 40 | 2 |
-| Serpiente | 2 | 95 | 520 | 44 | 2 |
-| Planta venenosa | 3 | 46 | 300 | 62 | 3 |
-| Murciélago | 1 | 145 | 700 | 44 | 3 |
-| Gólem de roca | 5 | 52 | 480 | 66 | 4 |
-| Slime naranja | 3 | 104 | 760 | 58 | 5 |
-| Slime de magma | 3 | 90 | 640 | 56 | 5 |
-| Cristal vivo | 3 | **0** | 400 | 56 | 5 |
-| Fantasma | 2 | 88 | 800 | 54 | 6 |
-| Planta azul | 2 | 132 | 420 | 50 | 7 |
+Dos formas de pelear (`ataque`):
 
-Todos hacen 1 de daño.
+- **Cuerpo a cuerpo**: van directos a por ti y son **rápidos**. Hay que
+  pararlos antes de que lleguen.
+- **A distancia**: **lentos**, se quedan a su `distancia_preferida` (si te
+  acercas, retroceden) y disparan cada `cadencia` segundos. Pegan más fuerte,
+  pero antes de cada disparo se paran y avisan durante `tiempo_apuntar`: el
+  aviso es lo que hace justo el daño alto. Las rocas paran sus disparos.
+
+| Tipo | Ataque | Vida | Velocidad | Desde el piso | Qué tiene de especial |
+|---|---|---|---|---|---|
+| Slime verde | cuerpo a cuerpo | 2 | 100 | 1 | al morir, explota (radio 70) y se parte en 2 crías |
+| Rata | cuerpo a cuerpo | 1 | 160 | 2 | |
+| Serpiente | distancia: **veneno** | 2 | 55 | 2 | el veneno quita 1 y te frena 2,5 s |
+| Planta venenosa | distancia: **veneno** | 3 | 28 | 3 | ve poco (360): emboscada |
+| Murciélago | cuerpo a cuerpo | 1 | **195** | 3 | el más rápido del juego |
+| Gólem de roca | distancia: **magma** | 5 | 38 | 4 | lo tira por el aire: quita 2 y deja lava 3,5 s |
+| Slime naranja | cuerpo a cuerpo | 3 | 132 | 5 | explota (75) y se parte en 2 |
+| Slime de magma | cuerpo a cuerpo | 3 | 118 | 5 | explota (85) y se parte en 2 |
+| Cristal vivo | distancia: **rayo** | 3 | **0** | 5 | apunta 0,8 s con una línea; el rayo quita 2 |
+| Fantasma | cuerpo a cuerpo | 2 | 115 | 6 | ve desde más lejos que nadie (800) |
+| Planta azul | cuerpo a cuerpo | 2 | 150 | 7 | |
+
+El más lento de cuerpo a cuerpo (100) es casi el doble de rápido que el más
+rápido a distancia (55). El contacto quita 1 en todos.
 
 **Salen al azar.** Cada sala elige entre todos los tipos cuyo `piso_minimo` ya
-se ha alcanzado, así que del piso 7 en adelante puede salir cualquiera de los
-once. El piso mínimo solo escalona la dificultad: los flojos y rápidos (rata,
-serpiente, murciélago) desde arriba; los que aguantan mucho (gólem, slime de
-magma) más abajo.
+se ha alcanzado. Como mucho **la mitad** de una sala son de distancia
+(`proporcion_distancia` en `resources/mecanicas/enemigos.tres`): una sala solo
+de tiradores sería una lluvia de disparos desde todas partes.
 
-Algunos con carácter propio:
+**Los slimes** (`division`, `radio_explosion`): al morir explotan en un radio
+pequeño, que te quita 1 si estás dentro, y sueltan dos crías. Las crías son el
+mismo slime en pequeño, más rápidas y con 1 de vida, y ni explotan ni se
+dividen: si no, matar un slime desataría una cadena imposible de esquivar. La
+sala no se abre hasta matar también a las crías. Matarlos de lejos sale a
+cuenta.
 
-- **Rata y murciélago** mueren de un disparo, pero son los más rápidos: se
-  echan encima antes de que apuntes.
-- **Gólem de roca**: cinco de vida y lento. Es el que pide el ataque cargado
-  (el del mago rojo lo mata de un golpe).
-- **Cristal vivo**: no se mueve (velocidad 0), como dice su descripción en
-  `assets/README.md`. Es una trampa fija, pero la sala no se abre hasta
-  romperlo, así que hay que ir a por él.
-- **Fantasma**: el que ve desde más lejos (800): te persigue por toda la sala.
-
-`radio_vision` cambia mucho el carácter: la planta venenosa tiene 300, así que
-no se entera de que estás ahí hasta que la tienes encima y funciona como
-emboscada; el fantasma y el slime naranja te persiguen desde lejos.
+Los proyectiles (veneno, magma, rayo) son su propio `.tres`, en
+`resources/proyectiles/`: dos enemigos pueden tirar lo mismo.
 
 ## Por qué son Resources y no una escena por enemigo
 
-Todos se comportan igual: perseguir y hacer daño al tocar. Lo único que cambia
-son los números y el dibujo. Con una escena por enemigo habría once archivos
+Todos comparten el mismo cuerpo: moverse, hacer daño al tocar y morir. Lo que
+cambia son los números, el dibujo y la forma de atacar. Con una escena por enemigo habría once archivos
 casi idénticos que mantener.

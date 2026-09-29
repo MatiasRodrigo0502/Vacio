@@ -45,6 +45,8 @@ hechos.
 | Arte de un piso | `assets/<pack>/catalogo_*.tres` + `catalogo_arte` del piso | otro `.tres` |
 | Mecánicas | `resources/mecanicas/*.tres` (+ script que herede de `Mecanica`) | otro `.tres` |
 | Tipos de enemigo | `resources/enemigos/*.tres` (`TipoEnemigo`) | otro `.tres` |
+| Proyectiles enemigos | `resources/proyectiles/*.tres` (`TipoProyectil`) | otro `.tres` |
+| Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
 | Pack de arte del núcleo | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
@@ -109,7 +111,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
   aunque te estés alejando.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
-  ratón, con cadencia. Matan enemigos; **no** rompen rocas.
+  ratón, con cadencia. Matan enemigos; **no** rompen rocas, y las rocas los
+  paran (ver la trampa del `Area2D` más abajo).
 - **Ataque cargado**: clic derecho mantenido. Se carga en `tiempo_carga`
   (0,75 s), hay que **soltarlo** para que salga y soltarlo antes de tiempo no
   dispara nada. Atraviesa enemigos y hace 3 de daño; las rocas lo paran igual.
@@ -135,9 +138,20 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
   harían el movimiento un engancharse continuo.
 - **Enemigos**: desde el piso 2, **once tipos** que salen al azar entre los
-  que ya pueden aparecer a esa profundidad (`piso_minimo`), de 1 a 4 por sala
-  de pelea. Los siete últimos los dibujó Matías. El cristal vivo no se mueve.
-  Son lo único que quita vida.
+  que ya pueden aparecer a esa profundidad (`piso_minimo`). De media 2 por
+  sala en el piso 2 y 0,4 más por piso, hasta 6 en el 12. Los siete últimos
+  los dibujó Matías.
+  - **Cuerpo a cuerpo** (slimes, rata, murciélago, fantasma, planta azul):
+    rápidos, de 100 a 195.
+  - **A distancia** (serpiente y planta venenosa con veneno, gólem con magma,
+    cristal con rayos): lentos, de 0 a 55, se quedan lejos y pegan más. Antes
+    de disparar se paran y avisan. Como mucho la mitad de cada sala.
+  - **Los slimes** explotan al morir (radio 70-85) y sueltan dos crías.
+- **Peligros del suelo** (`scripts/mecanicas/peligros.gd`), de 1 a 3 por sala
+  de pelea: **pinchos** que salen a ratos (desde el piso 2), **agujeros** que
+  cuestan un corazón y te devuelven a la entrada de la sala (desde el 3) y
+  **lava** (desde el 4). Nunca pisan el paso de una puerta al centro.
+- **Veneno**: el jugador va al 60 % de velocidad y en verde mientras dura.
 - **Objetos**: uno por piso, en el centro de su sala, con icono de lo que hacen. Las mejoras se acumulan
   toda la partida y se pierden al empezar otra.
 - **Vida**: corazones dibujados por código. La fuente de Godot no tiene glifos
@@ -163,8 +177,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí).
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
-  enemigos: con salas, el total por piso ha pasado de 2-9 a 4-28 (de 1 a 4 por
-  sala de pelea). Nadie lo ha jugado entero todavía.
+  enemigos: desde el 2026-09-29 salen de 6 (piso 2) a 48 (piso 12) al empezar
+  el piso, más las crías de los slimes: una partida entera son 419 muertes.
+  Los de distancia quitan 2 y hay pinchos, lava y agujeros, con 3 o 4
+  corazones. Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
+  (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
 - **Contraste del manto en los pisos 5-8 (decide Matías).** Esos pisos usan
   la familia `grupo`, y los montones del manto salen más claros respecto al
   suelo que los de la cueva: 0,67 / 0,63 / 0,59 / 0,55 frente a 0,52 / 0,49 /
@@ -255,6 +272,30 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   0,28 / 0,26), y sus losas hasta que con el 0,6 de `piso.gd` queden como las
   rocas. Ojo: la cuenta tiene que ser esta (gamma, la de la nota); con
   luminancia lineal salen otros números que no cuadran con los 0,33 de la nota.
+- **Cuerpo a cuerpo rápido, distancia lento y letal** (pedido por Matías el
+  2026-09-29). Los de distancia avisan antes de cada disparo (se paran y
+  brillan; el cristal marca además la línea del rayo), porque quitan 2: sin
+  aviso, un golpe así no se puede esquivar y solo frustra.
+- **Como mucho la mitad de cada sala son de distancia.** Una sala solo de
+  tiradores es una lluvia de disparos desde todas partes.
+- **El veneno frena, no quita más vida.** Con tres corazones, un daño que
+  siguiera bajando la vida sería demasiado. Frenado, el peligro es el
+  siguiente golpe.
+- **Las crías de slime ni explotan ni se dividen**, o matar un slime
+  desataría una cadena que no se puede esquivar. Y **se apuntan en la sala
+  antes de que la madre avise de que muere**: si no, las puertas se abrirían
+  un instante con las crías vivas.
+- **Caer por un agujero cuesta un corazón y no mata.** Se reaparece dentro de
+  la puerta por la que se entró (que siempre está libre). Cuesta aunque se
+  esté parpadeando tras un golpe (`recibir_dano(..., true)`): si no, caer
+  justo después de un golpe saldría gratis.
+- **Los peligros nunca tapan el paso de una puerta al centro de la sala**
+  (`ancho_paso`): así desde cualquier puerta se llega a cualquier otra. Se
+  comprobó recorriendo en cuadrícula las salas de los 12 pisos.
+- **El número de enemigos sube lo mismo en cada piso.** Antes se sumaba uno de
+  más al azar por sala, y la media podía bajar de un piso al siguiente (del 7
+  al 9: 4,7 / 4,5 / 4,3). Ahora la media sale de la fórmula y solo la parte
+  decimal se reparte al azar.
 - **Los enemigos salen al azar**, como pidió Matías: cada sala elige entre los
   tipos cuyo `piso_minimo` ya se alcanzó, sin tope por abajo. El piso mínimo
   solo escalona la dificultad.
@@ -264,6 +305,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **Un `Area2D` no detecta los `StaticBody2D` en Godot 4.7.** Las bolas son
+  `Area2D` y las rocas `StaticBody2D`, así que las rocas **nunca** pararon
+  ninguna bola, aunque este archivo decía que sí. Se comprobó con una roca
+  del pool, una movida y una recién creada: las tres dejaban pasar la bola. Al
+  jugador (`CharacterBody2D`) sí lo detecta. Lo destapó el 2026-09-29 la
+  prueba de que las rocas paran el veneno. Ahora el terreno se consulta a mano
+  en cada paso con `Terreno.choque()` (rayo del tramo recorrido y círculo en
+  el punto nuevo). **Todo lo que tenga que chocar con rocas o muros siendo un
+  `Area2D`, por ahí.**
 
 - **Lo que se vuelve a llamar al reiniciar tiene que partir de valores fijos.**
   `usar_personaje()` sumaba la ventaja a los valores de fábrica, y Principal la

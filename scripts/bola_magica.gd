@@ -63,10 +63,10 @@ var _fase: float = 0.0
 
 
 func _ready() -> void:
+	# Los enemigos son areas y se detectan con la senal. Las rocas no: son
+	# StaticBody2D, y un Area2D no los detecta. Esas se miran a mano en cada
+	# paso (ver Terreno).
 	area_entered.connect(_al_tocar)
-	# Las rocas son cuerpos solidos y los enemigos areas, asi que hacen falta
-	# las dos senales.
-	body_entered.connect(_al_tocar_cuerpo)
 	var circulo := CircleShape2D.new()
 	circulo.radius = radio
 	_forma.shape = circulo
@@ -74,8 +74,13 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var paso := velocidad * delta
+	var antes := global_position
 	position += direccion * paso
 	_recorrido += paso
+	var roca := Terreno.choque(get_world_2d(), antes, global_position, radio, Terreno.CAPA_ROCAS)
+	if roca != null:
+		_al_tocar_roca(roca)
+		return
 	_fase += delta
 	queue_redraw()
 	if _recorrido >= alcance:
@@ -87,7 +92,7 @@ func _physics_process(delta: float) -> void:
 
 ## Choque contra una roca o plataforma: la bola se apaga y la roca aguanta, asi
 ## que la roca sirve de parapeto.
-func _al_tocar_cuerpo(cuerpo: Node2D) -> void:
+func _al_tocar_roca(cuerpo: Object) -> void:
 	if cuerpo is Obstaculo and rompe_obstaculos:
 		cuerpo.romper()
 		impacto.emit(cuerpo)

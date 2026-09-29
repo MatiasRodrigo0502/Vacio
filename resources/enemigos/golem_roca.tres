@@ -1,15 +1,25 @@
-[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
 [ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_golem_roca.tres" id="2_anim"]
+[ext_resource type="Resource" path="res://resources/proyectiles/magma.tres" id="3_proyectil"]
 
 [resource]
 script = ExtResource("1_tipo")
 nombre = "Gólem de roca"
 animaciones = ExtResource("2_anim")
 vida = 5
-velocidad = 52.0
+velocidad = 38.0
 dano = 1
 alto = 66.0
-radio_vision = 480.0
+radio_vision = 560.0
 piso_minimo = 4
+color_efectos = Color(1.0, 0.55, 0.15, 1)
+ataque = 1
+proyectil = ExtResource("3_proyectil")
+cadencia = 2.80
+tiempo_apuntar = 0.60
+distancia_preferida = 340.0
+division = 0
+radio_explosion = 0.0
+dano_explosion = 1

@@ -16,6 +16,9 @@ signal sin_vida
 signal bola_lanzada(desde: Vector2, direccion: Vector2, cargada: bool)
 ## Se emite al recoger un objeto, para que el HUD lo anuncie.
 signal mejora_recogida(mejora: ObjetoMejora)
+## Se emite al acabar de caer por un agujero. Principal lo devuelve a la
+## entrada de la sala: el jugador no sabe donde esta eso, el piso si.
+signal caido
 
 @export_group("Movimiento")
 ## Velocidad punta en px/s.
@@ -64,6 +67,15 @@ const CADENCIA_MINIMA: float = 0.09
 ## Por debajo de esta velocidad se considera que el personaje esta parado y se
 ## pasa a la animacion de reposo. No es 0 porque la friccion deja residuos.
 const VELOCIDAD_MINIMA_ANDAR: float = 12.0
+
+## Envenenado se va a esta fraccion de la velocidad. Frenar es lo que hace
+## peligroso al veneno: no quita mas vida, pero te deja a tiro del siguiente.
+const FACTOR_VENENO: float = 0.6
+const COLOR_VENENO := Color(0.6, 1.0, 0.55)
+## Lo que tarda la animacion de caer por un agujero.
+const DURACION_CAIDA: float = 0.4
+## Lo que cuesta caerse.
+const DANO_CAIDA: int = 1
 
 ## Las ocho direcciones del mago, en el orden de los sectores de 45 grados que
 ## devuelve Vector2.angle(): empieza en la derecha y gira en el sentido de las
@@ -116,6 +128,15 @@ var _cargando: bool = false
 ## mago tiene que quedarse mirando a donde estaba, no volver a una por defecto.
 var _mirando: StringName = &"abajo"
 
+## Segundos que le quedan envenenado (frenado). 0 = sano.
+var _tiempo_veneno: float = 0.0
+## True mientras cae por un agujero: sin control y sin recibir golpes, que ya
+## le va a costar un corazon la caida.
+var _cayendo: bool = false
+var _animacion_caida: Tween = null
+## Escala del sprite en la escena, para devolverla despues de caer.
+var _escala_sprite: Vector2 = Vector2.ONE
+
 ## El sprite se escala y se desplaza desde la escena, no desde aqui: el origen
 ## del nodo esta a los pies del personaje y la forma de colision cubre la base
 ## de la tunica. Asi, en vista cenital, lo que choca es la "huella" en el suelo y no
@@ -160,6 +181,7 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 
 
 func _ready() -> void:
+	_escala_sprite = _sprite.scale
 	_escena_vida_maxima = vida_maxima
 	_escena_velocidad = velocidad_maxima
 	_escena_cadencia = cadencia_disparo
@@ -179,7 +201,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	_actualizar_invulnerabilidad(delta)
+	_actualizar_estados(delta)
 
 	var direccion := Vector2.ZERO
 	if _control_activo:
@@ -188,7 +210,8 @@ func _physics_process(delta: float) -> void:
 			"mover_izquierda", "mover_derecha", "mover_arriba", "mover_abajo")
 
 	if direccion != Vector2.ZERO:
-		velocity = velocity.move_toward(direccion * velocidad_maxima, aceleracion * delta)
+		var punta := velocidad_maxima * (FACTOR_VENENO if esta_envenenado() else 1.0)
+		velocity = velocity.move_toward(direccion * punta, aceleracion * delta)
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, friccion * delta)
 
@@ -347,8 +370,11 @@ func _lado(v: Vector2) -> StringName:
 	return LADOS[posmod(int(roundf(v.angle() / (TAU / 8.0))), 8)]
 
 
-func _actualizar_invulnerabilidad(delta: float) -> void:
+## Invulnerabilidad y veneno: cuentan hacia atras y deciden el color.
+func _actualizar_estados(delta: float) -> void:
+	_tiempo_veneno = maxf(_tiempo_veneno - delta, 0.0)
 	if _tiempo_invulnerable <= 0.0:
+		_sprite.modulate = _color_normal()
 		return
 
 	_tiempo_invulnerable -= delta
@@ -362,13 +388,23 @@ func _actualizar_invulnerabilidad(delta: float) -> void:
 
 	if _tiempo_invulnerable <= 0.0:
 		_fase_parpadeo = 0.0
-		_sprite.modulate = Color.WHITE
+		_sprite.modulate = _color_normal()
+
+
+## Verde mientras dura el veneno: si vas lento, que se vea por que.
+func _color_normal() -> Color:
+	return COLOR_VENENO if esta_envenenado() else Color.WHITE
 
 
 ## Aplica dano. Devuelve true solo si el golpe ha contado (util para que el
 ## obstaculo decida si reproducir efectos). Si esta invulnerable, se ignora.
-func recibir_dano(cantidad: int = 1) -> bool:
-	if esta_invulnerable() or vida_actual <= 0:
+##
+## 'forzar' se salta la invulnerabilidad. Solo lo usa la caida: caerse tiene
+## que costar siempre, o caer justo despues de un golpe saldria gratis.
+func recibir_dano(cantidad: int = 1, forzar: bool = false) -> bool:
+	if vida_actual <= 0:
+		return false
+	if not forzar and (esta_invulnerable() or _cayendo):
 		return false
 
 	vida_actual = maxi(vida_actual - cantidad, 0)
@@ -417,6 +453,56 @@ func _notification(que: int) -> void:
 		_cancelar_carga()
 
 
+## Lo frena un rato. Lo llama el proyectil de veneno al acertar. No se suma:
+## un segundo veneno reinicia la cuenta, no la alarga.
+func envenenar(segundos: float) -> void:
+	_tiempo_veneno = maxf(_tiempo_veneno, segundos)
+
+
+func esta_envenenado() -> bool:
+	return _tiempo_veneno > 0.0
+
+
+## Empieza a caer por un agujero. Lo llama el Vacio en cada paso mientras
+## los pies esten dentro; la guarda hace que solo cuente la primera.
+func caer_al_vacio() -> void:
+	if _cayendo or vida_actual <= 0:
+		return
+	_cayendo = true
+	_control_activo = false
+	velocity = Vector2.ZERO
+	_cancelar_carga()
+	# Se encoge y se desvanece: se lee como caer hacia abajo, visto desde
+	# arriba. Se anima el nodo entero para no pelearse con el color del sprite,
+	# que ya lo usan el parpadeo y el veneno.
+	_animacion_caida = create_tween()
+	_animacion_caida.tween_property(_sprite, "scale", _escala_sprite * 0.2, DURACION_CAIDA)
+	_animacion_caida.parallel().tween_property(self, "modulate:a", 0.0, DURACION_CAIDA)
+	_animacion_caida.tween_callback(func() -> void: caido.emit())
+
+
+func esta_cayendo() -> bool:
+	return _cayendo
+
+
+## Vuelve a aparecer despues de caer, y paga la caida.
+func reaparecer(posicion: Vector2) -> void:
+	_parar_caida()
+	global_position = posicion
+	velocity = Vector2.ZERO
+	_control_activo = true
+	recibir_dano(DANO_CAIDA, true)
+
+
+func _parar_caida() -> void:
+	if _animacion_caida != null:
+		_animacion_caida.kill()
+		_animacion_caida = null
+	_cayendo = false
+	_sprite.scale = _escala_sprite
+	modulate.a = 1.0
+
+
 func esta_invulnerable() -> bool:
 	return _tiempo_invulnerable > 0.0
 
@@ -430,6 +516,8 @@ func reubicar(posicion: Vector2) -> void:
 	_control_activo = true
 	_espera_disparo = 0.0
 	_cancelar_carga()
+	_parar_caida()
+	_tiempo_veneno = 0.0
 	# Cada piso empieza mirando hacia donde se baja.
 	_mirando = &"abajo"
 
@@ -448,6 +536,8 @@ func restaurar_vida() -> void:
 	_fase_parpadeo = 0.0
 	_control_activo = true
 	_sprite.modulate = Color.WHITE
+	_parar_caida()
+	_tiempo_veneno = 0.0
 	_espera_disparo = 0.0
 	_cancelar_carga()
 	vida_cambiada.emit(vida_actual, vida_maxima)

@@ -86,6 +86,15 @@ func construir(celda_sala: Vector2i, tipo_sala: MapaSalas.Tipo, tamano_sala: Vec
 	queue_redraw()
 
 
+## Colores de la sala. Los peligros los usan para ser de la misma piedra.
+func color_suelo() -> Color:
+	return _color_suelo
+
+
+func color_borde() -> Color:
+	return _color_borde
+
+
 ## Suelo de la sala en coordenadas locales.
 func rect_suelo() -> Rect2:
 	return Rect2(-tamano * 0.5, tamano)

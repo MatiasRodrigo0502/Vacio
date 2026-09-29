@@ -146,7 +146,7 @@ Disparas con las flechas o apuntando con el ratón: matan enemigos.
 Mantén el clic derecho para cargar un ataque: cuando el aro se cierre, suéltalo.
 El cargado atraviesa enemigos y pega más fuerte, pero las rocas lo paran igual.
 Las rocas son sólidas: no se pueden cruzar ni romper, pero te sirven de parapeto.
-Lo que te quita vida son los enemigos al tocarte.
+Te quitan vida los enemigos, sus disparos, los pinchos, la lava y caer al vacío.
 En cada piso hay un objeto que te mejora para el resto de la partida.
 Doce pisos: cada uno con más salas, más pequeñas, y cada vez se ve menos."
 horizontal_alignment = 1

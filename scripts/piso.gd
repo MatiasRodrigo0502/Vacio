@@ -32,6 +32,9 @@ const HOLGURA_CARTEL: float = 34.0
 ## las puertas: su radio (15) y un poco mas. Con menos, el cierre podria nacer
 ## rozandole el cuerpo en el umbral.
 const MARGEN_ENTRAR: float = 26.0
+## Cuanto por dentro de la puerta reaparece quien cae por un agujero: lo
+## bastante para no quedar en el umbral, donde nacen las rejas al cerrarse.
+const DENTRO_REAPARICION: float = 70.0
 
 ## Catalogo de rocas por defecto. Cada piso puede sobreescribirlo desde su .tres.
 const CATALOGO_POR_DEFECTO := preload("res://assets/cueva/catalogo_cueva.tres")
@@ -58,6 +61,10 @@ var _salas: Dictionary = {}
 var _orden_salas: Array[Sala] = []
 var _sala_actual: Sala = null
 var _jugador: Node2D = null
+## Donde reaparece el jugador si cae por un agujero: justo dentro de la puerta
+## por la que entro en la sala. Ahi no hay peligros (se dejan libres las
+## puertas), y es un sitio que el jugador ya conoce.
+var _reaparicion: Vector2 = Vector2.ZERO
 
 @onready var _contenedor_salas: Node2D = $Salas
 @onready var _decoracion: Node2D = $Decoracion
@@ -99,6 +106,7 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 
 	_sala_actual = sala_de_tipo(MapaSalas.Tipo.INICIO)
 	_sala_actual.activar()
+	_reaparicion = punto_entrada()
 
 	# La bajada no se puede usar hasta limpiar su sala. En el piso 1, que no
 	# tiene enemigos, esta abierta desde el principio.
@@ -119,6 +127,11 @@ func _physics_process(_delta: float) -> void:
 	var centro: Vector2 = _jugador.centro_colision()
 	var sala := sala_en(centro)
 	if sala != null and sala != _sala_actual:
+		# La puerta de la sala nueva que da a la que se deja.
+		var puerta := _sala_actual.celda - sala.celda
+		_reaparicion = sala.global_position
+		if puerta in sala.puertas:
+			_reaparicion += sala.punto_puerta(puerta) - Vector2(puerta) * DENTRO_REAPARICION
 		_sala_actual = sala
 		sala.visitada = true
 		sala_cambiada.emit(sala)
@@ -133,6 +146,48 @@ func _physics_process(_delta: float) -> void:
 ## Punto de aparicion del jugador: el centro de la sala de inicio.
 func punto_entrada() -> Vector2:
 	return sala_de_tipo(MapaSalas.Tipo.INICIO).global_position
+
+
+## Donde vuelve el jugador despues de caer por un agujero.
+func punto_reaparicion() -> Vector2:
+	return _reaparicion
+
+
+## True si en ese punto (global) cabe algo de ese radio sin quedar encima de
+## una roca, un enemigo o un peligro. Lo usan las mecanicas que reparten
+## cosas por las salas, para no ponerlas unas encima de otras.
+##
+## Mira todo lo que ya hay, sea de quien sea: asi da igual en que orden se
+## apliquen las mecanicas, la que va segunda esquiva lo de la primera.
+func lugar_libre(punto: Vector2, radio: float) -> bool:
+	# Contra el dibujo entero de la roca y no contra su colision, que es mas
+	# pequena: algo medio tapado por una roca tampoco se lee bien.
+	for obstaculo in _obstaculos:
+		var caja := Rect2(obstaculo.global_position - obstaculo.tamano() * 0.5,
+			obstaculo.tamano())
+		if caja.grow(radio + 12.0).has_point(punto):
+			return false
+	var sala := sala_en(punto)
+	if sala == null:
+		return false
+	for hijo in sala.get_children():
+		if hijo is Enemigo and hijo.tipo != null:
+			if hijo.global_position.distance_to(punto) < radio + hijo.tipo.alto * 0.5 + 16.0:
+				return false
+		elif hijo is Peligro:
+			if hijo.rect_global().grow(radio + 20.0).has_point(punto):
+				return false
+	return true
+
+
+## Quita las piedrecitas de decoracion que caigan dentro de esa zona (global).
+## Las usan los peligros: una china pintada encima de la lava o flotando
+## sobre un agujero delataria que el suelo es un dibujo.
+func despejar_decoracion(zona: Rect2) -> void:
+	var local := Rect2(to_local(zona.position), zona.size)
+	for adorno in _decoracion.get_children():
+		if adorno is Node2D and local.has_point(adorno.position):
+			adorno.queue_free()
 
 
 ## Centro del agujero de bajada.

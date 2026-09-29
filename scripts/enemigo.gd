@@ -1,10 +1,16 @@
-## Enemigo: un slime que persigue al jugador y le quita vida al tocarlo.
+## Enemigo: persigue al jugador o le dispara desde lejos, segun su tipo.
 ##
 ## POR QUE Area2D Y NO CharacterBody2D:
 ## por lo mismo que los obstaculos. Un cuerpo solido frenaria al jugador al
 ## chocar y este juego va de atravesar huecos con inercia; aqui el contacto
 ## resta vida y todo el mundo sigue moviendose. Ademas asi la bola magica, que
 ## tambien es un Area2D, lo detecta sin tener que mezclar capas de fisica.
+##
+## DOS FORMAS DE PELEAR (las decide TipoEnemigo.ataque):
+## - cuerpo a cuerpo: va directo a por ti, rapido. Hay que pararlo antes.
+## - a distancia: lento, se queda a su distancia y dispara. Antes de cada
+##   disparo se para y avisa (destello, y el cristal una linea de mira): pega
+##   fuerte, y el aviso es lo que hace que eso sea justo.
 ##
 ## Expone romper() igual que las rocas: la bola no pregunta contra que choca,
 ## solo si eso se puede romper.
@@ -13,23 +19,39 @@ extends Area2D
 
 signal muerto(enemigo: Enemigo)
 
+## La escena se carga al soltar crias y no con preload: el script es parte de
+## la propia escena, y precargarla desde aqui seria una referencia circular.
+const RUTA_ESCENA := "res://scenes/Enemigo.tscn"
+## Radio del jugador, para saber si una explosion le alcanza.
+const RADIO_JUGADOR: float = 15.0
+
 ## De donde salen vida, velocidad, dibujo y demas. Lo pone la mecanica que los
 ## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
 var tipo: TipoEnemigo = null
 
 var _vida: int = 0
 var _objetivo: Node2D = null
-## Dormido no se mueve. La sala lo duerme al registrarlo y lo despierta cuando
-## el jugador entra.
+## Dormido no se mueve ni dispara. La sala lo duerme al registrarlo y lo
+## despierta cuando el jugador entra.
 ##
 ## POR QUE HACE FALTA:
-## el enemigo es un Area2D que va directo hacia el jugador, sin chocar con
-## nada. Con salas pegadas, uno de la sala de al lado lo veria a traves del
-## muro y lo cruzaria para perseguirlo. Dormido hasta que entras, cada sala es
-## su propia pelea. Empieza despierto para que, suelto fuera de una sala,
-## siga funcionando como siempre.
+## el enemigo va directo hacia el jugador, sin chocar con nada. Con salas
+## pegadas, uno de la sala de al lado lo veria a traves del muro y lo cruzaria
+## para perseguirlo. Dormido hasta que entras, cada sala es su propia pelea.
+## Empieza despierto para que, suelto fuera de una sala, siga funcionando.
 var _despierto: bool = true
 var _fase: float = 0.0
+## True desde el golpe que lo mata hasta que se libera: ya no pega ni se mueve.
+var _muriendo: bool = false
+
+# --- A distancia ---
+## Segundos hasta poder empezar el siguiente disparo.
+var _espera: float = 0.0
+## Segundos de aviso que quedan. > 0 = esta apuntando, quieto.
+var _apuntando: float = 0.0
+## Hacia donde saldra el rayo. Se fija al empezar a apuntar, para que la linea
+## de mira diga la verdad: el rayo sale justo por ahi.
+var _mira: Vector2 = Vector2.DOWN
 
 @onready var _sprite: AnimatedSprite2D = $Sprite
 @onready var _forma: CollisionShape2D = $Forma
@@ -66,24 +88,32 @@ func preparar(tipo_enemigo: TipoEnemigo, posicion: Vector2) -> void:
 	forma.radius = tipo.alto * 0.40
 	_forma.shape = forma
 
+	# El primer disparo llega antes que los siguientes, y cada enemigo con su
+	# ritmo: si todos los de una sala dispararan a la vez, seria una rafaga
+	# imposible de esquivar.
+	_espera = tipo.cadencia * randf_range(0.45, 0.9)
+
 
 func _physics_process(delta: float) -> void:
 	_fase += delta
+	if _muriendo:
+		return
 	_golpear_lo_que_toca()
-	if not _despierto:
-		return
-	if not is_instance_valid(_objetivo):
+	if not _despierto or tipo == null or not is_instance_valid(_objetivo):
 		return
 
-	if tipo == null:
-		return
 	var hacia := _objetivo.global_position - global_position
-	if hacia.length() > tipo.radio_vision:
+	var distancia := hacia.length()
+	if distancia > tipo.radio_vision:
+		_dejar_de_apuntar()
 		return
 
-	global_position += hacia.normalized() * tipo.velocidad * delta
-	# Mira hacia donde va: el slime es simetrico, pero el volteo da sensacion
-	# de intencion y sale gratis.
+	if tipo.es_a_distancia():
+		_pelear_a_distancia(delta, hacia, distancia)
+	elif distancia > 0.0:
+		_mover(hacia / distancia, delta)
+	# Mira hacia donde esta el jugador: el volteo da sensacion de intencion y
+	# sale gratis.
 	_sprite.flip_h = hacia.x < 0.0
 
 
@@ -97,6 +127,10 @@ func despertar() -> void:
 
 func esta_despierto() -> bool:
 	return _despierto
+
+
+func esta_apuntando() -> bool:
+	return _apuntando > 0.0
 
 
 ## La llama la bola magica. Aguanta varios impactos.
@@ -117,8 +151,92 @@ func romper() -> void:
 			_sprite.modulate = Color.WHITE
 		return
 
-	muerto.emit(self)
-	queue_free()
+	_muriendo = true
+	visible = false
+	# Diferido: romper() llega desde el area_entered de la bola, en mitad del
+	# paso de fisica, y al morir se crean nodos con colision (las crias). El
+	# motor no deja meterlos ahi.
+	_morir.call_deferred()
+
+
+# --- Movimiento y ataque ----------------------------------------------------
+
+func _mover(direccion: Vector2, delta: float) -> void:
+	global_position += direccion * tipo.velocidad * delta
+	mantener_en_la_sala()
+
+
+## Lo deja dentro del suelo de su sala.
+##
+## Los de cuerpo a cuerpo nunca salian, porque van hacia el jugador y el
+## jugador esta dentro. Los de distancia retroceden, y sin esto cruzarian el
+## muro de espaldas y dispararian desde la sala de al lado.
+func mantener_en_la_sala() -> void:
+	var sala := get_parent() as Sala
+	if sala == null or tipo == null:
+		return
+	var dentro := sala.rect_suelo_global().grow(-tipo.alto * 0.45)
+	global_position = global_position.clamp(dentro.position, dentro.end)
+
+
+func _pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void:
+	if _apuntando > 0.0:
+		_apuntando -= delta
+		var avance := 1.0 - _apuntando / tipo.tiempo_apuntar
+		_sprite.modulate = Color.WHITE.lerp(tipo.color_efectos * 1.8, avance)
+		queue_redraw()
+		if _apuntando <= 0.0:
+			_disparar()
+		return
+
+	# A su distancia: se acerca si estas lejos y se aparta si te acercas. El
+	# hueco entre los dos umbrales evita que tiemble adelante y atras.
+	if distancia > 0.0:
+		var direccion := hacia / distancia
+		if distancia > tipo.distancia_preferida + 40.0:
+			_mover(direccion, delta)
+		elif distancia < tipo.distancia_preferida - 80.0:
+			_mover(-direccion, delta)
+
+	_espera -= delta
+	if _espera <= 0.0:
+		_apuntando = tipo.tiempo_apuntar
+		_mira = (_punto_objetivo() - global_position).normalized()
+
+
+func _disparar() -> void:
+	_apuntando = 0.0
+	_espera = tipo.cadencia
+	_sprite.modulate = Color.WHITE
+	queue_redraw()
+
+	var objetivo := _punto_objetivo()
+	# El rayo sale por donde marco la mira; lo demas, hacia donde estas ahora:
+	# es mas lento y se esquiva moviendose.
+	var direccion := _mira
+	if tipo.proyectil.estilo != TipoProyectil.Estilo.RAYO:
+		direccion = (objetivo - global_position).normalized()
+
+	var sala := get_parent() as Sala
+	var limite := sala.rect_con_muros() if sala != null else Rect2()
+	var proyectil := ProyectilEnemigo.new()
+	proyectil.configurar(tipo.proyectil, global_position, direccion, objetivo, limite)
+	get_parent().add_child(proyectil)
+
+
+func _dejar_de_apuntar() -> void:
+	if _apuntando <= 0.0:
+		return
+	_apuntando = 0.0
+	_sprite.modulate = Color.WHITE
+	queue_redraw()
+
+
+## Donde apuntar: al cuerpo del jugador, no a sus pies.
+func _punto_objetivo() -> Vector2:
+	if _objetivo.has_method("centro_colision"):
+		return _objetivo.centro_colision()
+	return _objetivo.global_position
 
 
 ## Hace dano a todo lo que este tocando, en cada paso de fisica.
@@ -135,3 +253,56 @@ func _golpear_lo_que_toca() -> void:
 	for cuerpo in get_overlapping_bodies():
 		if cuerpo.has_method("recibir_dano"):
 			cuerpo.recibir_dano(tipo.dano)
+
+
+# --- Muerte -----------------------------------------------------------------
+
+## Explota y suelta crias si su tipo lo dice, y luego avisa de que ha muerto.
+##
+## LAS CRIAS SE APUNTAN EN LA SALA ANTES DE AVISAR: la sala abre las puertas
+## cuando se queda sin enemigos. Si el aviso fuera primero, al matar al ultimo
+## slime las puertas se abririan un instante con sus crias todavia vivas.
+func _morir() -> void:
+	if tipo.radio_explosion > 0.0:
+		_explotar()
+	for i in tipo.division:
+		_soltar_cria(i)
+	muerto.emit(self)
+	queue_free()
+
+
+func _explotar() -> void:
+	var destello := Explosion.new()
+	destello.radio = tipo.radio_explosion
+	destello.color = tipo.color_efectos
+	destello.position = position
+	get_parent().add_child(destello)
+	if is_instance_valid(_objetivo) and _objetivo.has_method("centro_colision") \
+			and _objetivo.centro_colision().distance_to(global_position) \
+				< tipo.radio_explosion + RADIO_JUGADOR:
+		_objetivo.recibir_dano(tipo.dano_explosion)
+
+
+func _soltar_cria(numero: int) -> void:
+	var cria: Enemigo = load(RUTA_ESCENA).instantiate()
+	get_parent().add_child(cria)
+	# Repartidas en circulo alrededor de donde murio la madre.
+	var angulo := TAU * numero / tipo.division + _fase
+	cria.preparar(tipo.cria(), global_position + Vector2.RIGHT.rotated(angulo) * tipo.alto * 0.5)
+	cria.mantener_en_la_sala()
+	var sala := get_parent() as Sala
+	if sala != null:
+		sala.registrar_enemigo(cria)
+
+
+## La linea de mira del rayo, mientras apunta. Solo el rayo la lleva: es tan
+## rapido que sin ella no se podria esquivar.
+func _draw() -> void:
+	if _apuntando <= 0.0 or tipo == null or not tipo.es_a_distancia():
+		return
+	if tipo.proyectil.estilo != TipoProyectil.Estilo.RAYO:
+		return
+	var avance := 1.0 - _apuntando / tipo.tiempo_apuntar
+	var color := tipo.proyectil.color
+	draw_line(Vector2.ZERO, _mira * tipo.proyectil.alcance,
+		Color(color.r, color.g, color.b, 0.2 + 0.5 * avance), 1.0 + 2.5 * avance)

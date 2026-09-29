@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TipoProyectil" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_proyectil.gd" id="1_proyectil"]
+
+[resource]
+script = ExtResource("1_proyectil")
+nombre = "Veneno"
+estilo = 0
+color = Color(0.62, 1.0, 0.32, 1)
+color_halo = Color(0.22, 0.68, 0.1, 1)
+velocidad = 300.0
+radio = 9.0
+dano = 1
+alcance = 800.0
+ralentiza = 2.5
+charco_radio = 0.0
+charco_duracion = 3.0

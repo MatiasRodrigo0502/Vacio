@@ -30,6 +30,7 @@ func _ready() -> void:
 	_jugador.sin_vida.connect(GestorProgreso.terminar_por_derrota)
 	_jugador.bola_lanzada.connect(_al_lanzar_bola)
 	_jugador.mejora_recogida.connect(_hud.anunciar_mejora)
+	_jugador.caido.connect(_al_caer)
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 	_menu_pausa.reinicio_solicitado.connect(_reiniciar)
@@ -115,6 +116,14 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 ## porque sigue al jugador con suavizado.
 func _al_cambiar_sala(sala: Sala) -> void:
 	_camara.limitar_a(sala.rect_con_muros())
+
+
+## El jugador ha caido por un agujero: vuelve a la entrada de la sala. El
+## jugador no sabe donde esta eso y el piso no sabe quien ha caido; aqui se
+## juntan las dos cosas.
+func _al_caer() -> void:
+	if _piso_actual != null:
+		_jugador.reaparecer(_piso_actual.punto_reaparicion())
 
 
 func _al_alcanzar_salida() -> void:
