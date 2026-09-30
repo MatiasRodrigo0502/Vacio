@@ -32,7 +32,7 @@ func _draw() -> void:
 	for i in _vida_maxima:
 		var centro := Vector2(tamano * 0.5 + i * (tamano + separacion), size.y * 0.5)
 		var lleno := i < _vida_actual
-		_dibujar_corazon(centro, tamano, COLOR_LLENO if lleno else COLOR_VACIO)
+		pintar_corazon(self, centro, tamano, COLOR_LLENO if lleno else COLOR_VACIO)
 		if lleno:
 			# Un punto de brillo arriba a la izquierda: sin el, a este tamano el
 			# corazon se lee como una mancha roja.
@@ -41,12 +41,16 @@ func _draw() -> void:
 
 
 ## Un corazon son dos circulos arriba y un triangulo apuntando hacia abajo.
-func _dibujar_corazon(centro: Vector2, ancho: float, color: Color) -> void:
+##
+## Estatica y con el lienzo como parametro para que el corazon que cae al suelo
+## (CorazonSuelto) sea exactamente el mismo dibujo que los del HUD: el jugador
+## tiene que reconocerlo sin pensar.
+static func pintar_corazon(lienzo: CanvasItem, centro: Vector2, ancho: float, color: Color) -> void:
 	var radio := ancho * 0.28
 	var alto := ancho * 0.92
-	draw_circle(centro + Vector2(-ancho * 0.22, -alto * 0.18), radio, color)
-	draw_circle(centro + Vector2(ancho * 0.22, -alto * 0.18), radio, color)
-	draw_colored_polygon(PackedVector2Array([
+	lienzo.draw_circle(centro + Vector2(-ancho * 0.22, -alto * 0.18), radio, color)
+	lienzo.draw_circle(centro + Vector2(ancho * 0.22, -alto * 0.18), radio, color)
+	lienzo.draw_colored_polygon(PackedVector2Array([
 		centro + Vector2(-ancho * 0.48, -alto * 0.10),
 		centro + Vector2(ancho * 0.48, -alto * 0.10),
 		centro + Vector2(0.0, alto * 0.48)]), color)

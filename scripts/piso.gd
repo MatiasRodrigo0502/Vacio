@@ -35,6 +35,9 @@ const MARGEN_ENTRAR: float = 26.0
 ## Cuanto por dentro de la puerta reaparece quien cae por un agujero: lo
 ## bastante para no quedar en el umbral, donde nacen las rejas al cerrarse.
 const DENTRO_REAPARICION: float = 70.0
+## Distancia minima entre lo que se deja en el suelo para recoger (ventajas,
+## corazones) y el agujero de bajada. Recogerlo no puede obligar a pisarla.
+const DESPEJE_BAJADA: float = 110.0
 
 ## Catalogo de rocas por defecto. Cada piso puede sobreescribirlo desde su .tres.
 const CATALOGO_POR_DEFECTO := preload("res://assets/cueva/catalogo_cueva.tres")
@@ -180,6 +183,30 @@ func lugar_libre(punto: Vector2, radio: float, mirar_enemigos: bool = true) -> b
 			if hijo.rect_global().grow(radio + 20.0).has_point(punto):
 				return false
 	return true
+
+
+## El sitio libre mas cercano a 'donde' (global) para dejar algo que hay que
+## recoger: la ventaja que suelta un enemigo o el corazon de una sala limpia.
+## Devuelve null si no hay ninguno.
+##
+## Nunca encima de un agujero, lava, pinchos, una roca o la bajada: lo que
+## cae se deja donde murio el enemigo o en el centro de la sala, y ahi puede
+## haber de todo. Algo que no se puede coger sin caer al vacio es una trampa.
+## Se busca en anillos cada vez mas anchos: el primero libre es el mas cerca.
+func sitio_libre_cerca(donde: Vector2, sala: Sala, radio: float = 30.0) -> Variant:
+	var dentro := sala.rect_suelo_global().grow(-60.0)
+	for distancia in [0.0, 40.0, 80.0, 120.0, 160.0, 200.0, 260.0]:
+		for paso in 8:
+			var punto: Vector2 = (donde + Vector2.RIGHT.rotated(paso * TAU / 8.0) * distancia) \
+				.clamp(dentro.position, dentro.end)
+			if sala.tipo == MapaSalas.Tipo.SALIDA \
+					and punto.distance_to(sala.global_position) < DESPEJE_BAJADA:
+				continue
+			if lugar_libre(punto, radio, false):
+				return punto
+			if distancia == 0.0:
+				break
+	return null
 
 
 ## Quita las piedrecitas de decoracion que caigan dentro de esa zona (global).

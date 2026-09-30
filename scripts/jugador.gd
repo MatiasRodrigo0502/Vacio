@@ -426,6 +426,16 @@ func centro_colision() -> Vector2:
 	return $Forma.global_position
 
 
+## Cura sin pasar del maximo. Devuelve false si no ha curado nada: con la vida
+## llena, el corazon del suelo se queda donde esta para cuando haga falta.
+func curar(cantidad: int) -> bool:
+	if vida_actual <= 0 or vida_actual >= vida_maxima or _cayendo:
+		return false
+	vida_actual = mini(vida_actual + cantidad, vida_maxima)
+	vida_cambiada.emit(vida_actual, vida_maxima)
+	return true
+
+
 ## Aplica un objeto recogido. Las mejoras se suman y duran toda la partida.
 func aplicar_mejora(mejora: ObjetoMejora) -> void:
 	if mejora == null:

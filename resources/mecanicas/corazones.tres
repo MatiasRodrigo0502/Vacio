@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="MecanicaCorazones" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/mecanicas/corazones.gd" id="1_corazones"]
+
+[resource]
+script = ExtResource("1_corazones")
+nombre_mecanica = "Corazones"
+descripcion = "Al limpiar una sala de pelea, a veces (25 %) cae un corazon que cura uno. Con la vida llena no se coge: se queda en el suelo."
+piso_desbloqueo = 2
+activa = true
+probabilidad = 0.25

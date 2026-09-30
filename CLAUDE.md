@@ -175,6 +175,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   encima de un agujero, lava, pinchos, una roca o la bajada: si el enemigo
   murió ahí, cae en el sitio libre más cercano. Las mejoras se acumulan toda
   la partida y se pierden al empezar otra.
+- **Corazones en el suelo** (`scripts/mecanicas/corazones.gd`,
+  `scripts/corazon_suelto.gd`): al limpiar una sala de pelea, un 25 % de que
+  caiga un corazón que cura uno, en el centro o en el sitio libre más cercano.
+  Con la vida llena no se coge y se queda en el suelo. Una partida tiene 63
+  salas con enemigos: unos 16 corazones (10 y 17 en las pruebas).
 - **Vida**: corazones dibujados por código. La fuente de Godot no tiene glifos
   de corazón ni emoji: un "♥" de texto sale como un cuadradito.
 - **Arte por piso**: 1 musgo, 2 cueva con vegetación, 3 cueva pelada, 4-8
@@ -201,6 +206,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar
   el piso, más las crías de los slimes: una partida entera son unas 600
   muertes, y los enemigos sueltan 9-16 ventajas además de las 12 de los pisos.
+  Desde el 2026-09-30 caen además unos 16 corazones por partida al limpiar
+  salas.
   Los de distancia quitan 2 y hay pinchos, lava y agujeros, con 3 o 4
   corazones. Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
   (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
@@ -330,6 +337,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   semilla del piso.** Los pisos son fijos; el botín puede cambiar de una
   partida a otra. Y las crías no sueltan nada, o matar slimes sería la forma
   de conseguirlas.
+- **Los corazones del suelo no se cogen con la vida llena** (como en Isaac):
+  recogerlo sin necesitarlo sería tirarlo. Por eso se mira quién lo toca en
+  cada paso y no con `body_entered`: si llegas lleno, te quedas encima y te
+  dan, tiene que poder cogerse sin salir y volver a entrar.
+- **Lo que cae para recoger busca sitio con `Piso.sitio_libre_cerca()`**, la
+  misma para las ventajas y los corazones: nunca encima de un agujero, lava,
+  pinchos, una roca o la bajada.
 - **Los enemigos salen al azar**, como pidió Matías: cada sala elige entre los
   tipos cuyo `piso_minimo` ya se alcanzó, sin tope por abajo. El piso mínimo
   solo escalona la dificultad.
