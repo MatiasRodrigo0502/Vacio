@@ -50,6 +50,7 @@ hechos.
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
 | Pack de arte del núcleo | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
+| Arte del borde (muro, pilares, rejas) | `herramientas/generar_bordes.py` → `assets/bordes/` | editar el script y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
@@ -145,6 +146,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   salas grandes y 25 en las del fondo) y choca como una roca más
   (`Sala.anadir_roca_filo`). Detrás, otra fila de **fondo** rellena la franja
   del muro. El muro recto sigue ahí detrás, por si acaso.
+- **Detrás de las rocas, roca maciza** (`muro.png`) en vez de negro: la franja
+  del muro de cada sala, y más oscura todo el fondo del piso (`Piso._draw`).
+  Por dentro del filo del suelo, una **sombra** que hunde la sala entre las
+  paredes. Cada puerta tiene **dos pilares** y un **rastrillo** que baja al
+  cerrarse y sube al abrirse (0,22 s).
 - **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
   harían el movimiento un engancharse continuo.
 - **Enemigos**: desde el piso 2, **once tipos** que salen al azar entre los
@@ -344,6 +350,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Lo que cae para recoger busca sitio con `Piso.sitio_libre_cerca()`**, la
   misma para las ventajas y los corazones: nunca encima de un agujero, lava,
   pinchos, una roca o la bajada.
+- **El muro se pinta alineado con el mundo, no con cada sala.** Las
+  coordenadas de su textura salen de la posición en el piso, así que la roca
+  sigue igual de una sala a otra y casa con la del fondo. Por eso los trozos
+  que se pisan no se notan.
+- **Los pilares van en la franja del muro, no en el suelo**, y son bajos para
+  caber: en el suelo estorbarían sin chocar. Las rocas del fondo les dejan
+  sitio (`Sala.tramo_pilar`).
 - **Los enemigos salen al azar**, como pidió Matías: cada sala elige entre los
   tipos cuyo `piso_minimo` ya se alcanzó, sin tope por abajo. El piso mínimo
   solo escalona la dificultad.
@@ -353,6 +366,22 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **En Python, `open(ruta, "w", ...)` vacía el archivo antes de comprobar el
+  resto de argumentos.** Un `newline` mal escrito hizo fallar la llamada, y
+  `generar_bordes.py` (aún sin subir) se quedó a 0 bytes. Hubo que rehacerlo.
+  Antes de reescribir un archivo desde un script: que esté en git, o
+  escribirlo con la herramienta de archivos.
+- **Con vsync, el monitor de tiempo de física engaña.** Marcaba 12 ms en el
+  piso 12 tras los bordes nuevos y 2,4 sin ellos. Con el vsync quitado, los
+  dos daban 13 ms, y los FPS reales eran 900 frente a 1000: el coste de verdad
+  eran 0,1 ms por fotograma. Para medir rendimiento, FPS sin vsync y comparar
+  con el código de antes (`git stash`).
+- **Las salas en diagonal también existen.** Alargué la roca de cada sala por
+  los lados sin puerta pensando que ahí no había nadie. Pero la sala de la
+  diagonal alargaba la suya hacia el mismo hueco, con el degradado hacia otro
+  lado, y se veían cortes rectos. Se arregló pintando todo alineado con el
+  mundo y un fondo único.
 
 - **Un tween que esconde algo se cancela si ese algo vuelve a mostrarse.**
   El aviso del HUD creaba un desvanecido nuevo con cada objeto y el anterior

@@ -304,6 +304,22 @@ ejecutar: sale lo mismo en las tres máquinas. **Ojo**: dónde están los
 agujeros lo repite `scripts/pinchos.gd` (sus constantes `MARGEN`, `GROSOR`,
 `FILAS` y `AGUJERO_*`); si se cambia en uno, se cambia en el otro.
 
+## bordes/
+
+El borde de las salas, hecho con `herramientas/generar_bordes.py` en el mismo
+estilo (luz de arriba a la izquierda, contorno oscuro, vetas incandescentes):
+
+- `muro.png`: bloques de roca vistos desde arriba, con los cantos biselados.
+  **Se repite sin costuras** (Voronoi sobre un toro). Rellena la franja del
+  muro detrás de las rocas del borde y, más oscuro, el fondo de todo el piso.
+  Contraste contenido a propósito: es fondo.
+- `pilar.png`: pilar de bloques de piedra en 3/4, uno a cada lado de cada
+  puerta. Bajo (48×88) para caber en la franja del muro.
+- `reja.png`: el rastrillo de hierro que cierra las puertas, con las puntas
+  abajo. Mide lo mismo que el hueco de una puerta (130×64).
+
+Todo en grises o casi: el juego lo tiñe con el color de cada piso.
+
 ## enemigos/ (nuevos)
 
 Siete enemigos más, en el mismo formato que los slimes y las plantas:

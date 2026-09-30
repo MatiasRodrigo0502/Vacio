@@ -116,6 +116,12 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Archivos**: `assets/manto/` (42 piezas y dos catálogos: con cristales de
   olivino para los pisos 4-6 y pelado para los 7-8)
 
+### Bordes de las salas — muro, pilares y rejas
+
+- **Autor**: hecho para el proyecto, con `herramientas/generar_bordes.py`
+- **Licencia**: propio, sin problema de licencia
+- **Archivos**: `assets/bordes/`
+
 ### Peligros — lava, pinchos y vacío
 
 - **Autor**: hecho para el proyecto, con `herramientas/generar_peligros.py`

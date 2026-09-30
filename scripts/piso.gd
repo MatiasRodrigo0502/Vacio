@@ -38,6 +38,11 @@ const DENTRO_REAPARICION: float = 70.0
 ## Distancia minima entre lo que se deja en el suelo para recoger (ventajas,
 ## corazones) y el agujero de bajada. Recogerlo no puede obligar a pisarla.
 const DESPEJE_BAJADA: float = 110.0
+## Cuanto sobra la roca del fondo por fuera del mapa. En los pisos de arriba la
+## camara ve mas que la sala; sin esto, por fuera del muro asomaba negro.
+const MARGEN_FONDO: float = 700.0
+## La roca del fondo, respecto a la del muro de las salas.
+const OSCURIDAD_FONDO: float = 0.42
 
 ## Catalogo de rocas por defecto. Cada piso puede sobreescribirlo desde su .tres.
 const CATALOGO_POR_DEFECTO := preload("res://assets/cueva/catalogo_cueva.tres")
@@ -77,6 +82,34 @@ var _reaparicion: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	_zona_salida.body_entered.connect(_al_entrar_en_salida)
+	# El fondo de roca se pinta repitiendo su textura, y eso hay que pedirlo.
+	texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+
+
+## La roca oscura del fondo, por detras de todas las salas: lo que se ve mas
+## alla de sus muros. Cada sala funde su franja de muro con esto (ver
+## Sala._pintar_muro), y como las dos van alineadas con el mundo, casan.
+##
+## Es mas oscura que el muro de las salas a proposito: la roca se hunde en la
+## oscuridad al alejarse, y la sala queda como lo unico iluminado.
+func _draw() -> void:
+	if _orden_salas.is_empty():
+		return
+	var zona := _orden_salas[0].rect_suelo().grow(Sala.GROSOR_MURO)
+	zona.position += _orden_salas[0].position
+	for sala in _orden_salas:
+		var caja := sala.rect_suelo().grow(Sala.GROSOR_MURO)
+		caja.position += sala.position
+		zona = zona.merge(caja)
+	zona = zona.grow(MARGEN_FONDO)
+	var base := _orden_salas[0].color_muro()
+	var color := Color(base.r * OSCURIDAD_FONDO, base.g * OSCURIDAD_FONDO, base.b * OSCURIDAD_FONDO, 1.0)
+	var puntos := PackedVector2Array([zona.position, Vector2(zona.end.x, zona.position.y),
+		zona.end, Vector2(zona.position.x, zona.end.y)])
+	var uvs := PackedVector2Array()
+	for punto in puntos:
+		uvs.append(punto / Sala.MURO.get_size())
+	draw_polygon(puntos, PackedColorArray([color, color, color, color]), uvs, Sala.MURO)
 
 
 ## Construye el piso. Principal la llama justo despues de add_child(), para que
@@ -96,6 +129,7 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 		hijo.queue_free()
 
 	_construir_salas()
+	queue_redraw()
 	_colocar_salida()
 	# El tutorial va ANTES que las rocas a proposito: deja apuntadas las zonas
 	# que ocupan sus carteles para que nada se coloque encima.
@@ -309,7 +343,7 @@ func _construir_salas() -> void:
 		sala.position = Vector2(celda) * _paso()
 		_contenedor_salas.add_child(sala)
 		sala.construir(celda, _mapa.tipo_de(celda), _tamano_sala(),
-			_mapa.puertas_de(celda), colores[0], colores[1])
+			_mapa.puertas_de(celda), colores[0], colores[1], tinte_profundidad())
 		_salas[celda] = sala
 		_orden_salas.append(sala)
 
@@ -595,8 +629,9 @@ func _fila_de_rocas(sala: Sala, direccion: Vector2i, filo: bool,
 		var lado := minf(lado_medio * generador.randf_range(0.7, 1.35), tope)
 		recorrido += lado * generador.randf_range(0.45, 0.8)
 		# Delante de una puerta, nada. Las del filo, con un margen mas: su
-		# colision no puede estrechar el paso.
-		var margen_puerta := 12.0 if filo else 0.0
+		# colision no puede estrechar el paso. Las del fondo dejan ademas sitio
+		# a los pilares de la puerta, o los taparian.
+		var margen_puerta := 24.0 if filo else sala.tramo_pilar(direccion)
 		if direccion in sala.puertas \
 				and absf(recorrido) < Sala.ANCHO_PUERTA * 0.5 + lado * 0.5 + margen_puerta:
 			continue

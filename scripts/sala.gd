@@ -32,6 +32,26 @@ const RADIO_SALIDA: float = 46.0
 ## para el jugador una puerta cerrada es muro, y asi no hay que tocar su mascara.
 const CAPA_MUROS: int = 2
 
+# --- Arte del borde (herramientas/generar_bordes.py) ---
+## Roca maciza que rellena la franja del muro, detras de las rocas del borde.
+const MURO := preload("res://assets/bordes/muro.png")
+const PILAR := preload("res://assets/bordes/pilar.png")
+## Mide lo mismo que el hueco de la puerta (ANCHO_PUERTA x GROSOR_MURO).
+const REJA := preload("res://assets/bordes/reja.png")
+## La roca del muro, respecto al color del suelo: algo mas oscura, para que
+## las rocas del borde destaquen encima y se lea que ahi ya no se pisa.
+const FACTOR_MURO: float = 1.3
+## Cuanto tarda la franja del muro en fundirse con la roca oscura del fondo
+## (la pinta el piso) por los lados sin puerta.
+const FUNDIDO_MURO: float = 90.0
+## Sombra en el filo del suelo: ancho y lo oscura que es junto a la pared. Es
+## lo que hace que la sala se lea hundida entre paredes de roca y no como un
+## suelo con rocas pegadas encima.
+const SOMBRA_ANCHO: float = 52.0
+const SOMBRA_FUERZA: float = 0.5
+## Lo que tarda el rastrillo en bajar o subir del todo.
+const DURACION_REJA: float = 0.22
+
 var celda: Vector2i = Vector2i.ZERO
 var tipo: MapaSalas.Tipo = MapaSalas.Tipo.NORMAL
 ## Medidas del suelo, sin contar los muros.
@@ -43,6 +63,12 @@ var visitada: bool = false
 
 var _color_suelo: Color = Color(0.16, 0.13, 0.12)
 var _color_borde: Color = Color(0.55, 0.40, 0.28)
+## El tinte de las rocas del piso: los pilares son de la misma piedra.
+var _tinte: Color = Color.WHITE
+## Cuanto ha bajado el rastrillo: 0 abierto, 1 cerrado. Se anima hacia
+## _reja_objetivo en _process, que solo corre mientras se mueve.
+var _reja: float = 0.0
+var _reja_objetivo: float = 0.0
 var _cerrada: bool = false
 ## True desde que el jugador entra del todo por primera vez.
 var _activada: bool = false
@@ -58,13 +84,18 @@ var _rocas: Array[Rect2] = []
 
 ## Monta la sala. La llama Piso justo despues de add_child().
 func construir(celda_sala: Vector2i, tipo_sala: MapaSalas.Tipo, tamano_sala: Vector2,
-		puertas_sala: Array[Vector2i], color_suelo: Color, color_borde: Color) -> void:
+		puertas_sala: Array[Vector2i], color_suelo: Color, color_borde: Color,
+		tinte: Color = Color.WHITE) -> void:
 	celda = celda_sala
 	tipo = tipo_sala
 	tamano = tamano_sala
 	puertas = puertas_sala
 	_color_suelo = color_suelo
 	_color_borde = color_borde
+	_tinte = tinte
+	# El muro se pinta repitiendo su textura, y eso hay que pedirlo.
+	texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	set_process(false)
 
 	var muros := StaticBody2D.new()
 	muros.name = "Muros"
@@ -296,7 +327,29 @@ func cerrar_puertas(cerrar: bool) -> void:
 	_cerrada = cerrar
 	for direccion in _cierres:
 		_cierres[direccion].set_deferred("disabled", not cerrar)
+	# El cierre choca ya; el rastrillo baja (o sube) en un momento. Verlo
+	# moverse es lo que dice "te han encerrado" y "ya puedes salir".
+	_reja_objetivo = 1.0 if cerrar else 0.0
+	set_process(true)
 	queue_redraw()
+
+
+func _process(delta: float) -> void:
+	_reja = move_toward(_reja, _reja_objetivo, delta / DURACION_REJA)
+	queue_redraw()
+	if is_equal_approx(_reja, _reja_objetivo):
+		# Justo al valor: "casi 0" dejaba el rastrillo con una millonesima
+		# bajada, que no se ve pero cuenta como bajado.
+		_reja = _reja_objetivo
+		set_process(false)
+
+
+## Cuanto ocupa a lo largo del muro lo que se pone a cada lado de una puerta
+## (el pilar). El piso no pone rocas del fondo ahi, o lo taparian.
+func tramo_pilar(direccion: Vector2i) -> float:
+	if direccion == Vector2i.UP or direccion == Vector2i.DOWN:
+		return float(PILAR.get_width())
+	return float(PILAR.get_height())
 
 
 func _al_morir_enemigo(enemigo: Enemigo) -> void:
@@ -362,60 +415,201 @@ func _anadir_forma(cuerpo: StaticBody2D, rect: Rect2) -> CollisionShape2D:
 # --- Pintado ----------------------------------------------------------------
 
 func _draw() -> void:
+	_pintar_muro()
 	var suelo := rect_suelo()
 	# Sin linea de limite: el borde del suelo lo tapan las rocas del filo, que
 	# chocan, y son ellas las que dicen donde acaba la sala. Una raya recta por
 	# debajo delataria el cuadrado.
 	draw_rect(suelo, _color_suelo)
+	_pintar_sombra_filo()
 
 	for direccion in puertas:
-		# El suelo del pasillo, en la mitad que es de esta sala. Se alarga unos
-		# pixeles hacia dentro para que no quede una rendija entre el suelo de la
-		# sala y el del pasillo: una raya cruzando la puerta se leeria como una
-		# puerta cerrada.
+		# El suelo del pasillo, en la mitad que es de esta sala, algo mas oscuro
+		# (ya esta dentro de la roca). Se alarga unos pixeles hacia dentro para
+		# que no quede una rendija entre el suelo de la sala y el del pasillo.
 		var hueco := _hueco(direccion).grow_individual(
 			4.0 if direccion == Vector2i.RIGHT else 0.0,
 			4.0 if direccion == Vector2i.DOWN else 0.0,
 			4.0 if direccion == Vector2i.LEFT else 0.0,
 			4.0 if direccion == Vector2i.UP else 0.0)
-		draw_rect(hueco, _color_suelo)
-		# Jambas: dos marcas a los lados del hueco, para que la puerta se vea
-		# como puerta y no como un trozo de muro que falta.
-		_pintar_jambas(direccion)
-		if _cerrada:
-			_pintar_reja(_hueco(direccion), direccion)
+		draw_rect(hueco, _color_suelo.darkened(0.12))
+		_pintar_sombra_pasillo(direccion)
+		if _reja > 0.0:
+			_pintar_reja(direccion)
+		_pintar_pilares(direccion)
 
 	if tipo == MapaSalas.Tipo.SALIDA:
 		_pintar_salida()
 
 
-func _pintar_jambas(direccion: Vector2i) -> void:
-	var color := Color(_color_borde.r, _color_borde.g, _color_borde.b, 0.8)
-	var a := ANCHO_PUERTA * 0.5
-	var borde := punto_puerta(direccion)
-	var lado := Vector2(direccion.y, direccion.x).abs()
-	var fuera := Vector2(direccion) * GROSOR_MURO
-	for signo in [-1.0, 1.0]:
-		var p: Vector2 = borde + lado * a * signo
-		draw_line(p, p + fuera, color, 4.0)
+## La roca maciza de detras del borde: la franja del muro entera, y por los
+## lados sin puerta un fundido hacia la roca oscura del fondo, que pinta el
+## piso. Asi la sala queda como lo unico iluminado y la roca se hunde en la
+## oscuridad al alejarse.
+##
+## SE PINTA ALINEADA CON EL MUNDO, NO CON LA SALA:
+## las coordenadas de la textura salen de la posicion en el piso. Asi la roca
+## sigue igual de una sala a otra y la del fondo casa con la de la franja: los
+## trozos que se pisan (el fundido de una sala con el de la que tiene en
+## diagonal) son la misma roca en el mismo sitio, y no se nota. Con cada sala
+## repitiendo la textura desde su esquina, en esos cruces salian cortes rectos.
+func _pintar_muro() -> void:
+	var zona := rect_suelo().grow(GROSOR_MURO)
+	var color := color_muro()
+	var nada := Color(color.r, color.g, color.b, 0.0)
+	_poligono_muro([zona.position, Vector2(zona.end.x, zona.position.y), zona.end,
+		Vector2(zona.position.x, zona.end.y)], [color, color, color, color])
+
+	var f := FUNDIDO_MURO
+	var a := zona.position
+	var b := zona.end
+	# Un fundido por cada lado sin puerta, y en las esquinas un cuarto que
+	# se apaga hacia fuera, para que no quede un escalon.
+	if not Vector2i.UP in puertas:
+		_poligono_muro([Vector2(a.x, a.y - f), Vector2(b.x, a.y - f), Vector2(b.x, a.y), a],
+			[nada, nada, color, color])
+	if not Vector2i.DOWN in puertas:
+		_poligono_muro([Vector2(a.x, b.y), b, Vector2(b.x, b.y + f), Vector2(a.x, b.y + f)],
+			[color, color, nada, nada])
+	if not Vector2i.LEFT in puertas:
+		_poligono_muro([Vector2(a.x - f, a.y), a, Vector2(a.x, b.y), Vector2(a.x - f, b.y)],
+			[nada, color, color, nada])
+	if not Vector2i.RIGHT in puertas:
+		_poligono_muro([Vector2(b.x, a.y), Vector2(b.x + f, a.y), Vector2(b.x + f, b.y), b],
+			[color, nada, nada, color])
+	for esquina in [a, Vector2(b.x, a.y), b, Vector2(a.x, b.y)]:
+		var sx := -1.0 if esquina.x == a.x else 1.0
+		var sy := -1.0 if esquina.y == a.y else 1.0
+		_poligono_muro([esquina, esquina + Vector2(sx * f, 0.0), esquina + Vector2(sx * f, sy * f),
+			esquina + Vector2(0.0, sy * f)], [color, nada, nada, nada])
 
 
-## La puerta cerrada: una reja del color del borde. Barrotes y no una losa
-## maciza, para que se entienda que se abrira, que no es un muro.
-func _pintar_reja(hueco: Rect2, direccion: Vector2i) -> void:
-	draw_rect(hueco, Color(0.05, 0.03, 0.03, 0.85))
-	var color := Color(_color_borde.r, _color_borde.g, _color_borde.b, 0.95)
-	var vertical := direccion == Vector2i.UP or direccion == Vector2i.DOWN
-	var barrotes := 5
-	for i in barrotes + 1:
-		var t := float(i) / barrotes
-		if vertical:
-			var x := hueco.position.x + hueco.size.x * t
-			draw_line(Vector2(x, hueco.position.y), Vector2(x, hueco.end.y), color, 4.0)
-		else:
-			var y := hueco.position.y + hueco.size.y * t
-			draw_line(Vector2(hueco.position.x, y), Vector2(hueco.end.x, y), color, 4.0)
-	draw_rect(hueco, color, false, 3.0)
+## Color de la roca del muro. Algo mas oscuro que el suelo: las rocas del borde
+## destacan encima y se lee que ahi ya no se pisa. El piso lo usa tambien para
+## la roca del fondo, mas oscura todavia.
+func color_muro() -> Color:
+	return Color(_color_suelo.r * FACTOR_MURO, _color_suelo.g * FACTOR_MURO,
+		_color_suelo.b * FACTOR_MURO, 1.0)
+
+
+## Un poligono con la textura del muro, alineada con el mundo (ver _pintar_muro).
+func _poligono_muro(puntos: Array, colores: Array) -> void:
+	var tam := MURO.get_size()
+	var uvs := PackedVector2Array()
+	for punto: Vector2 in puntos:
+		uvs.append((position + punto) / tam)
+	draw_polygon(PackedVector2Array(puntos), PackedColorArray(colores), uvs, MURO)
+
+
+## Sombra por dentro del filo del suelo, de oscura junto a la pared a nada.
+## Delante de las puertas no hay: por ahi el suelo sigue.
+func _pintar_sombra_filo() -> void:
+	var medio := tamano * 0.5
+	for direccion in MapaSalas.DIRECCIONES:
+		var horizontal := direccion == Vector2i.UP or direccion == Vector2i.DOWN
+		var largo := medio.x if horizontal else medio.y
+		var tramos: Array[Vector2] = [Vector2(-largo, largo)]
+		if direccion in puertas:
+			tramos = [Vector2(-largo, -ANCHO_PUERTA * 0.5), Vector2(ANCHO_PUERTA * 0.5, largo)]
+		for tramo in tramos:
+			_franja_sombra(direccion, tramo.x, tramo.y)
+
+
+## Una franja de sombra pegada al lado 'direccion' del suelo, de 'desde' a
+## 'hasta' a lo largo de ese lado.
+func _franja_sombra(direccion: Vector2i, desde: float, hasta: float) -> void:
+	var medio := tamano * 0.5
+	var oscuro := Color(0.0, 0.0, 0.0, SOMBRA_FUERZA)
+	var nada := Color(0.0, 0.0, 0.0, 0.0)
+	var puntos: PackedVector2Array
+	match direccion:
+		Vector2i.UP:
+			puntos = [Vector2(desde, -medio.y), Vector2(hasta, -medio.y),
+				Vector2(hasta, -medio.y + SOMBRA_ANCHO), Vector2(desde, -medio.y + SOMBRA_ANCHO)]
+		Vector2i.DOWN:
+			puntos = [Vector2(desde, medio.y), Vector2(hasta, medio.y),
+				Vector2(hasta, medio.y - SOMBRA_ANCHO), Vector2(desde, medio.y - SOMBRA_ANCHO)]
+		Vector2i.LEFT:
+			puntos = [Vector2(-medio.x, desde), Vector2(-medio.x, hasta),
+				Vector2(-medio.x + SOMBRA_ANCHO, hasta), Vector2(-medio.x + SOMBRA_ANCHO, desde)]
+		_:
+			puntos = [Vector2(medio.x, desde), Vector2(medio.x, hasta),
+				Vector2(medio.x - SOMBRA_ANCHO, hasta), Vector2(medio.x - SOMBRA_ANCHO, desde)]
+	draw_polygon(puntos, PackedColorArray([oscuro, oscuro, nada, nada]))
+
+
+## Sombra en los dos lados del pasillo de una puerta: sus paredes son roca.
+func _pintar_sombra_pasillo(direccion: Vector2i) -> void:
+	var hueco := _hueco(direccion)
+	var ancho := 16.0
+	var oscuro := Color(0.0, 0.0, 0.0, SOMBRA_FUERZA)
+	var nada := Color(0.0, 0.0, 0.0, 0.0)
+	if direccion == Vector2i.UP or direccion == Vector2i.DOWN:
+		var y0 := hueco.position.y
+		var y1 := hueco.end.y
+		var x0 := hueco.position.x
+		var x1 := hueco.end.x
+		draw_polygon(PackedVector2Array([Vector2(x0, y0), Vector2(x0 + ancho, y0),
+			Vector2(x0 + ancho, y1), Vector2(x0, y1)]), PackedColorArray([oscuro, nada, nada, oscuro]))
+		draw_polygon(PackedVector2Array([Vector2(x1, y0), Vector2(x1 - ancho, y0),
+			Vector2(x1 - ancho, y1), Vector2(x1, y1)]), PackedColorArray([oscuro, nada, nada, oscuro]))
+	else:
+		var x0 := hueco.position.x
+		var x1 := hueco.end.x
+		var y0 := hueco.position.y
+		var y1 := hueco.end.y
+		draw_polygon(PackedVector2Array([Vector2(x0, y0), Vector2(x0, y0 + ancho),
+			Vector2(x1, y0 + ancho), Vector2(x1, y0)]), PackedColorArray([oscuro, nada, nada, oscuro]))
+		draw_polygon(PackedVector2Array([Vector2(x0, y1), Vector2(x0, y1 - ancho),
+			Vector2(x1, y1 - ancho), Vector2(x1, y1)]), PackedColorArray([oscuro, nada, nada, oscuro]))
+
+
+## El rastrillo de una puerta, bajado lo que diga _reja. Sale desde fuera de la
+## sala hacia dentro, con las puntas por delante.
+##
+## Se dibuja en el espacio de la puerta: el mismo rastrillo girado para que
+## las puntas miren siempre hacia la sala, como las puertas de Isaac.
+func _pintar_reja(direccion: Vector2i) -> void:
+	var hueco := _hueco(direccion)
+	# La textura tiene las puntas hacia abajo (+y); se gira para que apunten
+	# hacia la sala, que esta en -direccion.
+	var giro := (-Vector2(direccion)).angle() - PI * 0.5
+	draw_set_transform(hueco.get_center(), giro)
+	var ancho := ANCHO_PUERTA
+	var fondo := GROSOR_MURO
+	var visible_alto := fondo * _reja
+	var tam := REJA.get_size()
+	# Fondo oscuro detras de los barrotes: por el hueco ya no se ve el pasillo.
+	draw_rect(Rect2(-ancho * 0.5, -fondo * 0.5, ancho, visible_alto), Color(0.03, 0.02, 0.02, 0.55))
+	draw_texture_rect_region(REJA,
+		Rect2(-ancho * 0.5, -fondo * 0.5, ancho, visible_alto),
+		Rect2(0.0, tam.y * (1.0 - _reja), tam.x, tam.y * _reja))
+	draw_set_transform(Vector2.ZERO)
+
+
+## Un pilar a cada lado de la puerta, de pie en la franja del muro. Con la
+## base en el filo del suelo para las puertas de arriba y abajo; en las de los
+## lados, uno encima y otro debajo del hueco.
+func _pintar_pilares(direccion: Vector2i) -> void:
+	var tam := PILAR.get_size()
+	var medio := tamano * 0.5
+	var hueco := _hueco(direccion)
+	var sitios: Array[Rect2] = []
+	match direccion:
+		Vector2i.UP:
+			for signo in [-1.0, 1.0]:
+				var x: float = signo * (ANCHO_PUERTA + tam.x) * 0.5
+				sitios.append(Rect2(x - tam.x * 0.5, -medio.y - tam.y + 10.0, tam.x, tam.y))
+		Vector2i.DOWN:
+			for signo in [-1.0, 1.0]:
+				var x: float = signo * (ANCHO_PUERTA + tam.x) * 0.5
+				sitios.append(Rect2(x - tam.x * 0.5, medio.y - 8.0, tam.x, tam.y))
+		_:
+			var x := hueco.get_center().x - tam.x * 0.5
+			sitios.append(Rect2(x, -ANCHO_PUERTA * 0.5 - tam.y - 2.0, tam.x, tam.y))
+			sitios.append(Rect2(x, ANCHO_PUERTA * 0.5 - 6.0, tam.x, tam.y))
+	for sitio in sitios:
+		draw_texture_rect(PILAR, sitio, false, _tinte)
 
 
 ## El agujero de bajada. Mientras la sala tiene enemigos esta tapado: se ve
