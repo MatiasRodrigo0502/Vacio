@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-09-29.**
+**Última actualización: 2026-09-30.**
 
 ---
 
@@ -140,12 +140,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   rellenas, vecinas en contorno, objeto y bajada marcados en cuanto se conocen.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
   hacen daño** y paran los disparos, así que sirven de parapeto.
+- **El límite de cada sala son rocas**, no un rectángulo: una fila de rocas
+  del **filo** pisa el borde del suelo, se mete en la sala (hasta 43 px en las
+  salas grandes y 25 en las del fondo) y choca como una roca más
+  (`Sala.anadir_roca_filo`). Detrás, otra fila de **fondo** rellena la franja
+  del muro. El muro recto sigue ahí detrás, por si acaso.
 - **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
   harían el movimiento un engancharse continuo.
 - **Enemigos**: desde el piso 2, **once tipos** que salen al azar entre los
-  que ya pueden aparecer a esa profundidad (`piso_minimo`). De media 2 por
-  sala en el piso 2 y 0,4 más por piso, hasta 6 en el 12. Los siete últimos
-  los dibujó Matías.
+  que ya pueden aparecer a esa profundidad (`piso_minimo`). De media 3 por
+  sala en el piso 2 y 0,5 más por piso, hasta 8 en el 12 (378 al empezar los
+  pisos; unas 600 muertes por partida con las crías). Los siete últimos los
+  dibujó Matías. Ninguno se queda dentro de una roca (`Sala.sacar_de_las_rocas`).
   - **Cuerpo a cuerpo** (slimes, rata, murciélago, fantasma, planta azul):
     rápidos, de 100 a 195.
   - **A distancia** (serpiente y planta venenosa con veneno, gólem con magma,
@@ -157,8 +163,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   cuestan un corazón y te devuelven a la entrada de la sala (desde el 3) y
   **lava** (desde el 4). Nunca pisan el paso de una puerta al centro.
 - **Veneno**: el jugador va al 60 % de velocidad y en verde mientras dura.
-- **Objetos**: uno por piso, en el centro de su sala, con icono de lo que hacen. Las mejoras se acumulan
-  toda la partida y se pierden al empezar otra.
+- **Objetos**: uno por piso, en el centro de su sala, con icono de lo que hacen.
+  Además, cada enemigo que muere tiene un **3 %** de soltar otro al azar
+  (entre 9 y 16 por partida en las pruebas); las crías no sueltan nada. Nunca cae
+  encima de un agujero, lava, pinchos, una roca o la bajada: si el enemigo
+  murió ahí, cae en el sitio libre más cercano. Las mejoras se acumulan toda
+  la partida y se pierden al empezar otra.
 - **Vida**: corazones dibujados por código. La fuente de Godot no tiene glifos
   de corazón ni emoji: un "♥" de texto sale como un cuadradito.
 - **Arte por piso**: 1 musgo, 2 cueva con vegetación, 3 cueva pelada, 4-8
@@ -182,8 +192,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí).
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
-  enemigos: desde el 2026-09-29 salen de 6 (piso 2) a 48 (piso 12) al empezar
-  el piso, más las crías de los slimes: una partida entera son 419 muertes.
+  enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar
+  el piso, más las crías de los slimes: una partida entera son unas 600
+  muertes, y los enemigos sueltan 9-16 ventajas además de las 12 de los pisos.
   Los de distancia quitan 2 y hay pinchos, lava y agujeros, con 3 o 4
   corazones. Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
   (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
@@ -301,6 +312,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   más al azar por sala, y la media podía bajar de un piso al siguiente (del 7
   al 9: 4,7 / 4,5 / 4,3). Ahora la media sale de la fórmula y solo la parte
   decimal se reparte al azar.
+- **Las rocas del filo chocan.** Se meten en la sala, y una roca que se ve y
+  no choca se atravesaría: el jugador tiene que poder fiarse de lo que ve. Son
+  más pequeñas que las del fondo para no comerse las salas del fondo, y dejan
+  libre el ancho entero de cada puerta.
+- **Contra las rocas, la bola solo cuenta con su núcleo**
+  (`BolaMagica.RADIO_CONTRA_ROCAS`, 10 px). Con su radio entero, agrandarla
+  (orbe hinchado, ataque cargado) la hacía morir en cualquier roca que rozara:
+  mejorarla te dejaba peor.
+- **Las ventajas que sueltan los enemigos salen de la suerte, no de la
+  semilla del piso.** Los pisos son fijos; el botín puede cambiar de una
+  partida a otra. Y las crías no sueltan nada, o matar slimes sería la forma
+  de conseguirlas.
 - **Los enemigos salen al azar**, como pidió Matías: cada sala elige entre los
   tipos cuyo `piso_minimo` ya se alcanzó, sin tope por abajo. El piso mínimo
   solo escalona la dificultad.
@@ -310,6 +333,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **Una prueba que usa el jugador de verdad acumula lo que recoge.** En la
+  partida entera, el jugador de la prueba iba cogiendo ventajas y la bola
+  llegó a radio 23. Con eso destapó un fallo real (la bola moría en cualquier
+  roca que rozara), pero antes de verlo supuse que era un enemigo metido en
+  una roca y lo "arreglé" sin comprobarlo. Medir primero: el mismo disparo
+  con radio 11 y con radio 23 lo dejó claro.
 
 - **En el `fragment()` de un shader de canvas, `COLOR` ya trae la textura
   multiplicada.** El de la lava hacía `COLOR = texture(TEXTURE, UV) * COLOR`

@@ -31,8 +31,8 @@ una mecánica nueva no obliga a tocar su código.
 
 | Archivo | Qué hace | Desde el piso |
 |---|---|---|
-| `objetos.tres` | Deja un objeto recogible por piso, en el centro de la sala del objeto | 1 |
-| `enemigos.tres` | Reparte enemigos por las salas de pelea: de media 2 por sala en el piso 2 y 0,4 más por piso, hasta 6 en el 12. Como mucho la mitad a distancia. Duermen hasta que entras en su sala | 2 |
+| `objetos.tres` | Deja un objeto recogible por piso, en el centro de la sala del objeto. Además, cada enemigo que muere tiene un 3 % (`probabilidad_al_matar`) de soltar otro; las crías de slime no | 1 |
+| `enemigos.tres` | Reparte enemigos por las salas de pelea: de media 3 por sala en el piso 2 y 0,5 más por piso, hasta 8 en el 12. Como mucho la mitad a distancia. Duermen hasta que entras en su sala | 2 |
 | `peligros.tres` | Pinchos que salen a ratos (desde el 2), agujeros por los que caerse (desde el 3) y lava (desde el 4), de 1 a 3 por sala de pelea. Nunca tapan el paso de una puerta al centro de la sala | 2 |
 | `rocas_moviles.tres` | Parte de las rocas van y vienen en línea recta | 4 (**desactivada**) |
 

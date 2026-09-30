@@ -5,8 +5,9 @@
 [resource]
 script = ExtResource("1_objetos")
 nombre_mecanica = "Objetos"
-descripcion = "Deja un objeto por piso. Las mejoras se acumulan durante toda la partida."
+descripcion = "Deja un objeto por piso, y a veces (3 %) un enemigo suelta otro al morir. Las mejoras se acumulan durante toda la partida."
 piso_desbloqueo = 1
 activa = true
 por_piso = 1
 despeje = 260.0
+probabilidad_al_matar = 0.03

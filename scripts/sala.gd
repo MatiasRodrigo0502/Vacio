@@ -16,6 +16,9 @@ extends Node2D
 
 ## Se emite cuando no queda ningun enemigo vivo dentro.
 signal despejada(sala: Sala)
+## Se emite cada vez que muere un enemigo de la sala. La usa la mecanica de
+## objetos para que, alguna vez, suelte una ventaja.
+signal enemigo_muerto(enemigo: Enemigo)
 
 ## Grosor de cada muro. Generoso a proposito: con muros finos y velocidades
 ## altas el jugador puede atravesarlos (tunneling).
@@ -45,6 +48,12 @@ var _cerrada: bool = false
 var _activada: bool = false
 var _enemigos: Array[Enemigo] = []
 var _cierres: Dictionary = {}
+## Las rocas del filo: centro (x, y) y radio, en local. Ver anadir_roca_filo().
+var _rocas_filo: Array[Vector3] = []
+var _cuerpo_filo: StaticBody2D = null
+## Las cajas de colision de las rocas y plataformas de dentro, en local. Las
+## apunta el piso al colocarlas. Ver sacar_de_las_rocas().
+var _rocas: Array[Rect2] = []
 
 
 ## Monta la sala. La llama Piso justo despues de add_child().
@@ -84,6 +93,88 @@ func construir(celda_sala: Vector2i, tipo_sala: MapaSalas.Tipo, tamano_sala: Vec
 		else:
 			_anadir_forma(muros, banda)
 	queue_redraw()
+
+
+## Apunta una roca del filo de la sala: las que tapan el borde recto del suelo
+## y se meten un poco en el. Chocan como las rocas de dentro (su capa), asi que
+## paran al jugador, sus bolas y los disparos enemigos.
+##
+## POR QUE HACE FALTA QUE CHOQUEN:
+## el muro de verdad sigue siendo recto, justo en el borde del suelo. Una roca
+## que se mete en la sala y no choca se atravesaria, y el jugador tiene que
+## poder fiarse de lo que ve: el limite de la sala ahora son las rocas.
+func anadir_roca_filo(centro: Vector2, radio: float) -> void:
+	if _cuerpo_filo == null:
+		_cuerpo_filo = StaticBody2D.new()
+		_cuerpo_filo.name = "Filo"
+		_cuerpo_filo.collision_layer = Terreno.CAPA_ROCAS
+		_cuerpo_filo.collision_mask = 0
+		add_child(_cuerpo_filo)
+	var forma := CollisionShape2D.new()
+	var circulo := CircleShape2D.new()
+	circulo.radius = radio
+	forma.shape = circulo
+	forma.position = centro
+	_cuerpo_filo.add_child(forma)
+	_rocas_filo.append(Vector3(centro.x, centro.y, radio))
+
+
+## Apunta la caja de colision (global) de una roca o plataforma de dentro.
+func registrar_roca(caja_global: Rect2) -> void:
+	_rocas.append(Rect2(to_local(caja_global.position), caja_global.size))
+
+
+## El punto (global) mas cercano en el que algo de ese radio no queda dentro de
+## ninguna roca de la sala.
+##
+## POR QUE HACE FALTA:
+## los enemigos son areas y atraviesan las rocas, pero las rocas paran las
+## bolas. Un enemigo a distancia retrocede al acercarte, y arrinconado contra
+## el borde podria acabar metido en una roca del filo: la bola chocaria con la
+## roca y no le llegaria nunca, y la sala no se abriria. Es preventivo: no se
+## llego a ver pasar (la sala que no se abria en la prueba era otra cosa, el
+## radio de la bola; ver BolaMagica.RADIO_CONTRA_ROCAS). Sacandolos de las
+## rocas, a todo enemigo se le puede dar.
+func sacar_de_las_rocas(punto_global: Vector2, radio: float) -> Vector2:
+	var punto := to_local(punto_global)
+	for roca in _rocas_filo:
+		var centro := Vector2(roca.x, roca.y)
+		var hacia := punto - centro
+		var minimo := roca.z + radio
+		if hacia.length() < minimo:
+			# Justo en el centro no hay direccion: hacia el centro de la sala,
+			# que es hacia donde queda sitio.
+			var direccion := hacia.normalized() if hacia.length() > 0.01 else -centro.normalized()
+			punto = centro + direccion * minimo
+	for caja in _rocas:
+		var grande := caja.grow(radio)
+		if not grande.has_point(punto):
+			continue
+		# Por el lado mas cercano: es el empujon mas pequeno.
+		var izquierda := punto.x - grande.position.x
+		var derecha := grande.end.x - punto.x
+		var arriba := punto.y - grande.position.y
+		var abajo := grande.end.y - punto.y
+		var menor := minf(minf(izquierda, derecha), minf(arriba, abajo))
+		if menor == izquierda:
+			punto.x = grande.position.x
+		elif menor == derecha:
+			punto.x = grande.end.x
+		elif menor == arriba:
+			punto.y = grande.position.y
+		else:
+			punto.y = grande.end.y
+	return to_global(punto)
+
+
+## True si algo de ese radio en ese punto (global) quedaria encima de una roca
+## del filo.
+func pisa_roca_filo(punto_global: Vector2, radio: float) -> bool:
+	var punto := to_local(punto_global)
+	for roca in _rocas_filo:
+		if punto.distance_to(Vector2(roca.x, roca.y)) < roca.z + radio:
+			return true
+	return false
 
 
 ## Colores de la sala. Los peligros los usan para ser de la misma piedra.
@@ -210,6 +301,7 @@ func cerrar_puertas(cerrar: bool) -> void:
 
 func _al_morir_enemigo(enemigo: Enemigo) -> void:
 	_enemigos.erase(enemigo)
+	enemigo_muerto.emit(enemigo)
 	if _enemigos.is_empty():
 		cerrar_puertas(false)
 		despejada.emit(self)
@@ -271,11 +363,10 @@ func _anadir_forma(cuerpo: StaticBody2D, rect: Rect2) -> CollisionShape2D:
 
 func _draw() -> void:
 	var suelo := rect_suelo()
+	# Sin linea de limite: el borde del suelo lo tapan las rocas del filo, que
+	# chocan, y son ellas las que dicen donde acaba la sala. Una raya recta por
+	# debajo delataria el cuadrado.
 	draw_rect(suelo, _color_suelo)
-	# La linea del limite va tenue: las rocas de alrededor ya dicen donde acaba
-	# la sala. Se mantiene porque marca exactamente el muro invisible, y en un
-	# juego de precision el jugador lo agradece.
-	draw_rect(suelo, Color(_color_borde.r, _color_borde.g, _color_borde.b, 0.35), false, 4.0)
 
 	for direccion in puertas:
 		# El suelo del pasillo, en la mitad que es de esta sala. Se alarga unos

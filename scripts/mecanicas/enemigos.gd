@@ -14,11 +14,11 @@ const ESCENA_ENEMIGO := preload("res://scenes/Enemigo.tscn")
 const RUTA_TIPOS := "res://resources/enemigos"
 
 ## Enemigos por sala en el primer piso en el que aparecen.
-@export var base: int = 2
+@export var base: int = 3
 ## Cuantos mas por sala se anaden por cada piso que se baja.
-@export var por_piso: float = 0.4
+@export var por_piso: float = 0.5
 ## Tope por sala. Isaac pone entre dos y seis.
-@export var maximo: int = 7
+@export var maximo: int = 9
 
 ## Que parte de cada sala pueden ser enemigos a distancia, como mucho. Una sala
 ## solo de tiradores es una lluvia de disparos desde todas partes; con la mitad

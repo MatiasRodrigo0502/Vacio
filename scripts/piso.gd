@@ -159,7 +159,7 @@ func punto_reaparicion() -> Vector2:
 ##
 ## Mira todo lo que ya hay, sea de quien sea: asi da igual en que orden se
 ## apliquen las mecanicas, la que va segunda esquiva lo de la primera.
-func lugar_libre(punto: Vector2, radio: float) -> bool:
+func lugar_libre(punto: Vector2, radio: float, mirar_enemigos: bool = true) -> bool:
 	# Contra el dibujo entero de la roca y no contra su colision, que es mas
 	# pequena: algo medio tapado por una roca tampoco se lee bien.
 	for obstaculo in _obstaculos:
@@ -170,8 +170,10 @@ func lugar_libre(punto: Vector2, radio: float) -> bool:
 	var sala := sala_en(punto)
 	if sala == null:
 		return false
+	if sala.pisa_roca_filo(punto, radio + 12.0):
+		return false
 	for hijo in sala.get_children():
-		if hijo is Enemigo and hijo.tipo != null:
+		if hijo is Enemigo and hijo.tipo != null and mirar_enemigos:
 			if hijo.global_position.distance_to(punto) < radio + hijo.tipo.alto * 0.5 + 16.0:
 				return false
 		elif hijo is Peligro:
@@ -383,6 +385,7 @@ func _rocas_en_sala(sala: Sala, generador: RandomNumberGenerator,
 				texturas[generador.randi() % texturas.size()],
 				lado, tinte, datos.velocidad_obstaculos)
 			_obstaculos.append(obstaculo)
+			sala.registrar_roca(_caja_colision(obstaculo))
 			posiciones.append(en_piso)
 			lados.append(lado)
 			break
@@ -442,8 +445,15 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 			losa.preparar(to_global(en_piso), textura, ancho_losa, tinte_losa,
 				datos.velocidad_obstaculos)
 			_obstaculos.append(losa)
+			sala.registrar_roca(_caja_colision(losa))
 			_plantar_encima(en_piso, losa.tamano(), generador, tinte, plantas)
 			break
+
+
+## La caja de colision de una roca o plataforma, en el mundo.
+func _caja_colision(obstaculo: Obstaculo) -> Rect2:
+	var caja := obstaculo.tamano() * Obstaculo.FACTOR_COLISION
+	return Rect2(obstaculo.global_position - caja * 0.5, caja)
 
 
 ## Siembra unas cuantas plantas sobre una plataforma ya colocada.
@@ -512,55 +522,85 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 			_decoracion.add_child(adorno)
 
 
-## Rodea cada sala con rocas, para que el limite deje de ser una linea dibujada
-## y parezca la pared de la cueva.
+## Rodea cada sala con rocas, para que el limite de la sala sean rocas y no un
+## rectangulo dibujado.
 ##
-## Van en la franja de muro, por fuera del suelo, y no chocan con nada: la
-## colision la ponen los muros de la sala. Dejan libres los huecos de puerta.
+## Dos filas por lado:
+## - la del FILO pisa el borde del suelo y se mete un poco en la sala. Tapa el
+##   borde recto y choca (ver Sala.anadir_roca_filo): es el limite de verdad.
+## - la del FONDO, por fuera, rellena la franja del muro para que detras del
+##   filo se vea roca maciza y no negro. No choca: detras ya esta el muro.
 ##
-## POR QUE TAN PEGADAS Y TAN PEQUENAS:
-## entre dos salas vecinas solo hay 128 px de muro (dos de 64). Una roca mas
-## grande o mas alejada asomaria en el suelo de la sala de al lado, y ahi
-## pareceria un obstaculo que luego no choca. El jugador tiene que poder
-## fiarse de lo que ve.
+## Las dos dejan libres los huecos de las puertas.
 func _colocar_borde(generador: RandomNumberGenerator, tinte: Color,
 		catalogo: CatalogoObstaculos) -> void:
 	var piezas := catalogo.rocas_todas()
 	if piezas.is_empty():
 		return
-
-	var tamano := _tamano_sala()
-	var tope := Sala.GROSOR_MURO * 1.7
-	var lado_medio := clampf(tamano.x * 0.07, 50.0, 96.0)
-
+	# Por altura en pantalla: con vista en 3/4, la roca de mas abajo va delante.
+	# Sin esto, en el lado de abajo la fila del fondo quedaria detras del filo.
+	_decoracion.y_sort_enabled = true
 	for sala in _orden_salas:
 		for direccion in MapaSalas.DIRECCIONES:
-			var horizontal := direccion == Vector2i.UP or direccion == Vector2i.DOWN
-			var largo := tamano.x if horizontal else tamano.y
-			var recorrido := -largo * 0.5 - Sala.GROSOR_MURO * 0.5
-			while recorrido < largo * 0.5 + Sala.GROSOR_MURO * 0.5:
-				var lado := minf(lado_medio * generador.randf_range(0.7, 1.4), tope)
-				recorrido += lado * generador.randf_range(0.45, 0.8)
+			_fila_de_rocas(sala, direccion, false, generador, tinte, piezas)
+			_fila_de_rocas(sala, direccion, true, generador, tinte, piezas)
 
-				if direccion in sala.puertas \
-						and absf(recorrido) < Sala.ANCHO_PUERTA * 0.5 + lado * 0.5:
-					continue
 
-				var fuera := lado * generador.randf_range(0.45, 0.7)
-				var local: Vector2
-				if horizontal:
-					local = Vector2(recorrido, direccion.y * (tamano.y * 0.5 + fuera))
-				else:
-					local = Vector2(direccion.x * (tamano.x * 0.5 + fuera), recorrido)
+## Una fila de rocas a lo largo de un lado de la sala.
+##
+## POR QUE LAS DEL FILO SON MAS PEQUENAS:
+## se meten en la sala, y su colision con ellas. Del tamano de las del fondo,
+## en el piso 12 se comerian un buen trozo de cada lado de una sala que ya es
+## pequena. Asi se meten como mucho unos 40 px.
+func _fila_de_rocas(sala: Sala, direccion: Vector2i, filo: bool,
+		generador: RandomNumberGenerator, tinte: Color, piezas: Array[Texture2D]) -> void:
+	var tamano := sala.tamano
+	var horizontal := direccion == Vector2i.UP or direccion == Vector2i.DOWN
+	var largo := tamano.x if horizontal else tamano.y
+	var lado_medio := clampf(tamano.x * 0.05, 40.0, 70.0) if filo \
+		else clampf(tamano.x * 0.07, 50.0, 96.0)
+	# Las del fondo no pasan del grosor de la franja del muro: mas grandes,
+	# asomarian en la sala de al lado.
+	var tope := Sala.GROSOR_MURO * 1.7
+	var sobra := 0.0 if filo else Sala.GROSOR_MURO * 0.5
+	var recorrido := -largo * 0.5 - sobra
+	while recorrido < largo * 0.5 + sobra:
+		var lado := minf(lado_medio * generador.randf_range(0.7, 1.35), tope)
+		recorrido += lado * generador.randf_range(0.45, 0.8)
+		# Delante de una puerta, nada. Las del filo, con un margen mas: su
+		# colision no puede estrechar el paso.
+		var margen_puerta := 12.0 if filo else 0.0
+		if direccion in sala.puertas \
+				and absf(recorrido) < Sala.ANCHO_PUERTA * 0.5 + lado * 0.5 + margen_puerta:
+			continue
 
-				var textura: Texture2D = piezas[generador.randi() % piezas.size()]
-				var roca := Sprite2D.new()
-				roca.texture = textura
-				roca.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
-				roca.flip_h = generador.randf() < 0.5
-				roca.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
-				roca.position = sala.position + local
-				_decoracion.add_child(roca)
+		# Hacia fuera desde el borde del suelo. Las del filo, entre un poco
+		# dentro y un poco fuera: asi pisan la raya y la tapan.
+		var fuera := 0.0
+		if filo:
+			fuera = lado * generador.randf_range(-0.1, 0.2)
+		else:
+			fuera = lado * generador.randf_range(0.45, 0.7)
+		var local: Vector2
+		if horizontal:
+			local = Vector2(recorrido, direccion.y * (tamano.y * 0.5 + fuera))
+		else:
+			local = Vector2(direccion.x * (tamano.x * 0.5 + fuera), recorrido)
+		if filo and _pisa_un_cartel(sala.position + local, Vector2(lado, lado)):
+			continue
+
+		var textura: Texture2D = piezas[generador.randi() % piezas.size()]
+		var roca := Sprite2D.new()
+		roca.texture = textura
+		roca.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
+		roca.flip_h = generador.randf() < 0.5
+		roca.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
+		roca.position = sala.position + local
+		_decoracion.add_child(roca)
+		if filo:
+			# El mismo 0,72 que las rocas de dentro (Obstaculo.FACTOR_COLISION),
+			# en circulo: mejor pasar raspando que chocar con el aire.
+			sala.anadir_roca_filo(local, lado * Obstaculo.FACTOR_COLISION * 0.5)
 
 
 ## Pinta los carteles de controles si este piso los pide desde su .tres: los

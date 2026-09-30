@@ -34,8 +34,8 @@ func colocar(inicio: Vector2, tamano_sala: Vector2, salida: Vector2) -> void:
 	_centrar(_reiniciar, inicio + Vector2(0.0, 132.0))
 	_centrar(_bola, inicio + Vector2(0.0, 200.0))
 	_centrar(_cargado, inicio + Vector2(0.0, 256.0))
-	_centrar(_puertas, inicio + Vector2(0.0, tamano_sala.y * 0.5 - 70.0))
-	_centrar(_esquivar, inicio + Vector2(0.0, -tamano_sala.y * 0.5 + 90.0))
+	_centrar(_puertas, inicio + Vector2(0.0, tamano_sala.y * 0.5 - 120.0))
+	_centrar(_esquivar, inicio + Vector2(0.0, -tamano_sala.y * 0.5 + 120.0))
 	_centrar(_bajar, salida - Vector2(0.0, 130.0))
 
 

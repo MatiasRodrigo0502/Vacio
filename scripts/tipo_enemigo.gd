@@ -69,6 +69,9 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## La cria se fabrica una vez y se reutiliza: todas las crias de un tipo son
 ## iguales, y asi no se crea un Resource nuevo por cada slime que muere.
 var _cria: TipoEnemigo = null
+## True en las crias. Las usa la mecanica de objetos: las crias no sueltan
+## ventajas, o matar slimes seria la forma de conseguirlas.
+var es_cria: bool = false
 
 
 func es_a_distancia() -> bool:
@@ -87,4 +90,5 @@ func cria() -> TipoEnemigo:
 		_cria.velocidad = velocidad * 1.25
 		_cria.division = 0
 		_cria.radio_explosion = 0.0
+		_cria.es_cria = true
 	return _cria

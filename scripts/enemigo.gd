@@ -166,16 +166,22 @@ func _mover(direccion: Vector2, delta: float) -> void:
 	mantener_en_la_sala()
 
 
-## Lo deja dentro del suelo de su sala.
+## Lo deja dentro del suelo de su sala y fuera de sus rocas.
 ##
 ## Los de cuerpo a cuerpo nunca salian, porque van hacia el jugador y el
 ## jugador esta dentro. Los de distancia retroceden, y sin esto cruzarian el
-## muro de espaldas y dispararian desde la sala de al lado.
+## muro de espaldas y dispararian desde la sala de al lado. Y fuera de las
+## rocas porque las rocas paran las bolas: uno metido en una no se podria
+## matar (ver Sala.sacar_de_las_rocas).
 func mantener_en_la_sala() -> void:
 	var sala := get_parent() as Sala
 	if sala == null or tipo == null:
 		return
 	var dentro := sala.rect_suelo_global().grow(-tipo.alto * 0.45)
+	global_position = global_position.clamp(dentro.position, dentro.end)
+	global_position = sala.sacar_de_las_rocas(global_position, tipo.alto * 0.4)
+	# Otra vez dentro del suelo: salir de una roca pegada al muro podria
+	# haberlo empujado hacia fuera.
 	global_position = global_position.clamp(dentro.position, dentro.end)
 
 

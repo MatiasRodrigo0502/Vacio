@@ -17,6 +17,15 @@ const RUTA_OBJETOS := "res://resources/objetos"
 ## normales. Un objeto en el umbral se cogeria sin verlo.
 @export var despeje: float = 260.0
 
+## Probabilidad de que un enemigo suelte una ventaja al morir. Baja a
+## proposito: el objeto de cada piso sigue siendo la recompensa gorda, y esto
+## es la sorpresa de vez en cuando. Con 0,03, uno de cada ~33 enemigos.
+@export_range(0.0, 1.0) var probabilidad_al_matar: float = 0.03
+
+## Distancia minima entre lo que suelta un enemigo y el agujero de bajada.
+## Recoger la ventaja no puede obligar a pisar la bajada.
+const DESPEJE_BAJADA: float = 110.0
+
 var _objetos: Array[ObjetoMejora] = []
 
 
@@ -32,6 +41,10 @@ func aplicar_a_piso(piso: Node) -> void:
 
 	var generador := RandomNumberGenerator.new()
 	generador.seed = hash(nombre_mecanica) + piso.numero_piso * 60077
+
+	# Cada sala avisa cuando le muere un enemigo, y a veces sale una ventaja.
+	for sala in piso.salas():
+		sala.enemigo_muerto.connect(_al_morir_enemigo.bind(sala, piso, disponibles))
 
 	# El primero, en el centro de su sala: es un premio, se tiene que ver nada
 	# mas asomarse. Si el mapa no tiene sala de objeto (pocas salas), va al
@@ -55,6 +68,46 @@ func aplicar_a_piso(piso: Node) -> void:
 				continue
 			_dejar(sala, sitio, disponibles, generador)
 			break
+
+
+## Al morir un enemigo, a veces suelta una ventaja al azar.
+##
+## Aqui el azar NO sale de la semilla del piso, a diferencia del resto: los
+## pisos son fijos, pero lo que suelta un enemigo es suerte, y tiene que poder
+## cambiar de una partida a otra.
+func _al_morir_enemigo(enemigo: Enemigo, sala: Sala, piso: Node,
+		disponibles: Array[ObjetoMejora]) -> void:
+	if enemigo.tipo == null or enemigo.tipo.es_cria:
+		return
+	if randf() >= probabilidad_al_matar:
+		return
+	var sitio: Variant = _sitio_para_soltar(enemigo.global_position, sala, piso)
+	if sitio == null:
+		return
+	var azar := RandomNumberGenerator.new()
+	azar.randomize()
+	_dejar(sala, sala.to_local(sitio), disponibles, azar)
+
+
+## Donde dejar lo que suelta un enemigo: donde murio si se puede, y si no, lo
+## mas cerca posible. Nunca encima de un agujero, lava, pinchos, una roca o la
+## bajada: el enemigo pudo morir encima de todo eso (vuelan y atraviesan), y
+## una ventaja que no se puede coger sin caer al vacio es una trampa.
+## Devuelve null si no hay sitio.
+func _sitio_para_soltar(donde: Vector2, sala: Sala, piso: Node) -> Variant:
+	var dentro := sala.rect_suelo_global().grow(-60.0)
+	for radio in [0.0, 40.0, 80.0, 120.0, 160.0, 200.0, 260.0]:
+		for paso in 8:
+			var punto: Vector2 = (donde + Vector2.RIGHT.rotated(paso * TAU / 8.0) * radio) \
+				.clamp(dentro.position, dentro.end)
+			if sala.tipo == MapaSalas.Tipo.SALIDA \
+					and punto.distance_to(sala.global_position) < DESPEJE_BAJADA:
+				continue
+			if piso.lugar_libre(punto, 30.0, false):
+				return punto
+			if radio == 0.0:
+				break
+	return null
 
 
 func _dejar(sala: Sala, sitio: Vector2, disponibles: Array[ObjetoMejora],

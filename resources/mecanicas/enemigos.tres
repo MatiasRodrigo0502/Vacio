@@ -5,11 +5,11 @@
 [resource]
 script = ExtResource("1_enemigos")
 nombre_mecanica = "Enemigos"
-descripcion = "Reparte enemigos por las salas de pelea: de 2 a 7 por sala, mas cuanto mas se baja, y como mucho la mitad a distancia. Aparecen a partir del piso 2."
+descripcion = "Reparte enemigos por las salas de pelea: de 3 a 8 por sala, mas cuanto mas se baja, y como mucho la mitad a distancia. Aparecen a partir del piso 2."
 piso_desbloqueo = 2
 activa = true
-base = 2
-por_piso = 0.4
-maximo = 7
+base = 3
+por_piso = 0.5
+maximo = 9
 proporcion_distancia = 0.5
 despeje = 200.0

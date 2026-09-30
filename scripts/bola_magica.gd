@@ -56,6 +56,18 @@ var direccion: Vector2 = Vector2.DOWN
 ## Isaac las lagrimas no salen de la sala; aqui tampoco. Vacio = sin limite.
 var limite: Rect2 = Rect2()
 
+## Contra las rocas solo cuenta el nucleo de la bola, no todo su tamano.
+##
+## POR QUE:
+## el tamano de la bola esta para acertar a los enemigos. Si contara entero
+## contra las rocas, hacer la bola mas grande (el orbe hinchado, el ataque
+## cargado, que la dobla) la haria morir en cualquier roca que rozara aunque
+## el camino estuviera libre: mejorarla te dejaria peor. Lo encontro la prueba
+## de la partida entera: con radio 23, la bola nacia tocando una roca y no
+## llegaba a un enemigo que tenia delante. Es la misma idea que las rocas,
+## que chocan con el 72 % de su dibujo: mejor pasar raspando.
+const RADIO_CONTRA_ROCAS: float = 10.0
+
 var _recorrido: float = 0.0
 var _fase: float = 0.0
 
@@ -77,7 +89,8 @@ func _physics_process(delta: float) -> void:
 	var antes := global_position
 	position += direccion * paso
 	_recorrido += paso
-	var roca := Terreno.choque(get_world_2d(), antes, global_position, radio, Terreno.CAPA_ROCAS)
+	var roca := Terreno.choque(get_world_2d(), antes, global_position,
+		minf(radio, RADIO_CONTRA_ROCAS), Terreno.CAPA_ROCAS)
 	if roca != null:
 		_al_tocar_roca(roca)
 		return
