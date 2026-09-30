@@ -31,6 +31,8 @@ func _ready() -> void:
 	_jugador.bola_lanzada.connect(_al_lanzar_bola)
 	_jugador.mejora_recogida.connect(_hud.anunciar_mejora)
 	_jugador.caido.connect(_al_caer)
+	# Temblor corto con cada golpe: 7 px que se calman en un cuarto de segundo.
+	_jugador.dano_recibido.connect(_camara.sacudir.bind(7.0))
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 	_menu_pausa.reinicio_solicitado.connect(_reiniciar)

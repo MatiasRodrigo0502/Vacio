@@ -370,8 +370,9 @@ func _draw() -> void:
 
 	for direccion in puertas:
 		# El suelo del pasillo, en la mitad que es de esta sala. Se alarga unos
-		# pixeles hacia dentro para tapar la linea del limite: una raya cruzando
-		# la puerta se leeria como una puerta cerrada.
+		# pixeles hacia dentro para que no quede una rendija entre el suelo de la
+		# sala y el del pasillo: una raya cruzando la puerta se leeria como una
+		# puerta cerrada.
 		var hueco := _hueco(direccion).grow_individual(
 			4.0 if direccion == Vector2i.RIGHT else 0.0,
 			4.0 if direccion == Vector2i.DOWN else 0.0,

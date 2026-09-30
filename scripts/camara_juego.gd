@@ -20,6 +20,11 @@ var _zoom_objetivo: Vector2 = Vector2.ONE
 ## jugador. Vacia = sin limite.
 var _limite: Rect2 = Rect2()
 
+## Cuanto tiembla ahora, en pixeles de pantalla. Baja solo hasta 0.
+var _sacudida: float = 0.0
+## Lo que tarda en calmarse una sacudida, en pixeles por segundo.
+const CALMA_SACUDIDA: float = 30.0
+
 
 func _ready() -> void:
 	# El suavizado propio de Camera2D se desactiva porque lo hacemos a mano:
@@ -38,6 +43,25 @@ func _process(delta: float) -> void:
 
 	var peso_zoom := 1.0 - exp(-velocidad_zoom * delta)
 	zoom = zoom.lerp(_zoom_objetivo, peso_zoom)
+
+	# La sacudida va en el offset y no en la posicion: asi no se mezcla con el
+	# seguimiento ni con el limite de la sala, y al acabar no queda desplazada.
+	if _sacudida > 0.0:
+		_sacudida = maxf(_sacudida - CALMA_SACUDIDA * delta, 0.0)
+		offset = Vector2.RIGHT.rotated(randf() * TAU) * _sacudida / zoom.x
+	elif offset != Vector2.ZERO:
+		offset = Vector2.ZERO
+
+
+## Hace temblar la camara un momento. La llama Principal cuando al jugador le
+## quitan vida.
+##
+## POR QUE: en mitad de una pelea el parpadeo del mago se pierde entre los
+## disparos y los enemigos, y no te enteras de que te han dado hasta que miras
+## los corazones. Un temblor corto se nota sin tener que mirar nada. Pequeno a
+## proposito: si mueve mucho la vista, esquivar el siguiente golpe cuesta mas.
+func sacudir(fuerza: float) -> void:
+	_sacudida = maxf(_sacudida, fuerza)
 
 
 func seguir(objetivo: Node2D, inmediato: bool = false) -> void:

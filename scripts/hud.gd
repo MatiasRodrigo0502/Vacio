@@ -14,6 +14,12 @@ extends CanvasLayer
 ## Cuanto dura en pantalla el aviso de un objeto recogido.
 const DURACION_AVISO: float = 2.6
 
+## El desvanecido del aviso que esta en pantalla. Se cancela al llegar otro:
+## si no, el del primer objeto seguia corriendo y escondia el aviso del
+## segundo a medias. Con los enemigos soltando ventajas, coger dos cosas en
+## menos de tres segundos pasa.
+var _desvanecer: Tween = null
+
 
 func actualizar_piso(numero_piso: int, total: int, nombre_capa: String) -> void:
 	_etiqueta_piso.text = "PISO %d / %d" % [numero_piso, total]
@@ -43,7 +49,9 @@ func anunciar_mejora(mejora: ObjetoMejora) -> void:
 	_aviso.modulate = mejora.color
 	_aviso.show()
 
-	var desvanecer := create_tween()
-	desvanecer.tween_interval(DURACION_AVISO)
-	desvanecer.tween_property(_aviso, "modulate:a", 0.0, 0.6)
-	desvanecer.tween_callback(_aviso.hide)
+	if _desvanecer != null and _desvanecer.is_valid():
+		_desvanecer.kill()
+	_desvanecer = create_tween()
+	_desvanecer.tween_interval(DURACION_AVISO)
+	_desvanecer.tween_property(_aviso, "modulate:a", 0.0, 0.6)
+	_desvanecer.tween_callback(_aviso.hide)

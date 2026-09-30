@@ -52,6 +52,11 @@ var _apuntando: float = 0.0
 ## Hacia donde saldra el rayo. Se fija al empezar a apuntar, para que la linea
 ## de mira diga la verdad: el rayo sale justo por ahi.
 var _mira: Vector2 = Vector2.DOWN
+## Hasta donde llega el rayo por esa mira: hasta la primera roca o muro. La
+## linea de aviso se pinta solo hasta ahi. Pintada entera, cruzaba las rocas
+## y te avisaba de un peligro que detras de la roca no existe: el rayo se para
+## en ella.
+var _largo_mira: float = 0.0
 
 @onready var _sprite: AnimatedSprite2D = $Sprite
 @onready var _forma: CollisionShape2D = $Forma
@@ -208,6 +213,20 @@ func _pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void
 	if _espera <= 0.0:
 		_apuntando = tipo.tiempo_apuntar
 		_mira = (_punto_objetivo() - global_position).normalized()
+		_largo_mira = _alcance_libre(_mira)
+
+
+## Distancia hasta la primera roca o muro en esa direccion, o el alcance del
+## proyectil si no hay nada. Las rocas no se mueven, asi que basta con
+## mirarlo al empezar a apuntar.
+func _alcance_libre(direccion: Vector2) -> float:
+	var alcance := tipo.proyectil.alcance
+	var rayo := PhysicsRayQueryParameters2D.create(global_position,
+		global_position + direccion * alcance, Terreno.CAPA_MUROS | Terreno.CAPA_ROCAS)
+	var golpe := get_world_2d().direct_space_state.intersect_ray(rayo)
+	if golpe.is_empty():
+		return alcance
+	return global_position.distance_to(golpe["position"])
 
 
 func _disparar() -> void:
@@ -271,6 +290,8 @@ func _golpear_lo_que_toca() -> void:
 func _morir() -> void:
 	if tipo.radio_explosion > 0.0:
 		_explotar()
+	else:
+		_destello_muerte()
 	for i in tipo.division:
 		_soltar_cria(i)
 	muerto.emit(self)
@@ -287,6 +308,17 @@ func _explotar() -> void:
 			and _objetivo.centro_colision().distance_to(global_position) \
 				< tipo.radio_explosion + RADIO_JUGADOR:
 		_objetivo.recibir_dano(tipo.dano_explosion)
+
+
+## Un destello pequeno de su color al morir, sin dano. Antes los enemigos
+## desaparecian sin mas: en una sala con ocho, no se sabia bien cual habia
+## caido. Es la misma explosion de los slimes, del tamano del enemigo.
+func _destello_muerte() -> void:
+	var destello := Explosion.new()
+	destello.radio = tipo.alto * 0.6
+	destello.color = tipo.color_efectos
+	destello.position = position
+	get_parent().add_child(destello)
 
 
 func _soltar_cria(numero: int) -> void:
@@ -310,5 +342,5 @@ func _draw() -> void:
 		return
 	var avance := 1.0 - _apuntando / tipo.tiempo_apuntar
 	var color := tipo.proyectil.color
-	draw_line(Vector2.ZERO, _mira * tipo.proyectil.alcance,
+	draw_line(Vector2.ZERO, _mira * _largo_mira,
 		Color(color.r, color.g, color.b, 0.2 + 0.5 * avance), 1.0 + 2.5 * avance)

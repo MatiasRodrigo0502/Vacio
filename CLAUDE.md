@@ -157,7 +157,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   - **A distancia** (serpiente y planta venenosa con veneno, gólem con magma,
     cristal con rayos): lentos, de 0 a 55, se quedan lejos y pegan más. Antes
     de disparar se paran y avisan. Como mucho la mitad de cada sala.
-  - **Los slimes** explotan al morir (radio 70-85) y sueltan dos crías.
+  - **Los slimes** explotan al morir (radio 70-85) y sueltan dos crías. Los
+    demás dejan un destello pequeño de su color, sin daño.
+  - La **línea de mira del cristal** acaba en la primera roca o muro: el rayo
+    se para ahí, y pintada entera avisaba de un peligro que no existe.
+- **Al recibir un golpe, la cámara tiembla** 7 px durante un cuarto de
+  segundo (`CamaraJuego.sacudir`). Va en el `offset`, así que no se mezcla
+  con el seguimiento ni con el límite de la sala.
 - **Peligros del suelo** (`scripts/mecanicas/peligros.gd`), de 1 a 3 por sala
   de pelea: **pinchos** que salen a ratos (desde el piso 2), **agujeros** que
   cuestan un corazón y te devuelven a la entrada de la sala (desde el 3) y
@@ -333,6 +339,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **Un tween que esconde algo se cancela si ese algo vuelve a mostrarse.**
+  El aviso del HUD creaba un desvanecido nuevo con cada objeto y el anterior
+  seguía corriendo: al coger dos objetos en menos de 3 s, el del primero
+  escondía el aviso del segundo al segundo de salir. No se notaba con un
+  objeto por piso; con los enemigos soltando ventajas, sí. Se guarda el tween
+  y se hace `kill()` antes de crear otro.
 
 - **Una prueba que usa el jugador de verdad acumula lo que recoge.** En la
   partida entera, el jugador de la prueba iba cogiendo ventajas y la bola
