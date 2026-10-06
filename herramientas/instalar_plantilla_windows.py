@@ -28,8 +28,20 @@ URL = ("https://github.com/godotengine/godot/releases/download/"
 # Lo que se instala. version.txt lo usa el gestor del editor para saber que
 # version hay; la exportacion en si solo necesita el .exe.
 QUEREMOS = ["templates/version.txt", "templates/windows_release_x86_64.exe"]
-# Donde busca Godot las plantillas en Windows.
-DESTINO = os.path.join(os.environ["APPDATA"], "Godot", "export_templates", VERSION + ".stable")
+
+def carpeta_godot():
+    """Donde guarda Godot sus datos en cada sistema. Ademas de Windows, Linux:
+    GitHub exporta el .exe para la release en una maquina Linux
+    (.github/workflows/publicar.yml) con este mismo script."""
+    if sys.platform == "win32":
+        return os.path.join(os.environ["APPDATA"], "Godot")
+    if sys.platform == "darwin":
+        return os.path.expanduser("~/Library/Application Support/Godot")
+    datos = os.environ.get("XDG_DATA_HOME") or os.path.expanduser("~/.local/share")
+    return os.path.join(datos, "godot")
+
+
+DESTINO = os.path.join(carpeta_godot(), "export_templates", VERSION + ".stable")
 TROZO = 1 << 20
 
 

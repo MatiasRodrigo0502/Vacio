@@ -15,6 +15,20 @@ que te mejoran, pausa, victoria y derrota. Se elige entre **dos magos**, cada un
 sus ventajas, y miran a los ocho lados; el piso 1 hace de tutorial con arte de musgo y el 2 de
 cueva; el 3 es cueva pelada, del 4 al 8 el manto y del 9 al 12 el núcleo.
 
+## Descargar el juego
+
+La última versión, lista para jugar en Windows sin instalar nada:
+**[Vacio.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe)**
+(página de la release:
+[releases/latest](https://github.com/MatiasRodrigo0502/Vacio/releases/latest)).
+
+GitHub la rehace sola con cada push a `main` (`.github/workflows/publicar.yml`,
+unos minutos), así que el enlace siempre lleva a lo último. Es una sola
+release, `ultima-version`, que se actualiza: su etiqueta se mueve al commit
+nuevo. Si solo cambian archivos `.md`, no se rehace. Windows puede avisar de
+que el `.exe` es de un editor desconocido (no está firmado): *Más información →
+Ejecutar de todas formas*.
+
 ## Jugar sin Godot: `build/Vacio.exe`
 
 El juego exportado es **un solo archivo**, `build/Vacio.exe`, que se abre con

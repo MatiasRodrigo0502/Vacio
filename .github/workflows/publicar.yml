@@ -1,0 +1,89 @@
+# Exporta el juego y lo publica en la release "ultima-version" con cada push a
+# main. Asi cualquiera (el profesor, alguien sin el proyecto) se baja el .exe
+# de la ultima version sin tener Godot:
+#
+#     https://github.com/MatiasRodrigo0502/Vacio/releases/latest
+#
+# Usa los mismos scripts que el hook local (herramientas/), para que el .exe
+# de GitHub y el de cada ordenador salgan de la misma receta.
+name: Publicar el .exe
+
+on:
+  push:
+    branches: [main]
+    # Si solo cambian documentos, el juego es el mismo: no hace falta exportar.
+    paths-ignore:
+      - "**.md"
+  # Boton "Run workflow" en la pestana Actions, por si hay que rehacerlo a mano.
+  workflow_dispatch:
+
+# Si llegan varios push seguidos, solo cuenta el ultimo: el que estaba a
+# medias se cancela, porque iba a publicar algo que ya no es lo ultimo.
+concurrency:
+  group: publicar
+  cancel-in-progress: true
+
+# Escribir en el repositorio hace falta para crear la release y mover su
+# etiqueta. El token lo pone GitHub para cada ejecucion; nadie lo maneja.
+permissions:
+  contents: write
+
+env:
+  GODOT_VERSION: "4.7.2"
+  ETIQUETA: ultima-version
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Godot para Linux (exporta a Windows igual que desde Windows). Va a la
+      # carpeta temporal, no al proyecto: si no, Godot lo veria al escanear.
+      - name: Bajar Godot
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/godot.zip" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          echo "GODOT=$RUNNER_TEMP/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" >> "$GITHUB_ENV"
+
+      - name: Instalar la plantilla de Windows
+        run: python3 herramientas/instalar_plantilla_windows.py
+
+      - name: Exportar
+        run: bash herramientas/exportar.sh
+
+      # Aqui nadie puede abrir build/exportar.log: si falla, se ensena.
+      - name: Ensenar el registro si ha fallado
+        if: failure()
+        run: tail -n 80 build/exportar.log || true
+
+      - name: Publicar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          commit="$(git log -1 --format='%h')"
+          asunto="$(git log -1 --format='%s')"
+          fecha="$(TZ=Europe/Madrid date '+%d/%m/%Y %H:%M')"
+          {
+            echo "Última versión del juego. Se rehace sola con cada cambio que se sube a \`main\`."
+            echo
+            echo "**Para jugar:** descarga \`Vacio.exe\` y ábrelo. No hace falta instalar nada ni tener Godot."
+            echo
+            echo "Windows puede avisar de que es de un editor desconocido, porque el .exe no está firmado: *Más información → Ejecutar de todas formas*."
+            echo
+            echo "Versión: \`$commit\` — $asunto ($fecha)"
+          } > "$RUNNER_TEMP/notas.md"
+
+          # Una sola release que se actualiza, en vez de una nueva por cada
+          # push: el enlace no cambia y no se llena la lista de releases.
+          if gh release view "$ETIQUETA" >/dev/null 2>&1; then
+            # La etiqueta pasa al commit nuevo, y se cambian el .exe y las notas.
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/$ETIQUETA" \
+              -f sha="$GITHUB_SHA" -F force=true > /dev/null
+            gh release upload "$ETIQUETA" build/Vacio.exe --clobber
+            gh release edit "$ETIQUETA" --notes-file "$RUNNER_TEMP/notas.md"
+          else
+            gh release create "$ETIQUETA" build/Vacio.exe --target "$GITHUB_SHA" \
+              --title "Vacío — última versión" --notes-file "$RUNNER_TEMP/notas.md" --latest
+          fi

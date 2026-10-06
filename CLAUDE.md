@@ -102,6 +102,13 @@ segundo plano, ~15 s). No hay que hacer nada después de commitear; si falla, el
 motivo está en `build/exportar.log` y el `.exe` anterior se queda. En este
 ordenador ya están la plantilla de Windows y `core.hooksPath`.
 
+**En GitHub hay además una release, `ultima-version`,** que rehace
+`.github/workflows/publicar.yml` con cada push a `main` (en Linux, con los
+mismos scripts de `herramientas/`). No hay que hacer nada tras el push. Si
+falla, el registro sale en la pestaña Actions. `gh` no tiene sesión iniciada en
+este ordenador: el estado de las ejecuciones se mira con la API pública
+(`curl https://api.github.com/repos/MatiasRodrigo0502/Vacio/actions/runs`).
+
 Para probar algo **dentro del `.exe` exportado** (no en el editor): exportar a
 otra carpeta y dejar al lado un `override.cfg` con
 `[application] run/main_scene="res://<escena de prueba>.tscn"`. Los binarios

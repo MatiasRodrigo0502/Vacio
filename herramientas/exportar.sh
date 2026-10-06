@@ -38,10 +38,12 @@ buscar_godot() {
 		command -v godot
 		return 0
 	fi
+	# USERPROFILE solo existe en Windows; vacia en otro sistema, para que
+	# set -u no corte el script.
 	for ruta in \
-		"$USERPROFILE/OneDrive - vidalibarraquer.net/Escritorio/Godot_v4.7.2-stable_win64.exe" \
+		"${USERPROFILE:-}/OneDrive - vidalibarraquer.net/Escritorio/Godot_v4.7.2-stable_win64.exe" \
 		"C:/Tools/Godot/Godot_v4.7.2-stable_win64.exe" \
-		"$USERPROFILE/Desktop/Godot_v4.7.2-stable_win64.exe"; do
+		"${USERPROFILE:-}/Desktop/Godot_v4.7.2-stable_win64.exe"; do
 		if [ -f "$ruta" ]; then
 			echo "$ruta"
 			return 0
@@ -70,6 +72,14 @@ if ! GODOT_EXE="$(buscar_godot)"; then
 	echo "No encuentro Godot. Define la variable GODOT con la ruta de tu" \
 		"Godot_*.exe o anade la ruta en herramientas/exportar.sh." | tee "$REGISTRO"
 	exit 1
+fi
+
+# En una copia recien clonada (la de GitHub, o la de alguien que acaba de
+# bajarse el proyecto) aun no hay .godot/. Se importa todo antes: exportar sin
+# importar puede dejar fuera recursos que todavia no se habian procesado.
+if [ ! -d "$RAIZ/.godot" ]; then
+	echo "Primera vez en esta copia: importando el proyecto..."
+	"$GODOT_EXE" --headless --path "$RAIZ" --import >"$REGISTRO" 2>&1
 fi
 
 resultado=0
