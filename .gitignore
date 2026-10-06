@@ -10,8 +10,10 @@
 *.import
 
 # Plantillas/exportaciones y builds
+# export_presets.cfg SI se versiona: es la receta del .exe y la usa
+# herramientas/exportar.sh. En Godot 4 no guarda contrasenas (esas van en
+# .godot/export_credentials.cfg, que ya esta ignorado).
 export.cfg
-export_presets.cfg
 builds/
 build/
 exports/

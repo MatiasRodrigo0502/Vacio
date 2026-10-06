@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-09-30.**
+**Última actualización: 2026-10-06.**
 
 ---
 
@@ -95,6 +95,18 @@ aparecían (0 sprites con 8 texturas cargadas) y el contraste de las rocas (mi
 impresión visual era la contraria a la medición).
 
 Para lanzar el juego: `jugar.bat` en la raíz.
+
+**El ejecutable, `build/Vacio.exe`, se rehace solo** tras cada commit y cada
+pull (`.githooks/post-commit` y `post-merge` → `herramientas/exportar.sh`, en
+segundo plano, ~15 s). No hay que hacer nada después de commitear; si falla, el
+motivo está en `build/exportar.log` y el `.exe` anterior se queda. En este
+ordenador ya están la plantilla de Windows y `core.hooksPath`.
+
+Para probar algo **dentro del `.exe` exportado** (no en el editor): exportar a
+otra carpeta y dejar al lado un `override.cfg` con
+`[application] run/main_scene="res://<escena de prueba>.tscn"`. Los binarios
+exportados no aceptan una escena por la línea de comandos. La escena de prueba
+no puede llamarse `prueba_temporal.*`: el preset la excluye.
 
 ## Estado actual del juego
 
@@ -366,6 +378,17 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **En el juego exportado, `DirAccess` ve `nombre.tres.remap`, no
+  `nombre.tres`.** Godot pasa los `.tres` a binario al exportar. Las tres
+  funciones que leen carpetas (`_listar_recursos` en `gestor_progreso.gd`,
+  `_cargar_tipos` en `mecanicas/enemigos.gd` y `_cargar` en
+  `mecanicas/objetos.gd`) ya quitan el `.remap`; una
+  cuarta que se escriba tiene que hacer lo mismo, o en el `.exe` no cargará
+  nada aunque en el editor funcione.
+- **El servidor de las releases de GitHub no acepta `Range: bytes=-N`** (los
+  últimos N bytes): responde 501. `instalar_plantilla_windows.py` pide primero
+  el tamaño con un HEAD y luego el rango exacto.
 
 - **En Python, `open(ruta, "w", ...)` vacía el archivo antes de comprobar el
   resto de argumentos.** Un `newline` mal escrito hizo fallar la llamada, y

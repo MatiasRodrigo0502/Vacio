@@ -1,0 +1,14 @@
+#!/bin/sh
+# Tras cada commit, rehace build/Vacio.exe con lo que se acaba de guardar.
+#
+# Va en segundo plano: exportar tarda unos 15 segundos y el commit no tiene
+# por que esperarlos. Si falla, el .exe de antes se queda y el motivo esta en
+# build/exportar.log.
+#
+# Git no activa los hooks de una carpeta del repositorio por su cuenta (es a
+# proposito, por seguridad). Cada persona lo activa una vez con:
+#
+#     git config core.hooksPath .githooks
+raiz="$(git rev-parse --show-toplevel)"
+nohup bash "$raiz/herramientas/exportar.sh" >/dev/null 2>&1 </dev/null &
+exit 0

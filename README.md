@@ -15,6 +15,31 @@ que te mejoran, pausa, victoria y derrota. Se elige entre **dos magos**, cada un
 sus ventajas, y miran a los ocho lados; el piso 1 hace de tutorial con arte de musgo y el 2 de
 cueva; el 3 es cueva pelada, del 4 al 8 el manto y del 9 al 12 el núcleo.
 
+## Jugar sin Godot: `build/Vacio.exe`
+
+El juego exportado es **un solo archivo**, `build/Vacio.exe`, que se abre con
+doble clic sin tener Godot. No se sube a git (pesa 110 MB); cada uno lo genera
+en su ordenador, y **se rehace solo después de cada commit y cada pull**, en
+segundo plano (unos 15 segundos). Se puede abrir mientras se actualiza: el
+abierto sigue funcionando y la próxima vez arranca el nuevo.
+
+Para que funcione, una sola vez por ordenador:
+
+```bash
+python herramientas/instalar_plantilla_windows.py
+git config core.hooksPath .githooks
+```
+
+La primera línea baja de la release oficial de Godot solo la plantilla de
+Windows (38 MB en vez del paquete entero de 1,28 GB). La segunda activa los
+hooks de `.githooks/`: git no los activa solo, por seguridad.
+
+Si Godot no está en una de las rutas que conoce el script, hay que definir la
+variable `GODOT` con la ruta del `.exe` (o añadirla en
+`herramientas/exportar.sh`). Para rehacerlo a mano, sin commit:
+`bash herramientas/exportar.sh`. Si una exportación falla, el `.exe` anterior
+se queda y el motivo está en `build/exportar.log`.
+
 ## Controles
 
 | Acción | Tecla |
@@ -168,6 +193,8 @@ La regla práctica para no pisarse:
   escenas empiezan a apuntar a scripts distintos.
 - `.gitattributes` fuerza LF en todos los archivos de texto para que Windows no
   genere diffs falsos.
+- `export_presets.cfg` **sí se versiona**: es la receta del `.exe`. Si alguien
+  cambia la exportación desde el editor, se sube como cualquier otro cambio.
 
 ## Qué NO está hecho todavía (fases siguientes)
 
