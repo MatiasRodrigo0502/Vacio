@@ -68,6 +68,8 @@ var _tinte: Color = Color.WHITE
 ## Cuanto ha bajado el rastrillo: 0 abierto, 1 cerrado. Se anima hacia
 ## _reja_objetivo en _process, que solo corre mientras se mueve.
 var _reja: float = 0.0
+## Puertas con pinchos al entrar: direccion -> hasta donde llegan hacia dentro.
+var _fondo_trampa: Dictionary = {}
 var _reja_objetivo: float = 0.0
 var _cerrada: bool = false
 ## True desde que el jugador entra del todo por primera vez.
@@ -276,6 +278,18 @@ func registrar_enemigo(enemigo: Enemigo) -> void:
 
 func enemigos_vivos() -> int:
 	return _enemigos.size()
+
+
+## Apunta que la puerta en esa direccion tiene pinchos al entrar, y hasta
+## donde llegan hacia dentro. Lo pone la mecanica de peligros.
+func anadir_trampa_puerta(direccion: Vector2i, fondo: float) -> void:
+	_fondo_trampa[direccion] = fondo
+
+
+## Hasta donde llegan los pinchos de esa puerta hacia dentro (0 si no hay). El
+## piso lo usa para que quien cae por un agujero no reaparezca encima.
+func fondo_trampa(direccion: Vector2i) -> float:
+	return _fondo_trampa.get(direccion, 0.0)
 
 
 ## Una copia de la lista, para recorrerla mientras se mueren: al morir, cada

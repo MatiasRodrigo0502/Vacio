@@ -35,6 +35,9 @@ const MARGEN_ENTRAR: float = 26.0
 ## Cuanto por dentro de la puerta reaparece quien cae por un agujero: lo
 ## bastante para no quedar en el umbral, donde nacen las rejas al cerrarse.
 const DENTRO_REAPARICION: float = 70.0
+## Hueco entre los pinchos de una puerta y donde se reaparece: el radio del
+## jugador (15) y algo de aire.
+const MARGEN_TRAMPA: float = 40.0
 ## Distancia minima entre lo que se deja en el suelo para recoger (ventajas,
 ## corazones) y el agujero de bajada. Recogerlo no puede obligar a pisarla.
 const DESPEJE_BAJADA: float = 110.0
@@ -168,7 +171,10 @@ func _physics_process(_delta: float) -> void:
 		var puerta := _sala_actual.celda - sala.celda
 		_reaparicion = sala.global_position
 		if puerta in sala.puertas:
-			_reaparicion += sala.punto_puerta(puerta) - Vector2(puerta) * DENTRO_REAPARICION
+			# Si esa puerta tiene pinchos, mas adentro: reaparecer encima
+			# seria pagar la caida y luego otro golpe sin poder evitarlo.
+			var dentro := maxf(DENTRO_REAPARICION, sala.fondo_trampa(puerta) + MARGEN_TRAMPA)
+			_reaparicion += sala.punto_puerta(puerta) - Vector2(puerta) * dentro
 		_sala_actual = sala
 		sala.visitada = true
 		sala_cambiada.emit(sala)

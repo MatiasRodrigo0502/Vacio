@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 08/10/2026 | Versión para Linux, en local y en la release | — |
+| 08/10/2026 | Pinchos en el paso de algunas puertas | — |
+| 08/10/2026 | Versión para Linux, en local y en la release | `7b8b204` |
 | 08/10/2026 | Atajos de prueba: F1 invencible, F2/F3 piso, F4 limpiar sala | `021a159` |
 | 06/10/2026 | Release en GitHub con el `.exe`, rehecha en cada push a `main` | `72de619` |
 | 06/10/2026 | `build/Vacio.exe` que se rehace solo tras cada commit y pull | `04e21ef` |
@@ -106,11 +107,12 @@ Los enemigos se reparten en dos tipos de ataque. Los de cuerpo a cuerpo son ráp
 
 **Cuántos salen:** de media, 3 por sala en el piso 2, y medio más por cada piso, hasta 8 en el 12. Son 378 al empezar los pisos y unas 600 muertes por partida contando las crías. Como mucho, la mitad de cada sala son de distancia.
 
-**Peligros del suelo:** de 1 a 3 por sala de pelea. Nunca tapan el paso de una puerta al centro.
+**Peligros del suelo:** de 1 a 3 por sala de pelea, repartidos sin tapar nunca el paso de una puerta al centro.
 
 - **Pinchos** (desde el piso 2): salen a ratos.
 - **Agujeros al vacío** (desde el 3): cuestan un corazón y devuelven a la entrada de la sala.
 - **Lava** (desde el 4): hace daño mientras se pisa.
+- **Pinchos en las puertas** (desde el 3): en el 40 % de las puertas de las salas de pelea, una placa de pinchos ocupa todo el paso al entrar. Se cruza esperando a que bajen.
 
 **Recompensas:**
 

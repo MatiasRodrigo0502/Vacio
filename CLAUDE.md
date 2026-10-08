@@ -199,6 +199,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de pelea: **pinchos** que salen a ratos (desde el piso 2), **agujeros** que
   cuestan un corazón y te devuelven a la entrada de la sala (desde el 3) y
   **lava** (desde el 4). Nunca pisan el paso de una puerta al centro.
+- **Pinchos en las puertas** (pedido por Matías el 2026-10-08): desde el
+  piso 3, un 40 % de las puertas de las salas de pelea tienen una placa de
+  pinchos justo al cruzarlas, de lado a lado del hueco (26 en una partida).
+  Se cruzan esperando a que bajen. Quien cae a un agujero reaparece por
+  detrás de la placa (`Sala.fondo_trampa`, `Piso.MARGEN_TRAMPA`).
 - **Veneno**: el jugador va al 60 % de velocidad y en verde mientras dura.
 - **Objetos**: uno por piso, en el centro de su sala, con icono de lo que hacen.
   Además, cada enemigo que muere tiene un **3 %** de soltar otro al azar
@@ -354,9 +359,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   la puerta por la que se entró (que siempre está libre). Cuesta aunque se
   esté parpadeando tras un golpe (`recibir_dano(..., true)`): si no, caer
   justo después de un golpe saldría gratis.
-- **Los peligros nunca tapan el paso de una puerta al centro de la sala**
-  (`ancho_paso`): así desde cualquier puerta se llega a cualquier otra. Se
-  comprobó recorriendo en cuadrícula las salas de los 12 pisos.
+- **Los peligros al azar nunca tapan el paso de una puerta al centro de la
+  sala** (`ancho_paso`): así desde cualquier puerta se llega a cualquier otra.
+  Se comprobó recorriendo en cuadrícula las salas de los 12 pisos. La
+  excepción son los **pinchos de las puertas**, a propósito: salen a ratos y
+  avisan, así que siempre se puede pasar. Agujeros o lava en una puerta no.
+- **Los pinchos de una puerta van en un solo lado**, el de la sala de pelea, y
+  con su propia semilla: con la de los demás peligros, añadirlos habría movido
+  todos los que ya había (se comprobó que siguen exactamente igual).
 - **El número de enemigos sube lo mismo en cada piso.** Antes se sumaba uno de
   más al azar por sala, y la media podía bajar de un piso al siguiente (del 7
   al 9: 4,7 / 4,5 / 4,3). Ahora la media sale de la fórmula y solo la parte
