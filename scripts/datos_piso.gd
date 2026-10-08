@@ -67,3 +67,8 @@ extends Resource
 ## el de la cueva. Es lo que permite que cada piso tenga su propio aspecto sin
 ## tocar codigo: basta con apuntar a otro catalogo.
 @export var catalogo_arte: CatalogoObstaculos = null
+
+## La pared que rodea las salas de este piso: su roca, sus pilares y lo que
+## crece o cuelga de ella (ver EstiloBorde). Cada capa tiene la suya, en
+## assets/bordes/piso_NN/. Si se deja vacio se usa la del piso 3.
+@export var estilo_borde: EstiloBorde = null

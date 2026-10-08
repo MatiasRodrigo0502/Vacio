@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-06.**
+**Última actualización: 2026-10-08.**
 
 ---
 
@@ -50,7 +50,7 @@ hechos.
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
 | Pack de arte del núcleo | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
-| Arte del borde (muro, pilares, rejas) | `herramientas/generar_bordes.py` → `assets/bordes/` | editar el script y volver a ejecutarlo |
+| Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
@@ -166,15 +166,22 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   rellenas, vecinas en contorno, objeto y bajada marcados en cuanto se conocen.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
   hacen daño** y paran los disparos, así que sirven de parapeto.
-- **El límite de cada sala son rocas**, no un rectángulo: una fila de rocas
-  del **filo** pisa el borde del suelo, se mete en la sala (hasta 43 px en las
-  salas grandes y 25 en las del fondo) y choca como una roca más
-  (`Sala.anadir_roca_filo`). Detrás, otra fila de **fondo** rellena la franja
-  del muro. El muro recto sigue ahí detrás, por si acaso.
-- **Detrás de las rocas, roca maciza** (`muro.png`) en vez de negro: la franja
-  del muro de cada sala, y más oscura todo el fondo del piso (`Piso._draw`).
-  Por dentro del filo del suelo, una **sombra** que hunde la sala entre las
-  paredes. Cada puerta tiene **dos pilares** y un **rastrillo** que baja al
+- **El límite de cada sala es una pared de roca**, distinta en cada piso
+  (`scripts/pared_sala.gd`, `EstiloBorde`), desde el 2026-10-08. Antes eran
+  filas de rocas sueltas, las mismas en varios pisos. La pared:
+  - tiene el **canto irregular** (ondas, esquinas redondeadas y algún
+    **bulto** que se mete más en la sala). Nunca es un rectángulo, como pidió
+    Matías, y se abre delante de las puertas;
+  - **choca** con círculos pegados a lo largo del canto
+    (`Sala.anadir_roca_filo`). El muro recto sigue detrás, por si acaso;
+  - en la de **arriba** se ve su **cara** de frente (vista 3/4), con lo que
+    cuelga de ella. En las demás, el canto con luz y la sombra al pie;
+  - lleva encima **adornos** de su capa (hierba, setas, cristales, brasas...)
+    y en los bultos **salientes** grandes que chocan (estalagmitas, cristales,
+    columnas, astillas);
+  - cada piso tiene su roca, su cara, sus **pilares** de puerta y sus piezas.
+    La roca del fondo de todo el piso es la misma, más oscura (`Piso._draw`).
+  El **rastrillo** de las puertas es igual en todos los pisos: baja al
   cerrarse y sube al abrirse (0,22 s).
 - **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
   harían el movimiento un engancharse continuo.
@@ -371,10 +378,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   más al azar por sala, y la media podía bajar de un piso al siguiente (del 7
   al 9: 4,7 / 4,5 / 4,3). Ahora la media sale de la fórmula y solo la parte
   decimal se reparte al azar.
-- **Las rocas del filo chocan.** Se meten en la sala, y una roca que se ve y
-  no choca se atravesaría: el jugador tiene que poder fiarse de lo que ve. Son
-  más pequeñas que las del fondo para no comerse las salas del fondo, y dejan
-  libre el ancho entero de cada puerta.
+- **La pared choca donde se ve.** Se mete en la sala, y lo que se ve y no
+  choca se atravesaría: el jugador tiene que poder fiarse de lo que ve. En la
+  de arriba se choca 16 px por encima del pie de la cara (`SUBE_CARA`): con
+  vista 3/4 el cuerpo del mago se pinta delante de la cara. Delante de las
+  puertas la pared se aparta, y deja libre el ancho entero del hueco.
+- **Los salientes van en los bultos de la pared, no sueltos por el canto.**
+  Sueltos parecían pirámides plantadas en el suelo; saliendo de un bulto se
+  leen como parte de la roca. Los pisos sin pieza propia (1, 4 de roca, 8 y
+  9) solo tienen los bultos.
+- **Cada textura de la pared se lleva a la misma luz** (`a_luz` en el
+  generador, con la `luz` de cada tema): sin eso la caliza y el oro salían
+  casi blancos y le quitaban protagonismo a la sala.
 - **Contra las rocas, la bola solo cuenta con su núcleo**
   (`BolaMagica.RADIO_CONTRA_ROCAS`, 10 px). Con su radio entero, agrandarla
   (orbe hinchado, ataque cargado) la hacía morir en cualquier roca que rozara:
@@ -395,8 +410,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   sigue igual de una sala a otra y casa con la del fondo. Por eso los trozos
   que se pisan no se notan.
 - **Los pilares van en la franja del muro, no en el suelo**, y son bajos para
-  caber: en el suelo estorbarían sin chocar. Las rocas del fondo les dejan
-  sitio (`Sala.tramo_pilar`).
+  caber: en el suelo estorbarían sin chocar.
 - **Los enemigos salen al azar**, como pidió Matías: cada sala elige entre los
   tipos cuyo `piso_minimo` ya se alcanzó, sin tope por abajo. El piso mínimo
   solo escalona la dificultad.
@@ -406,6 +420,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **Muchas piezas con texturas alternadas hunden el rendimiento.** La pared
+  nueva bajó el piso 1 de 946 a 600 FPS sin límite: casi cien adornos por
+  sala, pintados uno detrás de otro cambiando de textura, rompían los lotes de
+  dibujo. Agrupados por textura (`ParedSala.levantar`) y con la sombra y la
+  cara en trozos de 20-30 px, se quedó en 911. Medido apagando cada parte por
+  turnos, no a ojo.
+- **Un resplandor (halo) necesita margen en su lienzo.** Los cristales que
+  llegaban al borde de su imagen cortaban el halo en recto y se veía la caja.
 
 - **En el juego exportado, `DirAccess` ve `nombre.tres.remap`, no
   `nombre.tres`.** Godot pasa los `.tres` a binario al exportar. Las tres

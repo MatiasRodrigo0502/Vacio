@@ -35,7 +35,7 @@ func colocar(inicio: Vector2, tamano_sala: Vector2, salida: Vector2) -> void:
 	_centrar(_bola, inicio + Vector2(0.0, 200.0))
 	_centrar(_cargado, inicio + Vector2(0.0, 256.0))
 	# A 95 del borde: a 120 se pegaba al cartel del ataque cargado (en el
-	# piso 1 quedaban a 34 px), y mas abajo lo taparian las rocas del filo.
+	# piso 1 quedaban a 34 px), y mas abajo lo taparia la pared.
 	_centrar(_puertas, inicio + Vector2(0.0, tamano_sala.y * 0.5 - 95.0))
 	_centrar(_esquivar, inicio + Vector2(0.0, -tamano_sala.y * 0.5 + 120.0))
 	_centrar(_bajar, salida - Vector2(0.0, 130.0))

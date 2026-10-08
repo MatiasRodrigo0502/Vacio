@@ -306,19 +306,41 @@ agujeros lo repite `scripts/pinchos.gd` (sus constantes `MARGEN`, `GROSOR`,
 
 ## bordes/
 
-El borde de las salas, hecho con `herramientas/generar_bordes.py` en el mismo
-estilo (luz de arriba a la izquierda, contorno oscuro, vetas incandescentes):
+La pared que rodea las salas, **una distinta por piso**, hecha con
+`herramientas/generar_bordes.py` en el mismo estilo que el resto (luz de
+arriba a la izquierda, contorno oscuro). Cada piso es su capa de la Tierra:
 
-- `muro.png`: bloques de roca vistos desde arriba, con los cantos biselados.
-  **Se repite sin costuras** (Voronoi sobre un toro). Rellena la franja del
-  muro detrás de las rocas del borde y, más oscuro, el fondo de todo el piso.
-  Contraste contenido a propósito: es fondo.
-- `pilar.png`: pilar de bloques de piedra en 3/4, uno a cada lado de cada
-  puerta. Bajo (48×88) para caber en la franja del muro.
-- `reja.png`: el rastrillo de hierro que cierra las puertas, con las puntas
-  abajo. Mide lo mismo que el hueco de una puerta (130×64).
+| Piso | Pared |
+|---|---|
+| 1 | Tierra y piedra, con hierba encima y raíces colgando |
+| 2 | Basalto en almohadillas, mojado, con algas y setas que brillan |
+| 3 | Caliza en estratos, con estalactitas y estalagmitas |
+| 4 | Roca que empieza a fundirse, con grietas de magma y olivino |
+| 5 | Peridotita verde llena de cristales de olivino |
+| 6 | Roca violeta con cristales azules de ringwoodita |
+| 7 | Columnas de roca densa con costuras al rojo |
+| 8 | Escoria negra partida por ríos de lava |
+| 9 | Hierro oscuro del que gotea metal fundido |
+| 10 | Placas de hierro y níquel, con astillas de metal |
+| 11 | Hierro que cristaliza, plateado, con obeliscos |
+| 12 | Cristal de hierro al rojo blanco |
 
-Todo en grises o casi: el juego lo tiñe con el color de cada piso.
+En cada `piso_NN/`:
+
+- `muro.png`: la roca vista desde arriba. **Se repite sin costuras**.
+- `cara.png`: la cara vertical de la pared de arriba. Se repite en horizontal.
+- `pilar.png`: los pilares de las puertas (48×88).
+- `adorno_K.png`, `colgante_K.png`, `saliente_K.png`: lo que crece encima de
+  la pared, lo que cuelga de la cara y las piezas grandes de los bultos.
+- `estilo_borde.tres`: el `EstiloBorde` que junta todo eso y los números de la
+  forma (cuánto se mete la pared, cuánto ondula, cada cuánto va una pieza).
+
+Ya van con el color de su capa: el juego no los tiñe. Todo sale del
+generador, el `.tres` también: lo que se toque a mano se pierde al
+regenerar. Para cambiar un piso, su tema en `TEMAS`.
+
+Común a todos: `reja.png`, el rastrillo de hierro de las puertas, con las
+puntas abajo. Mide lo mismo que el hueco de una puerta (130×64).
 
 ## enemigos/ (nuevos)
 

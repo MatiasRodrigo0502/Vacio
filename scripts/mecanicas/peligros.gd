@@ -122,7 +122,7 @@ func _pinchos_en_puertas(piso: Node) -> void:
 			# Pegada al filo del suelo, entrando en la sala: lo primero que se
 			# pisa al cruzar. Por fuera, en el pasillo, la tapaba el rastrillo.
 			var sitio: Vector2 = sala.punto_puerta(puerta) - Vector2(puerta) * LADO_PUERTA * 0.5
-			# Solo el centro: a los lados del paso estan las rocas del filo, y
+			# Solo el centro: a los lados del paso esta la pared, y
 			# con la placa entera nunca saldria libre.
 			if not piso.lugar_libre(sala.to_global(sitio), 30.0):
 				continue

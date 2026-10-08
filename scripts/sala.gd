@@ -33,14 +33,15 @@ const RADIO_SALIDA: float = 46.0
 const CAPA_MUROS: int = 2
 
 # --- Arte del borde (herramientas/generar_bordes.py) ---
-## Roca maciza que rellena la franja del muro, detras de las rocas del borde.
-const MURO := preload("res://assets/bordes/muro.png")
-const PILAR := preload("res://assets/bordes/pilar.png")
-## Mide lo mismo que el hueco de la puerta (ANCHO_PUERTA x GROSOR_MURO).
+## La pared de cada piso es distinta (EstiloBorde). Esta es la que se usa si el
+## .tres de un piso no dice ninguna.
+const ESTILO_POR_DEFECTO := preload("res://assets/bordes/piso_03/estilo_borde.tres")
+## Mide lo mismo que el hueco de la puerta (ANCHO_PUERTA x GROSOR_MURO). Es
+## igual en todos los pisos: el hierro de las puertas es del que las puso.
 const REJA := preload("res://assets/bordes/reja.png")
-## La roca del muro, respecto al color del suelo: algo mas oscura, para que
-## las rocas del borde destaquen encima y se lea que ahi ya no se pisa.
-const FACTOR_MURO: float = 1.3
+## Luz de la roca vista desde arriba. Algo apagada: es el marco de la sala, y
+## lo que se mira es lo de dentro.
+const LUZ_MURO: float = 0.78
 ## Cuanto tarda la franja del muro en fundirse con la roca oscura del fondo
 ## (la pinta el piso) por los lados sin puerta.
 const FUNDIDO_MURO: float = 90.0
@@ -63,8 +64,10 @@ var visitada: bool = false
 
 var _color_suelo: Color = Color(0.16, 0.13, 0.12)
 var _color_borde: Color = Color(0.55, 0.40, 0.28)
-## El tinte de las rocas del piso: los pilares son de la misma piedra.
-var _tinte: Color = Color.WHITE
+## La pared de este piso: su roca, sus pilares y sus piezas.
+var _estilo: EstiloBorde = ESTILO_POR_DEFECTO
+## La pared ya levantada (ver levantar_pared). Hasta entonces, null.
+var _pared: ParedSala = null
 ## Cuanto ha bajado el rastrillo: 0 abierto, 1 cerrado. Se anima hacia
 ## _reja_objetivo en _process, que solo corre mientras se mueve.
 var _reja: float = 0.0
@@ -76,7 +79,8 @@ var _cerrada: bool = false
 var _activada: bool = false
 var _enemigos: Array[Enemigo] = []
 var _cierres: Dictionary = {}
-## Las rocas del filo: centro (x, y) y radio, en local. Ver anadir_roca_filo().
+## Los trozos de pared que chocan: centro (x, y) y radio, en local. Ver
+## anadir_roca_filo().
 var _rocas_filo: Array[Vector3] = []
 var _cuerpo_filo: StaticBody2D = null
 ## Las cajas de colision de las rocas y plataformas de dentro, en local. Las
@@ -86,15 +90,13 @@ var _rocas: Array[Rect2] = []
 
 ## Monta la sala. La llama Piso justo despues de add_child().
 func construir(celda_sala: Vector2i, tipo_sala: MapaSalas.Tipo, tamano_sala: Vector2,
-		puertas_sala: Array[Vector2i], color_suelo: Color, color_borde: Color,
-		tinte: Color = Color.WHITE) -> void:
+		puertas_sala: Array[Vector2i], color_suelo: Color, color_borde: Color) -> void:
 	celda = celda_sala
 	tipo = tipo_sala
 	tamano = tamano_sala
 	puertas = puertas_sala
 	_color_suelo = color_suelo
 	_color_borde = color_borde
-	_tinte = tinte
 	# El muro se pinta repitiendo su textura, y eso hay que pedirlo.
 	texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	set_process(false)
@@ -128,14 +130,37 @@ func construir(celda_sala: Vector2i, tipo_sala: MapaSalas.Tipo, tamano_sala: Vec
 	queue_redraw()
 
 
-## Apunta una roca del filo de la sala: las que tapan el borde recto del suelo
-## y se meten un poco en el. Chocan como las rocas de dentro (su capa), asi que
-## paran al jugador, sus bolas y los disparos enemigos.
+## Levanta la pared de roca que rodea la sala, con el estilo de su piso (ver
+## ParedSala). La llama el piso despues de colocar las rocas de dentro y los
+## carteles del tutorial: las piezas grandes de la pared los esquivan.
+##
+## 'evitar' son zonas del piso (no de la sala) donde no debe ir nada grande.
+func levantar_pared(estilo: EstiloBorde, semilla: int, evitar: Array[Rect2]) -> void:
+	if estilo != null:
+		_estilo = estilo
+	var zonas: Array[Rect2] = []
+	for zona in evitar:
+		zonas.append(Rect2(zona.position - position, zona.size))
+	zonas.append_array(_rocas)
+	_pared = ParedSala.new()
+	_pared.levantar(self, _estilo, semilla, zonas)
+	queue_redraw()
+
+
+## La pared de esta sala: su roca, sus pilares y sus piezas.
+func estilo_borde() -> EstiloBorde:
+	return _estilo
+
+
+## Apunta un trozo de la pared que choca: un circulo, en local. La pared se
+## hace con muchos pegados a lo largo de su canto, y sus piezas grandes con
+## uno cada una. Chocan como las rocas de dentro (su capa), asi que paran al
+## jugador, sus bolas y los disparos enemigos.
 ##
 ## POR QUE HACE FALTA QUE CHOQUEN:
-## el muro de verdad sigue siendo recto, justo en el borde del suelo. Una roca
-## que se mete en la sala y no choca se atravesaria, y el jugador tiene que
-## poder fiarse de lo que ve: el limite de la sala ahora son las rocas.
+## el muro de verdad sigue siendo recto, justo en el borde del suelo. La pared
+## se mete en la sala, y lo que se ve y no choca se atravesaria: el jugador
+## tiene que poder fiarse de lo que ve.
 func anadir_roca_filo(centro: Vector2, radio: float) -> void:
 	if _cuerpo_filo == null:
 		_cuerpo_filo = StaticBody2D.new()
@@ -163,8 +188,8 @@ func registrar_roca(caja_global: Rect2) -> void:
 ## POR QUE HACE FALTA:
 ## los enemigos son areas y atraviesan las rocas, pero las rocas paran las
 ## bolas. Un enemigo a distancia retrocede al acercarte, y arrinconado contra
-## el borde podria acabar metido en una roca del filo: la bola chocaria con la
-## roca y no le llegaria nunca, y la sala no se abriria. Es preventivo: no se
+## el borde podria acabar metido en la pared: la bola chocaria con ella y
+## no le llegaria nunca, y la sala no se abriria. Es preventivo: no se
 ## llego a ver pasar (la sala que no se abria en la prueba era otra cosa, el
 ## radio de la bola; ver BolaMagica.RADIO_CONTRA_ROCAS). Sacandolos de las
 ## rocas, a todo enemigo se le puede dar.
@@ -364,14 +389,6 @@ func _process(delta: float) -> void:
 		set_process(false)
 
 
-## Cuanto ocupa a lo largo del muro lo que se pone a cada lado de una puerta
-## (el pilar). El piso no pone rocas del fondo ahi, o lo taparian.
-func tramo_pilar(direccion: Vector2i) -> float:
-	if direccion == Vector2i.UP or direccion == Vector2i.DOWN:
-		return float(PILAR.get_width())
-	return float(PILAR.get_height())
-
-
 func _al_morir_enemigo(enemigo: Enemigo) -> void:
 	_enemigos.erase(enemigo)
 	enemigo_muerto.emit(enemigo)
@@ -437,11 +454,14 @@ func _anadir_forma(cuerpo: StaticBody2D, rect: Rect2) -> CollisionShape2D:
 func _draw() -> void:
 	_pintar_muro()
 	var suelo := rect_suelo()
-	# Sin linea de limite: el borde del suelo lo tapan las rocas del filo, que
-	# chocan, y son ellas las que dicen donde acaba la sala. Una raya recta por
-	# debajo delataria el cuadrado.
+	# Sin linea de limite: el borde del suelo lo tapa la pared, que choca, y es
+	# ella la que dice donde acaba la sala. Una raya recta por debajo delataria
+	# el cuadrado.
 	draw_rect(suelo, _color_suelo)
-	_pintar_sombra_filo()
+	if _pared != null:
+		_pared.pintar(self, color_muro())
+	else:
+		_pintar_sombra_filo()
 
 	for direccion in puertas:
 		# El suelo del pasillo, en la mitad que es de esta sala, algo mas oscuro
@@ -504,21 +524,20 @@ func _pintar_muro() -> void:
 			esquina + Vector2(0.0, sy * f)], [color, nada, nada, nada])
 
 
-## Color de la roca del muro. Algo mas oscuro que el suelo: las rocas del borde
-## destacan encima y se lee que ahi ya no se pisa. El piso lo usa tambien para
-## la roca del fondo, mas oscura todavia.
+## Tinte de la roca del muro vista desde arriba. La textura ya trae el color
+## de su capa: esto solo la apaga un poco (LUZ_MURO). El piso lo usa tambien
+## para la roca del fondo, mas oscura todavia.
 func color_muro() -> Color:
-	return Color(_color_suelo.r * FACTOR_MURO, _color_suelo.g * FACTOR_MURO,
-		_color_suelo.b * FACTOR_MURO, 1.0)
+	return Color(LUZ_MURO, LUZ_MURO, LUZ_MURO, 1.0)
 
 
 ## Un poligono con la textura del muro, alineada con el mundo (ver _pintar_muro).
 func _poligono_muro(puntos: Array, colores: Array) -> void:
-	var tam := MURO.get_size()
+	var tam := _estilo.muro.get_size()
 	var uvs := PackedVector2Array()
 	for punto: Vector2 in puntos:
 		uvs.append((position + punto) / tam)
-	draw_polygon(PackedVector2Array(puntos), PackedColorArray(colores), uvs, MURO)
+	draw_polygon(PackedVector2Array(puntos), PackedColorArray(colores), uvs, _estilo.muro)
 
 
 ## Sombra por dentro del filo del suelo, de oscura junto a la pared a nada.
@@ -611,7 +630,8 @@ func _pintar_reja(direccion: Vector2i) -> void:
 ## base en el filo del suelo para las puertas de arriba y abajo; en las de los
 ## lados, uno encima y otro debajo del hueco.
 func _pintar_pilares(direccion: Vector2i) -> void:
-	var tam := PILAR.get_size()
+	var pilar := _estilo.pilar
+	var tam := pilar.get_size()
 	var medio := tamano * 0.5
 	var hueco := _hueco(direccion)
 	var sitios: Array[Rect2] = []
@@ -629,7 +649,7 @@ func _pintar_pilares(direccion: Vector2i) -> void:
 			sitios.append(Rect2(x, -ANCHO_PUERTA * 0.5 - tam.y - 2.0, tam.x, tam.y))
 			sitios.append(Rect2(x, ANCHO_PUERTA * 0.5 - 6.0, tam.x, tam.y))
 	for sitio in sitios:
-		draw_texture_rect(PILAR, sitio, false, _tinte)
+		draw_texture_rect(pilar, sitio, false)
 
 
 ## El agujero de bajada. Mientras la sala tiene enemigos esta tapado: se ve

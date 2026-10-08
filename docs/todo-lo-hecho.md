@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 08/10/2026 | Pinchos en el paso de algunas puertas | — |
+| 08/10/2026 | Pared nueva en las salas, distinta en cada uno de los 12 pisos | — |
+| 08/10/2026 | Pinchos en el paso de algunas puertas | `9cd37c5` |
 | 08/10/2026 | Versión para Linux, en local y en la release | `7b8b204` |
 | 08/10/2026 | Atajos de prueba: F1 invencible, F2/F3 piso, F4 limpiar sala | `021a159` |
 | 06/10/2026 | Release en GitHub con el `.exe`, rehecha en cada push a `main` | `72de619` |
@@ -137,7 +138,7 @@ Cada tramo de pisos tiene su arte, unas partes de packs de itch.io, otras dibuja
 **Generado con scripts:** cada uno da siempre las mismas imágenes, así que el arte se cambia editando el script y volviéndolo a ejecutar.
 
 - **Lava, pinchos y agujero del vacío** (`generar_peligros.py`). La lava lleva además un *shader* con burbujas, en tres variantes.
-- **Bordes de las salas** (`generar_bordes.py`): roca maciza detrás de las rocas del borde, dos pilares de piedra en cada puerta y un rastrillo de hierro que baja al cerrarse la sala y sube al limpiarla.
+- **La pared de las salas** (`generar_bordes.py`), distinta en cada piso: la roca de su capa con el canto irregular, la cara de la pared de arriba vista de frente, sus pilares de puerta, adornos encima (hierba, setas, cristales, brasas...), cosas que cuelgan (raíces, estalactitas, gotas de magma o de metal) y salientes grandes (estalagmitas, cristales, columnas). El rastrillo de hierro de las puertas es el mismo en todos.
 
 **Personajes:**
 
@@ -182,7 +183,7 @@ El primero baja de la release oficial de Godot solo las plantillas de Windows y 
 | --- | --- |
 | `generar_nucleo.py` | Arte de los pisos 9-12 |
 | `generar_peligros.py` | Arte de lava, pinchos y vacío |
-| `generar_bordes.py` | Muro, pilares y rejas de las salas |
+| `generar_bordes.py` | La pared de las salas de cada piso, sus pilares y la reja |
 | `exportar.sh` | Exportar las versiones de Windows y Linux (a mano: `bash herramientas/exportar.sh`) |
 | `instalar_plantillas.py` | Instalar las plantillas de exportación de Windows y Linux |
 

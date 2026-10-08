@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="EstiloBorde" load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://scripts/estilo_borde.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/muro.png" id="2_muro"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/cara.png" id="3_cara"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/pilar.png" id="4_pilar"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/adorno_0.png" id="5_adorno_0"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/adorno_1.png" id="6_adorno_1"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/adorno_2.png" id="7_adorno_2"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/adorno_3.png" id="8_adorno_3"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/colgante_0.png" id="9_colgante_0"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/colgante_1.png" id="10_colgante_1"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/colgante_2.png" id="11_colgante_2"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/saliente_0.png" id="12_saliente_0"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_02/saliente_1.png" id="13_saliente_1"]
+
+[resource]
+script = ExtResource("1_script")
+muro = ExtResource("2_muro")
+cara = ExtResource("3_cara")
+pilar = ExtResource("4_pilar")
+adornos = Array[Texture2D]([ExtResource("5_adorno_0"), ExtResource("6_adorno_1"), ExtResource("7_adorno_2"), ExtResource("8_adorno_3")])
+colgantes = Array[Texture2D]([ExtResource("9_colgante_0"), ExtResource("10_colgante_1"), ExtResource("11_colgante_2")])
+salientes = Array[Texture2D]([ExtResource("12_saliente_0"), ExtResource("13_saliente_1")])
+color_luz = Color(0.588, 0.784, 0.824, 1)
+color_sombra = Color(0.024, 0.039, 0.055, 1)
+alto_cara = 52.0
+entrada = 20.0
+ondulacion = 14.0
+adornos_cada = 60.0
+colgantes_cada = 64.0
+salientes_por_sala = 3

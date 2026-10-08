@@ -109,10 +109,12 @@ func _draw() -> void:
 	var color := Color(base.r * OSCURIDAD_FONDO, base.g * OSCURIDAD_FONDO, base.b * OSCURIDAD_FONDO, 1.0)
 	var puntos := PackedVector2Array([zona.position, Vector2(zona.end.x, zona.position.y),
 		zona.end, Vector2(zona.position.x, zona.end.y)])
+	# La misma roca que la pared de las salas de este piso.
+	var roca := _orden_salas[0].estilo_borde().muro
 	var uvs := PackedVector2Array()
 	for punto in puntos:
-		uvs.append(punto / Sala.MURO.get_size())
-	draw_polygon(puntos, PackedColorArray([color, color, color, color]), uvs, Sala.MURO)
+		uvs.append(punto / roca.get_size())
+	draw_polygon(puntos, PackedColorArray([color, color, color, color]), uvs, roca)
 
 
 ## Construye el piso. Principal la llama justo despues de add_child(), para que
@@ -138,6 +140,9 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	# que ocupan sus carteles para que nada se coloque encima.
 	_colocar_tutorial()
 	_colocar_obstaculos()
+	# Despues de las rocas de dentro y de los carteles: las piezas grandes de
+	# la pared los esquivan.
+	_levantar_paredes()
 
 	# Las mecanicas se aplican al final, cuando las salas ya existen: asi pueden
 	# repartir enemigos y objetos por ellas. El piso no sabe que hace cada una.
@@ -349,7 +354,7 @@ func _construir_salas() -> void:
 		sala.position = Vector2(celda) * _paso()
 		_contenedor_salas.add_child(sala)
 		sala.construir(celda, _mapa.tipo_de(celda), _tamano_sala(),
-			_mapa.puertas_de(celda), colores[0], colores[1], tinte_profundidad())
+			_mapa.puertas_de(celda), colores[0], colores[1])
 		_salas[celda] = sala
 		_orden_salas.append(sala)
 
@@ -412,7 +417,6 @@ func _colocar_obstaculos() -> void:
 
 	_colocar_plataformas(generador, tinte, catalogo)
 	_colocar_decoracion(generador, tinte, catalogo)
-	_colocar_borde(generador, tinte, catalogo)
 
 
 func _rocas_en_sala(sala: Sala, generador: RandomNumberGenerator,
@@ -589,86 +593,17 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 			_decoracion.add_child(adorno)
 
 
-## Rodea cada sala con rocas, para que el limite de la sala sean rocas y no un
+## Levanta la pared de roca de cada sala, con la de este piso (ver ParedSala y
+## EstiloBorde): el limite de la sala es esa pared, irregular, y no un
 ## rectangulo dibujado.
 ##
-## Dos filas por lado:
-## - la del FILO pisa el borde del suelo y se mete un poco en la sala. Tapa el
-##   borde recto y choca (ver Sala.anadir_roca_filo): es el limite de verdad.
-## - la del FONDO, por fuera, rellena la franja del muro para que detras del
-##   filo se vea roca maciza y no negro. No choca: detras ya esta el muro.
-##
-## Las dos dejan libres los huecos de las puertas.
-func _colocar_borde(generador: RandomNumberGenerator, tinte: Color,
-		catalogo: CatalogoObstaculos) -> void:
-	var piezas := catalogo.rocas_todas()
-	if piezas.is_empty():
-		return
-	# Por altura en pantalla: con vista en 3/4, la roca de mas abajo va delante.
-	# Sin esto, en el lado de abajo la fila del fondo quedaria detras del filo.
-	_decoracion.y_sort_enabled = true
-	for sala in _orden_salas:
-		for direccion in MapaSalas.DIRECCIONES:
-			_fila_de_rocas(sala, direccion, false, generador, tinte, piezas)
-			_fila_de_rocas(sala, direccion, true, generador, tinte, piezas)
-
-
-## Una fila de rocas a lo largo de un lado de la sala.
-##
-## POR QUE LAS DEL FILO SON MAS PEQUENAS:
-## se meten en la sala, y su colision con ellas. Del tamano de las del fondo,
-## en el piso 12 se comerian un buen trozo de cada lado de una sala que ya es
-## pequena. Asi se meten como mucho unos 40 px.
-func _fila_de_rocas(sala: Sala, direccion: Vector2i, filo: bool,
-		generador: RandomNumberGenerator, tinte: Color, piezas: Array[Texture2D]) -> void:
-	var tamano := sala.tamano
-	var horizontal := direccion == Vector2i.UP or direccion == Vector2i.DOWN
-	var largo := tamano.x if horizontal else tamano.y
-	var lado_medio := clampf(tamano.x * 0.05, 40.0, 70.0) if filo \
-		else clampf(tamano.x * 0.07, 50.0, 96.0)
-	# Las del fondo no pasan del grosor de la franja del muro: mas grandes,
-	# asomarian en la sala de al lado.
-	var tope := Sala.GROSOR_MURO * 1.7
-	var sobra := 0.0 if filo else Sala.GROSOR_MURO * 0.5
-	var recorrido := -largo * 0.5 - sobra
-	while recorrido < largo * 0.5 + sobra:
-		var lado := minf(lado_medio * generador.randf_range(0.7, 1.35), tope)
-		recorrido += lado * generador.randf_range(0.45, 0.8)
-		# Delante de una puerta, nada. Las del filo, con un margen mas: su
-		# colision no puede estrechar el paso. Las del fondo dejan ademas sitio
-		# a los pilares de la puerta, o los taparian.
-		var margen_puerta := 24.0 if filo else sala.tramo_pilar(direccion)
-		if direccion in sala.puertas \
-				and absf(recorrido) < Sala.ANCHO_PUERTA * 0.5 + lado * 0.5 + margen_puerta:
-			continue
-
-		# Hacia fuera desde el borde del suelo. Las del filo, entre un poco
-		# dentro y un poco fuera: asi pisan la raya y la tapan.
-		var fuera := 0.0
-		if filo:
-			fuera = lado * generador.randf_range(-0.1, 0.2)
-		else:
-			fuera = lado * generador.randf_range(0.45, 0.7)
-		var local: Vector2
-		if horizontal:
-			local = Vector2(recorrido, direccion.y * (tamano.y * 0.5 + fuera))
-		else:
-			local = Vector2(direccion.x * (tamano.x * 0.5 + fuera), recorrido)
-		if filo and _pisa_un_cartel(sala.position + local, Vector2(lado, lado)):
-			continue
-
-		var textura: Texture2D = piezas[generador.randi() % piezas.size()]
-		var roca := Sprite2D.new()
-		roca.texture = textura
-		roca.scale = Vector2.ONE * (lado / maxf(textura.get_size().x, textura.get_size().y))
-		roca.flip_h = generador.randf() < 0.5
-		roca.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
-		roca.position = sala.position + local
-		_decoracion.add_child(roca)
-		if filo:
-			# El mismo 0,72 que las rocas de dentro (Obstaculo.FACTOR_COLISION),
-			# en circulo: mejor pasar raspando que chocar con el aire.
-			sala.anadir_roca_filo(local, lado * Obstaculo.FACTOR_COLISION * 0.5)
+## Con su propia semilla: retocar el reparto de rocas no mueve la pared, ni al
+## reves.
+func _levantar_paredes() -> void:
+	var estilo: EstiloBorde = datos.estilo_borde if datos != null else null
+	var semilla := hash(datos.nombre_capa if datos != null else "") + numero_piso * 104729
+	for i in _orden_salas.size():
+		_orden_salas[i].levantar_pared(estilo, semilla + i * 7919, _zonas_prohibidas)
 
 
 ## Pinta los carteles de controles si este piso los pide desde su .tres: los

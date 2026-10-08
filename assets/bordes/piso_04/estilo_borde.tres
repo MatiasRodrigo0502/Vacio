@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EstiloBorde" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/estilo_borde.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_04/muro.png" id="2_muro"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_04/cara.png" id="3_cara"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_04/pilar.png" id="4_pilar"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_04/adorno_0.png" id="5_adorno_0"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_04/adorno_1.png" id="6_adorno_1"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_04/colgante_0.png" id="7_colgante_0"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_04/colgante_1.png" id="8_colgante_1"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_04/saliente_0.png" id="9_saliente_0"]
+
+[resource]
+script = ExtResource("1_script")
+muro = ExtResource("2_muro")
+cara = ExtResource("3_cara")
+pilar = ExtResource("4_pilar")
+adornos = Array[Texture2D]([ExtResource("5_adorno_0"), ExtResource("6_adorno_1")])
+colgantes = Array[Texture2D]([ExtResource("7_colgante_0"), ExtResource("8_colgante_1")])
+salientes = Array[Texture2D]([ExtResource("9_saliente_0")])
+color_luz = Color(0.941, 0.627, 0.431, 1)
+color_sombra = Color(0.055, 0.024, 0.016, 1)
+alto_cara = 50.0
+entrada = 18.0
+ondulacion = 13.0
+adornos_cada = 80.0
+colgantes_cada = 80.0
+salientes_por_sala = 3

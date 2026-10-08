@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="DatosPiso" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DatosPiso" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/datos_piso.gd" id="1_datos_piso"]
 [ext_resource type="Resource" path="res://assets/manto/catalogo_manto.tres" id="2_catalogo"]
+[ext_resource type="Resource" path="res://assets/bordes/piso_04/estilo_borde.tres" id="9_borde"]
 
 [resource]
 script = ExtResource("1_datos_piso")
@@ -15,3 +16,4 @@ familia_obstaculos = "roca"
 catalogo_arte = ExtResource("2_catalogo")
 cantidad_salas = 6
 cantidad_obstaculos = 3
+estilo_borde = ExtResource("9_borde")
