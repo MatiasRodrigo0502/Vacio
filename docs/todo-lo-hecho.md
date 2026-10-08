@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 08/10/2026 | Mago blanco: disparo que frena y escudo direccional | — |
+| 08/10/2026 | Cada cambio publicado es una versión con número, empezando por la 0.1 | — |
+| 08/10/2026 | Mago blanco: disparo que frena y escudo direccional | `ee59355` |
 | 08/10/2026 | El ataque cargado también con el espacio | `a8448e0` |
 | 08/10/2026 | Rocas de dentro distintas en cada uno de los 12 pisos | `2c72366` |
 | 08/10/2026 | Pared nueva en las salas, distinta en cada uno de los 12 pisos | `22cf64a` |
@@ -172,7 +173,7 @@ El juego se exporta solo a un único archivo por sistema que se abre sin tener G
 | Copia | Dónde | Cuándo se rehace | Quién la hace |
 | --- | --- | --- | --- |
 | Local | `build/` en cada ordenador | Tras cada commit y cada pull, en unos 15 s | Los hooks de `.githooks/`, que lanzan `herramientas/exportar.sh` |
-| Pública | [Release `ultima-version` en GitHub](https://github.com/MatiasRodrigo0502/Vacio/releases/latest) | Tras cada push a `main` que no toque solo archivos `.md` | El workflow `.github/workflows/publicar.yml`, con los mismos scripts |
+| Pública | [Una release por versión en GitHub: 0.1, 0.2...](https://github.com/MatiasRodrigo0502/Vacio/releases) | Tras cada push a `main` que no toque solo archivos `.md`, con su número y la lista de cambios | El workflow `.github/workflows/publicar.yml`, con los mismos scripts |
 
 - **Se puede actualizar con el juego abierto:** la partida abierta sigue y la próxima vez arranca el nuevo.
 - **Si una exportación falla,** se queda la versión anterior y el motivo está en `build/exportar.log`, o en la pestaña Actions de GitHub.

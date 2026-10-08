@@ -147,6 +147,18 @@ func elegir_personaje(personaje: PersonajeJugable) -> void:
 		personaje_elegido = personaje
 
 
+## El nombre de esta version del juego: "0.3" en las que publica GitHub,
+## "0.3 + cambios (abc1234)" en el .exe de cada ordenador si tiene cosas sin
+## publicar. Lo escribe herramientas/exportar.sh en version.txt, que va dentro
+## del .exe. Jugando desde Godot no hay version: se esta haciendo.
+func version_juego() -> String:
+	if OS.has_feature("editor"):
+		return "en desarrollo"
+	if not FileAccess.file_exists("res://version.txt"):
+		return "sin número"
+	return FileAccess.get_file_as_string("res://version.txt").strip_edges()
+
+
 ## Cuantos pisos hay en total (para el HUD: "Piso 3 / 12").
 func total_pisos() -> int:
 	return pisos.size()

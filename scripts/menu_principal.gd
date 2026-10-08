@@ -31,9 +31,25 @@ func _ready() -> void:
 	$PanelPersonajes/Centro/Caja/BotonVolver.pressed.connect(_mostrar_personajes.bind(false))
 
 	_montar_fichas()
+	_poner_version()
 	_panel_controles.hide()
 	_panel_personajes.hide()
 	_boton_jugar.grab_focus()
+
+
+## La version del juego, pequena abajo a la derecha. Por codigo y no en la
+## escena: es una etiqueta suelta, y asi la escena del menu no cambia.
+func _poner_version() -> void:
+	var etiqueta := Label.new()
+	etiqueta.name = "Version"
+	etiqueta.text = "versión " + GestorProgreso.version_juego()
+	etiqueta.add_theme_font_size_override("font_size", 14)
+	etiqueta.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.45))
+	etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	etiqueta.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 14)
+	etiqueta.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	etiqueta.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	add_child(etiqueta)
 
 
 ## Crea una ficha por cada mago que haya en disco.

@@ -52,6 +52,10 @@ buscar_godot() {
 }
 
 mkdir -p "$BUILD"
+# Que Godot no mire dentro de build/: si alguien deja ahi una imagen (una
+# captura, por ejemplo), Godot la importa y acaba metida dentro del .exe. Paso
+# con las capturas del 2026-10-08: el .exe crecio 5 MB.
+touch "$BUILD/.gdignore"
 
 # Un candado de hace mas de 15 minutos es de una exportacion que murio a medias
 # (se apago el ordenador, se mato el proceso...): sin esto no se exportaria
@@ -81,15 +85,40 @@ if [ ! -d "$RAIZ/.godot" ]; then
 	"$GODOT_EXE" --headless --path "$RAIZ" --import >"$REGISTRO" 2>&1
 fi
 
-# Las versiones que se exportan: el nombre del preset (export_presets.cfg) y
-# el archivo que sale en build/. Una mas es una linea mas aqui y un preset.
-VERSIONES=(
+# Los sistemas para los que se exporta: el nombre del preset
+# (export_presets.cfg) y el archivo que sale en build/. Uno mas es una linea
+# mas aqui y un preset.
+SISTEMAS=(
 	"Windows Desktop|Vacio.exe"
 	"Linux|Vacio.x86_64"
 )
 
-# Exporta una version y la pone en su sitio. Devuelve 0 si ha salido bien.
-exportar_version() {
+# El nombre de esta version del juego.
+#
+# Las versiones con numero (0.1, 0.2...) las pone GitHub al publicar, con una
+# etiqueta v0.N en el commit (ver .github/workflows/publicar.yml), y se lo pasa
+# aqui en VERSION_JUEGO. En cada ordenador se saca de esas etiquetas: si el
+# commit es justo el de una version, ese numero; si hay cambios despues, "0.N +
+# cambios" y el commit, porque ese .exe todavia no es ninguna version publicada.
+numero_de_version() {
+	if [ -n "${VERSION_JUEGO:-}" ]; then
+		echo "$VERSION_JUEGO"
+		return
+	fi
+	local corto etiqueta
+	corto="$(git -C "$RAIZ" rev-parse --short HEAD 2>/dev/null)"
+	etiqueta="$(git -C "$RAIZ" describe --tags --abbrev=0 --match 'v0.*' 2>/dev/null)"
+	if [ -z "$etiqueta" ]; then
+		echo "en desarrollo ($corto)"
+	elif git -C "$RAIZ" describe --tags --exact-match --match 'v0.*' HEAD >/dev/null 2>&1; then
+		echo "${etiqueta#v}"
+	else
+		echo "${etiqueta#v} + cambios ($corto)"
+	fi
+}
+
+# Exporta para un sistema y lo pone en su sitio. Devuelve 0 si ha salido bien.
+exportar_sistema() {
 	local preset="$1" archivo="$2"
 	local base="${archivo%.*}" extension="${archivo##*.}"
 	local destino="$BUILD/$archivo"
@@ -124,7 +153,7 @@ exportar_version() {
 resultado=0
 while :; do
 	rm -f "$PENDIENTE"
-	# Copias viejas de vueltas anteriores (ver exportar_version). Si alguna
+	# Copias viejas de vueltas anteriores (ver exportar_sistema). Si alguna
 	# sigue abierta, Windows no deja borrarla: se queda para la proxima.
 	rm -f "$BUILD"/Vacio.viejo.* 2>/dev/null
 
@@ -134,11 +163,16 @@ while :; do
 		echo "Fecha: $(date '+%Y-%m-%d %H:%M:%S')"
 		echo
 	} >"$REGISTRO"
+	# El numero de version va dentro del juego (version.txt, que el preset
+	# mete en el .exe con include_filter) y el menu lo ensena.
+	version_juego="$(numero_de_version)"
+	printf '%s' "$version_juego" >"$RAIZ/version.txt"
+	echo "Version: $version_juego" | tee -a "$REGISTRO"
 	resultado=0
-	# Si una version falla se sigue con las demas: que Linux falle no es motivo
+	# Si un sistema falla se sigue con los demas: que Linux falle no es motivo
 	# para quedarse sin el .exe nuevo.
-	for version in "${VERSIONES[@]}"; do
-		exportar_version "${version%%|*}" "${version##*|}" || resultado=1
+	for sistema in "${SISTEMAS[@]}"; do
+		exportar_sistema "${sistema%%|*}" "${sistema##*|}" || resultado=1
 	done
 
 	if [ ! -e "$PENDIENTE" ]; then

@@ -14,6 +14,9 @@
 # herramientas/exportar.sh. En Godot 4 no guarda contrasenas (esas van en
 # .godot/export_credentials.cfg, que ya esta ignorado).
 export.cfg
+# El numero de version del juego, que escribe herramientas/exportar.sh antes de
+# cada exportacion para meterlo dentro del .exe. Cambia en cada una.
+version.txt
 builds/
 build/
 exports/

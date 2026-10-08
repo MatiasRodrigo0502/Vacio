@@ -103,12 +103,21 @@ pull (`.githooks/post-commit` y `post-merge` → `herramientas/exportar.sh`, en
 segundo plano, ~15 s). No hay que hacer nada después de commitear; si falla, el
 motivo está en `build/exportar.log` y el `.exe` anterior se queda. En este
 ordenador ya están las plantillas de Windows y Linux y `core.hooksPath`.
-Las versiones que se exportan están en la lista `VERSIONES` de
-`exportar.sh`; si una falla, las demás se exportan igual.
+Los sistemas que se exportan están en la lista `SISTEMAS` de
+`exportar.sh`; si uno falla, los demás se exportan igual. `build/` lleva un
+`.gdignore` (lo crea el script): las capturas que se dejaban ahí acababan
+dentro del `.exe` (+5 MB).
 
-**En GitHub hay además una release, `ultima-version`,** que rehace
-`.github/workflows/publicar.yml` con cada push a `main` (en Linux, con los
-mismos scripts de `herramientas/`) con los dos archivos. Antes de publicar
+**En GitHub, cada push a `main` que cambia el juego es una versión nueva**
+(pedido por Matías el 2026-10-08): `.github/workflows/publicar.yml` elige el
+número (la última etiqueta `v0.N` más uno; la primera, la 0.1), exporta con
+`VERSION_JUEGO` y publica la release «Versión 0.N» con los dos archivos y los
+commits desde la anterior. Si el commit ya tiene versión (relanzado a mano),
+no publica otra. El número va dentro del juego (`version.txt`, ignorado por
+git, metido en el `.exe` con `include_filter`) y el menú lo enseña
+(`GestorProgreso.version_juego()`); el `.exe` local pone «0.N + cambios
+(commit)» si no es justo una versión. Lo hace todo en Linux, con los mismos
+scripts de `herramientas/`. Antes de publicar
 arranca la versión de Linux sin ventana y para si hay errores: es la única
 prueba del binario de Linux, porque en este ordenador no hay WSL. No hay que
 hacer nada tras el push. Comprobado el 2026-10-08 que se actualiza bien. Si

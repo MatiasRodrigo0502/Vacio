@@ -32,11 +32,18 @@ La última versión, lista para jugar sin instalar nada ni tener Godot:
 Página de la release:
 [releases/latest](https://github.com/MatiasRodrigo0502/Vacio/releases/latest).
 
-GitHub la rehace sola con cada push a `main` (`.github/workflows/publicar.yml`,
-unos minutos), así que los enlaces siempre llevan a lo último. Es una sola
-release, `ultima-version`, que se actualiza: su etiqueta se mueve al commit
-nuevo. Si solo cambian archivos `.md`, no se rehace. Antes de publicar, GitHub
-arranca la versión de Linux y no publica nada si da errores.
+**Cada vez que el juego cambia hay una versión nueva**, con su número: la
+0.1, la 0.2, la 0.3... GitHub la publica sola con cada push a `main`
+(`.github/workflows/publicar.yml`, unos minutos), con su etiqueta (`v0.1`...),
+sus dos archivos y la lista de lo que cambia desde la anterior. Los enlaces de
+arriba llevan siempre a la última, y las anteriores siguen en
+[releases](https://github.com/MatiasRodrigo0502/Vacio/releases). Si solo cambian
+archivos `.md`, no hay versión nueva. Antes de publicar, GitHub arranca la
+versión de Linux y no publica nada si da errores.
+
+El juego enseña su versión abajo a la derecha del menú. El `.exe` de cada
+ordenador (ver abajo) dice «0.3 + cambios» si tiene cosas que aún no están en
+ninguna versión publicada, y desde Godot dice «en desarrollo».
 
 ## Jugar sin Godot: `build/`
 
