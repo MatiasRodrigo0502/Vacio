@@ -4,7 +4,7 @@ Actualizado el 8 de octubre de 2026 · Matías
 
 ## Resumen
 
-Vacío se puede jugar de principio a fin. Son 12 pisos, 11 tipos de enemigo y 2 magos para elegir, y desde el 6 de octubre de 2026 hay un `.exe` descargable que se actualiza solo. Es un juego 2D top-down hecho en Godot 4.7 (GDScript) como proyecto de clase de 1.º de DAM, entre 3 personas. Lo empezamos el 17 de septiembre de 2026 y lleva 53 commits en GitHub.
+Vacío se puede jugar de principio a fin. Son 12 pisos, 11 tipos de enemigo y 3 magos para elegir, y desde el 6 de octubre de 2026 hay un `.exe` descargable que se actualiza solo. Es un juego 2D top-down hecho en Godot 4.7 (GDScript) como proyecto de clase de 1.º de DAM, entre 3 personas. Lo empezamos el 17 de septiembre de 2026 y lleva 53 commits en GitHub.
 
 Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo es parecerse a *The Binding of Isaac*:
 
@@ -14,7 +14,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 **Cómo se juega ahora:**
 
-- **Al empezar:** se elige entre el mago oscuro y el mago rojo. Cada uno tiene una ventaja y una pega.
+- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: el blanco lleva un escudo pequeño delante que para los disparos enemigos, y su disparo frena a los enemigos pero quita la mitad.
 - **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón.
 - **Ataque cargado:** mantener el clic derecho o el espacio y soltarlo cuando está cargado. Atraviesa enemigos y hace 3 de daño.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
@@ -65,7 +65,9 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 08/10/2026 | Rocas de dentro distintas en cada uno de los 12 pisos | — |
+| 08/10/2026 | Mago blanco: disparo que frena y escudo direccional | — |
+| 08/10/2026 | El ataque cargado también con el espacio | `a8448e0` |
+| 08/10/2026 | Rocas de dentro distintas en cada uno de los 12 pisos | `2c72366` |
 | 08/10/2026 | Pared nueva en las salas, distinta en cada uno de los 12 pisos | `22cf64a` |
 | 08/10/2026 | Pinchos en el paso de algunas puertas | `9cd37c5` |
 | 08/10/2026 | Versión para Linux, en local y en la release | `7b8b204` |
@@ -152,7 +154,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 
 **Personajes:**
 
-- **Magos:** el mago oscuro, en pixel art y en ocho direcciones, y el mago rojo. Antes se probaron el BlueWizard y el nigromante.
+- **Magos:** el mago oscuro, en pixel art y en ocho direcciones, el mago rojo y el mago blanco (el rojo con otra paleta, hecha con `generar_mago_blanco.py`). Antes se probaron el BlueWizard y el nigromante.
 - **Enemigos:** los siete últimos (rata, serpiente, murciélago, gólem, slime de magma, cristal vivo y fantasma) los dibujó Matías.
 
 **Interfaz:**
@@ -231,7 +233,7 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 **Antes de entregar:**
 
 - [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones, con 3 o 4 corazones de vida. Todo se ajusta en los `.tres` de `resources/`.
-- [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así.
+- [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así. El blanco sale de la del rojo.
 - [ ] **Verificar las licencias de lo que queda de fuera.** Los escenarios ya son todos propios; de fuera quedan los magos (ver el punto anterior). Los packs de itch.io de antes ya no se usan.
 
 **Decide Matías:**

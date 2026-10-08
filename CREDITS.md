@@ -26,6 +26,15 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Nota**: lo aportó Matías, sin decir de dónde salía. **Hay que averiguar de
   dónde viene.**
 
+### Mago blanco — personaje jugable
+
+- **Origen**: la hoja del **mago rojo** (ver abajo) con otra paleta: túnica
+  blanca y orbe de hielo. Mismas poses y misma animación.
+- **Archivos**: `assets/mago_blanco/atlas_8dir.png`,
+  `animaciones_mago_blanco.tres` y `retrato.png`
+- **Procesado**: `herramientas/generar_mago_blanco.py`, color a color.
+- **Licencia**: la misma duda que el mago rojo, del que sale.
+
 ### Mago oscuro — personaje jugable
 
 - **Pack**: «Mago oscuro — sprites de caminata en 8 direcciones»

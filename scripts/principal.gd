@@ -107,6 +107,9 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 	# Cada mago dispara de su color.
 	bola.color = _jugador.color_cargado if cargada else _jugador.color_disparo
 	bola.color_halo = _jugador.halo_cargado if cargada else _jugador.halo_disparo
+	# Lo que quita y lo que frena el disparo normal es de cada mago.
+	bola.dano = _jugador.dano_disparo
+	bola.frena = _jugador.frena_disparo
 	if cargada:
 		# El ataque cargado parte de los numeros ya mejorados y los multiplica,
 		# para que los objetos recogidos tambien se noten en el.
@@ -114,6 +117,7 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 		bola.radio *= _jugador.factor_radio_cargada
 		bola.velocidad *= _jugador.factor_velocidad_cargada
 		bola.dano = _jugador.dano_bola_cargada
+		bola.frena = 0.0
 		# Atraviesa enemigos: es lo que hace que valga la pena esperar. Las
 		# rocas siguen parandola, como el disparo normal, porque son el terreno.
 		bola.atraviesa = true

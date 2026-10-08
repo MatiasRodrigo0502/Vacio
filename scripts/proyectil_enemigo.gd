@@ -27,6 +27,8 @@ var limite: Rect2 = Rect2()
 var _recorrido: float = 0.0
 var _fase: float = 0.0
 var _acabado: bool = false
+## El jugador, para preguntarle si su escudo para el disparo.
+var _jugador: Node = null
 # Parabola: de donde sale, donde cae y cuanto tarda.
 var _origen: Vector2 = Vector2.ZERO
 var _destino: Vector2 = Vector2.ZERO
@@ -60,6 +62,7 @@ func _ready() -> void:
 	add_child(forma)
 	body_entered.connect(_al_tocar)
 	global_position = _origen
+	_jugador = get_tree().get_first_node_in_group("jugador")
 
 
 func _physics_process(delta: float) -> void:
@@ -79,6 +82,13 @@ func _physics_process(delta: float) -> void:
 	var antes := global_position
 	global_position += direccion * paso
 	_recorrido += paso
+	# El escudo del mago blanco, antes que nada: se mira aqui, recien movido,
+	# y no al tocar al jugador, para que el disparo se pare en el escudo y no
+	# llegue a tocarle. La parabola no pasa por aqui: cae desde arriba.
+	if _jugador != null and _jugador.has_method("escudo_bloquea") \
+			and _jugador.escudo_bloquea(antes, global_position, tipo.radio):
+		_acabar()
+		return
 	if Terreno.choque(get_world_2d(), antes, global_position, tipo.radio, MASCARA_TERRENO) != null:
 		_acabar()
 	elif _recorrido >= tipo.alcance:

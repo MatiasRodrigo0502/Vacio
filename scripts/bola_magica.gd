@@ -22,11 +22,16 @@ signal impacto(objetivo: Node2D)
 ## que toca y se apaga.
 @export var atraviesa: bool = false
 
-## Cuantos impactos reparte a lo que toca. El disparo normal hace 1; el ataque
-## cargado, mas. No se pasa como argumento a romper() a proposito: el contrato
-## del proyecto es "romper() sin parametros", y cambiarlo obligaria a tocar
-## todo lo que sea rompible ahora y en el futuro.
-@export var dano: int = 1
+## Cuanta vida quita a lo que toca. El disparo normal quita 1 (0,5 el del mago
+## blanco); el ataque cargado, mas.
+##
+## A los enemigos se lo pasa con herir(), que admite medios. A lo demas que
+## se pueda romper, con romper() repetido, que es el contrato de siempre ("un
+## golpe, sin parametros"): asi nada de lo que ya era rompible tiene que
+## cambiar.
+@export var dano: float = 1.0
+## Segundos que deja frenado al enemigo que toca. 0 = no frena.
+@export var frena: float = 0.0
 
 ## Marca el disparo cargado. Ya no decide el color (eso lo hace `color`), pero
 ## sirve para saber que bola es cual sin mirar su tamano.
@@ -115,12 +120,15 @@ func _al_tocar_roca(cuerpo: Object) -> void:
 func _al_tocar(area: Area2D) -> void:
 	# Duck typing como en todo el proyecto: la bola no pregunta contra que ha
 	# chocado, solo si eso se puede romper.
-	if not area.has_method("romper"):
+	if area.has_method("herir"):
+		area.herir(dano, frena)
+	elif area.has_method("romper"):
+		for i in int(ceil(dano)):
+			if not is_instance_valid(area):
+				break
+			area.romper()
+	else:
 		return
-	for i in dano:
-		if not is_instance_valid(area):
-			break
-		area.romper()
 	impacto.emit(area)
 	if not atraviesa:
 		queue_free()

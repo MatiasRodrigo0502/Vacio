@@ -132,7 +132,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   a los valores **de fábrica** del jugador, así que sobrevive a reiniciar. El
   menú monta una ficha por `.tres`, así que un mago nuevo no toca código.
   Cada mago trae también **el color de sus disparos** (centro y resplandor del
-  normal y del cargado): el oscuro azul y morado, el rojo en rojo.
+  normal y del cargado): el oscuro azul y morado, el rojo en rojo, el blanco
+  en azul hielo.
+- **Mago blanco** (2026-10-08, pedido por Matías): es el rojo con otra paleta
+  (`herramientas/generar_mago_blanco.py`). Su disparo normal quita **medio
+  punto** (`dano_disparo`, vía `Enemigo.herir()`) y **frena** 1,5 s
+  (`frena_disparo`: anda, apunta y recarga a la mitad, con un aro de escarcha
+  a los pies). Su pasiva es un **escudo direccional** pequeño
+  (`scripts/escudo_direccional.gd`) que para los disparos enemigos de frente.
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve.
@@ -255,7 +262,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí). Desde
   el 2026-10-08 los escenarios son todos propios y los packs de itch.io ya no
-  se usan: de fuera solo quedan las hojas de los magos.
+  se usan: de fuera solo quedan las hojas de los magos (el blanco sale de la
+  del rojo, así que tiene la misma duda).
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
   enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar
@@ -340,6 +348,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **El daño del cargado se reparte llamando `romper()` varias veces**, no
   pasándole un parámetro: el contrato del proyecto es `romper()` sin argumentos,
   y cambiarlo obligaría a tocar todo lo rompible, ahora y en el futuro.
+- **El daño admite medios, pero `romper()` sigue sin parámetros.** La vida
+  de los enemigos es `float` y la bola les llama `herir(cantidad, frena)`; a
+  todo lo demás que se rompa, `romper()` repetido, que es el contrato de
+  siempre. Así lo que ya era rompible no tuvo que cambiar.
+- **El escudo solo para disparos de frente**, no golpes cuerpo a cuerpo ni el
+  magma que cae: si lo parara todo, los enemigos a distancia no tendrían nada
+  que hacer contra el mago blanco. Lo pregunta el proyectil justo después de
+  moverse (`Jugador.escudo_bloquea`), antes de llegar a tocar al jugador.
 - **Las rocas se calibran contra el suelo de su piso.** La cuenta es la de
   la nota de `tinte_profundidad()`: luminosidad de la roca entre la del suelo
   (gamma, no lineal). La cueva daba 0,32 en el piso 9, y a partir de 0,48 la

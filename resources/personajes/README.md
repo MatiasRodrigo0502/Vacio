@@ -17,6 +17,7 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 |---|---|---|
 | Mago oscuro | +35 px/s de velocidad, cadencia ×0,85 | — |
 | Mago rojo | +1 corazón, tiempo de carga ×0,5, +2 de daño cargado | −25 px/s de velocidad |
+| Mago blanco | escudo direccional; su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1 |
 
 ## Cómo añadir uno
 
@@ -27,10 +28,21 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
    empiece por el número que le toque, y rellena los campos.
 3. Ya está. Arranca el juego y su ficha sale en «Elegir mago».
 
+## Disparo normal y pasiva
+
+- `dano_disparo`: lo que quita cada bola normal (1 de siempre; 0,5 el mago
+  blanco, que necesita el doble de impactos). El cargado no cambia.
+- `frena_disparo`: segundos que deja frenado al enemigo que toca. Frenado,
+  anda, apunta y recarga a la mitad, y lleva un aro de escarcha a los pies.
+- `escudo`: un arco pequeño (76°, a 30 px) delante del mago, hacia donde
+  mira, que para los disparos enemigos de frente. No para lo que le llega de
+  lado o por la espalda, ni el magma del gólem (cae desde arriba), ni los
+  golpes de los de cuerpo a cuerpo. Ver `scripts/escudo_direccional.gd`.
+
 ## Colores del disparo
 
 Cada mago dispara de su color: el oscuro en azul (y morado el cargado), el rojo
-en rojo. Son cuatro campos, centro y resplandor para cada ataque
+en rojo, el blanco en azul hielo (y blanco y dorado el cargado). Son cuatro campos, centro y resplandor para cada ataque
 (`color_disparo`, `halo_disparo`, `color_cargado`, `halo_cargado`). La bola que
 se forma mientras cargas sale de los dos del cargado, así que lo que se forma y
 lo que sale al soltar son la misma cosa.

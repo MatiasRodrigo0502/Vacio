@@ -24,12 +24,19 @@ signal muerto(enemigo: Enemigo)
 const RUTA_ESCENA := "res://scenes/Enemigo.tscn"
 ## Radio del jugador, para saber si una explosion le alcanza.
 const RADIO_JUGADOR: float = 15.0
+## Frenado (por el disparo del mago blanco): todo a este ritmo, y de este
+## color, para que se vea por que va lento.
+const RITMO_FRENADO: float = 0.5
+const COLOR_FRENADO := Color(0.62, 0.84, 1.25)
 
 ## De donde salen vida, velocidad, dibujo y demas. Lo pone la mecanica que los
 ## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
 var tipo: TipoEnemigo = null
 
-var _vida: int = 0
+## Con decimales: el disparo del mago blanco quita medio punto.
+var _vida: float = 0.0
+## Segundos de frenado que le quedan (ver herir).
+var _frenado: float = 0.0
 var _objetivo: Node2D = null
 ## Dormido no se mueve ni dispara. La sala lo duerme al registrarlo y lo
 ## despierta cuando el jugador entra.
@@ -104,6 +111,15 @@ func _physics_process(delta: float) -> void:
 	if _muriendo:
 		return
 	_golpear_lo_que_toca()
+	# Frenado, anda, apunta y recarga a la mitad: el tiempo le pasa mas lento.
+	# Pegar al tocarte no: eso no depende de su ritmo, sino de que le toques.
+	if _frenado > 0.0:
+		_frenado -= delta
+		if _frenado <= 0.0:
+			_dejar_de_frenar()
+		else:
+			delta *= RITMO_FRENADO
+			queue_redraw()
 	if not _despierto or tipo == null or not is_instance_valid(_objetivo):
 		return
 
@@ -148,16 +164,24 @@ func matar() -> void:
 	romper()
 
 
-## La llama la bola magica. Aguanta varios impactos.
-##
-## El ataque cargado reparte varios impactos de golpe, asi que puede llamar a
-## esto cuando el enemigo ya esta muerto: queue_free() no lo borra hasta el
-## final del fotograma y hasta entonces sigue siendo un objeto valido. Sin este
-## guardia, emitiria "muerto" mas de una vez.
+## Un golpe de un punto de vida: el contrato de todo lo que se puede romper.
 func romper() -> void:
+	herir(1.0)
+
+
+## La llama la bola magica: le quita 'cantidad' de vida (medio punto el
+## disparo del mago blanco, varios el cargado) y, si 'frena' > 0, lo deja ese
+## tiempo frenado.
+##
+## Puede llegar cuando el enemigo ya esta muerto: queue_free() no lo borra
+## hasta el final del fotograma y hasta entonces sigue siendo un objeto
+## valido. Sin este guardia, emitiria "muerto" mas de una vez.
+func herir(cantidad: float, frena: float = 0.0) -> void:
 	if _vida <= 0:
 		return
-	_vida -= 1
+	_vida -= cantidad
+	if frena > 0.0 and _vida > 0:
+		frenar(frena)
 	if _vida > 0:
 		# Parpadeo blanco para que se vea que ha entrado el disparo.
 		_sprite.modulate = Color(2.0, 2.0, 2.0)
@@ -172,6 +196,46 @@ func romper() -> void:
 	# paso de fisica, y al morir se crean nodos con colision (las crias). El
 	# motor no deja meterlos ahi.
 	_morir.call_deferred()
+
+
+## Lo deja frenado 'segundos' (si ya lo estaba, se queda con lo que dure mas).
+func frenar(segundos: float) -> void:
+	_frenado = maxf(_frenado, segundos)
+	# El color va en el nodo y no en el sprite: el sprite ya cambia de color al
+	# recibir un golpe y al apuntar, y se pisarian.
+	modulate = COLOR_FRENADO
+	_sprite.speed_scale = RITMO_FRENADO
+
+
+func esta_frenado() -> bool:
+	return _frenado > 0.0
+
+
+func _dejar_de_frenar() -> void:
+	_frenado = 0.0
+	modulate = Color.WHITE
+	_sprite.speed_scale = 1.0
+	queue_redraw()
+
+
+## Un aro de escarcha en el suelo, a sus pies, con unos copos girando
+## despacio. El tinte azul solo no bastaba: sobre un slime verde casi no se
+## notaba. Va en el suelo y mas ancho que el cuerpo porque el sprite se pinta
+## encima de esto: en el cuerpo quedaria tapado.
+func _pintar_escarcha() -> void:
+	var radio := tipo.alto * 0.62
+	var pies := Vector2(0.0, tipo.alto * 0.42)
+	var color := Color(0.78, 0.94, 1.0, 0.85)
+	# Achatado: es un circulo en el suelo visto en 3/4.
+	draw_set_transform(pies, 0.0, Vector2(1.0, 0.4))
+	draw_circle(Vector2.ZERO, radio, Color(0.6, 0.85, 1.0, 0.22))
+	draw_arc(Vector2.ZERO, radio, 0.0, TAU, 32, color, 2.5, true)
+	draw_set_transform(Vector2.ZERO)
+	for k in 5:
+		var angulo := _fase * 1.2 + k * TAU / 5.0
+		var copo := pies + Vector2(cos(angulo) * radio, sin(angulo) * radio * 0.4)
+		draw_line(copo - Vector2(3.5, 0.0), copo + Vector2(3.5, 0.0), Color.WHITE, 1.4)
+		draw_line(copo - Vector2(0.0, 3.5), copo + Vector2(0.0, 3.5), Color.WHITE, 1.4)
 
 
 # --- Movimiento y ataque ----------------------------------------------------
@@ -346,6 +410,8 @@ func _soltar_cria(numero: int) -> void:
 ## La linea de mira del rayo, mientras apunta. Solo el rayo la lleva: es tan
 ## rapido que sin ella no se podria esquivar.
 func _draw() -> void:
+	if _frenado > 0.0 and tipo != null:
+		_pintar_escarcha()
 	if _apuntando <= 0.0 or tipo == null or not tipo.es_a_distancia():
 		return
 	if tipo.proyectil.estilo != TipoProyectil.Estilo.RAYO:

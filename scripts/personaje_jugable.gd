@@ -55,3 +55,16 @@ extends Resource
 @export var tiempo_carga_multiplicador: float = 1.0
 ## Dano de mas del disparo cargado.
 @export var dano_cargado_extra: int = 0
+
+@export_group("Disparo normal")
+## Cuanta vida quita cada bola normal a un enemigo. 1 es lo de siempre; con
+## 0,5 hacen falta el doble de impactos. El ataque cargado no cambia.
+@export var dano_disparo: float = 1.0
+## Segundos que deja frenado a un enemigo cada bola normal (anda y dispara a
+## la mitad). 0 = no frena.
+@export var frena_disparo: float = 0.0
+
+@export_group("Pasiva")
+## Escudo direccional (EscudoDireccional): un arco pequeno delante del mago
+## que para los disparos enemigos que le vienen de frente.
+@export var escudo: bool = false

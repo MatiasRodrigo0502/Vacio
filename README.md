@@ -13,7 +13,7 @@ más pequeñas, y se ve menos que el anterior.
 Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
 persiguen o te disparan de lejos, pinchos, lava y agujeros en el suelo, objetos
-que te mejoran, pausa, victoria y derrota. Se elige entre **dos magos**, cada uno con
+que te mejoran, pausa, victoria y derrota. Se elige entre **tres magos**, cada uno con
 sus ventajas, y miran a los ocho lados; el piso 1 hace de tutorial. Cada uno de los 12 pisos
 tiene su propia pared y sus propias rocas, de la roca de su capa: de la tierra con hierba del
 piso 1 al cristal de hierro al rojo blanco del 12.
@@ -118,6 +118,7 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 |---|---|---|
 | **Mago oscuro** | Anda un 13 % más rápido y dispara un 15 % más seguido | — |
 | **Mago rojo** | Un corazón más, y el ataque cargado sale en medio tiempo y mata de un golpe a cualquier cosa | Anda un 9 % más lento |
+| **Mago blanco** | Un escudo pequeño delante que para los disparos enemigos de frente, y sus disparos frenan a los enemigos a la mitad durante 1,5 s | Su disparo normal quita la mitad: hacen falta el doble de impactos |
 
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese
 mago, no un objeto que se recoge.

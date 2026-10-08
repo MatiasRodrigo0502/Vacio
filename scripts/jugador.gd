@@ -60,6 +60,13 @@ signal caido
 @export var color_cargado: Color = Color(0.72, 0.52, 1.0)
 @export var halo_cargado: Color = Color(0.52, 0.28, 0.95)
 
+## Lo que quita y lo que frena cada bola normal. Son del mago (los pone
+## usar_personaje) y ningun objeto los cambia. Ver PersonajeJugable.
+var dano_disparo: float = 1.0
+var frena_disparo: float = 0.0
+## El escudo direccional, si el mago lo trae. Si no, null.
+var _escudo: EscudoDireccional = null
+
 ## Tope de cadencia: por debajo de esto el disparo se vuelve una manguera y el
 ## juego deja de tener tension.
 const CADENCIA_MINIMA: float = 0.09
@@ -178,6 +185,17 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 
 	tiempo_carga = _escena_tiempo_carga * personaje.tiempo_carga_multiplicador
 	dano_bola_cargada = _escena_dano_cargado + personaje.dano_cargado_extra
+	dano_disparo = personaje.dano_disparo
+	frena_disparo = personaje.frena_disparo
+
+	# El escudo va con el mago: se pone o se quita al estrenarlo, y no se
+	# duplica si se vuelve a llamar con el mismo (cada reinicio lo hace).
+	if personaje.escudo and _escudo == null:
+		_escudo = EscudoDireccional.new(self)
+		add_child(_escudo)
+	elif not personaje.escudo and _escudo != null:
+		_escudo.queue_free()
+		_escudo = null
 
 	# restaurar_vida() es lo que copia los valores de fabrica a los de verdad,
 	# asi que sirve igual para "empezar de cero" que para "estrenar mago".
@@ -421,6 +439,18 @@ func recibir_dano(cantidad: int = 1, forzar: bool = false) -> bool:
 		velocity = Vector2.ZERO
 		sin_vida.emit()
 	return true
+
+
+## Hacia donde mira el mago, como vector: hacia donde apunta o, si no apunta,
+## hacia donde anda. La usa el escudo para encararse.
+func direccion_mirada() -> Vector2:
+	return _vector_de(_mirando)
+
+
+## True si el escudo para algo de 'radio' que ha ido de 'desde' a 'hasta' en
+## este paso. Lo preguntan los proyectiles enemigos; sin escudo, nunca.
+func escudo_bloquea(desde: Vector2, hasta: Vector2, radio: float) -> bool:
+	return _escudo != null and _escudo.bloquea(desde, hasta, radio)
 
 
 ## Centro real de la forma de colision, que NO es el origen del nodo: el origen
