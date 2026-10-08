@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="DatosPiso" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/datos_piso.gd" id="1_datos_piso"]
-[ext_resource type="Resource" path="res://assets/nucleo/catalogo_nucleo_sin_cristales.tres" id="2_catalogo"]
+[ext_resource type="Resource" path="res://assets/rocas/piso_09/catalogo.tres" id="2_catalogo"]
 [ext_resource type="Resource" path="res://assets/bordes/piso_09/estilo_borde.tres" id="9_borde"]
 
 [resource]

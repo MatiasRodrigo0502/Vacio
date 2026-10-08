@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/roca_0.png" id="2_roca_0"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/roca_1.png" id="3_roca_1"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/roca_2.png" id="4_roca_2"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/roca_3.png" id="5_roca_3"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/roca_4.png" id="6_roca_4"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/roca_5.png" id="7_roca_5"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/grupo_0.png" id="8_grupo_0"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/grupo_1.png" id="9_grupo_1"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/grupo_2.png" id="10_grupo_2"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/grupo_3.png" id="11_grupo_3"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/bloque_0.png" id="12_bloque_0"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/bloque_1.png" id="13_bloque_1"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/bloque_2.png" id="14_bloque_2"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/bloque_3.png" id="15_bloque_3"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/piedra_0.png" id="16_piedra_0"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/piedra_1.png" id="17_piedra_1"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/piedra_2.png" id="18_piedra_2"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/piedra_3.png" id="19_piedra_3"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/piedra_4.png" id="20_piedra_4"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/plataforma_0.png" id="21_plataforma_0"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/plataforma_1.png" id="22_plataforma_1"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_09/plataforma_2.png" id="23_plataforma_2"]
+[ext_resource type="Texture2D" path="res://assets/bordes/piso_09/adorno_0.png" id="24_veg_adorno_0"]
+
+[resource]
+script = ExtResource("1_script")
+piedras = Array[Texture2D]([ExtResource("16_piedra_0"), ExtResource("17_piedra_1"), ExtResource("18_piedra_2"), ExtResource("19_piedra_3"), ExtResource("20_piedra_4")])
+rocas = Array[Texture2D]([ExtResource("2_roca_0"), ExtResource("3_roca_1"), ExtResource("4_roca_2"), ExtResource("5_roca_3"), ExtResource("6_roca_4"), ExtResource("7_roca_5")])
+bloques = Array[Texture2D]([ExtResource("12_bloque_0"), ExtResource("13_bloque_1"), ExtResource("14_bloque_2"), ExtResource("15_bloque_3")])
+grupos = Array[Texture2D]([ExtResource("8_grupo_0"), ExtResource("9_grupo_1"), ExtResource("10_grupo_2"), ExtResource("11_grupo_3")])
+vegetacion = Array[Texture2D]([ExtResource("24_veg_adorno_0")])
+plataformas = Array[Texture2D]([ExtResource("21_plataforma_0"), ExtResource("22_plataforma_1"), ExtResource("23_plataforma_2")])
+colores_propios = true

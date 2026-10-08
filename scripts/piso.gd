@@ -405,7 +405,7 @@ func _colocar_obstaculos() -> void:
 
 	var generador := RandomNumberGenerator.new()
 	generador.seed = hash(datos.nombre_capa) + numero_piso * 7919
-	var tinte := tinte_profundidad()
+	var tinte := Color.WHITE if catalogo.colores_propios else tinte_profundidad()
 
 	# Las rocas se encogen con la profundidad porque las salas tambien: si no,
 	# en el piso 12 no cabria nada jugable.
@@ -492,6 +492,10 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 	# 18 y 53, y las losas se quedaban en 71. Con este factor caen a la mitad de
 	# ese rango y no destacan como si fueran otra cosa.
 	var tinte_losa := Color(tinte.r * 0.6, tinte.g * 0.6, tinte.b * 0.6, 1.0)
+	# Las del generador ya tienen la luz de sus rocas: oscurecerlas otra vez
+	# las dejaria negras.
+	if catalogo.colores_propios:
+		tinte_losa = tinte
 
 	for sala in _orden_salas:
 		if not _lleva_rocas(sala) or generador.randf() < 0.5:

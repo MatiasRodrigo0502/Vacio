@@ -304,6 +304,27 @@ ejecutar: sale lo mismo en las tres máquinas. **Ojo**: dónde están los
 agujeros lo repite `scripts/pinchos.gd` (sus constantes `MARGEN`, `GROSOR`,
 `FILAS` y `AGUJERO_*`); si se cambia en uno, se cambia en el otro.
 
+## rocas/
+
+Las rocas de dentro de las salas, **unas distintas por piso**, hechas con
+`herramientas/generar_rocas.py`. Son de la misma roca que la pared de su piso
+(usa sus paletas y sus piezas). En cada `piso_NN/`:
+
+- `roca_K.png`, `grupo_K.png`, `bloque_K.png`: los obstáculos. Cada piso usa
+  una de las tres familias, la que diga su `.tres`.
+- `piedra_K.png`: piedrecitas del suelo, sin colisión.
+- `plataforma_K.png`: losas anchas y bajas. Lo que crece encima son los
+  adornos de la pared del piso (`assets/bordes/piso_NN/adorno_K.png`).
+- `catalogo.tres`: su `CatalogoObstaculos`, con `colores_propios`: ya traen
+  su color y su luz, y el juego no las tiñe.
+
+**La luz está medida**: el cuerpo de cada roca se lleva a un múltiplo de la
+luminosidad del suelo de su piso, oscuras por debajo de 0,45 o claras por
+encima de 1,6, nunca en medio, donde se funden con el suelo.
+
+Los packs de antes (`musgo/`, `cueva/`, `manto/`, `nucleo/`) siguen aquí sin
+usar.
+
 ## bordes/
 
 La pared que rodea las salas, **una distinta por piso**, hecha con

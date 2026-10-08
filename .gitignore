@@ -54,3 +54,7 @@ desktop.ini
 .idea/
 *.swp
 *~
+
+# Cache de Python: generar_rocas.py importa generar_bordes.py, y al hacerlo
+# Python puede dejar aqui su version compilada. Se regenera sola.
+__pycache__/

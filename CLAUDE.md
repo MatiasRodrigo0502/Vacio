@@ -49,7 +49,8 @@ hechos.
 | Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
-| Pack de arte del núcleo | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
+| Rocas de dentro, una por piso | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
+| Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 | Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
 
@@ -225,10 +226,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   salas con enemigos: unos 16 corazones (10 y 17 en las pruebas).
 - **Vida**: corazones dibujados por código. La fuente de Godot no tiene glifos
   de corazón ni emoji: un "♥" de texto sale como un cuadradito.
-- **Arte por piso**: 1 musgo, 2 cueva con vegetación, 3 cueva pelada, 4-8
-  manto (pack de Matías; con cristales de olivino hasta el 6), 9-12 núcleo
-  (pack generado con `herramientas/generar_nucleo.py`; cristales de hierro en
-  el 11 y el 12).
+- **Arte por piso**: desde el 2026-10-08, cada uno de los 12 pisos tiene sus
+  propias rocas de dentro (`assets/rocas/piso_NN/`), de la misma roca que su
+  pared: cantos con musgo, basalto mojado, caliza, magma con olivino,
+  peridotita, ringwoodita, columnas, escoria con lava, hierro, níquel y
+  cristal de hierro plateado y dorado. Lo que crece en las losas son los
+  adornos de la pared del piso. Los packs de antes (musgo y cueva de maaot,
+  manto de Matías, núcleo generado) siguen en `assets/` sin usar: volver a
+  uno es apuntar `catalogo_arte` del `.tres` del piso a su catálogo.
 - **Atajos de prueba** (`scripts/atajos_prueba.gd`): F1 invencible, F2/F3
   piso anterior/siguiente, F4 matar a los de la sala. Solo con
   `OS.is_debug_build()` (editor y `jugar.bat`); en el `.exe` el nodo ni se
@@ -248,7 +253,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   y `mago/`, `nigromante/` y `personaje/` muertas. Borrar las tres muertas en
   cuanto Matías lo confirme; el historial de git las conserva.
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
-  cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí).
+  cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí). Desde
+  el 2026-10-08 los escenarios son todos propios y los packs de itch.io ya no
+  se usan: de fuera solo quedan las hojas de los magos.
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
   enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar
@@ -259,15 +266,6 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   Los de distancia quitan 2 y hay pinchos, lava y agujeros, con 3 o 4
   corazones. Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
   (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
-- **Contraste del manto en los pisos 5-8 (decide Matías).** Esos pisos usan
-  la familia `grupo`, y los montones del manto salen más claros respecto al
-  suelo que los de la cueva: 0,67 / 0,63 / 0,59 / 0,55 frente a 0,52 / 0,49 /
-  0,46 / 0,43 (la cueva ya pasaba de 0,48 en los pisos 5-6, porque el suelo de
-  arriba es más oscuro). Matías calibró las rocas sueltas (31 frente a 33),
-  pero no los montones (34,5 frente a 26,5). No se ha tocado su arte. Opciones:
-  oscurecer los `grupo` en su generador hasta ~26, o pasar esos pisos a la
-  familia `roca`, que mejora pero no llega (0,59 → 0,49 en el 8). En las
-  capturas se leen bien.
 - **Posibles mejoras de las salas**, no pedidas: oscurecer las salas vecinas
   (cuando la vista es más ancha o más alta que la sala, se asoma un trozo de
   las de al lado), una sala de jefe en el piso 12, y salas de otras formas.
@@ -342,13 +340,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **El daño del cargado se reparte llamando `romper()` varias veces**, no
   pasándole un parámetro: el contrato del proyecto es `romper()` sin argumentos,
   y cambiarlo obligaría a tocar todo lo rompible, ahora y en el futuro.
-- **Las rocas de un pack nuevo se calibran contra las de la cueva.** La cuenta
-  es la de la nota de `tinte_profundidad()`: luminosidad de la roca tintada
-  entre la del suelo. La cueva da 0,32 en el piso 9; a partir de 0,48 la roca
-  se funde con el suelo. El núcleo se oscureció hasta igualarla (0,32 / 0,30 /
-  0,28 / 0,26), y sus losas hasta que con el 0,6 de `piso.gd` queden como las
-  rocas. Ojo: la cuenta tiene que ser esta (gamma, la de la nota); con
-  luminancia lineal salen otros números que no cuadran con los 0,33 de la nota.
+- **Las rocas se calibran contra el suelo de su piso.** La cuenta es la de
+  la nota de `tinte_profundidad()`: luminosidad de la roca entre la del suelo
+  (gamma, no lineal). La cueva daba 0,32 en el piso 9, y a partir de 0,48 la
+  roca se funde con el suelo. Las rocas de cada piso (`generar_rocas.py`) se
+  llevan a un valor fijo, y **nunca entre 0,45 y 1,6**: oscuras (0,32-0,45)
+  en la mayoría, claras (1,9-2,1) en los pisos 1, 3, 11 y 12, donde la roca
+  es clara de por sí (cantos, caliza, cristal). Lo que brilla (grietas,
+  cristales) va encima, después de medir. Ya traen su color y su luz: el piso
+  no las tiñe ni oscurece las losas (`CatalogoObstaculos.colores_propios`).
+  Con los packs de antes la cuenta daba de 1,13 (piso 1) a 0,27 (piso 12).
 - **Cuerpo a cuerpo rápido, distancia lento y letal** (pedido por Matías el
   2026-09-29). Los de distancia avisan antes de cada disparo (se paran y
   brillan; el cristal marca además la línea del rayo), porque quitan 2: sin

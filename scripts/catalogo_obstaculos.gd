@@ -24,6 +24,11 @@ extends Resource
 ## Repisas y losas anchas. Se reparten por el suelo como plataformas bajas y la
 ## vegetacion crece encima de ellas, en vez de suelta por el piso.
 @export var plataformas: Array[Texture2D] = []
+## Las piezas ya vienen con el color de su piso y con la luz medida contra su
+## suelo (las de herramientas/generar_rocas.py): el piso no las tine ni
+## oscurece. Los packs de antes (musgo, cueva, manto, nucleo) son grises o
+## marrones y se tinen con Piso.tinte_profundidad().
+@export var colores_propios: bool = false
 
 
 ## Devuelve las texturas de una familia. Si el nombre no existe, cae en rocas:

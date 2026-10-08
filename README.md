@@ -14,8 +14,9 @@ Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
 persiguen o te disparan de lejos, pinchos, lava y agujeros en el suelo, objetos
 que te mejoran, pausa, victoria y derrota. Se elige entre **dos magos**, cada uno con
-sus ventajas, y miran a los ocho lados; el piso 1 hace de tutorial con arte de musgo y el 2 de
-cueva; el 3 es cueva pelada, del 4 al 8 el manto y del 9 al 12 el núcleo.
+sus ventajas, y miran a los ocho lados; el piso 1 hace de tutorial. Cada uno de los 12 pisos
+tiene su propia pared y sus propias rocas, de la roca de su capa: de la tierra con hierba del
+piso 1 al cristal de hierro al rojo blanco del 12.
 
 ## Descargar el juego
 
@@ -184,8 +185,9 @@ Vacio/
     ├── mago/          # mago morado de 4 direcciones, fuera de uso
     ├── nigromante/    # fuera de uso
     ├── personaje/     # el mago azul original, fuera de uso
-    ├── cueva/          # rocas y vegetación del piso 1 (y base del 3 al 12)
-    └── musgo/          # arte del piso 2
+    ├── bordes/        # la pared de las salas, una por piso (+ la reja)
+    ├── rocas/         # las rocas de dentro, una por piso
+    └── cueva/, musgo/, manto/, nucleo/  # packs de antes, ya sin usar
 ```
 
 ## Decisiones de arquitectura

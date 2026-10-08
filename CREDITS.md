@@ -83,7 +83,7 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Procesado**: recortados de 512×512 a la caja útil del personaje (160×280) y
   reescalados a 73×128. Los originales no están en el repo (ver más abajo).
 
-### Musgo — arte del piso 1
+### Musgo — arte del piso 1 (ya sin usar)
 
 - **Pack**: Mossy Cavern
 - **Autor**: maaot
@@ -95,7 +95,7 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
   con musgo y lianas con pinchos (que en el pack original ya son peligros, así
   que aquí también hacen daño). Las plantas animadas aportan un frame cada una.
 
-### Cueva — arte de los pisos 2 y 3
+### Cueva — arte de los pisos 2 y 3 (ya sin usar)
 
 - **Pack**: 2D Brown Cave Assets
 - **Autor**: maaot
@@ -109,12 +109,20 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
   repisas planas para plataformas. Se descartaron estalagmitas, estalactitas y
   esquirlas, porque delatan la vista lateral. Más su vegetación seca.
 
-### Manto — arte de los pisos 4 a 8
+### Manto — arte de los pisos 4 a 8 (ya sin usar)
 
 - **Autor**: Matías (pack propio, sale de su generador procedural)
 - **Licencia**: propio, sin problema de licencia
 - **Archivos**: `assets/manto/` (42 piezas y dos catálogos: con cristales de
   olivino para los pisos 4-6 y pelado para los 7-8)
+
+### Rocas de dentro de las salas — una por piso
+
+- **Autor**: hecho para el proyecto, con `herramientas/generar_rocas.py`
+- **Licencia**: propio, sin problema de licencia
+- **Archivos**: `assets/rocas/` (`piso_01/` a `piso_12/`)
+- **Nota**: desde el 2026-10-08 sustituyen en el juego a los packs de musgo,
+  cueva, manto y núcleo, que siguen en `assets/` sin usar.
 
 ### Pared de las salas — una por piso, con sus pilares, piezas y la reja
 
@@ -128,7 +136,7 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Licencia**: propio, sin problema de licencia
 - **Archivos**: `assets/peligros/` y `shaders/lava.gdshader`
 
-### Núcleo — arte de los pisos 9 a 12
+### Núcleo — arte de los pisos 9 a 12 (ya sin usar)
 
 - **Autor**: hecho para el proyecto, con `herramientas/generar_nucleo.py`
 - **Licencia**: propio, sin problema de licencia

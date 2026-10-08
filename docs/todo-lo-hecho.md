@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 08/10/2026 | Pared nueva en las salas, distinta en cada uno de los 12 pisos | — |
+| 08/10/2026 | Rocas de dentro distintas en cada uno de los 12 pisos | — |
+| 08/10/2026 | Pared nueva en las salas, distinta en cada uno de los 12 pisos | `22cf64a` |
 | 08/10/2026 | Pinchos en el paso de algunas puertas | `9cd37c5` |
 | 08/10/2026 | Versión para Linux, en local y en la release | `7b8b204` |
 | 08/10/2026 | Atajos de prueba: F1 invencible, F2/F3 piso, F4 limpiar sala | `021a159` |
@@ -125,15 +126,24 @@ Los enemigos se reparten en dos tipos de ataque. Los de cuerpo a cuerpo son ráp
 
 ## Arte e interfaz
 
-Cada tramo de pisos tiene su arte, unas partes de packs de itch.io, otras dibujadas por Matías y otras generadas con scripts de Python del propio proyecto.
+Cada uno de los 12 pisos tiene su propio arte: la pared que rodea las salas y las rocas de dentro, de la roca de su capa de la Tierra. Todo se genera con scripts de Python del propio proyecto, así que no hay licencias que justificar.
 
-| Pisos | Arte | De dónde sale |
+| Piso | Capa | Pared y rocas |
 | --- | --- | --- |
-| 1 | Musgo (hace de tutorial, con carteles en el suelo) | Pack de maaot (itch.io) |
-| 2 | Cueva con vegetación | Pack de maaot (itch.io) |
-| 3 | Cueva pelada | Pack de maaot (itch.io) |
-| 4-8 | Manto, con cristales de olivino hasta el 6 | Pack de Matías, de su generador procedural |
-| 9-12 | Núcleo, con cristales de hierro en el 11 y el 12 | `herramientas/generar_nucleo.py` |
+| 1 | Corteza continental | Tierra y piedra, con hierba y raíces (hace de tutorial, con carteles en el suelo) |
+| 2 | Corteza oceánica | Basalto mojado, con algas y setas que brillan |
+| 3 | Litosfera superior | Caliza, con estalactitas y estalagmitas |
+| 4 | Astenosfera | Roca que se empieza a fundir, con grietas de magma |
+| 5 | Manto superior | Roca verde con cristales de olivino |
+| 6 | Zona de transición | Roca violeta con cristales azules de ringwoodita |
+| 7 | Manto inferior | Columnas con costuras al rojo |
+| 8 | Capa D'' | Escoria negra con ríos de lava |
+| 9 | Núcleo externo exterior | Hierro oscuro del que gotea metal fundido |
+| 10 | Núcleo externo interior | Placas de hierro y níquel, con astillas de metal |
+| 11 | Límite del núcleo interno | Hierro plateado que cristaliza |
+| 12 | Núcleo interno | Cristal de hierro al rojo blanco |
+
+Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, compartidos entre varios pisos. Siguen en el repositorio, sin usar.
 
 **Generado con scripts:** cada uno da siempre las mismas imágenes, así que el arte se cambia editando el script y volviéndolo a ejecutar.
 
@@ -184,6 +194,7 @@ El primero baja de la release oficial de Godot solo las plantillas de Windows y 
 | `generar_nucleo.py` | Arte de los pisos 9-12 |
 | `generar_peligros.py` | Arte de lava, pinchos y vacío |
 | `generar_bordes.py` | La pared de las salas de cada piso, sus pilares y la reja |
+| `generar_rocas.py` | Las rocas de dentro de cada piso |
 | `exportar.sh` | Exportar las versiones de Windows y Linux (a mano: `bash herramientas/exportar.sh`) |
 | `instalar_plantillas.py` | Instalar las plantillas de exportación de Windows y Linux |
 
@@ -221,12 +232,11 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 - [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones, con 3 o 4 corazones de vida. Todo se ajusta en los `.tres` de `resources/`.
 - [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así.
-- [ ] **Verificar las licencias de los packs.** `CREDITS.md` tiene autores y enlaces, pero la licencia de cada uno está sin comprobar.
+- [ ] **Verificar las licencias de lo que queda de fuera.** Los escenarios ya son todos propios; de fuera quedan los magos (ver el punto anterior). Los packs de itch.io de antes ya no se usan.
 
 **Decide Matías:**
 
 - [ ] **Borrar las carpetas de personajes que ya no se usan:** `mago/`, `nigromante/` y `personaje/`. El historial de git las conserva.
-- [ ] **Contraste del manto en los pisos 5-8:** los montones de roca salen más claros respecto al suelo que en la cueva. Se pueden oscurecer en su generador, o dejarlos, porque en las capturas se leen bien.
 
 **Ideas no pedidas todavía:**
 
