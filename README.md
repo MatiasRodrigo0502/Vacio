@@ -2,6 +2,8 @@
 
 > Proyecto 1 DAM
 
+**Todo lo hecho hasta ahora, en un documento:** [docs/todo-lo-hecho.md](docs/todo-lo-hecho.md)
+
 Juego 2D top-down de habilidad hecho en **Godot 4.7** (GDScript). El jugador
 desciende piso a piso por una estructura con forma de embudo: 12 niveles fijos
 basados en las capas de la Tierra, de la corteza continental al núcleo interno.
