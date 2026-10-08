@@ -25,7 +25,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 **Dónde está:**
 
 - **Código:** [github.com/MatiasRodrigo0502/Vacio](https://github.com/MatiasRodrigo0502/Vacio)
-- **Para jugar sin Godot:** [Vacio.exe para Windows](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe) o [Vacio.x86_64 para Linux](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.x86_64), última versión
+- **Para jugar sin Godot:** [Vacio.exe para Windows](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe) o [Vacio-linux.tar.gz para Linux](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-linux.tar.gz), última versión
 
 ## Reglas y forma de trabajar
 
@@ -178,7 +178,7 @@ El juego se exporta solo a un único archivo por sistema que se abre sin tener G
 - **Se puede actualizar con el juego abierto:** la partida abierta sigue y la próxima vez arranca el nuevo.
 - **Si una exportación falla,** se queda la versión anterior y el motivo está en `build/exportar.log`, o en la pestaña Actions de GitHub.
 - **Windows puede avisar** de que el `.exe` es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*.
-- **En Linux** hay que darle permiso para ejecutarse antes de abrirlo: `chmod +x Vacio.x86_64`.
+- **En Linux** se descarga `Vacio-linux.tar.gz`, se extrae y se abre `Vacio.x86_64` con doble clic. Va comprimido porque, suelto, el navegador le quita el permiso de ejecutarse y Ubuntu no lo abre.
 - **Comprobado:** una copia de prueba del `.exe` recorrió sola los 12 pisos y llegó a la victoria. El de GitHub mide exactamente lo mismo que el local. La versión de Linux la arranca GitHub antes de publicarla, y no publica nada si da errores.
 
 **Para que un compañero tenga las versiones en su ordenador,** una vez por ordenador:

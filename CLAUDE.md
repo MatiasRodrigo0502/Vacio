@@ -447,6 +447,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Trampas ya pisadas (no repetirlas)
 
+- **Un ejecutable de Linux suelto no se abre al bajarlo con el navegador.**
+  Pierde el permiso de ejecutarse y Ubuntu dice que no encuentra «la
+  aplicación predeterminada para application/x-executable» (le pasó a Matías
+  con la 0.1 en el instituto). La release lo publica dentro de
+  `Vacio-linux.tar.gz`, que conserva el permiso, y el workflow comprueba que
+  va con él.
+
 - **Muchas piezas con texturas alternadas hunden el rendimiento.** La pared
   nueva bajó el piso 1 de 946 a 600 FPS sin límite: casi cien adornos por
   sala, pintados uno detrás de otro cambiando de textura, rompían los lotes de

@@ -2,7 +2,7 @@
 # que cambie el juego: "Version 0.1", "Version 0.2"... cada una con su
 # etiqueta (v0.1, v0.2...), sus archivos y lo que cambia desde la anterior.
 # Asi cualquiera (el profesor, alguien sin el proyecto) se baja la ultima,
-# para Windows (Vacio.exe) o Linux (Vacio.x86_64), sin tener Godot:
+# para Windows (Vacio.exe) o Linux (Vacio-linux.tar.gz), sin tener Godot:
 #
 #     https://github.com/MatiasRodrigo0502/Vacio/releases/latest
 #
@@ -96,6 +96,18 @@ jobs:
             echo "El juego arranca con errores"; exit 1
           fi
 
+      # Un archivo suelto bajado con el navegador pierde el permiso de
+      # ejecutarse, y Ubuntu no lo abre ("no se ha encontrado la aplicacion
+      # predeterminada para application/x-executable"): paso con la 0.1.
+      # Dentro de un .tar.gz el permiso viaja con el archivo, y al extraerlo
+      # se abre con doble clic. Se comprueba que va dentro con el permiso.
+      - name: Empaquetar la version de Linux
+        run: |
+          chmod +x build/Vacio.x86_64
+          tar -czf build/Vacio-linux.tar.gz -C build Vacio.x86_64
+          tar -tvzf build/Vacio-linux.tar.gz
+          tar -tvzf build/Vacio-linux.tar.gz | grep -q '^-rwx' || { echo "Va sin permiso de ejecutarse"; exit 1; }
+
       - name: Publicar
         if: steps.version.outputs.publicar == 'si'
         env:
@@ -110,7 +122,7 @@ jobs:
             echo "**Para jugar** no hace falta instalar nada ni tener Godot:"
             echo
             echo "- **Windows:** descarga \`Vacio.exe\` y ábrelo. Puede avisar de que es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*."
-            echo "- **Linux:** descarga \`Vacio.x86_64\`, dale permiso para ejecutarse (\`chmod +x Vacio.x86_64\`) y ábrelo."
+            echo "- **Linux:** descarga \`Vacio-linux.tar.gz\`, extráelo (clic derecho → *Extraer aquí*) y abre \`Vacio.x86_64\` con doble clic."
             echo
             if [ -n "$ANTERIOR" ]; then
               echo "### Qué cambia desde la ${ANTERIOR#v}"
@@ -122,5 +134,5 @@ jobs:
           } > "$RUNNER_TEMP/notas.md"
           # La mas nueva queda como "latest": el enlace de descarga de siempre
           # (releases/latest/download/Vacio.exe) lleva a ella.
-          gh release create "v$VERSION" build/Vacio.exe build/Vacio.x86_64 --target "$GITHUB_SHA" \
+          gh release create "v$VERSION" build/Vacio.exe build/Vacio-linux.tar.gz --target "$GITHUB_SHA" \
             --title "Versión $VERSION" --notes-file "$RUNNER_TEMP/notas.md" --latest

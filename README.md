@@ -25,9 +25,14 @@ La última versión, lista para jugar sin instalar nada ni tener Godot:
 - **Windows:** [Vacio.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe).
   Puede avisar de que es de un editor desconocido (no está firmado):
   *Más información → Ejecutar de todas formas*.
-- **Linux:** [Vacio.x86_64](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.x86_64).
-  Antes de abrirlo hay que darle permiso para ejecutarse:
-  `chmod +x Vacio.x86_64`.
+- **Linux:** [Vacio-linux.tar.gz](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-linux.tar.gz).
+  Se extrae (clic derecho → *Extraer aquí*) y se abre `Vacio.x86_64` con
+  doble clic. Va comprimido porque un programa suelto bajado con el navegador
+  pierde el permiso de ejecutarse, y Ubuntu no lo abre («no se ha encontrado
+  la aplicación predeterminada para application/x-executable»); dentro del
+  `.tar.gz` el permiso se conserva. La 0.1 lleva el archivo suelto: para
+  abrirlo, clic derecho → *Propiedades* → *Ejecutable como programa*, o
+  `chmod +x Vacio.x86_64` en una terminal.
 
 Página de la release:
 [releases/latest](https://github.com/MatiasRodrigo0502/Vacio/releases/latest).
