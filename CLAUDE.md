@@ -211,6 +211,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   manto (pack de Matías; con cristales de olivino hasta el 6), 9-12 núcleo
   (pack generado con `herramientas/generar_nucleo.py`; cristales de hierro en
   el 11 y el 12).
+- **Atajos de prueba** (`scripts/atajos_prueba.gd`): F1 invencible, F2/F3
+  piso anterior/siguiente, F4 matar a los de la sala. Solo con
+  `OS.is_debug_build()` (editor y `jugar.bat`); en el `.exe` el nodo ni se
+  crea. Usan `Jugador.invencible`, `GestorProgreso.ir_a_piso()`,
+  `Sala.enemigos()` y `Enemigo.matar()`, que no usa nada más.
 - **Rocas móviles**: hechas pero **desactivadas** (`activa = false` en su
   `.tres`), porque no convencieron al jugarlas. El código sigue ahí.
 

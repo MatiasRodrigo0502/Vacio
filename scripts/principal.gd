@@ -47,6 +47,13 @@ func _ready() -> void:
 	# primera senal vida_cambiada del jugador se emitio cuando aun no habia
 	# nadie escuchando: sincronizamos el HUD a mano una vez.
 	_hud.actualizar_vida(_jugador.vida_actual, _jugador.vida_maxima)
+
+	# Atajos para probar (F1 invencible, F2/F3 piso, F4 limpiar sala). Solo al
+	# jugar desde Godot: en el .exe exportado is_debug_build() es false y el
+	# nodo ni se crea.
+	if OS.is_debug_build():
+		add_child(AtajosPrueba.new(_jugador, func() -> Piso: return _piso_actual))
+
 	GestorProgreso.iniciar_partida()
 
 

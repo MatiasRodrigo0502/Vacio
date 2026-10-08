@@ -70,6 +70,22 @@ No hace falta memorizarlos: están en el botón **Controles** del menú, y adem�
 el piso 1 hace de tutorial y los explica con carteles pintados sobre el suelo,
 cada uno donde hace falta.
 
+### Atajos de prueba (solo para el equipo)
+
+Para probar y equilibrar sin jugar la partida entera. **Solo funcionan al jugar
+desde Godot** (el editor o `jugar.bat`); en el `.exe` no existen. Se recuerdan
+abajo a la izquierda de la pantalla, en rojo mientras eres invencible.
+
+| Tecla | Qué hace |
+|---|---|
+| F1 | Invencible sí / no: ni los golpes ni las caídas quitan vida |
+| F2 | Piso anterior |
+| F3 | Piso siguiente |
+| F4 | Mata a los enemigos de la sala en la que estás (con explosiones y crías) |
+
+Al equilibrar, ojo con dejar puesta la invencibilidad: un piso parece fácil
+cuando no te pueden dar.
+
 ## Cómo se juega ahora mismo
 
 Cada piso es un **mapa de salas** unidas por puertas, como en *Isaac*. Empiezas

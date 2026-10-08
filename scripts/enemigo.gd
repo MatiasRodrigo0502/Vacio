@@ -138,6 +138,16 @@ func esta_apuntando() -> bool:
 	return _apuntando > 0.0
 
 
+## Muere ya, con la vida que le quede. Muere como con el ultimo disparo
+## (explosion, crias, avisos), porque eso es lo que se quiere probar. Solo la
+## usa el atajo de prueba F4 (AtajosPrueba).
+func matar() -> void:
+	if _vida <= 0:
+		return
+	_vida = 1
+	romper()
+
+
 ## La llama la bola magica. Aguanta varios impactos.
 ##
 ## El ataque cargado reparte varios impactos de golpe, asi que puede llamar a

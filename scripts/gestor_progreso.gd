@@ -108,6 +108,22 @@ func terminar_por_derrota() -> void:
 	partida_perdida.emit()
 
 
+## Salta directamente a un piso, sin pasar por los de antes. Solo la usan los
+## atajos de prueba (F2 y F3, ver AtajosPrueba): en una partida normal se baja
+## siempre con avanzar_piso(). Emite la misma senal que un avance, asi que la
+## partida monta el piso igual que si se hubiera llegado bajando.
+func ir_a_piso(numero_piso: int) -> void:
+	if partida_terminada or pisos.is_empty():
+		return
+	var destino := clampi(numero_piso, 1, pisos.size())
+	# F2 en el piso 1 o F3 en el 12: no hay a donde ir. Sin esto se volveria
+	# a montar el mismo piso y se perderia lo hecho en el.
+	if destino == piso_actual:
+		return
+	piso_actual = destino
+	piso_cambiado.emit(piso_actual, pisos[piso_actual - 1])
+
+
 ## Devuelve los datos de un piso por numero (1..N) o null si no existe.
 func obtener_datos_piso(numero_piso: int) -> DatosPiso:
 	if numero_piso < 1 or numero_piso > pisos.size():

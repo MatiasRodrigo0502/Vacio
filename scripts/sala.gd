@@ -278,6 +278,12 @@ func enemigos_vivos() -> int:
 	return _enemigos.size()
 
 
+## Una copia de la lista, para recorrerla mientras se mueren: al morir, cada
+## enemigo se borra de la lista de verdad.
+func enemigos() -> Array[Enemigo]:
+	return _enemigos.duplicate()
+
+
 func esta_despejada() -> bool:
 	return _enemigos.is_empty()
 

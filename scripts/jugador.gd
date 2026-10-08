@@ -86,6 +86,10 @@ const LADOS: Array[StringName] = [
 ]
 
 var vida_actual: int = 0
+## Ningun golpe quita vida, ni la caida. Solo lo enciende el atajo de prueba
+## F1 (AtajosPrueba), que no existe en el .exe: sirve para ver los pisos de
+## abajo sin morir por el camino.
+var invencible: bool = false
 
 ## Valores de fabrica, para poder devolver al jugador a como empezo cuando se
 ## empieza una partida nueva. Las mejoras se acumulan durante toda la partida,
@@ -402,7 +406,7 @@ func _color_normal() -> Color:
 ## 'forzar' se salta la invulnerabilidad. Solo lo usa la caida: caerse tiene
 ## que costar siempre, o caer justo despues de un golpe saldria gratis.
 func recibir_dano(cantidad: int = 1, forzar: bool = false) -> bool:
-	if vida_actual <= 0:
+	if vida_actual <= 0 or invencible:
 		return false
 	if not forzar and (esta_invulnerable() or _cayendo):
 		return false
