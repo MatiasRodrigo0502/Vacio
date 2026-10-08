@@ -141,7 +141,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
   ratón, con cadencia. Matan enemigos; **no** rompen rocas, y las rocas los
   paran (ver la trampa del `Area2D` más abajo).
-- **Ataque cargado**: clic derecho mantenido. Se carga en `tiempo_carga`
+- **Ataque cargado**: clic derecho o espacio, mantenido (apunta al ratón). Se carga en `tiempo_carga`
   (0,75 s), hay que **soltarlo** para que salga y soltarlo antes de tiempo no
   dispara nada. Atraviesa enemigos y hace 3 de daño; las rocas lo paran igual.
   Mientras cargas, el disparo normal se calla. El aviso visual lo dibuja

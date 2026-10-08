@@ -16,7 +16,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 - **Al empezar:** se elige entre el mago oscuro y el mago rojo. Cada uno tiene una ventaja y una pega.
 - **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón.
-- **Ataque cargado:** mantener el clic derecho y soltarlo cuando está cargado. Atraviesa enemigos y hace 3 de daño.
+- **Ataque cargado:** mantener el clic derecho o el espacio y soltarlo cuando está cargado. Atraviesa enemigos y hace 3 de daño.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Enemigos:** salen desde el piso 2. Los de cuerpo a cuerpo son rápidos; los de distancia, lentos pero quitan más vida.
 - **Peligros del suelo:** pinchos, agujeros al vacío y lava.

@@ -70,7 +70,7 @@ se queda y el motivo está en `build/exportar.log`.
 |---|---|
 | Moverse | WASD |
 | Disparar | Flechas, o clic izquierdo apuntando con el ratón |
-| Ataque cargado | Clic derecho **mantenido**: se suelta cuando el aro se cierra |
+| Ataque cargado | Clic derecho o espacio, **mantenido**: se suelta cuando el aro se cierra. Apunta al ratón |
 | Reiniciar partida | R |
 | Pausa | Esc |
 
@@ -134,7 +134,7 @@ más según bajas.
 Disparas bolas mágicas para matarlos, con las flechas en las cuatro direcciones
 o con el clic izquierdo apuntando donde quieras.
 
-Manteniendo el **clic derecho** cargas un ataque más fuerte: delante del mago se
+Manteniendo el **clic derecho** o el **espacio** cargas un ataque más fuerte: delante del mago se
 forma una bola morada que crece, y un aro que se va cerrando dice cuánto falta.
 Cuando el aro se cierra, sueltas y sale. Atraviesa a los enemigos y mata de un
 golpe a los que hay ahora, pero las rocas lo paran igual que al disparo normal.
