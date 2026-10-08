@@ -1,4 +1,4 @@
 #!/bin/sh
 # Tras cada pull que trae cambios del resto del equipo, lo mismo que tras un
-# commit: rehacer build/Vacio.exe (ver post-commit).
+# commit: rehacer lo de build/ (ver post-commit).
 exec "$(dirname "$0")/post-commit"

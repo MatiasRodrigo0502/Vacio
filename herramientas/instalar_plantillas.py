@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Instala la plantilla de exportacion de Windows de Godot, sin el resto.
+"""Instala las plantillas de exportacion de Windows y Linux de Godot, sin el resto.
 
-Para sacar el .exe del juego, Godot necesita sus "plantillas de exportacion".
+Para sacar el juego exportado, Godot necesita sus "plantillas de exportacion".
 El gestor del editor baja un .tpz oficial de 1,28 GB con todas las
-plataformas, pero aqui solo hace falta una: windows_release_x86_64.exe
-(unos 38 MB). El .tpz es un zip, y GitHub deja pedir trozos sueltos de un
+plataformas, pero aqui solo hacen falta dos: windows_release_x86_64.exe
+(unos 38 MB) y linux_release.x86_64 (unos 28 MB). El .tpz es un zip, y
+GitHub deja pedir trozos sueltos de un
 archivo (cabecera Range). Asi que se lee el indice del zip, que esta al
 final, y se bajan solo los bytes de lo que hace falta.
 
 Cada archivo se comprueba con el CRC32 que trae el propio indice: si la
 descarga llega mal, no se instala.
 
-    python herramientas/instalar_plantilla_windows.py
+    python herramientas/instalar_plantillas.py
 
-Solo hace falta una vez por ordenador y por version de Godot. Si se cambia
+Solo hace falta una vez por ordenador y por version de Godot. Lo que ya esta
+instalado y entero no se vuelve a bajar. Si se cambia
 de version, se cambia VERSION abajo.
 """
 import os
@@ -26,12 +28,16 @@ VERSION = "4.7.2"
 URL = ("https://github.com/godotengine/godot/releases/download/"
        "%s-stable/Godot_v%s-stable_export_templates.tpz" % (VERSION, VERSION))
 # Lo que se instala. version.txt lo usa el gestor del editor para saber que
-# version hay; la exportacion en si solo necesita el .exe.
-QUEREMOS = ["templates/version.txt", "templates/windows_release_x86_64.exe"]
+# version hay; la exportacion en si solo necesita las plantillas.
+QUEREMOS = [
+    "templates/version.txt",
+    "templates/windows_release_x86_64.exe",
+    "templates/linux_release.x86_64",
+]
 
 def carpeta_godot():
     """Donde guarda Godot sus datos en cada sistema. Ademas de Windows, Linux:
-    GitHub exporta el .exe para la release en una maquina Linux
+    GitHub exporta el juego para la release en una maquina Linux
     (.github/workflows/publicar.yml) con este mismo script."""
     if sys.platform == "win32":
         return os.path.join(os.environ["APPDATA"], "Godot")
@@ -131,8 +137,14 @@ def main():
     for nombre in QUEREMOS:
         if nombre not in entradas:
             sys.exit("El .tpz no trae %s." % nombre)
+        # Ya instalada y del tamano que dice el indice: no hace falta bajarla
+        # otra vez (quien ya tenia la de Windows solo baja la de Linux).
+        final = os.path.join(DESTINO, os.path.basename(nombre))
+        if os.path.isfile(final) and os.path.getsize(final) == entradas[nombre][3]:
+            print("  %s: ya estaba" % os.path.basename(nombre))
+            continue
         bajar(nombre, entradas[nombre])
-    print("Plantilla instalada en", DESTINO)
+    print("Plantillas instaladas en", DESTINO)
 
 
 if __name__ == "__main__":

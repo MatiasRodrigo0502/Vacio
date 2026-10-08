@@ -25,7 +25,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 **Dónde está:**
 
 - **Código:** [github.com/MatiasRodrigo0502/Vacio](https://github.com/MatiasRodrigo0502/Vacio)
-- **Para jugar sin Godot:** [Vacio.exe, última versión](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe)
+- **Para jugar sin Godot:** [Vacio.exe para Windows](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe) o [Vacio.x86_64 para Linux](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.x86_64), última versión
 
 ## Reglas y forma de trabajar
 
@@ -65,6 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
+| 08/10/2026 | Versión para Linux, en local y en la release | — |
+| 08/10/2026 | Atajos de prueba: F1 invencible, F2/F3 piso, F4 limpiar sala | `021a159` |
 | 06/10/2026 | Release en GitHub con el `.exe`, rehecha en cada push a `main` | `72de619` |
 | 06/10/2026 | `build/Vacio.exe` que se rehace solo tras cada commit y pull | `04e21ef` |
 | 30/09/2026 | Bordes de las salas: roca maciza, sombra, pilares y rastrillo que baja | `e779fa0` |
@@ -150,26 +152,27 @@ Cada tramo de pisos tiene su arte, unas partes de packs de itch.io, otras dibuja
 
 ## Ejecutable, release y herramientas
 
-El juego se exporta solo a un único `.exe` de unos 110 MB que se abre sin tener Godot, y hay dos copias que se mantienen al día sin hacer nada.
+El juego se exporta solo a un único archivo por sistema que se abre sin tener Godot: `Vacio.exe` para Windows (unos 110 MB) y `Vacio.x86_64` para Linux (unos 78 MB). Hay dos copias que se mantienen al día sin hacer nada.
 
 | Copia | Dónde | Cuándo se rehace | Quién la hace |
 | --- | --- | --- | --- |
-| Local | `build/Vacio.exe` en cada ordenador | Tras cada commit y cada pull, en unos 15 s | Los hooks de `.githooks/`, que lanzan `herramientas/exportar.sh` |
+| Local | `build/` en cada ordenador | Tras cada commit y cada pull, en unos 15 s | Los hooks de `.githooks/`, que lanzan `herramientas/exportar.sh` |
 | Pública | [Release `ultima-version` en GitHub](https://github.com/MatiasRodrigo0502/Vacio/releases/latest) | Tras cada push a `main` que no toque solo archivos `.md` | El workflow `.github/workflows/publicar.yml`, con los mismos scripts |
 
 - **Se puede actualizar con el juego abierto:** la partida abierta sigue y la próxima vez arranca el nuevo.
-- **Si una exportación falla,** se queda el `.exe` anterior y el motivo está en `build/exportar.log`, o en la pestaña Actions de GitHub.
+- **Si una exportación falla,** se queda la versión anterior y el motivo está en `build/exportar.log`, o en la pestaña Actions de GitHub.
 - **Windows puede avisar** de que el `.exe` es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*.
-- **Comprobado:** una copia de prueba del `.exe` recorrió sola los 12 pisos y llegó a la victoria. El de GitHub mide exactamente lo mismo que el local.
+- **En Linux** hay que darle permiso para ejecutarse antes de abrirlo: `chmod +x Vacio.x86_64`.
+- **Comprobado:** una copia de prueba del `.exe` recorrió sola los 12 pisos y llegó a la victoria. El de GitHub mide exactamente lo mismo que el local. La versión de Linux la arranca GitHub antes de publicarla, y no publica nada si da errores.
 
-**Para que un compañero tenga el `.exe` local,** una vez por ordenador:
+**Para que un compañero tenga las versiones en su ordenador,** una vez por ordenador:
 
 ```bash
-python herramientas/instalar_plantilla_windows.py
+python herramientas/instalar_plantillas.py
 git config core.hooksPath .githooks
 ```
 
-El primero baja de la release oficial de Godot solo la plantilla de Windows (38 MB en vez del paquete entero de 1,28 GB). El segundo activa los hooks, que git no activa solo por seguridad.
+El primero baja de la release oficial de Godot solo las plantillas de Windows y Linux (66 MB en vez del paquete entero de 1,28 GB). El segundo activa los hooks, que git no activa solo por seguridad.
 
 **Herramientas del proyecto** (carpeta `herramientas/`):
 
@@ -178,8 +181,8 @@ El primero baja de la release oficial de Godot solo la plantilla de Windows (38 
 | `generar_nucleo.py` | Arte de los pisos 9-12 |
 | `generar_peligros.py` | Arte de lava, pinchos y vacío |
 | `generar_bordes.py` | Muro, pilares y rejas de las salas |
-| `exportar.sh` | Exportar el `.exe` (a mano: `bash herramientas/exportar.sh`) |
-| `instalar_plantilla_windows.py` | Instalar la plantilla de exportación de Windows |
+| `exportar.sh` | Exportar las versiones de Windows y Linux (a mano: `bash herramientas/exportar.sh`) |
+| `instalar_plantillas.py` | Instalar las plantillas de exportación de Windows y Linux |
 
 Para jugar desde el proyecto sin exportar está `jugar.bat`, que abre el juego con un doble clic.
 
@@ -216,7 +219,6 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 - [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones, con 3 o 4 corazones de vida. Todo se ajusta en los `.tres` de `resources/`.
 - [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así.
 - [ ] **Verificar las licencias de los packs.** `CREDITS.md` tiene autores y enlaces, pero la licencia de cada uno está sin comprobar.
-- [ ] **Comprobar que la release se actualiza.** Se creó bien, pero el paso que la actualiza se probará en el próximo push que toque código.
 
 **Decide Matías:**
 

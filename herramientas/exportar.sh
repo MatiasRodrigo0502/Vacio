@@ -1,23 +1,22 @@
 #!/usr/bin/env bash
-# Exporta el juego a build/Vacio.exe: un solo archivo, con todo dentro, que
-# se abre con doble clic sin tener Godot.
+# Exporta el juego a build/: Vacio.exe para Windows y Vacio.x86_64 para Linux.
+# Cada uno es un solo archivo, con todo dentro, que se abre sin tener Godot.
 #
 # Lo lanzan solos los hooks de git (.githooks/) tras cada commit y cada pull,
-# asi que el .exe siempre va con la ultima version. Tambien se puede lanzar a
+# asi que siempre van con la ultima version. Tambien se puede lanzar a
 # mano desde Git Bash:
 #
 #     bash herramientas/exportar.sh
 #
-# Necesita la plantilla de Windows de Godot instalada una vez por ordenador:
+# Necesita las plantillas de Windows y Linux de Godot instaladas una vez por
+# ordenador:
 #
-#     python herramientas/instalar_plantilla_windows.py
+#     python herramientas/instalar_plantillas.py
 
 set -u
 
 RAIZ="$(cd "$(dirname "$0")/.." && (pwd -W 2>/dev/null || pwd))"
 BUILD="$RAIZ/build"
-EXE="$BUILD/Vacio.exe"
-NUEVO="$BUILD/Vacio.nuevo.exe"
 REGISTRO="$BUILD/exportar.log"
 # Si llega otro commit mientras se exporta, no se lanza otro Godot a la vez
 # (los dos escribirian el mismo archivo): se apunta en PENDIENTE y quien tiene
@@ -82,12 +81,52 @@ if [ ! -d "$RAIZ/.godot" ]; then
 	"$GODOT_EXE" --headless --path "$RAIZ" --import >"$REGISTRO" 2>&1
 fi
 
+# Las versiones que se exportan: el nombre del preset (export_presets.cfg) y
+# el archivo que sale en build/. Una mas es una linea mas aqui y un preset.
+VERSIONES=(
+	"Windows Desktop|Vacio.exe"
+	"Linux|Vacio.x86_64"
+)
+
+# Exporta una version y la pone en su sitio. Devuelve 0 si ha salido bien.
+exportar_version() {
+	local preset="$1" archivo="$2"
+	local base="${archivo%.*}" extension="${archivo##*.}"
+	local destino="$BUILD/$archivo"
+	local nuevo="$BUILD/$base.nuevo.$extension"
+	rm -f "$nuevo"
+	echo "=== $preset ===" >>"$REGISTRO"
+	"$GODOT_EXE" --headless --path "$RAIZ" --export-release "$preset" "$nuevo" \
+		>>"$REGISTRO" 2>&1
+	local codigo=$?
+	if [ $codigo -ne 0 ] || [ ! -s "$nuevo" ]; then
+		echo "$archivo ha fallado (codigo $codigo). Detalles en build/exportar.log." \
+			| tee -a "$REGISTRO"
+		return 1
+	fi
+	# Se exporta a un archivo aparte y se cambia al final: si falla a medias,
+	# el de antes sigue sirviendo.
+	#
+	# Windows no deja sobrescribir ni borrar un .exe abierto, pero si
+	# renombrarlo. Asi se puede actualizar aunque se este jugando: el abierto
+	# pasa a llamarse Vacio.viejo.*.exe y el nuevo ocupa su sitio.
+	if [ -e "$destino" ]; then
+		mv -f "$destino" "$BUILD/$base.viejo.$(date +%s).$extension"
+	fi
+	mv -f "$nuevo" "$destino"
+	# Linux necesita el permiso de ejecucion para abrirlo.
+	chmod +x "$destino" 2>/dev/null
+	rm -f "$BUILD"/"$base".viejo.* 2>/dev/null
+	echo "Listo: build/$archivo ($commit)" | tee -a "$REGISTRO"
+	return 0
+}
+
 resultado=0
 while :; do
-	rm -f "$PENDIENTE" "$NUEVO"
-	# Copias viejas de vueltas anteriores (ver mas abajo). Si alguna sigue
-	# abierta, Windows no deja borrarla: se queda para la proxima.
-	rm -f "$BUILD"/Vacio.viejo.*.exe 2>/dev/null
+	rm -f "$PENDIENTE"
+	# Copias viejas de vueltas anteriores (ver exportar_version). Si alguna
+	# sigue abierta, Windows no deja borrarla: se queda para la proxima.
+	rm -f "$BUILD"/Vacio.viejo.* 2>/dev/null
 
 	commit="$(git -C "$RAIZ" log -1 --format='%h %s' 2>/dev/null)"
 	{
@@ -95,29 +134,12 @@ while :; do
 		echo "Fecha: $(date '+%Y-%m-%d %H:%M:%S')"
 		echo
 	} >"$REGISTRO"
-	"$GODOT_EXE" --headless --path "$RAIZ" --export-release "Windows Desktop" "$NUEVO" \
-		>>"$REGISTRO" 2>&1
-	codigo=$?
-
-	if [ $codigo -eq 0 ] && [ -s "$NUEVO" ]; then
-		# Se exporta a un archivo aparte y se cambia al final: si falla a
-		# medias, el Vacio.exe de antes sigue sirviendo.
-		#
-		# Windows no deja sobrescribir ni borrar un .exe abierto, pero si
-		# renombrarlo. Asi se puede actualizar aunque se este jugando: el
-		# abierto pasa a llamarse Vacio.viejo.*.exe y el nuevo ocupa su sitio.
-		if [ -e "$EXE" ]; then
-			mv -f "$EXE" "$BUILD/Vacio.viejo.$(date +%s).exe"
-		fi
-		mv -f "$NUEVO" "$EXE"
-		rm -f "$BUILD"/Vacio.viejo.*.exe 2>/dev/null
-		echo "Listo: build/Vacio.exe ($commit)" | tee -a "$REGISTRO"
-		resultado=0
-	else
-		echo "La exportacion ha fallado (codigo $codigo). Detalles en build/exportar.log." \
-			| tee -a "$REGISTRO"
-		resultado=1
-	fi
+	resultado=0
+	# Si una version falla se sigue con las demas: que Linux falle no es motivo
+	# para quedarse sin el .exe nuevo.
+	for version in "${VERSIONES[@]}"; do
+		exportar_version "${version%%|*}" "${version##*|}" || resultado=1
+	done
 
 	if [ ! -e "$PENDIENTE" ]; then
 		break

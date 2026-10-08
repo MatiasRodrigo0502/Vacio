@@ -1,12 +1,13 @@
 # Exporta el juego y lo publica en la release "ultima-version" con cada push a
-# main. Asi cualquiera (el profesor, alguien sin el proyecto) se baja el .exe
-# de la ultima version sin tener Godot:
+# main. Asi cualquiera (el profesor, alguien sin el proyecto) se baja la
+# ultima version, para Windows (Vacio.exe) o Linux (Vacio.x86_64), sin tener
+# Godot:
 #
 #     https://github.com/MatiasRodrigo0502/Vacio/releases/latest
 #
-# Usa los mismos scripts que el hook local (herramientas/), para que el .exe
-# de GitHub y el de cada ordenador salgan de la misma receta.
-name: Publicar el .exe
+# Usa los mismos scripts que el hook local (herramientas/), para que lo que
+# hay en GitHub y lo de cada ordenador salga de la misma receta.
+name: Publicar el juego
 
 on:
   push:
@@ -47,8 +48,8 @@ jobs:
           unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
           echo "GODOT=$RUNNER_TEMP/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" >> "$GITHUB_ENV"
 
-      - name: Instalar la plantilla de Windows
-        run: python3 herramientas/instalar_plantilla_windows.py
+      - name: Instalar las plantillas de Windows y Linux
+        run: python3 herramientas/instalar_plantillas.py
 
       - name: Exportar
         run: bash herramientas/exportar.sh
@@ -57,6 +58,18 @@ jobs:
       - name: Ensenar el registro si ha fallado
         if: failure()
         run: tail -n 80 build/exportar.log || true
+
+      # Esta maquina es Linux: se puede arrancar la version de Linux de verdad
+      # (sin ventana) y ver que el juego carga sin errores. La de Windows no se
+      # puede abrir aqui; esa se prueba en los ordenadores del equipo.
+      - name: Arrancar la version de Linux
+        run: |
+          timeout 60 build/Vacio.x86_64 --headless --quit-after 300 > "$RUNNER_TEMP/arranque.log" 2>&1 || true
+          cat "$RUNNER_TEMP/arranque.log"
+          grep -q "Godot Engine" "$RUNNER_TEMP/arranque.log" || { echo "No ha llegado a arrancar"; exit 1; }
+          if grep -qE "SCRIPT ERROR|^ERROR" "$RUNNER_TEMP/arranque.log"; then
+            echo "El juego arranca con errores"; exit 1
+          fi
 
       - name: Publicar
         env:
@@ -68,9 +81,10 @@ jobs:
           {
             echo "Última versión del juego. Se rehace sola con cada cambio que se sube a \`main\`."
             echo
-            echo "**Para jugar:** descarga \`Vacio.exe\` y ábrelo. No hace falta instalar nada ni tener Godot."
+            echo "**Para jugar** no hace falta instalar nada ni tener Godot:"
             echo
-            echo "Windows puede avisar de que es de un editor desconocido, porque el .exe no está firmado: *Más información → Ejecutar de todas formas*."
+            echo "- **Windows:** descarga \`Vacio.exe\` y ábrelo. Puede avisar de que es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*."
+            echo "- **Linux:** descarga \`Vacio.x86_64\`, dale permiso para ejecutarse (\`chmod +x Vacio.x86_64\`) y ábrelo."
             echo
             echo "Versión: \`$commit\` — $asunto ($fecha)"
           } > "$RUNNER_TEMP/notas.md"
@@ -78,12 +92,12 @@ jobs:
           # Una sola release que se actualiza, en vez de una nueva por cada
           # push: el enlace no cambia y no se llena la lista de releases.
           if gh release view "$ETIQUETA" >/dev/null 2>&1; then
-            # La etiqueta pasa al commit nuevo, y se cambian el .exe y las notas.
+            # La etiqueta pasa al commit nuevo, y se cambian los archivos y las notas.
             gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/$ETIQUETA" \
               -f sha="$GITHUB_SHA" -F force=true > /dev/null
-            gh release upload "$ETIQUETA" build/Vacio.exe --clobber
+            gh release upload "$ETIQUETA" build/Vacio.exe build/Vacio.x86_64 --clobber
             gh release edit "$ETIQUETA" --notes-file "$RUNNER_TEMP/notas.md"
           else
-            gh release create "$ETIQUETA" build/Vacio.exe --target "$GITHUB_SHA" \
+            gh release create "$ETIQUETA" build/Vacio.exe build/Vacio.x86_64 --target "$GITHUB_SHA" \
               --title "Vacío — última versión" --notes-file "$RUNNER_TEMP/notas.md" --latest
           fi

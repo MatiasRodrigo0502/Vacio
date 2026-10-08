@@ -19,41 +19,48 @@ cueva; el 3 es cueva pelada, del 4 al 8 el manto y del 9 al 12 el núcleo.
 
 ## Descargar el juego
 
-La última versión, lista para jugar en Windows sin instalar nada:
-**[Vacio.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe)**
-(página de la release:
-[releases/latest](https://github.com/MatiasRodrigo0502/Vacio/releases/latest)).
+La última versión, lista para jugar sin instalar nada ni tener Godot:
+
+- **Windows:** [Vacio.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe).
+  Puede avisar de que es de un editor desconocido (no está firmado):
+  *Más información → Ejecutar de todas formas*.
+- **Linux:** [Vacio.x86_64](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.x86_64).
+  Antes de abrirlo hay que darle permiso para ejecutarse:
+  `chmod +x Vacio.x86_64`.
+
+Página de la release:
+[releases/latest](https://github.com/MatiasRodrigo0502/Vacio/releases/latest).
 
 GitHub la rehace sola con cada push a `main` (`.github/workflows/publicar.yml`,
-unos minutos), así que el enlace siempre lleva a lo último. Es una sola
+unos minutos), así que los enlaces siempre llevan a lo último. Es una sola
 release, `ultima-version`, que se actualiza: su etiqueta se mueve al commit
-nuevo. Si solo cambian archivos `.md`, no se rehace. Windows puede avisar de
-que el `.exe` es de un editor desconocido (no está firmado): *Más información →
-Ejecutar de todas formas*.
+nuevo. Si solo cambian archivos `.md`, no se rehace. Antes de publicar, GitHub
+arranca la versión de Linux y no publica nada si da errores.
 
-## Jugar sin Godot: `build/Vacio.exe`
+## Jugar sin Godot: `build/`
 
-El juego exportado es **un solo archivo**, `build/Vacio.exe`, que se abre con
-doble clic sin tener Godot. No se sube a git (pesa 110 MB); cada uno lo genera
-en su ordenador, y **se rehace solo después de cada commit y cada pull**, en
-segundo plano (unos 15 segundos). Se puede abrir mientras se actualiza: el
-abierto sigue funcionando y la próxima vez arranca el nuevo.
+El juego exportado es **un solo archivo** por sistema, que se abre sin tener
+Godot: `build/Vacio.exe` para Windows y `build/Vacio.x86_64` para Linux. No se
+suben a git (pesan 110 y 78 MB); cada uno los genera en su ordenador, y **se
+rehacen solos después de cada commit y cada pull**, en segundo plano (unos 15
+segundos). Se pueden abrir mientras se actualizan: el abierto sigue
+funcionando y la próxima vez arranca el nuevo.
 
 Para que funcione, una sola vez por ordenador:
 
 ```bash
-python herramientas/instalar_plantilla_windows.py
+python herramientas/instalar_plantillas.py
 git config core.hooksPath .githooks
 ```
 
-La primera línea baja de la release oficial de Godot solo la plantilla de
-Windows (38 MB en vez del paquete entero de 1,28 GB). La segunda activa los
-hooks de `.githooks/`: git no los activa solo, por seguridad.
+La primera línea baja de la release oficial de Godot solo las plantillas de
+Windows y Linux (66 MB en vez del paquete entero de 1,28 GB). La segunda activa
+los hooks de `.githooks/`: git no los activa solo, por seguridad.
 
 Si Godot no está en una de las rutas que conoce el script, hay que definir la
-variable `GODOT` con la ruta del `.exe` (o añadirla en
-`herramientas/exportar.sh`). Para rehacerlo a mano, sin commit:
-`bash herramientas/exportar.sh`. Si una exportación falla, el `.exe` anterior
+variable `GODOT` con la ruta del ejecutable de Godot (o añadirla en
+`herramientas/exportar.sh`). Para rehacerlos a mano, sin commit:
+`bash herramientas/exportar.sh`. Si una exportación falla, la versión anterior
 se queda y el motivo está en `build/exportar.log`.
 
 ## Controles
@@ -73,7 +80,7 @@ cada uno donde hace falta.
 ### Atajos de prueba (solo para el equipo)
 
 Para probar y equilibrar sin jugar la partida entera. **Solo funcionan al jugar
-desde Godot** (el editor o `jugar.bat`); en el `.exe` no existen. Se recuerdan
+desde Godot** (el editor o `jugar.bat`); en el juego exportado no existen. Se recuerdan
 abajo a la izquierda de la pantalla, en rojo mientras eres invencible.
 
 | Tecla | Qué hace |
@@ -225,7 +232,7 @@ La regla práctica para no pisarse:
   escenas empiezan a apuntar a scripts distintos.
 - `.gitattributes` fuerza LF en todos los archivos de texto para que Windows no
   genere diffs falsos.
-- `export_presets.cfg` **sí se versiona**: es la receta del `.exe`. Si alguien
+- `export_presets.cfg` **sí se versiona**: es la receta del `.exe` y del ejecutable de Linux. Si alguien
   cambia la exportación desde el editor, se sube como cualquier otro cambio.
 
 ## Qué NO está hecho todavía (fases siguientes)

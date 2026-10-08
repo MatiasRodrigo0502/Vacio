@@ -96,15 +96,21 @@ impresión visual era la contraria a la medición).
 
 Para lanzar el juego: `jugar.bat` en la raíz.
 
-**El ejecutable, `build/Vacio.exe`, se rehace solo** tras cada commit y cada
+**Los ejecutables, `build/Vacio.exe` (Windows) y `build/Vacio.x86_64`
+(Linux), se rehacen solos** tras cada commit y cada
 pull (`.githooks/post-commit` y `post-merge` → `herramientas/exportar.sh`, en
 segundo plano, ~15 s). No hay que hacer nada después de commitear; si falla, el
 motivo está en `build/exportar.log` y el `.exe` anterior se queda. En este
-ordenador ya están la plantilla de Windows y `core.hooksPath`.
+ordenador ya están las plantillas de Windows y Linux y `core.hooksPath`.
+Las versiones que se exportan están en la lista `VERSIONES` de
+`exportar.sh`; si una falla, las demás se exportan igual.
 
 **En GitHub hay además una release, `ultima-version`,** que rehace
 `.github/workflows/publicar.yml` con cada push a `main` (en Linux, con los
-mismos scripts de `herramientas/`). No hay que hacer nada tras el push. Si
+mismos scripts de `herramientas/`) con los dos archivos. Antes de publicar
+arranca la versión de Linux sin ventana y para si hay errores: es la única
+prueba del binario de Linux, porque en este ordenador no hay WSL. No hay que
+hacer nada tras el push. Comprobado el 2026-10-08 que se actualiza bien. Si
 falla, el registro sale en la pestaña Actions. `gh` no tiene sesión iniciada en
 este ordenador: el estado de las ejecuciones se mira con la API pública
 (`curl https://api.github.com/repos/MatiasRodrigo0502/Vacio/actions/runs`).
@@ -399,7 +405,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   cuarta que se escriba tiene que hacer lo mismo, o en el `.exe` no cargará
   nada aunque en el editor funcione.
 - **El servidor de las releases de GitHub no acepta `Range: bytes=-N`** (los
-  últimos N bytes): responde 501. `instalar_plantilla_windows.py` pide primero
+  últimos N bytes): responde 501. `instalar_plantillas.py` pide primero
   el tamaño con un HEAD y luego el rango exacto.
 
 - **En Python, `open(ruta, "w", ...)` vacía el archivo antes de comprobar el

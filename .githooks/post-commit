@@ -1,8 +1,9 @@
 #!/bin/sh
-# Tras cada commit, rehace build/Vacio.exe con lo que se acaba de guardar.
+# Tras cada commit, rehace build/Vacio.exe y build/Vacio.x86_64 con lo que
+# se acaba de guardar.
 #
 # Va en segundo plano: exportar tarda unos 15 segundos y el commit no tiene
-# por que esperarlos. Si falla, el .exe de antes se queda y el motivo esta en
+# por que esperarlos. Si falla, la version de antes se queda y el motivo esta en
 # build/exportar.log.
 #
 # Git no activa los hooks de una carpeta del repositorio por su cuenta (es a
