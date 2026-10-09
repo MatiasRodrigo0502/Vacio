@@ -326,6 +326,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   el 2026-10-08 los escenarios son todos propios y los packs de itch.io ya no
   se usan: de fuera solo quedan las hojas de los magos (el blanco sale de la
   del rojo, así que tiene la misma duda).
+- **Multijugador: valorado, sin empezar** (2026-10-09). El estudio está en
+  `docs/mejoras-futuras/multijugador.md`: viable, por fases (red local, juego
+  cooperativo, internet con código de sala). No empezar sin que el equipo
+  cierre las decisiones de su última lista.
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
   enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar

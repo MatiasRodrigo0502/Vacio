@@ -248,6 +248,10 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 - [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así. El blanco sale de la del rojo.
 - [ ] **Verificar las licencias de lo que queda de fuera.** Los escenarios ya son todos propios; de fuera quedan los magos (ver el punto anterior). Los packs de itch.io de antes ya no se usan.
 
+**Mejoras futuras valoradas** (cada una con su estudio en [mejoras-futuras/](mejoras-futuras/)):
+
+- **Multijugador cooperativo** de 2–3 personas desde ordenadores distintos, con sala por código. Es viable; faltan las decisiones del equipo. Ver [el estudio](mejoras-futuras/multijugador.md).
+
 **Ideas no pedidas todavía:**
 
 - Una sala de jefe en el piso 12.

@@ -278,6 +278,11 @@ La regla práctica para no pisarse:
 
 ## Qué NO está hecho todavía (fases siguientes)
 
+Las mejoras grandes que el equipo ha valorado para más adelante, con su
+estudio (qué haría falta, riesgos y decisiones pendientes), están en
+[`docs/mejoras-futuras/`](docs/mejoras-futuras/): de momento, el multijugador
+cooperativo con sala por código.
+
 Sistema de puntuación y guardado. Los obstáculos móviles ya
 están: del piso 4 en adelante, parte de las rocas van y vienen, y es la primera
 `Mecanica` del proyecto. El suelo sigue siendo color
