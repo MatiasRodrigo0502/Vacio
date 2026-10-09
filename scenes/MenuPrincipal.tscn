@@ -121,8 +121,7 @@ theme_override_font_sizes/font_size = 22
 text = "moverte
 disparar
 ataque especial
-reiniciar
-pausa  ·  cerrar esto"
+pausa y reiniciar  ·  cerrar esto"
 horizontal_alignment = 2
 
 [node name="Botones" type="Label" parent="PanelControles/Centro/Caja/Teclas"]
@@ -132,7 +131,6 @@ theme_override_font_sizes/font_size = 22
 text = "W A S D
 flechas o clic izq.
 clic der. o espacio
-R
 Esc"
 
 [node name="Reglas" type="Label" parent="PanelControles/Centro/Caja"]

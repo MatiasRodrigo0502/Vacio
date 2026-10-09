@@ -83,8 +83,7 @@ se queda y el motivo está en `build/exportar.log`.
 | Moverse | WASD |
 | Disparar | Flechas, o clic izquierdo apuntando con el ratón |
 | Ataque especial | Clic derecho o espacio, **una vez por piso**. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra (apunta al ratón). Mago blanco: saca el escudo |
-| Reiniciar partida | R |
-| Pausa | Esc |
+| Pausa (continuar, reiniciar o volver al menú) | Esc |
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
 el piso 1 hace de tutorial y los explica con carteles pintados sobre el suelo,

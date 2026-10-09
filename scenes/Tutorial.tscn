@@ -14,12 +14,12 @@ text = "WASD  para moverte"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Reiniciar" type="Label" parent="."]
+[node name="Pausa" type="Label" parent="."]
 modulate = Color(1, 0.898039, 0.717647, 0.5)
 offset_right = 1000.0
 offset_bottom = 42.0
 theme_override_font_sizes/font_size = 30
-text = "R  ·  reiniciar          Esc  ·  pausa"
+text = "Esc  ·  pausa, reiniciar o volver al menú"
 horizontal_alignment = 1
 vertical_alignment = 1
 

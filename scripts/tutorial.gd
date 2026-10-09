@@ -18,7 +18,7 @@ extends Node2D
 @onready var _puertas: Label = $Puertas
 @onready var _esquivar: Label = $Esquivar
 @onready var _bajar: Label = $Bajar
-@onready var _reiniciar: Label = $Reiniciar
+@onready var _pausa: Label = $Pausa
 
 
 ## Reparte los carteles. La llama Piso al construirse, con el centro de la
@@ -31,7 +31,7 @@ extends Node2D
 ## que es justo cuando hace falta saberlo. El de bajar, junto al agujero.
 func colocar(inicio: Vector2, tamano_sala: Vector2, salida: Vector2) -> void:
 	_centrar(_mover, inicio + Vector2(0.0, 78.0))
-	_centrar(_reiniciar, inicio + Vector2(0.0, 132.0))
+	_centrar(_pausa, inicio + Vector2(0.0, 132.0))
 	_centrar(_bola, inicio + Vector2(0.0, 200.0))
 	_centrar(_cargado, inicio + Vector2(0.0, 256.0))
 	# A 95 del borde: a 120 se pegaba al cartel del ataque cargado (en el

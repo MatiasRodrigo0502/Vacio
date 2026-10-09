@@ -58,12 +58,6 @@ func _ready() -> void:
 	GestorProgreso.iniciar_partida()
 
 
-func _unhandled_input(evento: InputEvent) -> void:
-	# Atajo de teclado para reiniciar sin tener que ir al boton.
-	if evento.is_action_pressed("reiniciar_partida"):
-		_reiniciar()
-
-
 ## Monta el piso indicado. Se llama tanto en el primer piso como en cada avance.
 func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	_descargar_piso()
