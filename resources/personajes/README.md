@@ -17,7 +17,7 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 |---|---|---|
 | Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
 | Mago rojo | +1 corazón, tiempo de carga ×0,5, +2 de daño cargado | −25 px/s de velocidad |
-| Mago blanco | ataque especial: escudo direccional (3 s); su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1; no tiene bola cargada |
+| Mago blanco | ataque especial: escudo direccional (5 s); su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1; no tiene bola cargada |
 
 ## Cómo añadir uno
 
@@ -39,7 +39,7 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 - `ataque_especial`: lo que sale con el clic derecho o el espacio. **Bola
   cargada** (oscuro y rojo) o **Escudo** (blanco). Sea cual sea, **se usa
   una vez por piso** (lo cuenta `Jugador.especial_disponible`; el HUD dice si
-  queda). El escudo se saca al pulsar y dura `duracion_escudo` (3 s). Es un
+  queda). El escudo se saca al pulsar y dura `duracion_escudo` (5 s en el blanco). Es un
   arco pequeño (76°,
   a 30 px) delante del mago, hacia donde mira, que para los disparos enemigos
   de frente. No para lo que le llega de lado o por la espalda, ni el magma del

@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_script")
 nombre = "Mago blanco"
-ventaja = "Ataque especial: un escudo pequeño delante que para los disparos enemigos durante 3 s. Sus disparos frenan a los enemigos a la mitad 1,5 s."
+ventaja = "Ataque especial: un escudo pequeño delante que para los disparos enemigos durante 5 s. Sus disparos frenan a los enemigos a la mitad 1,5 s."
 pega = "Su disparo normal quita la mitad y no tiene bola cargada."
 animaciones = ExtResource("2_animaciones")
 retrato = ExtResource("3_retrato")
@@ -22,4 +22,4 @@ radio_bola_extra = 0.0
 dano_disparo = 0.5
 frena_disparo = 1.5
 ataque_especial = 1
-duracion_escudo = 3.0
+duracion_escudo = 5.0

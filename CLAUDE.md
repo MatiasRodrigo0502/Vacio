@@ -149,7 +149,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`frena_disparo`: anda, apunta y recarga a la mitad, con un aro de escarcha
   a los pies). Su **ataque especial es un escudo direccional** pequeño
   (`scripts/escudo_direccional.gd`) que para los disparos enemigos de frente:
-  se saca con el clic derecho o el espacio y dura 3 s
+  se saca con el clic derecho o el espacio y dura 5 s (eran 3; Matías lo
+  subió el 2026-10-09)
   (`PersonajeJugable.ataque_especial`, `duracion_escudo`).
   No tiene bola cargada. Al principio el escudo era una pasiva siempre puesta;
   Matías lo cambió el 2026-10-09.
