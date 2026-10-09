@@ -12,6 +12,7 @@ velocidad = 330.0
 radio = 13.0
 dano = 2
 alcance = 900.0
+sonido = &"magma"
 ralentiza = 0.0
 charco_radio = 42.0
 charco_duracion = 3.5

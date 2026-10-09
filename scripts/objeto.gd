@@ -52,6 +52,7 @@ func _al_entrar_cuerpo(cuerpo: Node2D) -> void:
 		return
 	_recogido = true
 	cuerpo.aplicar_mejora(mejora)
+	Sonido.tocar(&"objeto")
 	recogido.emit(mejora)
 	queue_free()
 

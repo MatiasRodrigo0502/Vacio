@@ -31,6 +31,10 @@ enum Estilo { BOLA, RAYO, PARABOLA }
 @export var dano: int = 1
 ## Distancia maxima. La parabola no la usa: cae donde apunto.
 @export var alcance: float = 900.0
+## El efecto que suena al dispararlo: el nombre de un archivo de
+## assets/sonido/efectos/, sin el .wav. Cada proyectil el suyo, para saber de
+## oido que te viene sin mirarlo.
+@export var sonido: StringName = &"disparo_enemigo"
 
 @export_group("Efectos")
 ## Segundos que el jugador va frenado (envenenado) tras recibirlo. 0 = nada.

@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="DatosPiso" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="DatosPiso" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/datos_piso.gd" id="1_datos_piso"]
 [ext_resource type="Resource" path="res://assets/rocas/piso_10/catalogo.tres" id="2_catalogo"]
 [ext_resource type="Resource" path="res://assets/bordes/piso_10/estilo_borde.tres" id="9_borde"]
+[ext_resource type="AudioStream" path="res://assets/sonido/musica/profundo.wav" id="20_musica"]
 
 [resource]
 script = ExtResource("1_datos_piso")
@@ -17,3 +18,4 @@ catalogo_arte = ExtResource("2_catalogo")
 cantidad_salas = 9
 cantidad_obstaculos = 5
 estilo_borde = ExtResource("9_borde")
+musica = ExtResource("20_musica")

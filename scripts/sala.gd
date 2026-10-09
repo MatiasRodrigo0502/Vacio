@@ -369,6 +369,9 @@ func contiene_del_todo(centro_global: Vector2, radio: float) -> bool:
 ## de cruzar el umbral), y encender una forma de colision en mitad de ese paso
 ## hace que el motor se queje.
 func cerrar_puertas(cerrar: bool) -> void:
+	# Solo si de verdad cambian: abrir una sala que ya esta abierta no suena.
+	if cerrar != _cerrada:
+		Sonido.tocar(&"puertas_cierran" if cerrar else &"puertas_abren")
 	_cerrada = cerrar
 	for direccion in _cierres:
 		_cierres[direccion].set_deferred("disabled", not cerrar)

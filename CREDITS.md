@@ -89,6 +89,17 @@ hace falta aclararlos. Siguen en el historial de git.
 - **Archivos**: `assets/manto/` (42 piezas y dos catálogos: con cristales de
   olivino para los pisos 4-6 y pelado para los 7-8)
 
+### Sonido y música
+
+- **Autor**: hecho para el proyecto, por síntesis, con
+  `herramientas/generar_efectos.py` y `herramientas/generar_musica.py`
+  (comparten `herramientas/sintesis.py`)
+- **Licencia**: propio, sin problema de licencia
+- **Archivos**: `assets/sonido/efectos/` (20 efectos) y
+  `assets/sonido/musica/` (portada, superficie, profundo, victoria y derrota)
+- **Nota**: no hay ni una muestra grabada ni bajada: todo son osciladores,
+  ruido y filtros calculados en Python.
+
 ### Título del menú — VACÍO en piedra con lava
 
 - **Autor**: hecho para el proyecto, con `herramientas/generar_titulo.py`

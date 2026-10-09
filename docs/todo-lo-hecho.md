@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 09/10/2026 | Borrados los personajes que ya no se usaban (mago morado, nigromante y BlueWizard) | — |
+| 09/10/2026 | Sonido y música, generados por síntesis, con el volumen en la pausa | — |
+| 09/10/2026 | Borrados los personajes que ya no se usaban (mago morado, nigromante y BlueWizard) | `185f2ae` |
 | 09/10/2026 | Portada nueva: título en pixel art y los tres magos, sin subtítulo | `be954f8`, `cd9925a` |
 | 09/10/2026 | El cristal dispara en cuanto sale su línea, sin apuntar antes | `3fe4b11` |
 | 09/10/2026 | Quemadura en los disparos del mago rojo | `75611f5` |
@@ -169,7 +170,8 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 **Interfaz:**
 
 - **Menú principal:** el título VACÍO en pixel art (piedra con grietas de lava y estalactitas, hecho con `generar_titulo.py`), los tres magos debajo y brasas subiendo; jugar, controles y salir, con la elección de mago al pulsar Jugar.
-- **Menú de pausa** con Escape.
+- **Menú de pausa** con Escape, con el volumen de la música y de los efectos.
+- **Sonido y música**, todo generado por síntesis con nuestros scripts: una música para la portada, otra para los pisos 1-6 y otra más grave para los 7-12, más la de ganar y la de perder; y 20 efectos (disparos, golpes, muertes, explosiones, puertas, objetos, escudo, agujero negro, caídas, botones...).
 - **HUD:** piso y capa, vida con corazones dibujados por código y, debajo, el icono de cada ventaja recogida («x2» si se repite).
 - **Minimapa** arriba a la derecha, con las salas visitadas, el objeto y la bajada.
 - **Pantalla final** de victoria o derrota.
@@ -247,7 +249,6 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 **Ideas no pedidas todavía:**
 
-- Sonido y música (el juego no tiene).
 - Una sala de jefe en el piso 12.
 - Una textura sutil para el suelo.
 - Oscurecer las salas vecinas que asoman cuando la vista es más grande que la sala.

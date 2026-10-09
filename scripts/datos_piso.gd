@@ -72,3 +72,7 @@ extends Resource
 ## crece o cuelga de ella (ver EstiloBorde). Cada capa tiene la suya, en
 ## assets/bordes/piso_NN/. Si se deja vacio se usa la del piso 3.
 @export var estilo_borde: EstiloBorde = null
+
+## La musica de este piso (assets/sonido/musica/). Si dos pisos seguidos
+## llevan la misma, al bajar sigue sonando sin cortarse. Vacia = silencio.
+@export var musica: AudioStream = null

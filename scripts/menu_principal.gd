@@ -8,6 +8,8 @@
 extends Control
 
 const ESCENA_JUEGO := "res://scenes/Principal.tscn"
+## La musica de la portada. La del juego la pone cada piso (DatosPiso.musica).
+const MUSICA := preload("res://assets/sonido/musica/portada.wav")
 
 ## Ancho de cada ficha de mago. Fijo para que los textos de ventaja partan
 ## linea por el mismo sitio y las fichas queden del mismo tamano aunque uno
@@ -41,6 +43,7 @@ func _ready() -> void:
 	_latir_titulo()
 	_poner_brasas()
 	_poner_version()
+	Sonido.poner_musica(MUSICA)
 	_panel_controles.hide()
 	_panel_personajes.hide()
 	_boton_jugar.grab_focus()
@@ -228,8 +231,9 @@ func _al_jugar() -> void:
 	get_tree().change_scene_to_file(ESCENA_JUEGO)
 
 
+## Sale por Sonido, que para la musica antes de cerrar (ver Sonido.salir).
 func _al_salir() -> void:
-	get_tree().quit()
+	Sonido.salir()
 
 
 func _mostrar_personajes(visible_ahora: bool) -> void:

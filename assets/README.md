@@ -248,6 +248,28 @@ ejecutar: sale lo mismo en las tres máquinas. **Ojo**: dónde están los
 agujeros lo repite `scripts/pinchos.gd` (sus constantes `MARGEN`, `GROSOR`,
 `FILAS` y `AGUJERO_*`); si se cambia en uno, se cambia en el otro.
 
+## sonido/
+
+Todo el sonido del juego, generado por síntesis (sin nada bajado):
+
+- `efectos/`: 20 efectos, uno por archivo, que hace
+  `herramientas/generar_efectos.py`. El autoload `Sonido` carga todos los de
+  la carpeta por su nombre: `Sonido.tocar(&"disparo")` toca `disparo.wav`. Un
+  efecto nuevo es una función más en ese script y una llamada donde suene.
+  El volumen de cada uno respecto a los demás está en ese script (su pico):
+  los que suenan sin parar (el disparo) van flojos.
+- `musica/`: `portada.wav` (el menú), `superficie.wav` (pisos 1-6),
+  `profundo.wav` (pisos 7-12), `victoria.wav` y `derrota.wav`, de
+  `herramientas/generar_musica.py`. Las tres primeras llevan dentro su punto
+  de repetición (un bloque `smpl` del WAV) y Godot las repite solas al
+  importarlas. Qué música suena en cada piso lo dice su `.tres`
+  (`DatosPiso.musica`).
+
+Para cambiar algo se edita el script y se vuelve a ejecutar. Los efectos
+tardan un segundo; la música, unos minutos (Python puro, sin numpy). Se
+puede generar una sola pieza: `python herramientas/generar_musica.py
+portada`.
+
 ## titulo/
 
 El título del menú, VACÍO, hecho con `herramientas/generar_titulo.py`: letras

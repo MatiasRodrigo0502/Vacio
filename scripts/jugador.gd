@@ -335,11 +335,16 @@ func _actualizar_carga(delta: float) -> void:
 	if _escudo != null:
 		if Input.is_action_just_pressed("cargar_ataque") and _escudo.levantar():
 			_gastar_especial()
+			Sonido.tocar(&"escudo")
 		return
 
 	if Input.is_action_pressed("cargar_ataque"):
 		_cargando = true
+		var antes := _carga
 		_carga = minf(_carga + delta, tiempo_carga)
+		# Al cerrarse el aro, un brillo: ya se puede soltar sin mirarlo.
+		if antes < tiempo_carga and _carga >= tiempo_carga:
+			Sonido.tocar(&"carga_lista")
 		_carga_visual.actualizar(_carga / tiempo_carga, _direccion_raton())
 		return
 
@@ -478,6 +483,7 @@ func recibir_dano(cantidad: int = 1, forzar: bool = false) -> bool:
 	vida_actual = maxi(vida_actual - cantidad, 0)
 	_tiempo_invulnerable = duracion_invulnerabilidad
 	dano_recibido.emit()
+	Sonido.tocar(&"herido")
 	vida_cambiada.emit(vida_actual, vida_maxima)
 
 	if vida_actual == 0:
@@ -562,6 +568,7 @@ func caer_al_vacio() -> void:
 	_control_activo = false
 	velocity = Vector2.ZERO
 	_cancelar_carga()
+	Sonido.tocar(&"caida")
 	# Se encoge y se desvanece: se lee como caer hacia abajo, visto desde
 	# arriba. Se anima el nodo entero para no pelearse con el color del sprite,
 	# que ya lo usan el parpadeo y el veneno.

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/menu_pausa.gd" id="1_pausa"]
+[ext_resource type="Script" path="res://scripts/control_volumen.gd" id="9_volumen"]
 
 [node name="MenuPausa" type="CanvasLayer"]
 process_mode = 3
@@ -65,3 +66,12 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 16
 text = "Menú principal"
+
+[node name="HuecoVolumen" type="Control" parent="Centro/Caja"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Volumen" type="GridContainer" parent="Centro/Caja"]
+layout_mode = 2
+size_flags_horizontal = 4
+script = ExtResource("9_volumen")

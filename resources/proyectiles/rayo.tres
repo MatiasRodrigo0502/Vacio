@@ -12,6 +12,7 @@ velocidad = 1300.0
 radio = 8.0
 dano = 2
 alcance = 950.0
+sonido = &"rayo"
 ralentiza = 0.0
 charco_radio = 0.0
 charco_duracion = 3.0

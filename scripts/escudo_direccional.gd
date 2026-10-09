@@ -111,6 +111,7 @@ func bloquea(desde: Vector2, hasta: Vector2, radio: float) -> bool:
 			continue
 		if absf(angle_difference(_angulo, v.angle())) <= SEMIANGULO + margen:
 			_destello = DURACION_DESTELLO
+			Sonido.tocar(&"escudo_golpe")
 			return true
 	return false
 

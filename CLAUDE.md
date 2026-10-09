@@ -144,6 +144,21 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   flotando y mirando al centro (`_montar_magos`): un mago nuevo sale solo.
   Brasas (`CPUParticles2D`) suben por detrás.
 
+- **Sonido y música** (2026-10-09, pedido por Matías), todo generado por
+  síntesis: `herramientas/sintesis.py` (osciladores, filtros, eco,
+  reverberación, WAV), `generar_efectos.py` (20 efectos en
+  `assets/sonido/efectos/`) y `generar_musica.py` (portada, superficie para
+  los pisos 1-6, profundo para los 7-12, victoria y derrota). El autoload
+  `Sonido` (`scripts/sonido.gd`) toca los efectos por nombre de archivo
+  (`Sonido.tocar(&"golpe_enemigo")`) y funde la música
+  (`Sonido.poner_musica`); cada piso dice la suya en `DatosPiso.musica` y el
+  disparo de cada proyectil, en `TipoProyectil.sonido`. Los botones hacen
+  clic solos (`node_added`). Buses `Musica` y `Efectos` en
+  `default_bus_layout.tres`; sus volúmenes, en el menú de pausa
+  (`ControlVolumen`) y guardados en `user://ajustes.cfg`. **Nadie del equipo
+  lo había oído al hacerlo**: Claude no puede oír, solo medir (picos, volumen
+  medio, recortes, que el bucle empalme). Hay que escucharlo y ajustar.
+
 - **Elección de mago**: al pulsar Jugar se elige entre los magos de
   `resources/personajes/`. Cada uno trae su arte y su ventaja, y la ventaja va
   a los valores **de fábrica** del jugador, así que sobrevive a reiniciar. El
@@ -492,6 +507,19 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **Cerrar el juego con música sonando deja un aviso del motor** («1
+  resources still in use at exit»), y la prueba de arranque de la release lo
+  toma por un error. La canción parada la suelta el bucle del juego en el
+  fotograma siguiente; al cerrar ya no lo hay, y esperar dentro del cierre
+  (`OS.delay_msec`) no sirve. Comprobado con una escena de un solo
+  reproductor: es del motor. Por eso se sale siempre por `Sonido.salir()`
+  (para el sonido, espera 0,2 s y cierra; cerrar la ventana también pasa por
+  ahí, con `auto_accept_quit = false`), y sin pantalla (`--headless`) la
+  música se elige pero no se reproduce.
+- **La música se iguala por volumen medio (RMS), no por pico.** Por pico, la
+  de los pisos hondos (dron y tambores, poca diferencia entre pico y media)
+  sonaba casi 4 dB más fuerte que la de arriba.
 
 - **Un ejecutable de Linux suelto no se abre al bajarlo con el navegador.**
   Pierde el permiso de ejecutarse y Ubuntu dice que no encuentra «la

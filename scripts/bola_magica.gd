@@ -141,6 +141,7 @@ func _al_tocar(area: Area2D) -> void:
 	# chocado, solo si eso se puede romper.
 	if area.has_method("herir"):
 		area.herir(dano, frena)
+		Sonido.tocar(&"golpe_enemigo")
 		if quema > 0.0 and area.has_method("quemar"):
 			area.quemar(quema, dano_quema)
 	elif area.has_method("romper"):

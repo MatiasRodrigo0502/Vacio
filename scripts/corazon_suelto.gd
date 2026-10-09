@@ -47,6 +47,7 @@ func _physics_process(delta: float) -> void:
 	for cuerpo in get_overlapping_bodies():
 		if cuerpo.has_method("curar") and cuerpo.curar(CURA):
 			_recogido = true
+			Sonido.tocar(&"corazon")
 			queue_free()
 			return
 

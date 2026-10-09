@@ -172,6 +172,19 @@ las mejoras se notan también en el ataque cargado, que parte de esos números.
 
 Superar el piso 12 gana; quedarte sin vida termina la partida.
 
+### Sonido y música
+
+Todo el sonido es nuestro: lo generan por síntesis
+`herramientas/generar_efectos.py` (20 efectos) y `generar_musica.py` (la
+música), sin nada bajado. Suena una música en la portada, otra en los pisos
+1 a 6 y otra más grave, con tambores, en los 7 a 12; al ganar y al perder,
+la suya. Hay efecto para los disparos (los tuyos y los de cada enemigo), los
+golpes, las muertes, las explosiones, las puertas, los objetos, el escudo, el
+agujero negro, caer, bajar de piso y los botones.
+
+El volumen de la música y el de los efectos se cambian en el menú de pausa
+(Esc) y se recuerdan para la próxima vez.
+
 ## Estructura del proyecto
 
 ```
@@ -210,6 +223,8 @@ Vacio/
     ├── mago_rojo/     # el otro mago elegible, mismo formato
     ├── bordes/        # la pared de las salas, una por piso (+ la reja)
     ├── rocas/         # las rocas de dentro, una por piso
+    ├── sonido/        # efectos/ y musica/, generados (ver herramientas/)
+    ├── titulo/        # el título del menú, generado
     └── cueva/, musgo/, manto/, nucleo/  # packs de antes, ya sin usar
 ```
 

@@ -85,6 +85,9 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	_camara.seguir(_jugador, true)
 
 	_hud.actualizar_piso(numero_piso, GestorProgreso.total_pisos(), datos.nombre_capa)
+	# La musica es del piso (DatosPiso.musica). Si es la misma que la del
+	# anterior, sigue sin cortarse.
+	Sonido.poner_musica(datos.musica)
 	_hud.mostrar_mapa(piso)
 
 
@@ -123,6 +126,7 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 		_ajustar_al_mago(bola)
 	_piso_actual.add_child(bola)
 	bola.global_position = desde
+	Sonido.tocar(&"disparo_cargado" if cargada else &"disparo")
 
 
 ## Lo que la bola cargada tiene de cada mago: hasta donde llega y si abre un
@@ -148,6 +152,7 @@ func _abrir_agujero(punto: Vector2, sala: Sala) -> void:
 	var suelo := sala.rect_suelo_global().grow(-AgujeroNegro.NUCLEO)
 	_piso_actual.add_child(agujero)
 	agujero.global_position = punto.clamp(suelo.position, suelo.end)
+	Sonido.tocar(&"agujero_negro")
 
 
 func _al_cambiar_especial(disponible: bool) -> void:
@@ -176,15 +181,18 @@ func _al_alcanzar_salida() -> void:
 	# piso (con sus cuerpos de colision) en ese momento provoca el error
 	# "Can't change this state while flushing queries" del motor.
 	GestorProgreso.avanzar_piso.call_deferred()
+	Sonido.tocar(&"bajar")
 
 
 func _al_ganar() -> void:
 	_jugador.bloquear_control()
+	Sonido.tocar_final(&"victoria")
 	_pantalla_final.mostrar_victoria(GestorProgreso.total_pisos())
 
 
 func _al_perder() -> void:
 	_jugador.bloquear_control()
+	Sonido.tocar_final(&"derrota")
 	_pantalla_final.mostrar_derrota(GestorProgreso.piso_actual)
 
 

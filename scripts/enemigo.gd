@@ -407,6 +407,7 @@ func _disparar() -> void:
 	var proyectil := ProyectilEnemigo.new()
 	proyectil.configurar(tipo.proyectil, global_position, direccion, objetivo, limite)
 	get_parent().add_child(proyectil)
+	Sonido.tocar(tipo.proyectil.sonido)
 
 
 func _dejar_de_apuntar() -> void:
@@ -450,8 +451,10 @@ func _golpear_lo_que_toca() -> void:
 func _morir() -> void:
 	if tipo.radio_explosion > 0.0:
 		_explotar()
+		Sonido.tocar(&"explosion")
 	else:
 		_destello_muerte()
+		Sonido.tocar(&"muerte_enemigo")
 	for i in tipo.division:
 		_soltar_cria(i)
 	muerto.emit(self)
