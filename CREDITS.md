@@ -125,6 +125,14 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Archivos**: `assets/manto/` (42 piezas y dos catálogos: con cristales de
   olivino para los pisos 4-6 y pelado para los 7-8)
 
+### Título del menú — VACÍO en piedra con lava
+
+- **Autor**: hecho para el proyecto, con `herramientas/generar_titulo.py`
+- **Licencia**: propio, sin problema de licencia
+- **Archivos**: `assets/titulo/` (`titulo.png` y `titulo_brillo.png`)
+- **Nota**: dibujado en pixel art y no con una fuente, para que vaya con los
+  magos; así tampoco hay ninguna fuente que bajar ni licenciar.
+
 ### Rocas de dentro de las salas — una por piso
 
 - **Autor**: hecho para el proyecto, con `herramientas/generar_rocas.py`

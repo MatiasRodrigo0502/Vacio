@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 09/10/2026 | El cristal dispara en cuanto sale su línea, sin apuntar antes | — |
+| 09/10/2026 | Portada nueva: título en pixel art y los tres magos | — |
+| 09/10/2026 | El cristal dispara en cuanto sale su línea, sin apuntar antes | `3fe4b11` |
 | 09/10/2026 | Quemadura en los disparos del mago rojo | `75611f5` |
 | 09/10/2026 | Sin la R para reiniciar: se reinicia desde la pausa | `3080c2b` |
 | 09/10/2026 | El escudo del mago blanco dura 5 s | `71451b8` |
@@ -166,7 +167,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 
 **Interfaz:**
 
-- **Menú principal:** jugar, controles y salir, con la elección de mago al pulsar Jugar.
+- **Menú principal:** el título VACÍO en pixel art (piedra con grietas de lava y estalactitas, hecho con `generar_titulo.py`), los tres magos debajo y brasas subiendo; jugar, controles y salir, con la elección de mago al pulsar Jugar.
 - **Menú de pausa** con Escape.
 - **HUD:** piso y capa, vida con corazones dibujados por código y, debajo, el icono de cada ventaja recogida («x2» si se repite).
 - **Minimapa** arriba a la derecha, con las salas visitadas, el objeto y la bajada.

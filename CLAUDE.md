@@ -136,6 +136,14 @@ no puede llamarse `prueba_temporal.*`: el preset la excluye.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
+- **Portada del menú** (2026-10-09, pedida por Matías): el título VACÍO es
+  pixel art generado (`herramientas/generar_titulo.py` → `assets/titulo/`):
+  letras de piedra tallada con grietas de lava y estalactitas, a x4 sin
+  suavizar. El resplandor va en otra imagen (`titulo_brillo.png`) y late
+  (`_latir_titulo`). Debajo, los magos de `GestorProgreso.personajes`
+  flotando y mirando al centro (`_montar_magos`): un mago nuevo sale solo.
+  Brasas (`CPUParticles2D`) suben por detrás.
+
 - **Elección de mago**: al pulsar Jugar se elige entre los magos de
   `resources/personajes/`. Cada uno trae su arte y su ventaja, y la ventaja va
   a los valores **de fábrica** del jugador, así que sobrevive a reiniciar. El

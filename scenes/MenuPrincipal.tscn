@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/menu_principal.gd" id="1_menu"]
-[ext_resource type="Texture2D" path="res://assets/mago_oscuro/retrato.png" id="2_mago"]
+[ext_resource type="Texture2D" path="res://assets/titulo/titulo.png" id="2_titulo"]
+[ext_resource type="Texture2D" path="res://assets/titulo/titulo_brillo.png" id="3_brillo"]
 
 [node name="MenuPrincipal" type="Control"]
 anchors_preset = 15
@@ -31,12 +32,32 @@ layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="Titulo" type="Label" parent="Centro/Caja"]
+[node name="Titulo" type="Control" parent="Centro/Caja"]
+custom_minimum_size = Vector2(492, 176)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.909804, 0.827451, 1)
-theme_override_font_sizes/font_size = 78
-text = "VACÍO"
-horizontal_alignment = 1
+size_flags_horizontal = 4
+mouse_filter = 2
+
+[node name="Brillo" type="TextureRect" parent="Centro/Caja/Titulo"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_brillo")
+
+[node name="Letras" type="TextureRect" parent="Centro/Caja/Titulo"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_titulo")
 
 [node name="Subtitulo" type="Label" parent="Centro/Caja"]
 modulate = Color(1, 0.741176, 0.360784, 1)
@@ -45,12 +66,10 @@ theme_override_font_sizes/font_size = 20
 text = "doce pisos hasta el núcleo"
 horizontal_alignment = 1
 
-[node name="Mago" type="TextureRect" parent="Centro/Caja"]
-custom_minimum_size = Vector2(0, 140)
+[node name="Magos" type="HBoxContainer" parent="Centro/Caja"]
 layout_mode = 2
-texture = ExtResource("2_mago")
-expand_mode = 1
-stretch_mode = 5
+theme_override_constants/separation = 36
+alignment = 1
 
 [node name="BotonJugar" type="Button" parent="Centro/Caja"]
 custom_minimum_size = Vector2(280, 50)

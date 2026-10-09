@@ -14,6 +14,12 @@ const ESCENA_JUEGO := "res://scenes/Principal.tscn"
 ## tenga la ventaja mas larga.
 const ANCHO_FICHA: float = 300.0
 
+## Los magos de la portada: a x2, como pixel art, y lo que suben y bajan
+## flotando. Cada uno a su ritmo, para que no parezcan uno repetido.
+const ESCALA_MAGO: float = 2.0
+const FLOTE: float = 4.0
+const RITMO_FLOTE: float = 1.6
+
 @onready var _panel_controles: Control = $PanelControles
 @onready var _panel_personajes: Control = $PanelPersonajes
 @onready var _fichas: HBoxContainer = $PanelPersonajes/Centro/Caja/Fichas
@@ -31,10 +37,100 @@ func _ready() -> void:
 	$PanelPersonajes/Centro/Caja/BotonVolver.pressed.connect(_mostrar_personajes.bind(false))
 
 	_montar_fichas()
+	_montar_magos()
+	_latir_titulo()
+	_poner_brasas()
 	_poner_version()
 	_panel_controles.hide()
 	_panel_personajes.hide()
 	_boton_jugar.grab_focus()
+
+
+## Los magos que se pueden elegir, en la portada, debajo del titulo.
+##
+## POR QUE LEIDOS DE GestorProgreso Y NO PUESTOS EN LA ESCENA: igual que las
+## fichas, un mago nuevo sale aqui solo con dejar su .tres. Miran hacia el
+## centro, los de la izquierda a la derecha y al reves: asi se ven en grupo y
+## no tres sueltos mirando a la camara.
+func _montar_magos() -> void:
+	var fila: HBoxContainer = $Centro/Caja/Magos
+	var magos := GestorProgreso.personajes
+	for i in magos.size():
+		var personaje: PersonajeJugable = magos[i]
+		if personaje.animaciones == null:
+			continue
+		var hueco := Control.new()
+		hueco.custom_minimum_size = Vector2(64.0, 72.0) * ESCALA_MAGO
+		hueco.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var sprite := AnimatedSprite2D.new()
+		sprite.sprite_frames = personaje.animaciones
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		sprite.scale = Vector2(ESCALA_MAGO, ESCALA_MAGO)
+		sprite.position = hueco.custom_minimum_size * 0.5
+		var lado := float(i) - (magos.size() - 1) * 0.5
+		var animacion := &"quieto_abajo"
+		if lado < 0.0:
+			animacion = &"quieto_abajo_derecha"
+		elif lado > 0.0:
+			animacion = &"quieto_abajo_izquierda"
+		sprite.play(animacion)
+		hueco.add_child(sprite)
+		fila.add_child(hueco)
+		_flotar(sprite, i * 0.45)
+
+
+## Sube y baja un poco, sin parar. Empieza tras 'retraso' segundos, para que
+## cada mago vaya a destiempo de los demas.
+func _flotar(sprite: Node2D, retraso: float) -> void:
+	var base := sprite.position.y
+	await get_tree().create_timer(retraso).timeout
+	if not is_instance_valid(sprite):
+		return
+	var vaiven := sprite.create_tween().set_loops()
+	vaiven.tween_property(sprite, "position:y", base - FLOTE, RITMO_FLOTE) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	vaiven.tween_property(sprite, "position:y", base, RITMO_FLOTE) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+## El resplandor de la lava del titulo late despacio. Va en otra imagen que
+## las letras (herramientas/generar_titulo.py), asi late sin que las letras
+## cambien.
+func _latir_titulo() -> void:
+	var brillo: CanvasItem = $Centro/Caja/Titulo/Brillo
+	var latido := create_tween().set_loops()
+	latido.tween_property(brillo, "modulate:a", 0.55, 1.4).set_trans(Tween.TRANS_SINE)
+	latido.tween_property(brillo, "modulate:a", 1.0, 1.4).set_trans(Tween.TRANS_SINE)
+
+
+## Brasas que suben despacio desde abajo, por detras de todo: el nucleo esta
+## abajo y arde. Cuadradas, sin textura, como pixeles sueltos.
+func _poner_brasas() -> void:
+	var brasas := CPUParticles2D.new()
+	brasas.name = "Brasas"
+	brasas.amount = 36
+	brasas.lifetime = 7.0
+	brasas.preprocess = 7.0
+	brasas.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	brasas.direction = Vector2.UP
+	brasas.spread = 12.0
+	brasas.gravity = Vector2.ZERO
+	brasas.initial_velocity_min = 40.0
+	brasas.initial_velocity_max = 90.0
+	brasas.scale_amount_min = 2.0
+	brasas.scale_amount_max = 4.0
+	var rampa := Gradient.new()
+	rampa.set_color(0, Color(1.0, 0.75, 0.35, 0.9))
+	rampa.set_color(1, Color(1.0, 0.3, 0.1, 0.0))
+	brasas.color_ramp = rampa
+	add_child(brasas)
+	# Justo encima del fondo y debajo de los botones.
+	move_child(brasas, $Fondo.get_index() + 1)
+	var colocar := func() -> void:
+		brasas.position = Vector2(size.x * 0.5, size.y + 8.0)
+		brasas.emission_rect_extents = Vector2(size.x * 0.5, 4.0)
+	resized.connect(colocar)
+	colocar.call()
 
 
 ## La version del juego, pequena abajo a la derecha. Por codigo y no en la

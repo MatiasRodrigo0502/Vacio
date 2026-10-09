@@ -304,6 +304,15 @@ ejecutar: sale lo mismo en las tres máquinas. **Ojo**: dónde están los
 agujeros lo repite `scripts/pinchos.gd` (sus constantes `MARGEN`, `GROSOR`,
 `FILAS` y `AGUJERO_*`); si se cambia en uno, se cambia en el otro.
 
+## titulo/
+
+El título del menú, VACÍO, hecho con `herramientas/generar_titulo.py`: letras
+de piedra tallada en pixel art, con grietas de lava y estalactitas colgando,
+ampliadas x4 sin suavizar. `titulo.png` son las letras y `titulo_brillo.png`
+el resplandor de la lava, aparte para que el menú lo haga latir. Para cambiar
+algo (las letras son polígonos en `LETRAS`, los colores arriba del todo), se
+edita el script y se vuelve a ejecutar.
+
 ## rocas/
 
 Las rocas de dentro de las salas, **unas distintas por piso**, hechas con
