@@ -147,15 +147,20 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`herramientas/generar_mago_blanco.py`). Su disparo normal quita **medio
   punto** (`dano_disparo`, vía `Enemigo.herir()`) y **frena** 1,5 s
   (`frena_disparo`: anda, apunta y recarga a la mitad, con un aro de escarcha
-  a los pies). Su pasiva es un **escudo direccional** pequeño
-  (`scripts/escudo_direccional.gd`) que para los disparos enemigos de frente.
+  a los pies). Su **ataque especial es un escudo direccional** pequeño
+  (`scripts/escudo_direccional.gd`) que para los disparos enemigos de frente:
+  se saca con el clic derecho o el espacio, dura 3 s y recarga 5 s
+  (`PersonajeJugable.ataque_especial`, `duracion_escudo`, `recarga_escudo`).
+  No tiene bola cargada. Al principio el escudo era una pasiva siempre puesta;
+  Matías lo cambió el 2026-10-09.
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve.
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
   aunque te estés alejando.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
-  ratón, con cadencia. Matan enemigos; **no** rompen rocas, y las rocas los
+  ratón, una bola cada **0,5 s** en los tres magos (pedido por Matías el
+  2026-10-09; antes 0,34, y el oscuro ×0,85). Matan enemigos; **no** rompen rocas, y las rocas los
   paran (ver la trampa del `Area2D` más abajo).
 - **Ataque cargado**: clic derecho o espacio, mantenido (apunta al ratón). Se carga en `tiempo_carga`
   (0,75 s), hay que **soltarlo** para que salga y soltarlo antes de tiempo no
@@ -361,6 +366,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de los enemigos es `float` y la bola les llama `herir(cantidad, frena)`; a
   todo lo demás que se rompa, `romper()` repetido, que es el contrato de
   siempre. Así lo que ya era rompible no tuvo que cambiar.
+- **El escudo se saca al pulsar, no al mantener.** Mantenido, se volvería a
+  sacar solo en cuanto acaba la recarga, y sería otra vez un escudo siempre
+  puesto, que es lo que Matías no quería.
 - **El escudo solo para disparos de frente**, no golpes cuerpo a cuerpo ni el
   magma que cae: si lo parara todo, los enemigos a distancia no tendrían nada
   que hacer contra el mago blanco. Lo pregunta el proyectil justo después de

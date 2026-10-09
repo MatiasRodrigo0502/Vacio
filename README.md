@@ -82,7 +82,7 @@ se queda y el motivo está en `build/exportar.log`.
 |---|---|
 | Moverse | WASD |
 | Disparar | Flechas, o clic izquierdo apuntando con el ratón |
-| Ataque cargado | Clic derecho o espacio, **mantenido**: se suelta cuando el aro se cierra. Apunta al ratón |
+| Ataque especial | Clic derecho o espacio. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra (apunta al ratón). Mago blanco: saca el escudo |
 | Reiniciar partida | R |
 | Pausa | Esc |
 
@@ -128,9 +128,9 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 
 | Mago | Ventaja | Pega |
 |---|---|---|
-| **Mago oscuro** | Anda un 13 % más rápido y dispara un 15 % más seguido | — |
+| **Mago oscuro** | Anda un 13 % más rápido | — |
 | **Mago rojo** | Un corazón más, y el ataque cargado sale en medio tiempo y mata de un golpe a cualquier cosa | Anda un 9 % más lento |
-| **Mago blanco** | Un escudo pequeño delante que para los disparos enemigos de frente, y sus disparos frenan a los enemigos a la mitad durante 1,5 s | Su disparo normal quita la mitad: hacen falta el doble de impactos |
+| **Mago blanco** | Su ataque especial es un escudo pequeño delante que para los disparos enemigos de frente: dura 3 s y recarga en 5 s. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | Su disparo normal quita la mitad y no tiene bola cargada |
 
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese
 mago, no un objeto que se recoge.
@@ -145,7 +145,8 @@ invulnerabilidad después de cada golpe. Del piso 2 en adelante los hay, y van a
 más según bajas.
 
 Disparas bolas mágicas para matarlos, con las flechas en las cuatro direcciones
-o con el clic izquierdo apuntando donde quieras.
+o con el clic izquierdo apuntando donde quieras: una cada medio segundo,
+aunque mantengas el botón.
 
 Manteniendo el **clic derecho** o el **espacio** cargas un ataque más fuerte: delante del mago se
 forma una bola morada que crece, y un aro que se va cerrando dice cuánto falta.
@@ -153,6 +154,11 @@ Cuando el aro se cierra, sueltas y sale. Atraviesa a los enemigos y mata de un
 golpe a los que hay ahora, pero las rocas lo paran igual que al disparo normal.
 Mientras cargas no puedes disparar, y si sueltas antes de tiempo no sale nada:
 o está cargado o no hay ataque.
+
+El mago blanco no carga bola: con ese mismo botón saca su **escudo**, un arco
+pequeño delante que para los disparos enemigos que le llegan de frente. Dura
+3 s (parpadea cuando se va a acabar) y luego tarda 5 s en poder sacarse otra
+vez; cuando está listo, se ve un momento.
 
 En cada piso hay además un objeto que te mejora para el resto de la partida, y
 las mejoras se notan también en el ataque cargado, que parte de esos números.

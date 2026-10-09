@@ -1,6 +1,13 @@
-## Escudo direccional: la pasiva del mago blanco. Un arco de luz pequeno
-## delante del mago, hacia donde mira, que para los disparos enemigos que le
-## llegan de frente.
+## Escudo direccional: el ataque especial del mago blanco. Un arco de luz
+## pequeno delante del mago, hacia donde mira, que para los disparos enemigos
+## que le llegan de frente.
+##
+## POR QUE SE SACA Y NO ESTA SIEMPRE:
+## al principio era una pasiva, siempre puesta, y Matias lo cambio (2026-10-09):
+## es su ataque especial, el que los otros magos usan para la bola cargada. Se
+## pulsa el clic derecho o el espacio, dura 'duracion' segundos y luego hay que
+## esperar 'recarga'. Asi hay que elegir cuando sacarlo: cuando viene la
+## rafaga, no antes.
 ##
 ## POR QUE PEQUENO Y SOLO DE FRENTE:
 ## un escudo que lo parara todo dejaria a los enemigos a distancia sin nada que
@@ -8,9 +15,9 @@
 ## sigue dando, y los que pegan cuerpo a cuerpo, tambien. Tampoco para el magma
 ## del golem: va por el aire y cae desde arriba.
 ##
-## Lo crea el jugador al estrenar un mago con 'escudo' (PersonajeJugable). Los
-## proyectiles preguntan al jugador si les para (Jugador.escudo_bloquea), y el
-## jugador se lo pregunta a esto.
+## Lo crea el jugador al estrenar un mago con el escudo de ataque especial
+## (PersonajeJugable.ataque_especial). Los proyectiles preguntan al jugador si
+## les para (Jugador.escudo_bloquea), y el jugador se lo pregunta a esto.
 class_name EscudoDireccional
 extends Node2D
 
@@ -27,11 +34,27 @@ const GIRO: float = 14.0
 const COLOR := Color(0.62, 0.9, 1.0)
 ## Destello al parar un disparo: que se note que ha servido de algo.
 const DURACION_DESTELLO: float = 0.2
+## Lo que tarda en abrirse al sacarlo: se ve salir, no aparecer de golpe.
+const APERTURA: float = 0.12
+## En el ultimo tramo parpadea, para avisar de que se va a bajar.
+const AVISO_FIN: float = 0.8
+## Al acabar la recarga se ve un momento, flojo: ya se puede volver a sacar.
+const DURACION_LISTO: float = 0.35
+
+## Los pone el jugador desde el mago (PersonajeJugable).
+var duracion: float = 3.0
+var recarga: float = 5.0
 
 var _jugador: Jugador
 var _angulo: float = PI * 0.5
 var _destello: float = 0.0
 var _detras: bool = false
+## Segundos que le quedan levantado. 0 = bajado.
+var _levantado: float = 0.0
+## Segundos que faltan para poder volver a sacarlo.
+var _recargando: float = 0.0
+## Cuenta atras del aviso de "listo".
+var _listo: float = 0.0
 
 
 func _init(jugador: Jugador) -> void:
@@ -43,12 +66,14 @@ func _ready() -> void:
 	# En el centro del cuerpo, no a los pies (donde esta el origen del jugador).
 	position = _jugador.centro_colision() - _jugador.global_position
 	_angulo = _jugador.direccion_mirada().angle()
+	visible = false
 
 
 func _process(delta: float) -> void:
+	_contar(delta)
 	_angulo = lerp_angle(_angulo, _jugador.direccion_mirada().angle(), minf(1.0, GIRO * delta))
 	_destello = maxf(0.0, _destello - delta)
-	visible = activo()
+	visible = activo() or _listo > 0.0
 	# Mirando hacia arriba, el escudo esta detras del mago (vista 3/4): se pinta
 	# antes que el sprite. Mirando hacia abajo, delante.
 	var detras := sin(_angulo) < -0.2
@@ -58,9 +83,44 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
-## Sin vida o cayendo por un agujero, el escudo no esta.
+func _contar(delta: float) -> void:
+	if _levantado > 0.0:
+		_levantado = maxf(0.0, _levantado - delta)
+		# La recarga empieza al bajarse, no al sacarlo: si contara desde que
+		# se saca, durar mas lo haria recargar antes.
+		if _levantado == 0.0:
+			_recargando = recarga
+	elif _recargando > 0.0:
+		_recargando = maxf(0.0, _recargando - delta)
+		if _recargando == 0.0:
+			_listo = DURACION_LISTO
+	_listo = maxf(0.0, _listo - delta)
+
+
+## Lo saca, si se puede. Devuelve false si estaba levantado o recargando.
+func levantar() -> bool:
+	if not listo() or _jugador.vida_actual <= 0 or _jugador.esta_cayendo():
+		return false
+	_levantado = duracion
+	_listo = 0.0
+	return true
+
+
+## True si se puede sacar ya.
+func listo() -> bool:
+	return _levantado <= 0.0 and _recargando <= 0.0
+
+
+## Bajado y listo para sacar. Al empezar partida y al llegar a un piso.
+func reiniciar() -> void:
+	_levantado = 0.0
+	_recargando = 0.0
+	_listo = 0.0
+
+
+## Levantado, y con el mago vivo y en pie: cayendo por un agujero no esta.
 func activo() -> bool:
-	return _jugador.vida_actual > 0 and not _jugador.esta_cayendo()
+	return _levantado > 0.0 and _jugador.vida_actual > 0 and not _jugador.esta_cayendo()
 
 
 ## True si algo de 'radio' que ha ido de 'desde' a 'hasta' (en el mundo) en
@@ -83,12 +143,29 @@ func bloquea(desde: Vector2, hasta: Vector2, radio: float) -> bool:
 
 
 func _draw() -> void:
-	var desde := _angulo - SEMIANGULO
-	var hasta := _angulo + SEMIANGULO
-	var brillo := _destello / DURACION_DESTELLO
-	# Resplandor, el arco y un filo claro por dentro.
-	draw_arc(Vector2.ZERO, RADIO, desde, hasta, 18, Color(COLOR, 0.22 + 0.35 * brillo),
+	if not activo():
+		# Solo el aviso de "listo": el arco entero, flojo y apagandose.
+		var flojo := 0.5 * _listo / DURACION_LISTO
+		_pintar_arco(SEMIANGULO, flojo, 0.0)
+		return
+	# Se abre desde el centro al sacarlo, y parpadea cuando le queda poco.
+	var abierto := minf(1.0, (duracion - _levantado) / APERTURA)
+	var alfa := 1.0
+	if _levantado < AVISO_FIN:
+		alfa = 0.35 + 0.65 * absf(cos(_levantado * TAU * 3.0))
+	_pintar_arco(SEMIANGULO * abierto, alfa, _destello / DURACION_DESTELLO)
+
+
+## Resplandor, el arco y un filo claro por dentro.
+func _pintar_arco(semiangulo: float, alfa: float, brillo: float) -> void:
+	if semiangulo <= 0.01 or alfa <= 0.0:
+		return
+	var desde := _angulo - semiangulo
+	var hasta := _angulo + semiangulo
+	draw_arc(Vector2.ZERO, RADIO, desde, hasta, 18, Color(COLOR, (0.22 + 0.35 * brillo) * alfa),
 		GROSOR + 6.0 + 6.0 * brillo, true)
-	draw_arc(Vector2.ZERO, RADIO, desde, hasta, 18, Color(COLOR, 0.85), GROSOR, true)
-	draw_arc(Vector2.ZERO, RADIO - 1.0, desde + 0.06, hasta - 0.06, 18,
-		Color(1.0, 1.0, 1.0, 0.55 + 0.45 * brillo), 1.5, true)
+	draw_arc(Vector2.ZERO, RADIO, desde, hasta, 18, Color(COLOR, 0.85 * alfa), GROSOR, true)
+	# El filo va un poco mas corto que el arco; recien sacado aun no cabe.
+	if semiangulo > 0.12:
+		draw_arc(Vector2.ZERO, RADIO - 1.0, desde + 0.06, hasta - 0.06, 18,
+			Color(1.0, 1.0, 1.0, (0.55 + 0.45 * brillo) * alfa), 1.5, true)

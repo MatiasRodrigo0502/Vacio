@@ -36,7 +36,10 @@ signal caido
 
 @export_group("Disparo")
 ## Segundos entre disparo y disparo. Es la cadencia: mas bajo, mas rapido.
-@export var cadencia_disparo: float = 0.34
+## Medio segundo desde el 2026-10-09 (pedido por Matias; antes 0,34): que cada
+## bola cuente y no sea una rafaga constante. Los objetos que hacen disparar
+## mas seguido la siguen bajando durante la partida.
+@export var cadencia_disparo: float = 0.5
 ## Velocidad de las bolas. La lee Principal al crearlas.
 @export var velocidad_bola: float = 620.0
 ## Radio de las bolas. Tambien lo lee Principal.
@@ -64,7 +67,8 @@ signal caido
 ## usar_personaje) y ningun objeto los cambia. Ver PersonajeJugable.
 var dano_disparo: float = 1.0
 var frena_disparo: float = 0.0
-## El escudo direccional, si el mago lo trae. Si no, null.
+## El escudo direccional, si es el ataque especial del mago. Si no, null, y
+## el especial es la bola cargada.
 var _escudo: EscudoDireccional = null
 
 ## Tope de cadencia: por debajo de esto el disparo se vuelve una manguera y el
@@ -190,12 +194,16 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 
 	# El escudo va con el mago: se pone o se quita al estrenarlo, y no se
 	# duplica si se vuelve a llamar con el mismo (cada reinicio lo hace).
-	if personaje.escudo and _escudo == null:
+	var con_escudo := personaje.ataque_especial == PersonajeJugable.ESPECIAL_ESCUDO
+	if con_escudo and _escudo == null:
 		_escudo = EscudoDireccional.new(self)
 		add_child(_escudo)
-	elif not personaje.escudo and _escudo != null:
+	elif not con_escudo and _escudo != null:
 		_escudo.queue_free()
 		_escudo = null
+	if _escudo != null:
+		_escudo.duracion = personaje.duracion_escudo
+		_escudo.recarga = personaje.recarga_escudo
 
 	# restaurar_vida() es lo que copia los valores de fabrica a los de verdad,
 	# asi que sirve igual para "empezar de cero" que para "estrenar mago".
@@ -302,6 +310,14 @@ func _direccion_raton() -> Vector2:
 func _actualizar_carga(delta: float) -> void:
 	if not _control_activo:
 		_cancelar_carga()
+		return
+
+	# El mago del escudo no carga nada: el mismo boton lo saca, si esta listo.
+	# Al pulsar y no al mantener: mantenido lo volveria a sacar en cuanto
+	# acabara la recarga, y seria otra vez un escudo siempre puesto.
+	if _escudo != null:
+		if Input.is_action_just_pressed("cargar_ataque"):
+			_escudo.levantar()
 		return
 
 	if Input.is_action_pressed("cargar_ataque"):
@@ -562,6 +578,9 @@ func reubicar(posicion: Vector2) -> void:
 	_cancelar_carga()
 	_parar_caida()
 	_tiempo_veneno = 0.0
+	# Cada piso empieza con el escudo bajado y listo, como la carga.
+	if _escudo != null:
+		_escudo.reiniciar()
 	# Cada piso empieza mirando hacia donde se baja.
 	_mirando = &"abajo"
 
@@ -584,6 +603,8 @@ func restaurar_vida() -> void:
 	_tiempo_veneno = 0.0
 	_espera_disparo = 0.0
 	_cancelar_carga()
+	if _escudo != null:
+		_escudo.reiniciar()
 	vida_cambiada.emit(vida_actual, vida_maxima)
 
 

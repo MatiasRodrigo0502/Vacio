@@ -14,9 +14,9 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 **Cómo se juega ahora:**
 
-- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: el blanco lleva un escudo pequeño delante que para los disparos enemigos, y su disparo frena a los enemigos pero quita la mitad.
-- **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón.
-- **Ataque cargado:** mantener el clic derecho o el espacio y soltarlo cuando está cargado. Atraviesa enemigos y hace 3 de daño.
+- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: el blanco, en vez de ataque cargado, saca un escudo pequeño delante que para los disparos enemigos, y su disparo frena a los enemigos pero quita la mitad.
+- **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón: una bola cada medio segundo.
+- **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y hace 3 de daño. El blanco saca un escudo que dura 3 s y recarga en 5 s.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Enemigos:** salen desde el piso 2. Los de cuerpo a cuerpo son rápidos; los de distancia, lentos pero quitan más vida.
 - **Peligros del suelo:** pinchos, agujeros al vacío y lava.
@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 08/10/2026 | Cada cambio publicado es una versión con número, empezando por la 0.1 | — |
+| 09/10/2026 | El escudo del mago blanco pasa a ser su ataque especial; los tres magos disparan cada 0,5 s | — |
+| 08/10/2026 | Cada cambio publicado es una versión con número, empezando por la 0.1 | `4d5430d` |
 | 08/10/2026 | Mago blanco: disparo que frena y escudo direccional | `ee59355` |
 | 08/10/2026 | El ataque cargado también con el espacio | `a8448e0` |
 | 08/10/2026 | Rocas de dentro distintas en cada uno de los 12 pisos | `2c72366` |
