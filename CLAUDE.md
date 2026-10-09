@@ -154,8 +154,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`Sonido.poner_musica`); cada piso dice la suya en `DatosPiso.musica` y el
   disparo de cada proyectil, en `TipoProyectil.sonido`. Los botones hacen
   clic solos (`node_added`). Buses `Musica` y `Efectos` en
-  `default_bus_layout.tres`; sus volúmenes, en el menú de pausa
-  (`ControlVolumen`) y guardados en `user://ajustes.cfg`. **Nadie del equipo
+  `default_bus_layout.tres`; sus volúmenes, en el menú de pausa y abajo a la
+  izquierda de la portada (`ControlVolumen`, el mismo nodo en los dos) y
+  guardados en `user://ajustes.cfg`. **Nadie del equipo
   lo había oído al hacerlo**: Claude no puede oír, solo medir (picos, volumen
   medio, recortes, que el bucle empalme). Hay que escucharlo y ajustar.
 

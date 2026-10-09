@@ -182,8 +182,9 @@ la suya. Hay efecto para los disparos (los tuyos y los de cada enemigo), los
 golpes, las muertes, las explosiones, las puertas, los objetos, el escudo, el
 agujero negro, caer, bajar de piso y los botones.
 
-El volumen de la música y el de los efectos se cambian en el menú de pausa
-(Esc) y se recuerdan para la próxima vez.
+El volumen de la música y el de los efectos se cambian abajo a la izquierda
+de la portada o en el menú de pausa (Esc), y se recuerdan para la próxima
+vez.
 
 ## Estructura del proyecto
 

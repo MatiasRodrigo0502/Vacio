@@ -1,5 +1,6 @@
 ## Dos barras: el volumen de la musica y el de los efectos. Va en el menu de
-## pausa; lo que se elige lo guarda el autoload Sonido y se recuerda.
+## pausa y abajo a la izquierda de la portada; las dos leen y cambian lo
+## mismo (el autoload Sonido), que se guarda y se recuerda.
 ##
 ## POR QUE SE MONTA POR CODIGO: son dos filas iguales (nombre y barra), y asi
 ## ponerlo en otro menu es anadir este nodo, sin copiar ocho nodos a mano.
