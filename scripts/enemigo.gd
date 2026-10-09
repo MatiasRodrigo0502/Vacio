@@ -32,6 +32,8 @@ const COLOR_FRENADO := Color(0.62, 0.84, 1.25)
 ## segundo, no un poco cada fotograma, porque cada golpe hace parpadear al
 ## enemigo y eso es lo que dice que le esta quemando.
 const TIC_QUEMADURA: float = 1.0
+## Lo que dura la linea del rayo que sale con el disparo, sin apuntar antes.
+const DURACION_LINEA_DISPARO: float = 0.3
 
 ## De donde salen vida, velocidad, dibujo y demas. Lo pone la mecanica que los
 ## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
@@ -73,6 +75,9 @@ var _mira: Vector2 = Vector2.DOWN
 ## y te avisaba de un peligro que detras de la roca no existe: el rayo se para
 ## en ella.
 var _largo_mira: float = 0.0
+## Lo que le queda a la linea del rayo cuando sale con el disparo, sin apuntar
+## antes (tiempo_apuntar = 0). Se ve un momento y se apaga.
+var _linea_disparo: float = 0.0
 
 @onready var _sprite: AnimatedSprite2D = $Sprite
 @onready var _forma: CollisionShape2D = $Forma
@@ -336,6 +341,9 @@ func mantener_en_la_sala() -> void:
 
 
 func _pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void:
+	if _linea_disparo > 0.0:
+		_linea_disparo = maxf(0.0, _linea_disparo - delta)
+		queue_redraw()
 	if _apuntando > 0.0:
 		_apuntando -= delta
 		var avance := 1.0 - _apuntando / tipo.tiempo_apuntar
@@ -356,9 +364,16 @@ func _pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void
 
 	_espera -= delta
 	if _espera <= 0.0:
-		_apuntando = tipo.tiempo_apuntar
 		_mira = (_punto_objetivo() - global_position).normalized()
 		_largo_mira = _alcance_libre(_mira)
+		# Sin tiempo de apuntar, dispara ya, y la linea sale con el disparo.
+		# Hace falta aparte: con _apuntando a 0 nunca llegaria a la cuenta
+		# atras de arriba, que es la que dispara.
+		if tipo.tiempo_apuntar <= 0.0:
+			_disparar()
+			_linea_disparo = DURACION_LINEA_DISPARO
+		else:
+			_apuntando = tipo.tiempo_apuntar
 
 
 ## Distancia hasta la primera roca o muro en esa direccion, o el alcance del
@@ -478,18 +493,26 @@ func _soltar_cria(numero: int) -> void:
 		sala.registrar_enemigo(cria)
 
 
-## La linea de mira del rayo, mientras apunta. Solo el rayo la lleva: es tan
-## rapido que sin ella no se podria esquivar.
+## La linea de mira del rayo: mientras apunta, o un momento con el disparo
+## si no apunta. Solo el rayo la lleva.
 func _draw() -> void:
 	if _frenado > 0.0 and tipo != null:
 		_pintar_escarcha()
 	if _quemaduras > 0 and tipo != null:
 		_pintar_llamas()
-	if _apuntando <= 0.0 or tipo == null or not tipo.es_a_distancia():
+	if tipo == null or not tipo.es_a_distancia():
 		return
 	if tipo.proyectil.estilo != TipoProyectil.Estilo.RAYO:
 		return
-	var avance := 1.0 - _apuntando / tipo.tiempo_apuntar
 	var color := tipo.proyectil.color
+	if _linea_disparo > 0.0:
+		# Sale entera y gruesa, y se apaga.
+		var queda := _linea_disparo / DURACION_LINEA_DISPARO
+		draw_line(Vector2.ZERO, _mira * _largo_mira,
+			Color(color.r, color.g, color.b, 0.75 * queda), 1.0 + 3.0 * queda)
+		return
+	if _apuntando <= 0.0:
+		return
+	var avance := 1.0 - _apuntando / tipo.tiempo_apuntar
 	draw_line(Vector2.ZERO, _mira * _largo_mira,
 		Color(color.r, color.g, color.b, 0.2 + 0.5 * avance), 1.0 + 2.5 * avance)

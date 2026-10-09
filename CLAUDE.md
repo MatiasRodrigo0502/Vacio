@@ -241,6 +241,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     demás dejan un destello pequeño de su color, sin daño.
   - La **línea de mira del cristal** acaba en la primera roca o muro: el rayo
     se para ahí, y pintada entera avisaba de un peligro que no existe.
+  - **El cristal ya no apunta antes de disparar** (pedido por Matías el
+    2026-10-09): `tiempo_apuntar = 0`, y la línea sale con el disparo y se
+    apaga en 0,3 s (`_linea_disparo`). Con 0 hace falta la rama aparte en
+    `_pelear_a_distancia`: la cuenta atrás de `_apuntando` es la que dispara,
+    y con 0 no se llegaba a disparar nunca. Los demás de distancia siguen
+    avisando.
 - **Al recibir un golpe, la cámara tiembla** 7 px durante un cuarto de
   segundo (`CamaraJuego.sacudir`). Va en el `offset`, así que no se mezcla
   con el seguimiento ni con el límite de la sala.
@@ -410,8 +416,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   Con los packs de antes la cuenta daba de 1,13 (piso 1) a 0,27 (piso 12).
 - **Cuerpo a cuerpo rápido, distancia lento y letal** (pedido por Matías el
   2026-09-29). Los de distancia avisan antes de cada disparo (se paran y
-  brillan; el cristal marca además la línea del rayo), porque quitan 2: sin
-  aviso, un golpe así no se puede esquivar y solo frustra.
+  brillan), porque quitan 2: sin aviso, un golpe así no se puede esquivar y
+  solo frustra. El cristal es la excepción desde el 2026-10-09, por petición
+  de Matías: dispara sin avisar.
 - **Como mucho la mitad de cada sala son de distancia.** Una sala solo de
   tiradores es una lluvia de disparos desde todas partes.
 - **El veneno frena, no quita más vida.** Con tres corazones, un daño que

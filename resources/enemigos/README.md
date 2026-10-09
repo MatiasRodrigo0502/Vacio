@@ -16,7 +16,9 @@ Dos formas de pelear (`ataque`):
 - **A distancia**: **lentos**, se quedan a su `distancia_preferida` (si te
   acercas, retroceden) y disparan cada `cadencia` segundos. Pegan más fuerte,
   pero antes de cada disparo se paran y avisan durante `tiempo_apuntar`: el
-  aviso es lo que hace justo el daño alto. Las rocas paran sus disparos.
+  aviso es lo que hace justo el daño alto. Las rocas paran sus disparos. Con
+  `tiempo_apuntar` a 0 dispara sin avisar, y si es un rayo su línea sale a la
+  vez que el disparo (el cristal).
 
 | Tipo | Ataque | Vida | Velocidad | Desde el piso | Qué tiene de especial |
 |---|---|---|---|---|---|
@@ -28,7 +30,7 @@ Dos formas de pelear (`ataque`):
 | Gólem de roca | distancia: **magma** | 5 | 38 | 4 | lo tira por el aire: quita 2 y deja lava 3,5 s |
 | Slime naranja | cuerpo a cuerpo | 3 | 132 | 5 | explota (75) y se parte en 2 |
 | Slime de magma | cuerpo a cuerpo | 3 | 118 | 5 | explota (85) y se parte en 2 |
-| Cristal vivo | distancia: **rayo** | 3 | **0** | 5 | apunta 0,8 s con una línea; el rayo quita 2 |
+| Cristal vivo | distancia: **rayo** | 3 | **0** | 5 | dispara en cuanto sale su línea, sin apuntar antes; el rayo quita 2 |
 | Fantasma | cuerpo a cuerpo | 2 | 115 | 6 | ve desde más lejos que nadie (800) |
 | Planta azul | cuerpo a cuerpo | 2 | 150 | 7 | |
 

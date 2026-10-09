@@ -52,7 +52,9 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## Segundos entre un disparo y el siguiente.
 @export var cadencia: float = 2.0
 ## Segundos que se queda quieto avisando antes de disparar. Es lo que hace
-## justo el dano alto: siempre se ve venir.
+## justo el dano alto: siempre se ve venir. 0 = dispara en cuanto le toca, sin
+## avisar; si es un rayo, su linea sale a la vez que el disparo (el cristal,
+## desde el 2026-10-09).
 @export var tiempo_apuntar: float = 0.5
 ## A que distancia del jugador intenta quedarse. Si te acercas, retrocede.
 @export var distancia_preferida: float = 320.0

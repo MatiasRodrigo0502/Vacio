@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 09/10/2026 | Quemadura en los disparos del mago rojo | — |
+| 09/10/2026 | El cristal dispara en cuanto sale su línea, sin apuntar antes | — |
+| 09/10/2026 | Quemadura en los disparos del mago rojo | `75611f5` |
 | 09/10/2026 | Sin la R para reiniciar: se reinicia desde la pausa | `3080c2b` |
 | 09/10/2026 | El escudo del mago blanco dura 5 s | `71451b8` |
 | 09/10/2026 | Agujero negro del mago oscuro; el ataque especial, uno por piso | `62070ab` |
