@@ -33,11 +33,6 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## Alto que ocupa en el mundo. El sprite se escala a esto.
 @export var alto: float = 54.0
 
-## A partir de que distancia deja de perseguir (y de disparar). Un radio corto
-## convierte al enemigo en una emboscada: no se entera hasta que lo tienes
-## encima.
-@export var radio_vision: float = 620.0
-
 ## Primer piso en el que puede aparecer. Sirve para que los enemigos duros no
 ## salgan en los pisos de arriba.
 @export_range(1, 12) var piso_minimo: int = 1

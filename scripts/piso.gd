@@ -180,8 +180,10 @@ func _physics_process(_delta: float) -> void:
 			# seria pagar la caida y luego otro golpe sin poder evitarlo.
 			var dentro := maxf(DENTRO_REAPARICION, sala.fondo_trampa(puerta) + MARGEN_TRAMPA)
 			_reaparicion += sala.punto_puerta(puerta) - Vector2(puerta) * dentro
+		_sala_actual.asomar(false)
 		_sala_actual = sala
 		sala.visitada = true
+		sala.asomar(true)
 		sala_cambiada.emit(sala)
 
 	# La camara cambia de sala a mitad del pasillo, pero las puertas no se

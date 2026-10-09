@@ -12,7 +12,6 @@ vida = 2
 velocidad = 55.0
 dano = 1
 alto = 44.0
-radio_vision = 560.0
 piso_minimo = 2
 color_efectos = Color(0.62, 1.0, 0.32, 1)
 ataque = 1

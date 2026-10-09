@@ -140,11 +140,13 @@ func _physics_process(delta: float) -> void:
 	if not _despierto or tipo == null or not is_instance_valid(_objetivo):
 		return
 
+	# Despierto, va a por el jugador este donde este de la sala: la sala ya
+	# limita a quien despierta (ver Sala.asomar). Antes habia ademas una
+	# distancia de vision por tipo, de cuando no habia salas, y en las salas
+	# grandes dejaba enemigos plantados en una esquina con las puertas
+	# cerradas hasta que te acercabas (Matias, 2026-10-09).
 	var hacia := _objetivo.global_position - global_position
 	var distancia := hacia.length()
-	if distancia > tipo.radio_vision:
-		_dejar_de_apuntar()
-		return
 
 	if tipo.es_a_distancia():
 		_pelear_a_distancia(delta, hacia, distancia)
@@ -157,6 +159,10 @@ func _physics_process(delta: float) -> void:
 
 func dormir() -> void:
 	_despierto = false
+	# Si se duerme a mitad de apuntar (el jugador se ha asomado y se ha ido,
+	# ver Sala.asomar), se le quita el brillo y la mira: dormido no se mueve
+	# nada, y se quedaba apuntando para siempre.
+	_dejar_de_apuntar()
 
 
 func despertar() -> void:

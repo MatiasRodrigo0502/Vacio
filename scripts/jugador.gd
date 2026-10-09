@@ -150,6 +150,10 @@ var _carga: float = 0.0
 ## True mientras el boton derecho esta pulsado. Lo miran el disparo normal (que
 ## se calla mientras cargas) y la animacion (para mirar a donde cargas).
 var _cargando: bool = false
+## True si el ataque especial se esta cargando con el espacio y no con el
+## raton: entonces sale hacia las flechas o hacia donde mira el mago (ver
+## _direccion_especial).
+var _especial_por_teclado: bool = false
 
 ## Direccion a la que mira el sprite: "abajo", "izquierda", "derecha", "arriba".
 ## Se guarda en vez de recalcularse cada vez porque, al soltar los controles, el
@@ -276,10 +280,9 @@ func _direccion_apuntada() -> Vector2:
 	if not _control_activo:
 		return Vector2.ZERO
 
-	# Cargando se apunta con el raton igual que disparando, asi que el mago
-	# mira hacia donde va a soltar el ataque.
+	# Cargando, el mago mira hacia donde va a soltar el ataque.
 	if _cargando:
-		return _direccion_raton()
+		return _direccion_especial()
 
 	# El raton manda sobre las flechas: si estas apuntando, es lo que quieres.
 	# Con el raton se apunta libre, en cualquier angulo; con las flechas solo a
@@ -287,6 +290,12 @@ func _direccion_apuntada() -> Vector2:
 	if Input.is_action_pressed("disparar_raton"):
 		return _direccion_raton()
 
+	return _direccion_flechas()
+
+
+## Hacia donde apuntan las flechas, en cuatro direcciones; ZERO si no se pulsa
+## ninguna.
+func _direccion_flechas() -> Vector2:
 	var flechas := Input.get_vector(
 		"disparar_izquierda", "disparar_derecha", "disparar_arriba", "disparar_abajo")
 	if flechas == Vector2.ZERO:
@@ -296,6 +305,28 @@ func _direccion_apuntada() -> Vector2:
 	if absf(flechas.x) > absf(flechas.y):
 		return Vector2(signf(flechas.x), 0.0)
 	return Vector2(0.0, signf(flechas.y))
+
+
+## Hacia donde sale el ataque especial (y hacia donde mira el mago mientras
+## carga).
+##
+## Con el clic derecho, hacia el raton. Con el espacio, hacia donde apuntan
+## las flechas o, sin ninguna pulsada, hacia donde mira el mago: el espacio es
+## para quien juega sin raton, con las flechas, y el raton no puede mandar.
+## Con la flecha de abajo sale hacia abajo aunque el cursor este encima del
+## mago (Matias, 2026-10-09).
+func _direccion_especial() -> Vector2:
+	if not _especial_por_teclado:
+		return _direccion_raton()
+	var flechas := _direccion_flechas()
+	return flechas if flechas != Vector2.ZERO else _vector_de(_mirando)
+
+
+## True mientras se mantiene el ataque especial, con el raton o con el
+## espacio.
+func _especial_pulsado() -> bool:
+	return Input.is_action_pressed("cargar_ataque") \
+		or Input.is_action_pressed("cargar_ataque_teclado")
 
 
 ## Del mago al cursor. Si el raton esta justo encima, no hay direccion fiable,
@@ -333,24 +364,30 @@ func _actualizar_carga(delta: float) -> void:
 	# El mago del escudo no carga nada: el mismo boton lo saca. Al pulsar y
 	# no al mantener, para que sacarlo sea siempre algo que se decide.
 	if _escudo != null:
-		if Input.is_action_just_pressed("cargar_ataque") and _escudo.levantar():
+		var pulsado := Input.is_action_just_pressed("cargar_ataque") \
+			or Input.is_action_just_pressed("cargar_ataque_teclado")
+		if pulsado and _escudo.levantar():
 			_gastar_especial()
 			Sonido.tocar(&"escudo")
 		return
 
-	if Input.is_action_pressed("cargar_ataque"):
+	if _especial_pulsado():
+		# Con que se carga decide hacia donde sale. Con los dos a la vez manda
+		# el espacio: quien lo pulsa esta jugando con el teclado.
+		_especial_por_teclado = Input.is_action_pressed("cargar_ataque_teclado")
 		_cargando = true
 		var antes := _carga
 		_carga = minf(_carga + delta, tiempo_carga)
 		# Al cerrarse el aro, un brillo: ya se puede soltar sin mirarlo.
 		if antes < tiempo_carga and _carga >= tiempo_carga:
 			Sonido.tocar(&"carga_lista")
-		_carga_visual.actualizar(_carga / tiempo_carga, _direccion_raton())
+		_carga_visual.actualizar(_carga / tiempo_carga, _direccion_especial())
 		return
 
-	# Se ha soltado el boton (o no estaba pulsado).
+	# Se ha soltado el boton (o no estaba pulsado). Sale hacia donde se
+	# apuntaba con lo ultimo que se cargo.
 	if _cargando and _carga >= tiempo_carga:
-		bola_lanzada.emit(centro_colision(), _direccion_raton(), true)
+		bola_lanzada.emit(centro_colision(), _direccion_especial(), true)
 		_gastar_especial()
 	_cancelar_carga()
 

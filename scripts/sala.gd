@@ -356,6 +356,26 @@ func activar() -> void:
 			enemigo.despertar()
 
 
+## El jugador se asoma a la sala (ya esta en ella, aunque sea en el umbral)
+## o se va sin haber entrado del todo.
+##
+## POR QUE NO ESPERAR A activar(): las puertas se cierran al entrar del todo,
+## para que el rastrillo no caiga encima del jugador. Si los enemigos
+## esperaban a eso, desde el umbral se les veia congelados, y se les podia
+## disparar sin que hicieran nada (Matias, 2026-10-09). Despiertan al
+## asomarse; si el jugador se va sin entrar, se vuelven a dormir, para que no
+## le esperen pegados a la puerta.
+func asomar(dentro: bool) -> void:
+	if _activada:
+		return
+	for enemigo in _enemigos:
+		if is_instance_valid(enemigo):
+			if dentro:
+				enemigo.despertar()
+			else:
+				enemigo.dormir()
+
+
 ## True si el circulo (centro global, radio) cabe entero en el suelo. Las
 ## puertas solo se cierran cuando el jugador ha entrado del todo: si se
 ## cerraran con medio cuerpo en el hueco, el cierre naceria encima de el.

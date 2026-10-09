@@ -16,7 +16,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 - **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; los disparos del rojo queman; el blanco, en vez de ataque cargado, saca un escudo pequeño delante que para los disparos enemigos, y su disparo frena a los enemigos pero quita la mitad.
 - **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón: una bola cada medio segundo.
-- **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y hace 3 de daño. La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca un escudo que dura 5 s. El ataque especial es uno por piso.
+- **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y hace 3 de daño. La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca un escudo que dura 5 s. El ataque especial es uno por piso. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o hacia donde mira el mago.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Enemigos:** salen desde el piso 2. Los de cuerpo a cuerpo son rápidos; los de distancia, lentos pero quitan más vida.
 - **Peligros del suelo:** pinchos, agujeros al vacío y lava.
@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 09/10/2026 | El volumen también en la portada | — |
+| 09/10/2026 | Revisión: enemigos congelados en el paso entre salas y quietos en las salas grandes; el espacio apunta con las flechas | — |
+| 09/10/2026 | El volumen también en la portada | `635802c` |
 | 09/10/2026 | Sonido y música, generados por síntesis, con el volumen en la pausa | `d7cf4ff` |
 | 09/10/2026 | Borrados los personajes que ya no se usaban (mago morado, nigromante y BlueWizard) | `185f2ae` |
 | 09/10/2026 | Portada nueva: título en pixel art y los tres magos, sin subtítulo | `be954f8`, `cd9925a` |

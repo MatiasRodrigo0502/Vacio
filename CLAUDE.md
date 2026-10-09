@@ -187,7 +187,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   ratón, una bola cada **0,5 s** en los tres magos (pedido por Matías el
   2026-10-09; antes 0,34, y el oscuro ×0,85). Matan enemigos; **no** rompen rocas, y las rocas los
   paran (ver la trampa del `Area2D` más abajo).
-- **Ataque cargado**: clic derecho o espacio, mantenido (apunta al ratón). Se carga en `tiempo_carga`
+- **Ataque cargado**: clic derecho o espacio, mantenido. Con el clic derecho
+  apunta al ratón; con el espacio (acción aparte, `cargar_ataque_teclado`),
+  a las flechas o, sin ninguna, hacia donde mira el mago: es para jugar sin
+  ratón, y el ratón no manda aunque esté encima (Matías, 2026-10-09; ver
+  `Jugador._direccion_especial`). Se carga en `tiempo_carga`
   (0,75 s), hay que **soltarlo** para que salga y soltarlo antes de tiempo no
   dispara nada. Atraviesa enemigos y hace 3 de daño; las rocas lo paran igual.
   Mientras cargas, el disparo normal se calla. El aviso visual lo dibuja
@@ -512,6 +516,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **Los enemigos despiertan al asomarse a su sala, no al entrar del todo.**
+  Las puertas sí esperan a que el jugador entre del todo (el rastrillo no
+  puede caerle encima), y si los enemigos esperaban a eso, desde el umbral se
+  veían congelados y se les podía disparar sin que reaccionaran. Ahora
+  `Sala.asomar()` los despierta cuando la sala pasa a ser la actual y los
+  vuelve a dormir si el jugador se va sin entrar.
+- **Ya no hay distancia de visión por enemigo.** Era de antes de las salas:
+  en una sala de 1400 px, la planta venenosa (360) se quedaba plantada con
+  las puertas cerradas hasta que te acercabas. Despierto, un enemigo va a por
+  ti esté donde esté de su sala. La revisión de las 63 salas con enemigos
+  (2026-10-09) comprobó que todos se mueven o disparan.
 
 - **Cerrar el juego con música sonando deja un aviso del motor** («1
   resources still in use at exit»), y la prueba de arranque de la release lo
