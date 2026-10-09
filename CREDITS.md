@@ -49,48 +49,12 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Nota**: lo aportó Matías, sin decir de dónde salía. **Hay que averiguar de
   dónde viene.**
 
-### Mago de 4 direcciones — personaje jugable anterior (fuera de uso)
+### Personajes de antes — borrados del proyecto
 
-- **Pack**: sin identificar
-- **Autor**: sin identificar
-- **URL**: —
-- **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
-- **Archivos**: `assets/mago/*.png` (15 frames) + `animaciones_mago.tres`
-- **Estado**: sustituido por el mago oscuro de 8 direcciones.
-- **Procesado**: recortado de una hoja de 4×4 casillas rotuladas (1254×1254),
-  quitando rótulos y rejilla y reescalado a 108×134. Las dos filas de lado de
-  la hoja son la misma pose mirando a la derecha, así que la izquierda se
-  genera reflejándola; y el fotograma «arriba 3» se descarta porque trae dos
-  báculos.
-- **Nota**: la imagen la aportó Matías en el chat, sin decir de dónde salía.
-  **Hay que averiguar de dónde viene.**
-
-### Nigromante — personaje jugable anterior (fuera de uso)
-
-- **Pack**: sin identificar
-- **Autor**: sin identificar
-- **URL**: —
-- **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
-- **Archivos**: `assets/nigromante/*.png` (6 frames) + `animaciones_nigromante.tres`
-- **Estado**: sustituido por el mago de 4 direcciones. Se conserva en el
-  repositorio para poder volver atrás.
-- **Procesado**: recortado de una hoja de 2172×724 con seis viñetas enmarcadas,
-  quitando el fondo gris y los marcos, y reescalado a 134×150.
-- **Nota**: la imagen la aportó Matías en el chat, sin decir de dónde salía. Es
-  el único asset del proyecto del que no consta ni autor ni origen, así que es
-  el que más riesgo tiene: **hay que averiguar de dónde viene**.
-
-### BlueWizard — personaje jugable anterior (fuera de uso)
-
-- **Pack**: Mossy Cavern
-- **Autor**: maaot
-- **URL**: https://maaot.itch.io/mossy-cavern
-- **Licencia**: sin verificar
-- **Archivos**: `assets/personaje/*.png` (40 frames) + `animaciones_mago.tres`
-- **Estado**: sustituido por el nigromante. Se conserva en el repositorio
-  para poder volver atrás.
-- **Procesado**: recortados de 512×512 a la caja útil del personaje (160×280) y
-  reescalados a 73×128. Los originales no están en el repo (ver más abajo).
+El mago de 4 direcciones, el nigromante y el BlueWizard (de *Mossy Cavern*, de
+maaot) se borraron el 2026-10-09: ya no los usaba nada. Los dos primeros eran
+los únicos assets sin autor ni origen; al no estar en el proyecto, ya no
+hace falta aclararlos. Siguen en el historial de git.
 
 ### Musgo — arte del piso 1 (ya sin usar)
 

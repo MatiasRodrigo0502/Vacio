@@ -61,67 +61,11 @@ origen del nodo, que es donde están los pies.
 `retrato.png` es la pose de reposo de frente recortada, solo para el menú: un
 `TextureRect` necesita una textura suelta, no una animación.
 
-## mago/
+## Personajes de antes (borrados)
 
-**Fuera de uso.** El personaje anterior, el primero que miró a los cuatro
-lados. 15 PNG de 108×134 (`abajo_0..3`, `izquierda_0..3`, `derecha_0..3`,
-`arriba_0..2`) y `animaciones_mago.tres`, con ocho animaciones: `caminar_` y
-`quieto_` por cada dirección.
-
-Salieron de una hoja de 4×4 casillas rotuladas. Esa hoja traía dos defectos,
-los dos encontrados midiendo y no mirando:
-
-- **Las dos filas de lado son la misma pose y miran al mismo sitio**: siluetas
-  93 % iguales tal cual y solo 62 % en espejo. Y miran a la **derecha**, no a la
-  izquierda que dice el rótulo: el centro de la piel de la cara cae 10 px a la
-  derecha del centro de la cabeza, mientras que en la fila frontal (que sabemos
-  que es de frente) ese desvío es de 4. Así que la fila de lado se usa tal cual
-  para la derecha y **reflejada** para la izquierda.
-- **El fotograma ARRIBA 3 tiene dos báculos**, uno en cada mano. Se descarta,
-  así que andar hacia arriba usa tres poses en vez de cuatro. Para que el paso
-  no vaya más rápido, esa animación va a 7,5 fps en vez de 10: el ciclo dura
-  los mismos 0,4 s.
-
-Cada fila de la hoja tenía al mago a una altura distinta dentro de su casilla,
-así que la línea de suelo se mide **por dirección**; si se midiera para toda la
-hoja, el mago pegaría un salto vertical al girarse. La referencia son las filas
-con píxeles sólidos (alfa alto y anchura de bota), no la caja del alfa: debajo
-de los pies hay restos de sombra suave, distintos en cada fila. Con ese filtro
-las cuatro direcciones miden lo mismo de alto (221 px en la hoja), que es la
-señal de que la referencia es buena.
-
-El lienzo se centra en los pies y es simétrico, porque la derecha es la
-izquierda reflejada y el eje tiene que caer en el mismo sitio.
-
-**Contraste medido contra el suelo: 1,43:1.** Es el personaje más oscuro que ha
-tenido el juego (el nigromante daba 1,81:1 y el mago azul original 1,55:1). Se
-lee gracias al orbe morado y al ribete claro de la túnica.
-
-## nigromante/
-
-**Fuera de uso** (no tenía más que vista de frente). 6 PNG de 134×150 más su
-`SpriteFrames`. Se deja para poder volver atrás cambiando una línea en
-`Jugador.tscn`.
-
-## personaje/
-
-El mago anterior (BlueWizard), **ya no se usa**: se deja para poder volver
-atrás cambiando una línea en `Jugador.tscn`. 40 PNG de 73×128:
-
-- `quieto_00..19.png` — animación de reposo
-- `caminar_00..19.png` — animación de andar
-- `animaciones_mago.tres` — el `SpriteFrames` que las agrupa, con sus
-  velocidades. Es lo que carga `Jugador.tscn`.
-
-Los frames originales eran de 512×512 con el personaje ocupando solo 160×280
-en el centro: un 83% del archivo era transparencia. Recortarlos a la caja común
-de las tres animaciones (la misma para todas, o el personaje daría saltos al
-cambiar de animación) bajó el conjunto de 4,1 MB a 441 KB.
-
-**Tamaño en pantalla**: el sprite se dibuja a escala 0,5 desde `Jugador.tscn`,
-o sea 64 px de alto, y el origen del nodo está a los pies. Si quieres el mago
-más grande o más pequeño, cambia esa escala en la escena; la forma de colisión
-es independiente y está aparte (círculo de radio 15 sobre la base de la túnica).
+El mago morado de 4 direcciones (`mago/`), el nigromante (`nigromante/`) y el
+BlueWizard (`personaje/`) se borraron el 2026-10-09, a petición de Matías: no
+los usaba nada. Siguen en el historial de git, antes del commit que los borra.
 
 Nota sobre `.gitignore`: los `*.import` no se versionan, los regenera Godot al
 abrir el proyecto.

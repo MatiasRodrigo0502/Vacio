@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 09/10/2026 | Portada nueva: título en pixel art y los tres magos, sin subtítulo | `be954f8` |
+| 09/10/2026 | Borrados los personajes que ya no se usaban (mago morado, nigromante y BlueWizard) | — |
+| 09/10/2026 | Portada nueva: título en pixel art y los tres magos, sin subtítulo | `be954f8`, `cd9925a` |
 | 09/10/2026 | El cristal dispara en cuanto sale su línea, sin apuntar antes | `3fe4b11` |
 | 09/10/2026 | Quemadura en los disparos del mago rojo | `75611f5` |
 | 09/10/2026 | Sin la R para reiniciar: se reinicia desde la pausa | `3080c2b` |
@@ -162,7 +163,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 
 **Personajes:**
 
-- **Magos:** el mago oscuro, en pixel art y en ocho direcciones, el mago rojo y el mago blanco (el rojo con otra paleta, hecha con `generar_mago_blanco.py`). Antes se probaron el BlueWizard y el nigromante.
+- **Magos:** el mago oscuro, en pixel art y en ocho direcciones, el mago rojo y el mago blanco (el rojo con otra paleta, hecha con `generar_mago_blanco.py`). Antes se probaron el BlueWizard, el nigromante y un mago morado de cuatro direcciones; ya no están en el proyecto.
 - **Enemigos:** los siete últimos (rata, serpiente, murciélago, gólem, slime de magma, cristal vivo y fantasma) los dibujó Matías.
 
 **Interfaz:**
@@ -243,10 +244,6 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 - [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones, con 3 o 4 corazones de vida. Todo se ajusta en los `.tres` de `resources/`.
 - [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así. El blanco sale de la del rojo.
 - [ ] **Verificar las licencias de lo que queda de fuera.** Los escenarios ya son todos propios; de fuera quedan los magos (ver el punto anterior). Los packs de itch.io de antes ya no se usan.
-
-**Decide Matías:**
-
-- [ ] **Borrar las carpetas de personajes que ya no se usan:** `mago/`, `nigromante/` y `personaje/`. El historial de git las conserva.
 
 **Ideas no pedidas todavía:**
 

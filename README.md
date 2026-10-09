@@ -208,9 +208,6 @@ Vacio/
 └── assets/
     ├── mago_oscuro/   # mago elegible: atlas de 8 direcciones + su SpriteFrames
     ├── mago_rojo/     # el otro mago elegible, mismo formato
-    ├── mago/          # mago morado de 4 direcciones, fuera de uso
-    ├── nigromante/    # fuera de uso
-    ├── personaje/     # el mago azul original, fuera de uso
     ├── bordes/        # la pared de las salas, una por piso (+ la reja)
     ├── rocas/         # las rocas de dentro, una por piso
     └── cueva/, musgo/, manto/, nucleo/  # packs de antes, ya sin usar

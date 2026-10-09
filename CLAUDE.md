@@ -300,14 +300,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Pendiente
 
-- **De dónde salen las hojas del personaje.** Ni la del nigromante ni la del
-  mago de 4 direcciones traen autor ni origen (ver `CREDITS.md`). Son los
-  únicos assets así. Hay que aclararlo antes de entregar o publicar.
+- **De dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del
+  rojo traen autor ni origen (ver `CREDITS.md`); el blanco sale de la del
+  rojo. Hay que aclararlo antes de entregar o publicar.
 - **Contraste del mago oscuro: 1,66:1** contra el suelo. Mejor que el mago
   morado al que sustituye (1,40:1), por debajo del nigromante (1,81:1).
-- **Limpiar las carpetas de personajes.** Ya son cuatro: `mago_oscuro/` en uso
-  y `mago/`, `nigromante/` y `personaje/` muertas. Borrar las tres muertas en
-  cuanto Matías lo confirme; el historial de git las conserva.
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí). Desde
   el 2026-10-08 los escenarios son todos propios y los packs de itch.io ya no
@@ -341,8 +338,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   piso, así que los 12 pisos son idénticos en las tres máquinas del equipo.
 - **El pack pixel art de Zerie está descartado**: desentona con el arte
   renderizado del resto.
-- **El mago BlueWizard se queda en el repositorio** aunque no se use. Cambiar
-  de personaje es una línea de `Jugador.tscn`, y así volver atrás es gratis.
+- **Los personajes de antes se borraron** (2026-10-09, pedido por Matías):
+  `mago/`, `nigromante/` y `personaje/` (BlueWizard). No los usaba nada; si
+  hiciera falta alguno, está en el historial de git.
 - **El mapa de salas es un árbol.** Una casilla nueva solo se acepta si toca a
   una sola sala: sale ramificado, con callejones, y entre dos salas hay un solo
   camino. Los callejones son los que dan sitio a la sala del objeto.
