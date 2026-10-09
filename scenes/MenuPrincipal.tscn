@@ -59,13 +59,6 @@ grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("2_titulo")
 
-[node name="Subtitulo" type="Label" parent="Centro/Caja"]
-modulate = Color(1, 0.741176, 0.360784, 1)
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "doce pisos hasta el núcleo"
-horizontal_alignment = 1
-
 [node name="Magos" type="HBoxContainer" parent="Centro/Caja"]
 layout_mode = 2
 theme_override_constants/separation = 36
