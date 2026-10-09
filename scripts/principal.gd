@@ -30,6 +30,7 @@ func _ready() -> void:
 	_jugador.sin_vida.connect(GestorProgreso.terminar_por_derrota)
 	_jugador.bola_lanzada.connect(_al_lanzar_bola)
 	_jugador.mejora_recogida.connect(_hud.anunciar_mejora)
+	_jugador.especial_cambiado.connect(_al_cambiar_especial)
 	_jugador.caido.connect(_al_caer)
 	# Temblor corto con cada golpe: 7 px que se calman en un cuarto de segundo.
 	_jugador.dano_recibido.connect(_camara.sacudir.bind(7.0))
@@ -121,8 +122,40 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 		# Atraviesa enemigos: es lo que hace que valga la pena esperar. Las
 		# rocas siguen parandola, como el disparo normal, porque son el terreno.
 		bola.atraviesa = true
+		_ajustar_al_mago(bola)
 	_piso_actual.add_child(bola)
 	bola.global_position = desde
+
+
+## Lo que la bola cargada tiene de cada mago: hasta donde llega y si abre un
+## agujero negro al acabarse (el mago oscuro).
+func _ajustar_al_mago(bola: BolaMagica) -> void:
+	var mago := _jugador.mago
+	if mago == null:
+		return
+	if mago.alcance_cargado > 0.0:
+		bola.alcance = mago.alcance_cargado
+	if mago.agujero_negro:
+		bola.apagada.connect(_abrir_agujero.bind(_piso_actual.sala_actual()))
+
+
+func _abrir_agujero(punto: Vector2, sala: Sala) -> void:
+	if _piso_actual == null or not is_instance_valid(sala):
+		return
+	var mago := _jugador.mago
+	var agujero := AgujeroNegro.new(sala, mago.duracion_agujero, mago.radio_agujero,
+		mago.dano_agujero, _jugador.color_cargado, _jugador.halo_cargado)
+	# Si la bola se ha apagado contra el muro, el agujero se abre en el suelo,
+	# no medio metido en la pared.
+	var suelo := sala.rect_suelo_global().grow(-AgujeroNegro.NUCLEO)
+	_piso_actual.add_child(agujero)
+	agujero.global_position = punto.clamp(suelo.position, suelo.end)
+
+
+func _al_cambiar_especial(disponible: bool) -> void:
+	var mago := _jugador.mago
+	if mago != null:
+		_hud.actualizar_especial(disponible, mago.nombre_especial(), mago.color)
 
 
 ## Al pasar a otra sala, la camara se encaja en ella. No salta: se desliza,

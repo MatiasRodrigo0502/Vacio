@@ -5,9 +5,9 @@
 ## POR QUE SE SACA Y NO ESTA SIEMPRE:
 ## al principio era una pasiva, siempre puesta, y Matias lo cambio (2026-10-09):
 ## es su ataque especial, el que los otros magos usan para la bola cargada. Se
-## pulsa el clic derecho o el espacio, dura 'duracion' segundos y luego hay que
-## esperar 'recarga'. Asi hay que elegir cuando sacarlo: cuando viene la
-## rafaga, no antes.
+## pulsa el clic derecho o el espacio y dura 'duracion' segundos, una vez por
+## piso, como los demas ataques especiales (eso lo cuenta el jugador). Asi hay
+## que elegir cuando sacarlo: cuando viene la rafaga, no antes.
 ##
 ## POR QUE PEQUENO Y SOLO DE FRENTE:
 ## un escudo que lo parara todo dejaria a los enemigos a distancia sin nada que
@@ -38,12 +38,9 @@ const DURACION_DESTELLO: float = 0.2
 const APERTURA: float = 0.12
 ## En el ultimo tramo parpadea, para avisar de que se va a bajar.
 const AVISO_FIN: float = 0.8
-## Al acabar la recarga se ve un momento, flojo: ya se puede volver a sacar.
-const DURACION_LISTO: float = 0.35
 
-## Los pone el jugador desde el mago (PersonajeJugable).
+## La pone el jugador desde el mago (PersonajeJugable).
 var duracion: float = 3.0
-var recarga: float = 5.0
 
 var _jugador: Jugador
 var _angulo: float = PI * 0.5
@@ -51,10 +48,6 @@ var _destello: float = 0.0
 var _detras: bool = false
 ## Segundos que le quedan levantado. 0 = bajado.
 var _levantado: float = 0.0
-## Segundos que faltan para poder volver a sacarlo.
-var _recargando: float = 0.0
-## Cuenta atras del aviso de "listo".
-var _listo: float = 0.0
 
 
 func _init(jugador: Jugador) -> void:
@@ -70,10 +63,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_contar(delta)
+	_levantado = maxf(0.0, _levantado - delta)
 	_angulo = lerp_angle(_angulo, _jugador.direccion_mirada().angle(), minf(1.0, GIRO * delta))
 	_destello = maxf(0.0, _destello - delta)
-	visible = activo() or _listo > 0.0
+	visible = activo()
 	# Mirando hacia arriba, el escudo esta detras del mago (vista 3/4): se pinta
 	# antes que el sprite. Mirando hacia abajo, delante.
 	var detras := sin(_angulo) < -0.2
@@ -83,39 +76,19 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
-func _contar(delta: float) -> void:
-	if _levantado > 0.0:
-		_levantado = maxf(0.0, _levantado - delta)
-		# La recarga empieza al bajarse, no al sacarlo: si contara desde que
-		# se saca, durar mas lo haria recargar antes.
-		if _levantado == 0.0:
-			_recargando = recarga
-	elif _recargando > 0.0:
-		_recargando = maxf(0.0, _recargando - delta)
-		if _recargando == 0.0:
-			_listo = DURACION_LISTO
-	_listo = maxf(0.0, _listo - delta)
-
-
-## Lo saca, si se puede. Devuelve false si estaba levantado o recargando.
+## Lo saca. Devuelve false si no se puede: ya levantado, sin vida o cayendo.
+## Si cuenta como el especial del piso lo decide el jugador, con lo que
+## devuelve esto.
 func levantar() -> bool:
-	if not listo() or _jugador.vida_actual <= 0 or _jugador.esta_cayendo():
+	if activo() or _jugador.vida_actual <= 0 or _jugador.esta_cayendo():
 		return false
 	_levantado = duracion
-	_listo = 0.0
 	return true
 
 
-## True si se puede sacar ya.
-func listo() -> bool:
-	return _levantado <= 0.0 and _recargando <= 0.0
-
-
-## Bajado y listo para sacar. Al empezar partida y al llegar a un piso.
-func reiniciar() -> void:
+## Lo baja. Al empezar partida y al llegar a un piso.
+func bajar() -> void:
 	_levantado = 0.0
-	_recargando = 0.0
-	_listo = 0.0
 
 
 ## Levantado, y con el mago vivo y en pie: cayendo por un agujero no esta.
@@ -144,9 +117,6 @@ func bloquea(desde: Vector2, hasta: Vector2, radio: float) -> bool:
 
 func _draw() -> void:
 	if not activo():
-		# Solo el aviso de "listo": el arco entero, flojo y apagandose.
-		var flojo := 0.5 * _listo / DURACION_LISTO
-		_pintar_arco(SEMIANGULO, flojo, 0.0)
 		return
 	# Se abre desde el centro al sacarlo, y parpadea cuando le queda poco.
 	var abierto := minf(1.0, (duracion - _levantado) / APERTURA)

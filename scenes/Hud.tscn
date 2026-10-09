@@ -42,20 +42,29 @@ offset_right = 360.0
 offset_bottom = 118.0
 script = ExtResource("2_corazones")
 
+[node name="Especial" type="Label" parent="."]
+offset_left = 28.0
+offset_top = 122.0
+offset_right = 560.0
+offset_bottom = 148.0
+theme_override_font_sizes/font_size = 17
+text = "ESPECIAL  ·  BOLA CARGADA"
+vertical_alignment = 1
+
 [node name="Mejoras" type="Control" parent="."]
 offset_left = 28.0
-offset_top = 124.0
+offset_top = 156.0
 offset_right = 560.0
-offset_bottom = 162.0
+offset_bottom = 194.0
 mouse_filter = 2
 script = ExtResource("4_mejoras")
 
 [node name="Aviso" type="Label" parent="."]
 visible = false
 offset_left = 28.0
-offset_top = 172.0
+offset_top = 204.0
 offset_right = 760.0
-offset_bottom = 204.0
+offset_bottom = 236.0
 theme_override_font_sizes/font_size = 19
 text = "objeto"
 vertical_alignment = 1

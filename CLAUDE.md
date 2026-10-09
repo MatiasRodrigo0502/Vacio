@@ -149,8 +149,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`frena_disparo`: anda, apunta y recarga a la mitad, con un aro de escarcha
   a los pies). Su **ataque especial es un escudo direccional** pequeño
   (`scripts/escudo_direccional.gd`) que para los disparos enemigos de frente:
-  se saca con el clic derecho o el espacio, dura 3 s y recarga 5 s
-  (`PersonajeJugable.ataque_especial`, `duracion_escudo`, `recarga_escudo`).
+  se saca con el clic derecho o el espacio y dura 3 s
+  (`PersonajeJugable.ataque_especial`, `duracion_escudo`).
   No tiene bola cargada. Al principio el escudo era una pasiva siempre puesta;
   Matías lo cambió el 2026-10-09.
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
@@ -167,6 +167,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   dispara nada. Atraviesa enemigos y hace 3 de daño; las rocas lo paran igual.
   Mientras cargas, el disparo normal se calla. El aviso visual lo dibuja
   `scripts/carga_ataque.gd` en un nodo aparte del jugador.
+- **El ataque especial es uno por piso** (pedido por Matías el 2026-10-09),
+  sea la bola cargada o el escudo: `Jugador.especial_disponible`, que se gasta
+  al soltar la bola o sacar el escudo y vuelve en `reubicar()` (piso nuevo) y
+  `restaurar_vida()`. El HUD lo enseña debajo de la vida
+  (`Hud.actualizar_especial`).
+- **Agujero negro del mago oscuro** (2026-10-09): su bola cargada llega a
+  320 px (`alcance_cargado`; la del rojo, hasta chocar) y donde se apaga
+  (`BolaMagica.apagada`) Principal abre un `AgujeroNegro`
+  (`scripts/agujero_negro.gd`): 2,5 s atrayendo a los enemigos de su sala a
+  150 px y quitando 2 por segundo, a tics de 0,5 s, a los del centro. El
+  centro negro va en un nodo hijo con z 8, encima de los enemigos (z 5), para
+  que lo que llega se vea tragado; el resto, debajo.
 - **Salas**: cada piso es un mapa de 4 a 10 salas en cuadrícula, con forma de
   árbol (un solo camino entre dos salas). La salida es la sala más lejana del
   inicio; el objeto va en el callejón más lejano. Al entrar **del todo** en una
@@ -256,7 +268,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   manto de Matías, núcleo generado) siguen en `assets/` sin usar: volver a
   uno es apuntar `catalogo_arte` del `.tres` del piso a su catálogo.
 - **Atajos de prueba** (`scripts/atajos_prueba.gd`): F1 invencible, F2/F3
-  piso anterior/siguiente, F4 matar a los de la sala. Solo con
+  piso anterior/siguiente, F4 matar a los de la sala, F5 recuperar el
+  ataque especial. Solo con
   `OS.is_debug_build()` (editor y `jugar.bat`); en el `.exe` el nodo ni se
   crea. Usan `Jugador.invencible`, `GestorProgreso.ir_a_piso()`,
   `Sala.enemigos()` y `Enemigo.matar()`, que no usa nada más.
@@ -366,9 +379,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de los enemigos es `float` y la bola les llama `herir(cantidad, frena)`; a
   todo lo demás que se rompa, `romper()` repetido, que es el contrato de
   siempre. Así lo que ya era rompible no tuvo que cambiar.
-- **El escudo se saca al pulsar, no al mantener.** Mantenido, se volvería a
-  sacar solo en cuanto acaba la recarga, y sería otra vez un escudo siempre
-  puesto, que es lo que Matías no quería.
+- **El escudo se saca al pulsar, no al mantener.** Sacarlo tiene que ser
+  una decisión: es el especial del piso.
+- **El agujero negro tira con más fuerza que lo que corren los enemigos**
+  (330 px/s en el centro, 150 en el borde; el murciélago va a 195). Si no,
+  los rápidos se le escapaban andando hacia el jugador. Después de moverlos
+  llama a `Enemigo.mantener_en_la_sala()`, para que el tirón no los meta en
+  una roca.
 - **El escudo solo para disparos de frente**, no golpes cuerpo a cuerpo ni el
   magma que cae: si lo parara todo, los enemigos a distancia no tendrían nada
   que hacer contra el mago blanco. Lo pregunta el proyectil justo después de

@@ -15,9 +15,9 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 
 | Mago | Ventaja | Pega |
 |---|---|---|
-| Mago oscuro | +35 px/s de velocidad | — |
+| Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
 | Mago rojo | +1 corazón, tiempo de carga ×0,5, +2 de daño cargado | −25 px/s de velocidad |
-| Mago blanco | ataque especial: escudo direccional (3 s, recarga 5 s); su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1; no tiene bola cargada |
+| Mago blanco | ataque especial: escudo direccional (3 s); su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1; no tiene bola cargada |
 
 ## Cómo añadir uno
 
@@ -37,13 +37,21 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 - Los tres disparan una bola cada 0,5 s (`cadencia_disparo` del jugador;
   `cadencia_multiplicador` a 1 en los tres). Los objetos la siguen bajando.
 - `ataque_especial`: lo que sale con el clic derecho o el espacio. **Bola
-  cargada** (oscuro y rojo) o **Escudo** (blanco). El escudo se saca al
-  pulsar, dura `duracion_escudo` (3 s) y tarda `recarga_escudo` (5 s) en
-  poder sacarse otra vez, contados desde que se baja. Es un arco pequeño (76°,
+  cargada** (oscuro y rojo) o **Escudo** (blanco). Sea cual sea, **se usa
+  una vez por piso** (lo cuenta `Jugador.especial_disponible`; el HUD dice si
+  queda). El escudo se saca al pulsar y dura `duracion_escudo` (3 s). Es un
+  arco pequeño (76°,
   a 30 px) delante del mago, hacia donde mira, que para los disparos enemigos
   de frente. No para lo que le llega de lado o por la espalda, ni el magma del
   gólem (cae desde arriba), ni los golpes de los de cuerpo a cuerpo. Ver
   `scripts/escudo_direccional.gd`.
+- `alcance_cargado`: hasta dónde llega la bola cargada, en px (0 = hasta
+  chocar, como la del rojo; 320 la del oscuro).
+- `agujero_negro`: la bola cargada abre un agujero negro donde se acaba (al
+  llegar a su alcance, en una roca o en el muro). Dura `duracion_agujero`
+  (2,5 s), atrae a los enemigos de su sala que están a `radio_agujero`
+  (150 px) y a los del centro les quita `dano_agujero` (2) por segundo. Ver
+  `scripts/agujero_negro.gd`.
 
 ## Colores del disparo
 

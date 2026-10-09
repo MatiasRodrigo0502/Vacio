@@ -82,7 +82,7 @@ se queda y el motivo está en `build/exportar.log`.
 |---|---|
 | Moverse | WASD |
 | Disparar | Flechas, o clic izquierdo apuntando con el ratón |
-| Ataque especial | Clic derecho o espacio. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra (apunta al ratón). Mago blanco: saca el escudo |
+| Ataque especial | Clic derecho o espacio, **una vez por piso**. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra (apunta al ratón). Mago blanco: saca el escudo |
 | Reiniciar partida | R |
 | Pausa | Esc |
 
@@ -102,6 +102,7 @@ abajo a la izquierda de la pantalla, en rojo mientras eres invencible.
 | F2 | Piso anterior |
 | F3 | Piso siguiente |
 | F4 | Mata a los enemigos de la sala en la que estás (con explosiones y crías) |
+| F5 | Recupera el ataque especial, que si no es uno por piso |
 
 Al equilibrar, ojo con dejar puesta la invencibilidad: un piso parece fácil
 cuando no te pueden dar.
@@ -128,9 +129,9 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 
 | Mago | Ventaja | Pega |
 |---|---|---|
-| **Mago oscuro** | Anda un 13 % más rápido | — |
+| **Mago oscuro** | Anda un 13 % más rápido, y su bola cargada abre un **agujero negro** donde se acaba, que atrae a los enemigos y quita vida a los del centro | Su bola cargada llega menos lejos que la del rojo |
 | **Mago rojo** | Un corazón más, y el ataque cargado sale en medio tiempo y mata de un golpe a cualquier cosa | Anda un 9 % más lento |
-| **Mago blanco** | Su ataque especial es un escudo pequeño delante que para los disparos enemigos de frente: dura 3 s y recarga en 5 s. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | Su disparo normal quita la mitad y no tiene bola cargada |
+| **Mago blanco** | Su ataque especial es un escudo pequeño delante que para los disparos enemigos de frente durante 3 s. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | Su disparo normal quita la mitad y no tiene bola cargada |
 
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese
 mago, no un objeto que se recoge.
@@ -155,10 +156,17 @@ golpe a los que hay ahora, pero las rocas lo paran igual que al disparo normal.
 Mientras cargas no puedes disparar, y si sueltas antes de tiempo no sale nada:
 o está cargado o no hay ataque.
 
+La bola del mago oscuro llega menos lejos (320 px, media sala) y, donde se
+acaba, abre un **agujero negro** durante 2,5 s: tira de los enemigos que están
+cerca hacia su centro y a los que llegan les quita vida (2 por segundo).
+
 El mago blanco no carga bola: con ese mismo botón saca su **escudo**, un arco
 pequeño delante que para los disparos enemigos que le llegan de frente. Dura
-3 s (parpadea cuando se va a acabar) y luego tarda 5 s en poder sacarse otra
-vez; cuando está listo, se ve un momento.
+3 s y parpadea cuando se va a acabar.
+
+**El ataque especial, sea cual sea, es uno por piso.** Arriba a la izquierda,
+debajo de la vida, pone si te queda («ESPECIAL · AGUJERO NEGRO») o si ya lo
+has usado. Vuelve al bajar al piso siguiente.
 
 En cada piso hay además un objeto que te mejora para el resto de la partida, y
 las mejoras se notan también en el ataque cargado, que parte de esos números.

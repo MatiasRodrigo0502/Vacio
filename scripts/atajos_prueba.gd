@@ -4,6 +4,7 @@
 ##   F2  piso anterior
 ##   F3  piso siguiente
 ##   F4  matar a los enemigos de la sala en la que estas
+##   F5  recuperar el ataque especial (es uno por piso)
 ##
 ## SOLO EXISTEN AL JUGAR DESDE GODOT (el editor o jugar.bat). Principal crea
 ## este nodo solo si OS.is_debug_build(), que en el .exe exportado es false:
@@ -61,6 +62,8 @@ func _unhandled_input(evento: InputEvent) -> void:
 			GestorProgreso.ir_a_piso(GestorProgreso.piso_actual + 1)
 		KEY_F4:
 			_limpiar_sala()
+		KEY_F5:
+			_jugador.recargar_especial()
 		_:
 			return
 	get_viewport().set_input_as_handled()
@@ -86,7 +89,7 @@ func _limpiar_sala() -> void:
 
 func _actualizar_texto() -> void:
 	var estado := "SÍ" if _jugador.invencible else "no"
-	_etiqueta.text = "PRUEBA  F1 invencible: %s   F2/F3 piso anterior/siguiente   F4 limpiar sala" % estado
+	_etiqueta.text = "PRUEBA  F1 invencible: %s   F2/F3 piso anterior/siguiente   F4 limpiar sala   F5 especial" % estado
 	# En rojo mientras se es invencible: probando el equilibrio, olvidarse de
 	# que esta puesto da conclusiones falsas («este piso es facil»).
 	_etiqueta.modulate = Color(1.0, 0.45, 0.4) if _jugador.invencible else Color(1.0, 1.0, 1.0, 0.55)

@@ -13,6 +13,11 @@ extends Area2D
 
 ## Se emite al romper algo, por si en el futuro hay sonido o particulas.
 signal impacto(objetivo: Node2D)
+## Se emite al acabar su trayecto, con el punto donde se acaba: al llegar a su
+## alcance, al chocar con una roca o al salir de la sala. La usa el agujero
+## negro del mago oscuro, que se abre ahi. La bola no sabe nada de agujeros:
+## solo avisa de donde se ha apagado.
+signal apagada(punto: Vector2)
 
 @export var velocidad: float = 620.0
 @export var radio: float = 11.0
@@ -97,23 +102,33 @@ func _physics_process(delta: float) -> void:
 	var roca := Terreno.choque(get_world_2d(), antes, global_position,
 		minf(radio, RADIO_CONTRA_ROCAS), Terreno.CAPA_ROCAS)
 	if roca != null:
-		_al_tocar_roca(roca)
+		_al_tocar_roca(roca, antes)
 		return
 	_fase += delta
 	queue_redraw()
 	if _recorrido >= alcance:
-		queue_free()
+		_apagar(global_position)
 		return
 	if limite.has_area() and not limite.has_point(global_position):
-		queue_free()
+		_apagar(antes)
 
 
 ## Choque contra una roca o plataforma: la bola se apaga y la roca aguanta, asi
 ## que la roca sirve de parapeto.
-func _al_tocar_roca(cuerpo: Object) -> void:
+func _al_tocar_roca(cuerpo: Object, antes: Vector2) -> void:
 	if cuerpo is Obstaculo and rompe_obstaculos:
 		cuerpo.romper()
 		impacto.emit(cuerpo)
+	# Donde estaba antes de meterse en la roca, no dentro de ella.
+	_apagar(antes)
+
+
+func _apagar(punto: Vector2) -> void:
+	# Con el juego a tirones caben dos pasos de fisica en un fotograma, antes
+	# de que queue_free() la borre: sin esto se abririan dos agujeros.
+	if is_queued_for_deletion():
+		return
+	apagada.emit(punto)
 	queue_free()
 
 

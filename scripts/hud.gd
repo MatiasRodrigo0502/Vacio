@@ -1,4 +1,5 @@
-## HUD: piso actual, nombre de la capa, vida, ventajas recogidas y minimapa.
+## HUD: piso actual, nombre de la capa, vida, ataque especial, ventajas
+## recogidas y minimapa.
 ## Es una CanvasLayer para que no le afecten ni el zoom ni el movimiento de la
 ## camara: el interfaz debe quedarse quieto mientras el mundo se estrecha.
 class_name Hud
@@ -7,6 +8,7 @@ extends CanvasLayer
 @onready var _etiqueta_piso: Label = $EtiquetaPiso
 @onready var _etiqueta_capa: Label = $EtiquetaCapa
 @onready var _corazones: Corazones = $Corazones
+@onready var _especial: Label = $Especial
 @onready var _aviso: Label = $Aviso
 @onready var _minimapa: Minimapa = $Minimapa
 @onready var _mejoras: MejorasRecogidas = $Mejoras
@@ -33,6 +35,18 @@ func mostrar_mapa(piso: Piso) -> void:
 
 func actualizar_vida(vida_actual: int, vida_maxima: int) -> void:
 	_corazones.actualizar(vida_actual, vida_maxima)
+
+
+## Dice si queda el ataque especial en este piso (es uno por piso): con su
+## nombre y el color del mago si queda, apagado si ya se ha usado. Sin esto no
+## se sabria si pulsar el boton va a hacer algo.
+func actualizar_especial(disponible: bool, nombre: String, color: Color) -> void:
+	if disponible:
+		_especial.text = "ESPECIAL  ·  %s" % nombre.to_upper()
+		_especial.modulate = color
+	else:
+		_especial.text = "ESPECIAL  ·  USADO EN ESTE PISO"
+		_especial.modulate = Color(1.0, 1.0, 1.0, 0.4)
 
 
 ## Vacia la fila de ventajas. Principal la llama al empezar otra partida.

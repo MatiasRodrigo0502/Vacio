@@ -62,6 +62,20 @@ const ESPECIAL_ESCUDO := 1
 @export var tiempo_carga_multiplicador: float = 1.0
 ## Dano de mas del disparo cargado.
 @export var dano_cargado_extra: int = 0
+## Hasta donde llega la bola cargada, en px. 0 = hasta chocar con una roca o
+## salir de la sala, que es lo de siempre (el mago rojo).
+@export var alcance_cargado: float = 0.0
+
+@export_group("Agujero negro")
+## Si es true, la bola cargada abre un agujero negro (AgujeroNegro) donde se
+## acaba: al llegar a su alcance, al chocar con una roca o en el muro.
+@export var agujero_negro: bool = false
+## Segundos que dura abierto.
+@export var duracion_agujero: float = 2.5
+## Hasta donde atrae a los enemigos, en px desde su centro.
+@export var radio_agujero: float = 150.0
+## Vida por segundo que quita a los que estan en su centro.
+@export var dano_agujero: float = 2.0
 
 @export_group("Disparo normal")
 ## Cuanta vida quita cada bola normal a un enemigo. 1 es lo de siempre; con
@@ -78,12 +92,22 @@ const ESPECIAL_ESCUDO := 1
 ## "del ataque cargado" de arriba). Escudo: se pulsa y sale un escudo
 ## direccional (EscudoDireccional), un arco pequeno delante del mago que para
 ## los disparos enemigos que le vienen de frente, durante 'duracion_escudo'.
-## Despues hay que esperar 'recarga_escudo' para volver a sacarlo.
+##
+## Sea cual sea, se puede usar UNA VEZ POR PISO (pedido por Matias el
+## 2026-10-09): lo cuenta el jugador (Jugador.especial_disponible) y el HUD
+## dice si queda.
 ##
 ## POR QUE UNO U OTRO Y NO LOS DOS: es el mismo boton. Con los dos, pulsarlo
 ## haria dos cosas y no se sabria cual ha servido.
 @export_enum("Bola cargada", "Escudo") var ataque_especial: int = ESPECIAL_BOLA
 ## Segundos que dura el escudo levantado.
 @export var duracion_escudo: float = 3.0
-## Segundos que tarda en poder volver a sacarse, contados desde que se baja.
-@export var recarga_escudo: float = 5.0
+
+
+## Como se llama su ataque especial, para el HUD.
+func nombre_especial() -> String:
+	if ataque_especial == ESPECIAL_ESCUDO:
+		return "escudo"
+	if agujero_negro:
+		return "agujero negro"
+	return "bola cargada"

@@ -16,6 +16,9 @@ signal sin_vida
 signal bola_lanzada(desde: Vector2, direccion: Vector2, cargada: bool)
 ## Se emite al recoger un objeto, para que el HUD lo anuncie.
 signal mejora_recogida(mejora: ObjetoMejora)
+## Se emite al gastar el ataque especial y al recuperarlo en el piso
+## siguiente, para que el HUD diga si queda.
+signal especial_cambiado(disponible: bool)
 ## Se emite al acabar de caer por un agujero. Principal lo devuelve a la
 ## entrada de la sala: el jugador no sabe donde esta eso, el piso si.
 signal caido
@@ -70,6 +73,16 @@ var frena_disparo: float = 0.0
 ## El escudo direccional, si es el ataque especial del mago. Si no, null, y
 ## el especial es la bola cargada.
 var _escudo: EscudoDireccional = null
+## El mago con el que se juega. Principal mira aqui lo que es solo de un mago
+## y no del jugador en general (el agujero negro de su bola cargada).
+var mago: PersonajeJugable = null
+## Si queda el ataque especial en este piso. Se gasta al soltar la bola
+## cargada o sacar el escudo, y vuelve al llegar al piso siguiente.
+##
+## POR QUE UNA VEZ POR PISO (pedido por Matias, 2026-10-09): asi el especial
+## es una decision, no algo que se tira cada vez que se puede. Hay que
+## guardarlo para la sala que lo merece.
+var especial_disponible: bool = true
 
 ## Tope de cadencia: por debajo de esto el disparo se vuelve una manguera y el
 ## juego deja de tener tension.
@@ -169,6 +182,7 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 	if personaje == null:
 		return
 
+	mago = personaje
 	if personaje.animaciones != null:
 		_sprite.sprite_frames = personaje.animaciones
 
@@ -203,7 +217,6 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 		_escudo = null
 	if _escudo != null:
 		_escudo.duracion = personaje.duracion_escudo
-		_escudo.recarga = personaje.recarga_escudo
 
 	# restaurar_vida() es lo que copia los valores de fabrica a los de verdad,
 	# asi que sirve igual para "empezar de cero" que para "estrenar mago".
@@ -312,12 +325,16 @@ func _actualizar_carga(delta: float) -> void:
 		_cancelar_carga()
 		return
 
-	# El mago del escudo no carga nada: el mismo boton lo saca, si esta listo.
-	# Al pulsar y no al mantener: mantenido lo volveria a sacar en cuanto
-	# acabara la recarga, y seria otra vez un escudo siempre puesto.
+	# Ya usado en este piso: ni se carga ni sale nada hasta el siguiente.
+	if not especial_disponible:
+		_cancelar_carga()
+		return
+
+	# El mago del escudo no carga nada: el mismo boton lo saca. Al pulsar y
+	# no al mantener, para que sacarlo sea siempre algo que se decide.
 	if _escudo != null:
-		if Input.is_action_just_pressed("cargar_ataque"):
-			_escudo.levantar()
+		if Input.is_action_just_pressed("cargar_ataque") and _escudo.levantar():
+			_gastar_especial()
 		return
 
 	if Input.is_action_pressed("cargar_ataque"):
@@ -329,7 +346,20 @@ func _actualizar_carga(delta: float) -> void:
 	# Se ha soltado el boton (o no estaba pulsado).
 	if _cargando and _carga >= tiempo_carga:
 		bola_lanzada.emit(centro_colision(), _direccion_raton(), true)
+		_gastar_especial()
 	_cancelar_carga()
+
+
+func _gastar_especial() -> void:
+	especial_disponible = false
+	especial_cambiado.emit(false)
+
+
+## Vuelve a dejar el ataque especial disponible. Al llegar a un piso, al
+## empezar partida y con el atajo de prueba F5.
+func recargar_especial() -> void:
+	especial_disponible = true
+	especial_cambiado.emit(true)
 
 
 func _cancelar_carga() -> void:
@@ -578,9 +608,10 @@ func reubicar(posicion: Vector2) -> void:
 	_cancelar_carga()
 	_parar_caida()
 	_tiempo_veneno = 0.0
-	# Cada piso empieza con el escudo bajado y listo, como la carga.
+	# Cada piso trae su ataque especial, y empieza con el escudo bajado.
 	if _escudo != null:
-		_escudo.reiniciar()
+		_escudo.bajar()
+	recargar_especial()
 	# Cada piso empieza mirando hacia donde se baja.
 	_mirando = &"abajo"
 
@@ -604,7 +635,8 @@ func restaurar_vida() -> void:
 	_espera_disparo = 0.0
 	_cancelar_carga()
 	if _escudo != null:
-		_escudo.reiniciar()
+		_escudo.bajar()
+	recargar_especial()
 	vida_cambiada.emit(vida_actual, vida_maxima)
 
 
