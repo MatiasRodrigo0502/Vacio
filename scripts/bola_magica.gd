@@ -37,6 +37,10 @@ signal apagada(punto: Vector2)
 @export var dano: float = 1.0
 ## Segundos que deja frenado al enemigo que toca. 0 = no frena.
 @export var frena: float = 0.0
+## Segundos que deja quemandose al enemigo que toca, y lo que le quita la
+## quemadura cada segundo. 0 segundos = no quema.
+@export var quema: float = 0.0
+@export var dano_quema: float = 0.0
 
 ## Marca el disparo cargado. Ya no decide el color (eso lo hace `color`), pero
 ## sirve para saber que bola es cual sin mirar su tamano.
@@ -137,6 +141,8 @@ func _al_tocar(area: Area2D) -> void:
 	# chocado, solo si eso se puede romper.
 	if area.has_method("herir"):
 		area.herir(dano, frena)
+		if quema > 0.0 and area.has_method("quemar"):
+			area.quemar(quema, dano_quema)
 	elif area.has_method("romper"):
 		for i in int(ceil(dano)):
 			if not is_instance_valid(area):

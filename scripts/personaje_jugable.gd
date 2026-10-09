@@ -85,6 +85,14 @@ const ESPECIAL_ESCUDO := 1
 ## la mitad). 0 = no frena.
 @export var frena_disparo: float = 0.0
 
+@export_group("Quemadura")
+## Segundos que deja quemandose a un enemigo cada bola que le da, la normal y
+## la cargada. 0 = no quema. Otro golpe mientras se quema vuelve a poner la
+## cuenta en estos segundos: no se suman dos quemaduras a la vez.
+@export var quemadura_duracion: float = 0.0
+## Vida que quita la quemadura cada segundo.
+@export var quemadura_dano: float = 0.25
+
 @export_group("Ataque especial")
 ## Lo que sale con el clic derecho o el espacio.
 ##

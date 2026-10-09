@@ -168,6 +168,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   dispara nada. Atraviesa enemigos y hace 3 de daño; las rocas lo paran igual.
   Mientras cargas, el disparo normal se calla. El aviso visual lo dibuja
   `scripts/carga_ataque.gd` en un nodo aparte del jugador.
+- **Quemadura del mago rojo** (2026-10-09, pedido por Matías): cada bola
+  suya que da a un enemigo lo deja quemándose 3 s, 0,25 de vida por segundo
+  (`PersonajeJugable.quemadura_duracion`/`quemadura_dano`,
+  `Enemigo.quemar()`). Va a golpes de 1 s, a tiempo real (el frenado no la
+  frena). Un golpe nuevo rellena la cuenta a 3 golpes pero **no reinicia el
+  tic**: dispara cada 0,5 s, y si cada bola reiniciara la espera, disparándole
+  sin parar no le quemaría nunca. Tampoco se suman dos quemaduras.
 - **El ataque especial es uno por piso** (pedido por Matías el 2026-10-09),
   sea la bola cargada o el escudo: `Jugador.especial_disponible`, que se gasta
   al soltar la bola o sacar el escudo y vuelve en `reubicar()` (piso nuevo) y

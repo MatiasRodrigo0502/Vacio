@@ -28,6 +28,10 @@ const RADIO_JUGADOR: float = 15.0
 ## color, para que se vea por que va lento.
 const RITMO_FRENADO: float = 0.5
 const COLOR_FRENADO := Color(0.62, 0.84, 1.25)
+## Quemadura (por los disparos del mago rojo): quita vida a golpes de un
+## segundo, no un poco cada fotograma, porque cada golpe hace parpadear al
+## enemigo y eso es lo que dice que le esta quemando.
+const TIC_QUEMADURA: float = 1.0
 
 ## De donde salen vida, velocidad, dibujo y demas. Lo pone la mecanica que los
 ## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
@@ -37,6 +41,11 @@ var tipo: TipoEnemigo = null
 var _vida: float = 0.0
 ## Segundos de frenado que le quedan (ver herir).
 var _frenado: float = 0.0
+## Golpes de quemadura que le quedan, lo que quita cada uno y cuanto falta
+## para el siguiente. 0 golpes = no se quema.
+var _quemaduras: int = 0
+var _dano_quemadura: float = 0.0
+var _tic_quemadura: float = 0.0
 var _objetivo: Node2D = null
 ## Dormido no se mueve ni dispara. La sala lo duerme al registrarlo y lo
 ## despierta cuando el jugador entra.
@@ -111,6 +120,9 @@ func _physics_process(delta: float) -> void:
 	if _muriendo:
 		return
 	_golpear_lo_que_toca()
+	_arder(delta)
+	if _muriendo:
+		return
 	# Frenado, anda, apunta y recarga a la mitad: el tiempo le pasa mas lento.
 	# Pegar al tocarte no: eso no depende de su ritmo, sino de que le toques.
 	if _frenado > 0.0:
@@ -198,6 +210,40 @@ func herir(cantidad: float, frena: float = 0.0) -> void:
 	_morir.call_deferred()
 
 
+## Lo deja quemandose 'segundos': le quita 'dano' cada segundo. Lo llama la
+## bola del mago rojo en cada golpe.
+##
+## Otro golpe mientras arde vuelve a poner la cuenta en 'segundos', pero NO
+## reinicia el tic: el mago dispara cada medio segundo, y si cada bola
+## reiniciara la espera del primer golpe, disparandole sin parar no le
+## quemaria nunca.
+func quemar(segundos: float, dano: float) -> void:
+	if _vida <= 0 or segundos <= 0.0:
+		return
+	if _quemaduras == 0:
+		_tic_quemadura = TIC_QUEMADURA
+	_quemaduras = maxi(_quemaduras, ceili(segundos / TIC_QUEMADURA))
+	_dano_quemadura = dano
+
+
+func esta_quemado() -> bool:
+	return _quemaduras > 0
+
+
+## Cuenta la quemadura. Va a tiempo real, no al ritmo del frenado: el fuego
+## no se frena porque el enemigo vaya lento.
+func _arder(delta: float) -> void:
+	if _quemaduras <= 0:
+		return
+	queue_redraw()
+	_tic_quemadura -= delta
+	if _tic_quemadura > 0.0:
+		return
+	_tic_quemadura += TIC_QUEMADURA
+	_quemaduras -= 1
+	herir(_dano_quemadura)
+
+
 ## Lo deja frenado 'segundos' (si ya lo estaba, se queda con lo que dure mas).
 func frenar(segundos: float) -> void:
 	_frenado = maxf(_frenado, segundos)
@@ -236,6 +282,31 @@ func _pintar_escarcha() -> void:
 		var copo := pies + Vector2(cos(angulo) * radio, sin(angulo) * radio * 0.4)
 		draw_line(copo - Vector2(3.5, 0.0), copo + Vector2(3.5, 0.0), Color.WHITE, 1.4)
 		draw_line(copo - Vector2(0.0, 3.5), copo + Vector2(0.0, 3.5), Color.WHITE, 1.4)
+
+
+## Unas llamas a los pies, por el mismo motivo que la escarcha: el sprite se
+## pinta encima de esto, asi que en el cuerpo quedarian tapadas. Suben y
+## bajan cada una a su ritmo, para que se vea que arden.
+func _pintar_llamas() -> void:
+	var radio := tipo.alto * 0.62
+	var pies := Vector2(0.0, tipo.alto * 0.42)
+	# Un resplandor naranja en el suelo, achatado como la escarcha: se ve
+	# aunque el cuerpo tape las llamas de detras.
+	draw_set_transform(pies, 0.0, Vector2(1.0, 0.4))
+	draw_circle(Vector2.ZERO, radio * 1.1, Color(1.0, 0.4, 0.05, 0.25 + 0.08 * sin(_fase * 9.0)))
+	draw_set_transform(Vector2.ZERO)
+	for k in 7:
+		var angulo := k * TAU / 7.0 + 0.4
+		var base := pies + Vector2(cos(angulo) * radio, sin(angulo) * radio * 0.4)
+		var alto := tipo.alto * (0.38 + 0.14 * sin(_fase * 11.0 + k * 1.7))
+		var ancho := 6.0
+		var llama := PackedVector2Array([
+			base + Vector2(-ancho, 0.0), base + Vector2(0.0, -alto), base + Vector2(ancho, 0.0)])
+		draw_colored_polygon(llama, Color(1.0, 0.45, 0.1, 0.9))
+		var dentro := PackedVector2Array([
+			base + Vector2(-ancho * 0.5, 0.0), base + Vector2(0.0, -alto * 0.55),
+			base + Vector2(ancho * 0.5, 0.0)])
+		draw_colored_polygon(dentro, Color(1.0, 0.9, 0.35, 0.95))
 
 
 # --- Movimiento y ataque ----------------------------------------------------
@@ -412,6 +483,8 @@ func _soltar_cria(numero: int) -> void:
 func _draw() -> void:
 	if _frenado > 0.0 and tipo != null:
 		_pintar_escarcha()
+	if _quemaduras > 0 and tipo != null:
+		_pintar_llamas()
 	if _apuntando <= 0.0 or tipo == null or not tipo.es_a_distancia():
 		return
 	if tipo.proyectil.estilo != TipoProyectil.Estilo.RAYO:

@@ -105,6 +105,10 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 	# Lo que quita y lo que frena el disparo normal es de cada mago.
 	bola.dano = _jugador.dano_disparo
 	bola.frena = _jugador.frena_disparo
+	# La quemadura del mago rojo, en las dos bolas.
+	if _jugador.mago != null:
+		bola.quema = _jugador.mago.quemadura_duracion
+		bola.dano_quema = _jugador.mago.quemadura_dano
 	if cargada:
 		# El ataque cargado parte de los numeros ya mejorados y los multiplica,
 		# para que los objetos recogidos tambien se noten en el.

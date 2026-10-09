@@ -129,7 +129,7 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 | Mago | Ventaja | Pega |
 |---|---|---|
 | **Mago oscuro** | Anda un 13 % más rápido, y su bola cargada abre un **agujero negro** donde se acaba, que atrae a los enemigos y quita vida a los del centro | Su bola cargada llega menos lejos que la del rojo |
-| **Mago rojo** | Un corazón más, y el ataque cargado sale en medio tiempo y mata de un golpe a cualquier cosa | Anda un 9 % más lento |
+| **Mago rojo** | Un corazón más, y el ataque cargado sale en medio tiempo y mata de un golpe a cualquier cosa. Sus disparos **queman**: 0,25 de vida por segundo durante 3 s | Anda un 9 % más lento |
 | **Mago blanco** | Su ataque especial es un escudo pequeño delante que para los disparos enemigos de frente durante 5 s. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | Su disparo normal quita la mitad y no tiene bola cargada |
 
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese

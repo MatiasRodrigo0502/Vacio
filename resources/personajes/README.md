@@ -16,7 +16,7 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 | Mago | Ventaja | Pega |
 |---|---|---|
 | Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
-| Mago rojo | +1 corazón, tiempo de carga ×0,5, +2 de daño cargado | −25 px/s de velocidad |
+| Mago rojo | +1 corazón, tiempo de carga ×0,5, +2 de daño cargado; sus disparos queman 3 s | −25 px/s de velocidad |
 | Mago blanco | ataque especial: escudo direccional (5 s); su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1; no tiene bola cargada |
 
 ## Cómo añadir uno
@@ -45,6 +45,11 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
   de frente. No para lo que le llega de lado o por la espalda, ni el magma del
   gólem (cae desde arriba), ni los golpes de los de cuerpo a cuerpo. Ver
   `scripts/escudo_direccional.gd`.
+- `quemadura_duracion` y `quemadura_dano`: cada bola que da (la normal y la
+  cargada) deja al enemigo quemándose esos segundos, quitándole `dano` cada
+  segundo (el rojo: 3 s y 0,25). Otro golpe mientras arde vuelve a poner la
+  cuenta en 3 golpes, pero no se suman dos quemaduras ni se reinicia el tic.
+  Se ve con llamas a los pies (`Enemigo.quemar()`).
 - `alcance_cargado`: hasta dónde llega la bola cargada, en px (0 = hasta
   chocar, como la del rojo; 320 la del oscuro).
 - `agujero_negro`: la bola cargada abre un agujero negro donde se acaba (al

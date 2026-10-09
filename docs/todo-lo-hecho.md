@@ -14,7 +14,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 **Cómo se juega ahora:**
 
-- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; el blanco, en vez de ataque cargado, saca un escudo pequeño delante que para los disparos enemigos, y su disparo frena a los enemigos pero quita la mitad.
+- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; los disparos del rojo queman; el blanco, en vez de ataque cargado, saca un escudo pequeño delante que para los disparos enemigos, y su disparo frena a los enemigos pero quita la mitad.
 - **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón: una bola cada medio segundo.
 - **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y hace 3 de daño. La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca un escudo que dura 5 s. El ataque especial es uno por piso.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
@@ -65,7 +65,9 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 09/10/2026 | El escudo del mago blanco dura 5 s | — |
+| 09/10/2026 | Quemadura en los disparos del mago rojo | — |
+| 09/10/2026 | Sin la R para reiniciar: se reinicia desde la pausa | `3080c2b` |
+| 09/10/2026 | El escudo del mago blanco dura 5 s | `71451b8` |
 | 09/10/2026 | Agujero negro del mago oscuro; el ataque especial, uno por piso | `62070ab` |
 | 09/10/2026 | El escudo del mago blanco pasa a ser su ataque especial; los tres magos disparan cada 0,5 s | `48b8ba0` |
 | 08/10/2026 | Cada cambio publicado es una versión con número, empezando por la 0.1 | `4d5430d` |
