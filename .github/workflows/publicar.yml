@@ -124,6 +124,12 @@ jobs:
             echo "- **Windows:** descarga \`Vacio.exe\` y ábrelo. Puede avisar de que es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*."
             echo "- **Linux:** descarga \`Vacio-linux.tar.gz\`, extráelo (clic derecho → *Extraer aquí*) y abre \`Vacio.x86_64\` con doble clic."
             echo
+            echo "Desde la 0.18, el juego avisa al abrirlo si hay una versión más nueva y, en Windows, se actualiza con un botón."
+            echo
+            # OJO: el juego lee esta lista (un "- " por linea, debajo del
+            # primer "### ") para ensenar en su aviso lo que trae la version
+            # nueva (scripts/actualizacion.gd, _cambios). Si cambia su forma,
+            # hay que cambiarlo alli tambien.
             if [ -n "$ANTERIOR" ]; then
               echo "### Qué cambia desde la ${ANTERIOR#v}"
               echo

@@ -137,6 +137,21 @@ no puede llamarse `prueba_temporal.*`: el preset la excluye.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
+- **Aviso de versión nueva y actualización desde el juego** (2026-10-13,
+  pedido por Matías). El autoload `Actualizacion` (`scripts/actualizacion.gd`)
+  pregunta al abrir el juego por las releases (API pública de GitHub, sin
+  sesión) y la portada lo enseña abajo a la derecha
+  (`scenes/AvisoActualizacion.tscn`), con lo que cambia en todas las versiones
+  saltadas (lo lee de la lista «### Qué cambia» de las notas que escribe
+  `publicar.yml`). En Windows baja el `Vacio.exe` nuevo al lado
+  (`Vacio.exe.descarga`), comprueba tamaño y que empiece por `MZ`, renombra el
+  abierto a `Vacio.viejo.<hora>.exe` y pone el nuevo en su sitio; *Abrirla
+  ahora* lo lanza (`OS.create_process`) y cierra por `Sonido.salir()`. El
+  siguiente arranque borra los viejos. En Linux manda a la página de
+  descarga. Probado de punta a punta con un `.exe` exportado que decía ser la
+  0.16: encontró la 0.17, la bajó (48 s, lo mismo que `curl` con esta
+  conexión), se cambió y se abrió.
+
 - **Portada del menú** (2026-10-09, pedida por Matías): el título VACÍO es
   pixel art generado (`herramientas/generar_titulo.py` → `assets/titulo/`):
   letras de piedra tallada con grietas de lava y estalactitas, a x4 sin
@@ -364,6 +379,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
 
+- **Solo busca versiones nuevas el juego exportado con número publicado**
+  («0.17»). Desde Godot no hay versión, y el `.exe` de cada ordenador con
+  cambios sin publicar («0.17 + cambios») lleva cosas que no están en
+  ninguna: decirle que la 0.18 es más nueva podría ser mentira. Sin pantalla
+  tampoco: la prueba de arranque de la release no tiene que salir a internet.
+- **El aviso no interrumpe**: va en una esquina de la portada, y si la
+  descarga acaba jugando, no se reinicia nada. La versión nueva se abre con
+  el botón o la próxima vez. «Ahora no» lo esconde hasta volver a abrir el
+  juego.
 - **Los corazones solo se recuperan, no se añaden** (Matías, 2026-10-13):
   ningún objeto sube la vida máxima. Se quitó el «Corazón de roca»
   (`resources/objetos/`); curan el vendaje y los corazones del suelo. La

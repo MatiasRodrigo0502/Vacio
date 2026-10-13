@@ -50,6 +50,15 @@ El juego enseña su versión abajo a la derecha del menú. El `.exe` de cada
 ordenador (ver abajo) dice «0.3 + cambios» si tiene cosas que aún no están en
 ninguna versión publicada, y desde Godot dice «en desarrollo».
 
+**Desde la 0.18, el juego avisa solo cuando hay una versión más nueva.** Al
+abrirlo pregunta a GitHub y, si la hay, sale un aviso encima del número de
+versión con lo que trae. En Windows, *Actualizar ahora* baja el `.exe` nuevo
+(unos 115 MB), lo pone en lugar del de ahora y, con *Abrirla ahora*, se abre
+ya la versión nueva. Si no, será la que se abra la próxima vez. En Linux, el
+botón lleva a la página de descarga. Sin internet no sale nada y se juega
+igual. Las versiones de antes de la 0.18 no saben avisar: quien tenga una de
+esas tiene que bajar la última a mano una vez.
+
 ## Jugar sin Godot: `build/`
 
 El juego exportado es **un solo archivo** por sistema, que se abre sin tener

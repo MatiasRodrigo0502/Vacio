@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/10/2026 | El escudo del mago blanco pasa a ser una burbuja que lo cubre entero y hace rebotar | — |
+| 13/10/2026 | El juego avisa de las versiones nuevas y, en Windows, se actualiza con un botón | — |
+| 13/10/2026 | El escudo del mago blanco pasa a ser una burbuja que lo cubre entero y hace rebotar | `9ec57e7` |
 | 13/10/2026 | Ningún objeto añade corazones: solo se recuperan | `9e90b06` |
 | 13/10/2026 | Cada enemigo pelea a su manera (11 comportamientos) | `c41a82a` |
 | 09/10/2026 | Revisión: enemigos congelados en el paso entre salas y quietos en las salas grandes; el espacio apunta con las flechas | `ef589db` |
@@ -191,6 +192,7 @@ El juego se exporta solo a un único archivo por sistema que se abre sin tener G
 | Pública | [Una release por versión en GitHub: 0.1, 0.2...](https://github.com/MatiasRodrigo0502/Vacio/releases) | Tras cada push a `main` que no toque solo archivos `.md`, con su número y la lista de cambios | El workflow `.github/workflows/publicar.yml`, con los mismos scripts |
 
 - **Se puede actualizar con el juego abierto:** la partida abierta sigue y la próxima vez arranca el nuevo.
+- **El juego avisa de las versiones nuevas (desde la 0.18):** al abrirlo pregunta a GitHub y, si hay una más nueva, la portada lo dice con la lista de lo que cambia. En Windows, un botón la baja y la pone en lugar de la de ahora; en Linux, lleva a la página de descarga. Se probó con un `.exe` que decía ser la 0.16: encontró la 0.17, la bajó, se cambió por ella y se abrió.
 - **Si una exportación falla,** se queda la versión anterior y el motivo está en `build/exportar.log`, o en la pestaña Actions de GitHub.
 - **Windows puede avisar** de que el `.exe` es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*.
 - **En Linux** se descarga `Vacio-linux.tar.gz`, se extrae y se abre `Vacio.x86_64` con doble clic. Va comprimido porque, suelto, el navegador le quita el permiso de ejecutarse y Ubuntu no lo abre.

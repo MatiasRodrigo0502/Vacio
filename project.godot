@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GestorProgreso="*res://scripts/gestor_progreso.gd"
 Sonido="*res://scripts/sonido.gd"
+Actualizacion="*res://scripts/actualizacion.gd"
 
 [display]
 
