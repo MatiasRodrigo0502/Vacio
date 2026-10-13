@@ -143,6 +143,8 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	# Despues de las rocas de dentro y de los carteles: las piezas grandes de
 	# la pared los esquivan.
 	_levantar_paredes()
+	# Despues de la pared: las runas de la puerta se pintan encima.
+	_preparar_jefe()
 
 	# Las mecanicas se aplican al final, cuando las salas ya existen: asi pueden
 	# repartir enemigos y objetos por ellas. El piso no sabe que hace cada una.
@@ -155,7 +157,7 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 
 	# La bajada no se puede usar hasta limpiar su sala. En el piso 1, que no
 	# tiene enemigos, esta abierta desde el principio.
-	var salida := sala_de_tipo(MapaSalas.Tipo.SALIDA)
+	var salida := sala_bajada()
 	_zona_salida.set_deferred("monitoring", salida.esta_despejada())
 	salida.despejada.connect(_al_despejar_salida)
 
@@ -246,7 +248,7 @@ func sitio_libre_cerca(donde: Vector2, sala: Sala, radio: float = 30.0) -> Varia
 		for paso in 8:
 			var punto: Vector2 = (donde + Vector2.RIGHT.rotated(paso * TAU / 8.0) * distancia) \
 				.clamp(dentro.position, dentro.end)
-			if sala.tipo == MapaSalas.Tipo.SALIDA \
+			if sala.tiene_bajada() \
 					and punto.distance_to(sala.global_position) < DESPEJE_BAJADA:
 				continue
 			if lugar_libre(punto, radio, false):
@@ -268,7 +270,23 @@ func despejar_decoracion(zona: Rect2) -> void:
 
 ## Centro del agujero de bajada.
 func punto_salida() -> Vector2:
-	return sala_de_tipo(MapaSalas.Tipo.SALIDA).global_position
+	return sala_bajada().global_position
+
+
+## La sala con el agujero de bajada: la del jefe en su piso, y si no la de
+## salida.
+func sala_bajada() -> Sala:
+	var jefe := sala_de_tipo(MapaSalas.Tipo.JEFE)
+	return jefe if jefe != null else sala_de_tipo(MapaSalas.Tipo.SALIDA)
+
+
+## Lo que ocupa una sala en el mapa, contado en casillas: (c - 0,5, c + 0,5)
+## para una normal, mas para la del jefe. Lo usa el minimapa para dibujarla de
+## su tamano.
+func casillas_de(sala: Sala) -> Rect2:
+	var caja := sala.rect_con_muros()
+	caja.position = to_local(caja.position)
+	return Rect2(caja.position / _paso(), caja.size / _paso())
 
 
 ## Todas las salas, en el orden del mapa. Lo usan las mecanicas para repartir
@@ -347,18 +365,46 @@ func _construir_salas() -> void:
 	var nombre := datos.nombre_capa if datos != null else ""
 	# Semilla propia del mapa, distinta de la de las rocas: asi retocar el
 	# reparto de rocas no cambia la forma del mapa, ni al reves.
-	_mapa = MapaSalas.generar(cantidad, hash(nombre) + numero_piso * 15485863)
+	_mapa = MapaSalas.generar(cantidad, hash(nombre) + numero_piso * 15485863, _medida_jefe())
 
 	var colores := _colores_suelo()
 	for celda in _mapa.celdas:
 		var sala := Sala.new()
+		var tipo := _mapa.tipo_de(celda)
 		sala.name = "Sala_%d_%d" % [celda.x, celda.y]
 		sala.position = Vector2(celda) * _paso()
+		var tamano := _tamano_sala()
+		if tipo == MapaSalas.Tipo.JEFE:
+			tamano = datos.tamano_sala_jefe
+			sala.position = _posicion_jefe(celda, tamano)
 		_contenedor_salas.add_child(sala)
-		sala.construir(celda, _mapa.tipo_de(celda), _tamano_sala(),
-			_mapa.puertas_de(celda), colores[0], colores[1])
+		sala.construir(celda, tipo, tamano, _mapa.puertas_de(celda), colores[0], colores[1])
 		_salas[celda] = sala
 		_orden_salas.append(sala)
+	# La sala del jefe es duena de todas las casillas que tapa: asi sala_en()
+	# la encuentra este donde este el jugador dentro de ella.
+	var jefe := sala_de_tipo(MapaSalas.Tipo.JEFE)
+	for celda in _mapa.casillas_del_jefe():
+		_salas[celda] = jefe
+
+
+## Lo que mide la sala del jefe, con sus muros, en casillas. ZERO si el piso
+## no tiene jefe.
+func _medida_jefe() -> Vector2:
+	if datos == null or not datos.sala_jefe:
+		return Vector2.ZERO
+	return (datos.tamano_sala_jefe + Vector2.ONE * Sala.GROSOR_MURO * 2.0) / _paso()
+
+
+## Donde va el centro de la sala del jefe. Su muro empieza donde acaba el de
+## la antesala, como el de dos salas vecinas cualesquiera; a lo ancho, en el
+## eje de la antesala, para que las dos puertas queden enfrente.
+func _posicion_jefe(celda: Vector2i, tamano: Vector2) -> Vector2:
+	var direccion := Vector2(_mapa.direccion_jefe)
+	var antesala := Vector2(celda) * _paso() - direccion * _paso()
+	var frontera := antesala + direccion * _paso() * 0.5
+	var con_muros := tamano + Vector2.ONE * Sala.GROSOR_MURO * 2.0
+	return frontera + direccion * con_muros * 0.5
 
 
 ## Suelo y borde segun la profundidad: de marron de cueva a rojo incandescente.
@@ -376,7 +422,7 @@ func _colocar_salida() -> void:
 	var circulo := CircleShape2D.new()
 	circulo.radius = Sala.RADIO_SALIDA
 	_forma_salida.shape = circulo
-	_zona_salida.position = sala_de_tipo(MapaSalas.Tipo.SALIDA).position
+	_zona_salida.position = sala_bajada().position
 
 
 ## Solo las salas donde hay pelea llevan rocas. El inicio va limpio para
@@ -416,9 +462,29 @@ func _colocar_obstaculos() -> void:
 	for sala in _orden_salas:
 		if _lleva_rocas(sala):
 			_rocas_en_sala(sala, generador, texturas, tinte, lado_base)
+		elif sala.tipo == MapaSalas.Tipo.JEFE:
+			_pilares_jefe(sala, texturas, tinte, lado_base)
 
 	_colocar_plataformas(generador, tinte, catalogo)
 	_colocar_decoracion(generador, tinte, catalogo)
+
+
+## Cuatro pilares en la sala del jefe, uno en cada cuarto, para cubrirse.
+##
+## POR QUE NO AL AZAR COMO LAS DEMAS ROCAS: es una pelea pensada, no una sala
+## mas. Puestos en simetria, ninguna puerta ni el centro (donde estara el jefe)
+## quedan tapados, y desde cualquier sitio hay uno cerca. Son mas grandes que
+## las rocas: tienen que tapar de verdad.
+func _pilares_jefe(sala: Sala, texturas: Array[Texture2D], tinte: Color, lado_base: float) -> void:
+	var medio := sala.tamano * 0.5
+	var cuartos: Array[Vector2] = [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1)]
+	for i in cuartos.size():
+		var local := cuartos[i] * Vector2(medio.x * 0.55, medio.y * 0.5)
+		var obstaculo := _pool.obtener()
+		obstaculo.preparar(to_global(sala.position + local), texturas[i % texturas.size()],
+			lado_base * 1.5, tinte, datos.velocidad_obstaculos)
+		_obstaculos.append(obstaculo)
+		sala.registrar_roca(_caja_colision(obstaculo))
 
 
 func _rocas_en_sala(sala: Sala, generador: RandomNumberGenerator,
@@ -436,7 +502,7 @@ func _rocas_en_sala(sala: Sala, generador: RandomNumberGenerator,
 			var local := sala.punto_al_azar(generador, lado)
 			if sala.cerca_de_puerta(local, DESPEJE_PUERTA):
 				continue
-			if sala.tipo == MapaSalas.Tipo.SALIDA and local.length() < DESPEJE_SALIDA:
+			if sala.tiene_bajada() and local.length() < DESPEJE_SALIDA:
 				continue
 			var en_piso := sala.position + local
 			if _pisa_un_cartel(en_piso, Vector2(lado, lado)):
@@ -508,7 +574,7 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 			var local := sala.punto_al_azar(generador, ancho_losa * 0.6)
 			if sala.cerca_de_puerta(local, DESPEJE_PUERTA + ancho_losa * 0.5):
 				continue
-			if sala.tipo == MapaSalas.Tipo.SALIDA \
+			if sala.tiene_bajada() \
 					and local.length() < DESPEJE_SALIDA + ancho_losa * 0.5:
 				continue
 			var en_piso := sala.position + local
@@ -599,6 +665,33 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 			_decoracion.add_child(adorno)
 
 
+## La antesala y la sala del jefe, si el piso las tiene: el altar y el corazon
+## de la antesala, las runas a los dos lados de la puerta que las une y el
+## sello del suelo de la sala del jefe. Los pilares van con las demas rocas
+## (_pilares_jefe).
+func _preparar_jefe() -> void:
+	var jefe := sala_de_tipo(MapaSalas.Tipo.JEFE)
+	var antesala := sala_de_tipo(MapaSalas.Tipo.ANTESALA)
+	if jefe == null or antesala == null:
+		return
+	var direccion := _mapa.direccion_jefe
+	antesala.add_child(RunasPuerta.new(antesala, direccion))
+	jefe.add_child(RunasPuerta.new(jefe, -direccion))
+	jefe.add_child(SelloJefe.new(jefe.tamano))
+
+	# El altar, en el centro: de camino de una puerta a la otra, que estan
+	# enfrente. El corazon, a un lado, fuera del camino: se coge si hace falta.
+	var altar := AltarEspecial.new()
+	antesala.add_child(altar)
+	var lado := Vector2(direccion).orthogonal()
+	var corazon := CorazonSuelto.new()
+	corazon.position = lado * minf(antesala.tamano.x, antesala.tamano.y) * 0.28
+	antesala.add_child(corazon)
+	# Sin piedrecitas pintadas encima del altar ni del corazon.
+	despejar_decoracion(Rect2(antesala.global_position - Vector2(80.0, 80.0), Vector2(160.0, 160.0)))
+	despejar_decoracion(Rect2(antesala.to_global(corazon.position) - Vector2(40.0, 40.0), Vector2(80.0, 80.0)))
+
+
 ## Levanta la pared de roca de cada sala, con la de este piso (ver ParedSala y
 ## EstiloBorde): el limite de la sala es esa pared, irregular, y no un
 ## rectangulo dibujado.
@@ -623,7 +716,7 @@ func _colocar_tutorial() -> void:
 	# resueltos, y los Label necesitan estar en el arbol para saber su tamano.
 	add_child(tutorial)
 	tutorial.colocar(sala_de_tipo(MapaSalas.Tipo.INICIO).position, _tamano_sala(),
-		sala_de_tipo(MapaSalas.Tipo.SALIDA).position)
+		sala_bajada().position)
 
 	# Cada cartel reserva su rectangulo, con holgura por arriba y por abajo para
 	# que nada quede pegado al texto y lo haga ilegible igualmente.

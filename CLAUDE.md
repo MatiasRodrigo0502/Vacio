@@ -137,6 +137,25 @@ no puede llamarse `prueba_temporal.*`: el preset la excluye.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
+- **Sala del jefe del piso 12** (2026-10-13, pedida por Matías; **el jefe
+  aún no está**, va después). Con `DatosPiso.sala_jefe`, `MapaSalas` cuelga de
+  la sala más lejana (o de la siguiente, si no cabe) una **antesala** y detrás
+  la sala del **jefe** (`Tipo.ANTESALA` y `Tipo.JEFE`; con jefe no hay
+  `SALIDA`). La del jefe mide `tamano_sala_jefe` (1200 × 700) y tapa varias
+  casillas: las demás quedan reservadas (`casillas_del_jefe`) y todas apuntan
+  a ella en `Piso.sala_en`. Va centrada en el eje de la antesala, con el muro
+  pegado al suyo (`Piso._posicion_jefe`), para que las dos puertas queden
+  enfrente. La bajada está en la del jefe: **para la sala con bajada, usar
+  `Piso.sala_bajada()` y `Sala.tiene_bajada()`, nunca `Tipo.SALIDA`**.
+  Antesala: altar que recarga el especial al pisarlo
+  (`scripts/altar_especial.gd`) y un corazón. Puerta con runas a los dos lados
+  (`runas_puerta.gd`, signos en `runas.gd`), sello en el suelo del jefe
+  (`sello_jefe.gd`), cuatro pilares simétricos (`Piso._pilares_jefe`) y la
+  cámara abierta para verla entera (`CamaraJuego.ver_entera`, desde
+  `Principal._al_cambiar_sala`). Minimapa: de su tamaño (`Piso.casillas_de`)
+  y con una estrella roja. Ni enemigos ni peligros: `admite_enemigos()` es
+  false en las dos.
+
 - **Registro de partidas** (2026-10-13, pedido por Matías para equilibrar
   con datos): `RegistroPartida` (`scripts/registro_partida.gd`), un nodo que
   crea Principal, guarda cada partida en `user://partidas/partida_<fecha>.json`
@@ -397,6 +416,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
 
+- **La antesala recarga el especial con un altar que se pisa, no sola al
+  entrar**: tiene que verse de dónde sale. Está en el centro, de camino entre
+  las dos puertas, así que se pisa sin buscarlo, y lleva escrito qué hace.
+- **Los pilares de la sala del jefe no se rompen (de momento).** Romperlos
+  sería saltarse a propósito «los disparos no rompen rocas»; si el jefe los
+  rompe, se decidirá con el jefe.
 - **El registro apunta, no juzga**: guarda lo que pasa y el análisis va
   aparte, en Python. Así se pueden sacar otras cuentas de partidas ya jugadas
   sin volver a jugarlas. Las reiniciadas o dejadas antes de 10 s no se

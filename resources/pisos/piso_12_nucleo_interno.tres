@@ -19,3 +19,5 @@ cantidad_salas = 10
 cantidad_obstaculos = 6
 estilo_borde = ExtResource("9_borde")
 musica = ExtResource("20_musica")
+sala_jefe = true
+tamano_sala_jefe = Vector2(1200, 700)

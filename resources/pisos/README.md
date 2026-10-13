@@ -25,6 +25,8 @@ de pisos en el código.
 | `familia_obstaculos` | Qué rocas usa el piso: `roca`, `bloque`, `grupo` o `piedra`. |
 | `catalogo_arte` | Pack de arte del piso (rocas, piedras, plataformas y vegetación). Vacío = el de la cueva sin vegetación. |
 | `mostrar_tutorial` | Pinta los carteles de controles sobre el suelo. Solo el piso 1. |
+| `sala_jefe` | El piso acaba en la sala del jefe: antesala con altar y corazón, y detrás la sala del jefe, con la bajada. No cuenta en `cantidad_salas` (son dos salas más). Solo el piso 12. |
+| `tamano_sala_jefe` | Lo que mide el suelo de la sala del jefe (1200 × 700 en el 12). La cámara la enseña entera. |
 
 ## Valores de partida (sin jugar todavía, pendientes de ajuste)
 

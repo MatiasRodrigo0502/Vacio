@@ -104,6 +104,14 @@ func _encajar(punto: Vector2) -> Vector2:
 	return resultado
 
 
+## Abre el zoom hasta que se vea entera esa zona del mundo, con la misma
+## suavidad que el cambio de piso. Lo usa la sala del jefe: en una pelea asi
+## tiene que verse todo, aunque el piso sea de los que ven poco.
+func ver_entera(zona: Rect2) -> void:
+	var ventana := get_viewport_rect().size
+	aplicar_radio_vision(maxf(zona.size.y * 0.5, zona.size.x * 0.5 * ventana.y / ventana.x))
+
+
 ## Traduce el radio de vision del piso (en pixeles de mundo) a zoom de camara.
 ## radio_vision = media altura visible, asi que zoom = (alto_ventana/2) / radio.
 func aplicar_radio_vision(radio_vision: float, inmediato: bool = false) -> void:

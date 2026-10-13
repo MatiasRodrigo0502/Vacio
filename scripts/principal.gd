@@ -173,6 +173,11 @@ func _al_cambiar_especial(disponible: bool) -> void:
 ## porque sigue al jugador con suavizado.
 func _al_cambiar_sala(sala: Sala) -> void:
 	_camara.limitar_a(sala.rect_con_muros())
+	# La sala del jefe se ve entera; al salir de ella, lo de siempre del piso.
+	if sala.tipo == MapaSalas.Tipo.JEFE:
+		_camara.ver_entera(sala.rect_con_muros())
+	elif _piso_actual != null:
+		_camara.aplicar_radio_vision(_piso_actual.datos.radio_vision)
 
 
 ## El jugador ha caido por un agujero: vuelve a la entrada de la sala. El

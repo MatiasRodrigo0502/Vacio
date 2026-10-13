@@ -286,6 +286,12 @@ func punto_al_azar(generador: RandomNumberGenerator, margen: float) -> Vector2:
 		generador.randf_range(-medio.y, medio.y))
 
 
+## La sala con el agujero de bajada: la de salida o, en el piso del jefe, la
+## del jefe.
+func tiene_bajada() -> bool:
+	return tipo == MapaSalas.Tipo.SALIDA or tipo == MapaSalas.Tipo.JEFE
+
+
 ## Las salas normales y la de salida tienen enemigos. El inicio no, para no
 ## empezar un piso recibiendo golpes; la del objeto tampoco, porque es el premio
 ## por desviarse, no otra pelea.
@@ -505,7 +511,7 @@ func _draw() -> void:
 			_pintar_reja(direccion)
 		_pintar_pilares(direccion)
 
-	if tipo == MapaSalas.Tipo.SALIDA:
+	if tiene_bajada():
 		_pintar_salida()
 
 

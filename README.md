@@ -187,6 +187,15 @@ has usado. Vuelve al bajar al piso siguiente.
 En cada piso hay además un objeto que te mejora para el resto de la partida, y
 las mejoras se notan también en el ataque cargado, que parte de esos números.
 
+**El piso 12 acaba en la sala del jefe.** De su sala más lejana sale una
+**antesala** tranquila, sin enemigos, con un corazón y un **altar** que, al
+pisarlo, recupera el ataque especial. Delante hay una puerta con runas que
+brillan, y detrás está la **sala del jefe**: más grande que las demás (la
+cámara se abre para que se vea entera), con un sello grabado en el suelo,
+cuatro pilares de cristal para cubrirse y la bajada en el centro. En el
+minimapa sale con una estrella roja desde que pisas la antesala. **El jefe
+todavía no está**: de momento la sala está vacía y la bajada, abierta.
+
 Superar el piso 12 gana; quedarte sin vida termina la partida.
 
 ### Sonido y música

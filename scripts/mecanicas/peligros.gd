@@ -148,7 +148,7 @@ func _sitio_valido(piso: Node, sala: Sala, sitio: Vector2, tamano: Vector2) -> b
 	var medio := maxf(tamano.x, tamano.y) * 0.5
 	if sala.cerca_de_puerta(sitio, despeje_puerta + medio):
 		return false
-	if sala.tipo == MapaSalas.Tipo.SALIDA and sitio.length() < despeje_salida + medio:
+	if sala.tiene_bajada() and sitio.length() < despeje_salida + medio:
 		return false
 	for puerta in sala.puertas:
 		var paso := Geometry2D.get_closest_point_to_segment(sitio, Vector2.ZERO,

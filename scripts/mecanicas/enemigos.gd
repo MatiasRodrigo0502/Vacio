@@ -83,7 +83,7 @@ func aplicar_a_piso(piso: Node) -> void:
 				if sala.cerca_de_puerta(sitio, despeje):
 					continue
 				# En la sala de salida, tampoco encima del agujero.
-				if sala.tipo == MapaSalas.Tipo.SALIDA and sitio.length() < despeje * 0.6:
+				if sala.tiene_bajada() and sitio.length() < despeje * 0.6:
 					continue
 				# Ni encima de rocas, peligros u otros enemigos. Las rocas
 				# importan mas de lo que parece: el cristal vivo no se mueve, y

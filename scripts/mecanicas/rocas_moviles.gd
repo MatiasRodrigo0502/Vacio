@@ -76,7 +76,7 @@ func _recortar(amplitud: float, obstaculo: Node2D, direccion: Vector2,
 	var puntos: Array[Vector2] = []
 	for puerta in sala.puertas:
 		puntos.append(sala.punto_puerta(puerta))
-	if sala.tipo == MapaSalas.Tipo.SALIDA:
+	if sala.tiene_bajada():
 		puntos.append(Vector2.ZERO)
 	for punto in puntos:
 		var distancia: float = centro.distance_to(punto)

@@ -26,6 +26,8 @@ const COLOR_ACTUAL := Color(1.0, 0.92, 0.78)
 const COLOR_VISITADA := Color(0.55, 0.49, 0.44)
 const COLOR_CONOCIDA := Color(0.55, 0.49, 0.44, 0.6)
 const COLOR_OBJETO := Color(1.0, 0.8, 0.3)
+## El jefe: rojo, que no se confunda con lo que se recoge.
+const COLOR_JEFE := Color(1.0, 0.36, 0.24)
 
 var _piso: Piso = null
 
@@ -64,16 +66,19 @@ func _draw() -> void:
 	if conocidas.is_empty():
 		return
 
+	# Lo que ocupa cada sala, en casillas: la del jefe es mas grande que una.
+	var cajas := {}
+	for sala in conocidas:
+		cajas[sala] = _piso.casillas_de(sala)
+
 	# Se centra lo que se conoce, no el mapa entero: si no, las salas por
 	# descubrir delatarian por donde sigue el piso con el hueco que dejan.
-	var minimo := conocidas[0].celda
-	var maximo := conocidas[0].celda
+	var todo: Rect2 = cajas[conocidas[0]]
 	for sala in conocidas:
-		minimo = minimo.min(sala.celda)
-		maximo = maximo.max(sala.celda)
+		todo = todo.merge(cajas[sala])
 
 	var paso := CELDA + Vector2(HUECO, HUECO)
-	var ocupado := Vector2(maximo - minimo + Vector2i.ONE) * paso - Vector2(HUECO, HUECO)
+	var ocupado := todo.size * paso - Vector2(HUECO, HUECO)
 	var disponible := size - Vector2(MARGEN, MARGEN) * 2.0
 	# Si el mapa conocido no cabe, se encoge entero en vez de recortarse.
 	var escala := minf(1.0, minf(disponible.x / ocupado.x, disponible.y / ocupado.y))
@@ -81,7 +86,9 @@ func _draw() -> void:
 
 	draw_rect(Rect2(Vector2.ZERO, size), COLOR_FONDO)
 	for sala in conocidas:
-		var rect := Rect2(origen + Vector2(sala.celda - minimo) * paso * escala, CELDA * escala)
+		var caja: Rect2 = cajas[sala]
+		var rect := Rect2(origen + (caja.position - todo.position) * paso * escala,
+			(caja.size * paso - Vector2(HUECO, HUECO)) * escala)
 		if sala == _piso.sala_actual():
 			draw_rect(rect, COLOR_ACTUAL)
 		elif visitadas.has(sala.celda):
@@ -102,8 +109,23 @@ func _pintar_marca(sala: Sala, rect: Rect2) -> void:
 				centro + Vector2(0.0, radio), centro + Vector2(-radio, 0.0)])
 			draw_colored_polygon(puntos, COLOR_OBJETO)
 		MapaSalas.Tipo.SALIDA:
-			# El agujero: oscuro, con aro. El aro se enciende cuando la sala
-			# esta limpia y ya se puede bajar.
-			draw_circle(centro, radio, Color(0.05, 0.03, 0.03))
-			var aro := COLOR_OBJETO if sala.esta_despejada() else Color(0.5, 0.45, 0.4)
-			draw_arc(centro, radio, 0.0, TAU, 16, aro, 1.5, true)
+			_pintar_bajada(sala, centro, radio)
+		MapaSalas.Tipo.JEFE:
+			# Una estrella de ocho puntas roja, que se ve desde que se conoce
+			# la sala (al pisar la antesala): ahi esta la pelea final. Con la
+			# bajada dentro cuando ya se puede bajar.
+			var puntos := PackedVector2Array()
+			for i in 16:
+				var largo := radio * (1.5 if i % 2 == 0 else 0.6)
+				puntos.append(centro + Vector2.UP.rotated(i * TAU / 16.0) * largo)
+			draw_colored_polygon(puntos, COLOR_JEFE)
+			if sala.esta_despejada():
+				_pintar_bajada(sala, centro, radio * 0.55)
+
+
+## El agujero: oscuro, con aro. El aro se enciende cuando la sala esta limpia
+## y ya se puede bajar.
+func _pintar_bajada(sala: Sala, centro: Vector2, radio: float) -> void:
+	draw_circle(centro, radio, Color(0.05, 0.03, 0.03))
+	var aro := COLOR_OBJETO if sala.esta_despejada() else Color(0.5, 0.45, 0.4)
+	draw_arc(centro, radio, 0.0, TAU, 16, aro, 1.5, true)

@@ -76,3 +76,13 @@ extends Resource
 ## La musica de este piso (assets/sonido/musica/). Si dos pisos seguidos
 ## llevan la misma, al bajar sigue sonando sin cortarse. Vacia = silencio.
 @export var musica: AudioStream = null
+
+@export_group("Sala del jefe")
+## El piso acaba en la sala del jefe: de la sala mas lejana sale una antesala
+## tranquila (un altar que recarga el ataque especial y un corazon) y, detras
+## de una puerta con runas, la sala del jefe, mas grande que las demas y con la
+## bajada en el centro. Pedido por Matias el 2026-10-13 para el piso 12.
+@export var sala_jefe: bool = false
+## Lo que mide el suelo de la sala del jefe, en px. Mas ancha que alta, como
+## la pantalla: la camara la ensena entera (CamaraJuego.ver_entera).
+@export var tamano_sala_jefe: Vector2 = Vector2(1200.0, 700.0)

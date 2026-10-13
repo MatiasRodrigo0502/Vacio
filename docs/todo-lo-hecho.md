@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/10/2026 | Registro de partidas para equilibrar la dificultad con datos | — |
+| 13/10/2026 | Antesala y sala del jefe en el piso 12 (todavía sin jefe) | — |
+| 13/10/2026 | Registro de partidas para equilibrar la dificultad con datos | `3f98758` |
 | 13/10/2026 | El juego avisa de las versiones nuevas y, en Windows, se actualiza con un botón | `5cbc558` |
 | 13/10/2026 | El escudo del mago blanco pasa a ser una burbuja que lo cubre entero y hace rebotar | `9ec57e7` |
 | 13/10/2026 | Ningún objeto añade corazones: solo se recuperan | `9e90b06` |
@@ -259,9 +260,12 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 - **Multijugador cooperativo** de 2–3 personas desde ordenadores distintos, con sala por código. Es viable; faltan las decisiones del equipo. Ver [el estudio](mejoras-futuras/multijugador.md).
 
+**En marcha:**
+
+- [ ] **El jefe del piso 12.** Ya están la antesala (altar que recarga el ataque especial y un corazón) y la sala del jefe: más grande, con puerta de runas, sello en el suelo, cuatro pilares y la cámara abierta. Falta el jefe: la propuesta es el Corazón del Núcleo, en tres fases.
+
 **Ideas no pedidas todavía:**
 
-- Una sala de jefe en el piso 12.
 - Una textura sutil para el suelo.
 - Oscurecer las salas vecinas que asoman cuando la vista es más grande que la sala.
 - Salas de otras formas.
