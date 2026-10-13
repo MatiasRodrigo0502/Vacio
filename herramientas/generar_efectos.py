@@ -15,6 +15,7 @@ Es determinista (cada efecto con su semilla): sale siempre igual.
 import os
 import random
 import sys
+import zlib
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sintesis import (adsr, banda, barrido, golpe, guardar_wav, hz, medir,  # noqa: E402
@@ -151,6 +152,35 @@ def magma(azar):
     return _mezcla((fuego, 1.0), (grave, 0.8))
 
 
+def pisoton(azar):
+    """El golem pisa: golpe sordo y grave que retumba."""
+    n = int(0.9 * SR)
+    golpe_grave = golpe(barrido(85, 30, 0.7, SR, curva=1.5), SR, 0.002, 5.0)
+    tierra = golpe(paso_bajo(ruido(n, azar), SR, lambda t: 900 * (1 - t) + 120), SR, 0.002, 6.0)
+    return reverberacion(saturar(_mezcla((golpe_grave, 1.0), (tierra, 0.8)), 1.6), SR, 0.25, 0.7)
+
+
+def teletransporte(azar):
+    """El cristal se desvanece: un brillo que sube y se corta."""
+    n = int(0.5 * SR)
+    subida = adsr(barrido(500, 2400, 0.45, SR, "triangulo", curva=0.8), SR, 0.02, 0.0, 1.0, 0.12)
+    soplo = adsr(banda(ruido(n, azar), SR, lambda t: 1200 + 3500 * t, 4.0), SR, 0.05, 0.0, 1.0, 0.1)
+    chispas = vacio(n)
+    for k, nota in enumerate(("E6", "B6", "E7")):
+        sumar(chispas, parciales(hz(nota), 0.3, SR, [(1, 1.0, 12), (2.76, 0.3, 18)]), int(k * 0.08 * SR), 0.4)
+    return reverberacion(_mezcla((subida, 0.5), (soplo, 0.4), (chispas, 0.6)), SR, 0.35, 0.75)
+
+
+def emerger(azar):
+    """La planta sale del suelo: tierra que salta y un mordisco."""
+    n = int(0.4 * SR)
+    tierra = golpe(banda(ruido(n, azar), SR, lambda t: 900 - 500 * t, 1.5), SR, 0.002, 9.0)
+    mordisco = vacio(n)
+    for k in range(2):
+        sumar(mordisco, golpe(barrido(320, 140, 0.06, SR), SR, 0.001, 45.0), int((0.05 + k * 0.07) * SR))
+    return _mezcla((tierra, 0.8), (mordisco, 0.9))
+
+
 # --- Salas y objetos ------------------------------------------------------------
 
 def puertas_cierran(azar):
@@ -230,13 +260,31 @@ EFECTOS = {
     "corazon": (corazon, -7.0),
     "bajar": (bajar, -4.0),
     "clic": (clic, -14.0),
+    "pisoton": (pisoton, -3.0),
+    "teletransporte": (teletransporte, -8.0),
+    "emerger": (emerger, -6.0),
 }
+
+# La semilla de cada efecto. Los 20 primeros la sacaban de su puesto en orden
+# alfabetico, y anadir uno la cambiaba a todos los de detras: se conservan
+# esas, para que no cambien al regenerar. Los nuevos la sacan de su nombre,
+# que no depende de cuantos haya.
+ORIGINALES = ["agujero_negro", "bajar", "caida", "carga_lista", "clic", "corazon",
+              "disparo", "disparo_cargado", "disparo_enemigo", "escudo", "escudo_golpe",
+              "explosion", "golpe_enemigo", "herido", "magma", "muerte_enemigo", "objeto",
+              "puertas_abren", "puertas_cierran", "rayo"]
+
+
+def semilla(nombre):
+    if nombre in ORIGINALES:
+        return 100 + ORIGINALES.index(nombre)
+    return zlib.crc32(nombre.encode("utf-8"))
 
 
 def main():
     os.makedirs(DESTINO, exist_ok=True)
-    for k, (nombre, (funcion, pico)) in enumerate(sorted(EFECTOS.items())):
-        sonido = normalizar(funcion(random.Random(100 + k)), pico)
+    for nombre, (funcion, pico) in sorted(EFECTOS.items()):
+        sonido = normalizar(funcion(random.Random(semilla(nombre))), pico)
         guardar_wav(os.path.join(DESTINO, nombre + ".wav"), sonido, SR)
         print(nombre, medir(sonido, SR))
 

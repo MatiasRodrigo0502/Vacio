@@ -78,6 +78,16 @@ var _largo_mira: float = 0.0
 ## Lo que le queda a la linea del rayo cuando sale con el disparo, sin apuntar
 ## antes (tiempo_apuntar = 0). Se ve un momento y se apaga.
 var _linea_disparo: float = 0.0
+## Cuantos disparos lleva. Lo mira el cristal para saltar despues de cada uno.
+var disparos: int = 0
+
+## Lo que el comportamiento de su tipo necesita recordar de ESTE enemigo (en
+## que fase va, cuanto le queda). El comportamiento es uno para todo el tipo,
+## asi que no puede guardarlo el (ver ComportamientoEnemigo).
+var estado: Dictionary = {}
+## Escala del dibujo al tamano de su tipo. Los comportamientos la estiran y la
+## aplastan (saltos) a partir de esta.
+var _escala_base: Vector2 = Vector2.ONE
 
 @onready var _sprite: AnimatedSprite2D = $Sprite
 @onready var _forma: CollisionShape2D = $Forma
@@ -105,7 +115,8 @@ func preparar(tipo_enemigo: TipoEnemigo, posicion: Vector2) -> void:
 
 	var tam := tipo.animaciones.get_frame_texture(&"moverse", 0).get_size()
 	var escala := tipo.alto / tam.y
-	_sprite.scale = Vector2(escala, escala)
+	_escala_base = Vector2(escala, escala)
+	_sprite.scale = _escala_base
 
 	var forma := CircleShape2D.new()
 	# El circulo cubre el cuerpo, un poco mas pequeno que el dibujo: igual que
@@ -118,6 +129,8 @@ func preparar(tipo_enemigo: TipoEnemigo, posicion: Vector2) -> void:
 	# ritmo: si todos los de una sala dispararan a la vez, seria una rafaga
 	# imposible de esquivar.
 	_espera = tipo.cadencia * randf_range(0.45, 0.9)
+	if tipo.comportamiento != null:
+		tipo.comportamiento.empezar(self)
 
 
 func _physics_process(delta: float) -> void:
@@ -140,6 +153,12 @@ func _physics_process(delta: float) -> void:
 	if not _despierto or tipo == null or not is_instance_valid(_objetivo):
 		return
 
+	if tipo.comportamiento != null:
+		tipo.comportamiento.procesar(self, delta)
+		_sprite.flip_h = _objetivo.global_position.x < global_position.x
+		queue_redraw()
+		return
+
 	# Despierto, va a por el jugador este donde este de la sala: la sala ya
 	# limita a quien despierta (ver Sala.asomar). Antes habia ademas una
 	# distancia de vision por tipo, de cuando no habia salas, y en las salas
@@ -159,6 +178,10 @@ func _physics_process(delta: float) -> void:
 
 func dormir() -> void:
 	_despierto = false
+	# Su comportamiento vuelve al principio: dormido no puede quedarse a
+	# medias (bajo tierra, invisible) hasta que alguien entre.
+	if tipo != null and tipo.comportamiento != null:
+		tipo.comportamiento.empezar(self)
 	# Si se duerme a mitad de apuntar (el jugador se ha asomado y se ha ido,
 	# ver Sala.asomar), se le quita el brillo y la mira: dormido no se mueve
 	# nada, y se quedaba apuntando para siempre.
@@ -184,7 +207,10 @@ func matar() -> void:
 	if _vida <= 0:
 		return
 	_vida = 1
-	romper()
+	# Directo al dano, sin pasar por herir(): este muere aunque este
+	# intocable (bajo tierra, desvanecido). Si no, F4 dejaba vivos al fantasma
+	# y a la planta azul a mitad de lo suyo, y la sala no se abria.
+	_quitar_vida(1.0, 0.0)
 
 
 ## Un golpe de un punto de vida: el contrato de todo lo que se puede romper.
@@ -194,12 +220,19 @@ func romper() -> void:
 
 ## La llama la bola magica: le quita 'cantidad' de vida (medio punto el
 ## disparo del mago blanco, varios el cargado) y, si 'frena' > 0, lo deja ese
-## tiempo frenado.
+## tiempo frenado. Intocable (bajo tierra, desvanecido), no le entra.
+func herir(cantidad: float, frena: float = 0.0) -> void:
+	if not es_tangible():
+		return
+	_quitar_vida(cantidad, frena)
+
+
+## El dano de verdad, para herir() y matar().
 ##
 ## Puede llegar cuando el enemigo ya esta muerto: queue_free() no lo borra
 ## hasta el final del fotograma y hasta entonces sigue siendo un objeto
 ## valido. Sin este guardia, emitiria "muerto" mas de una vez.
-func herir(cantidad: float, frena: float = 0.0) -> void:
+func _quitar_vida(cantidad: float, frena: float) -> void:
 	if _vida <= 0:
 		return
 	_vida -= cantidad
@@ -323,8 +356,7 @@ func _pintar_llamas() -> void:
 # --- Movimiento y ataque ----------------------------------------------------
 
 func _mover(direccion: Vector2, delta: float) -> void:
-	global_position += direccion * tipo.velocidad * delta
-	mantener_en_la_sala()
+	andar(direccion, delta)
 
 
 ## Lo deja dentro del suelo de su sala y fuera de sus rocas.
@@ -334,12 +366,14 @@ func _mover(direccion: Vector2, delta: float) -> void:
 ## muro de espaldas y dispararian desde la sala de al lado. Y fuera de las
 ## rocas porque las rocas paran las bolas: uno metido en una no se podria
 ## matar (ver Sala.sacar_de_las_rocas).
-func mantener_en_la_sala() -> void:
+func mantener_en_la_sala(con_rocas: bool = true) -> void:
 	var sala := get_parent() as Sala
 	if sala == null or tipo == null:
 		return
 	var dentro := sala.rect_suelo_global().grow(-tipo.alto * 0.45)
 	global_position = global_position.clamp(dentro.position, dentro.end)
+	if not con_rocas:
+		return
 	global_position = sala.sacar_de_las_rocas(global_position, tipo.alto * 0.4)
 	# Otra vez dentro del suelo: salir de una roca pegada al muro podria
 	# haberlo empujado hacia fuera.
@@ -347,6 +381,13 @@ func mantener_en_la_sala() -> void:
 
 
 func _pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void:
+	pelear_a_distancia(delta, hacia, distancia)
+
+
+## Lo de siempre de los de distancia: quedarse a su distancia, avisar y
+## disparar. Publico porque algun comportamiento lo usa de base y le anade lo
+## suyo (el pisoton del golem, el salto del cristal).
+func pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void:
 	if _linea_disparo > 0.0:
 		_linea_disparo = maxf(0.0, _linea_disparo - delta)
 		queue_redraw()
@@ -401,19 +442,13 @@ func _disparar() -> void:
 	_sprite.modulate = Color.WHITE
 	queue_redraw()
 
-	var objetivo := _punto_objetivo()
 	# El rayo sale por donde marco la mira; lo demas, hacia donde estas ahora:
 	# es mas lento y se esquiva moviendose.
 	var direccion := _mira
 	if tipo.proyectil.estilo != TipoProyectil.Estilo.RAYO:
-		direccion = (objetivo - global_position).normalized()
-
-	var sala := get_parent() as Sala
-	var limite := sala.rect_con_muros() if sala != null else Rect2()
-	var proyectil := ProyectilEnemigo.new()
-	proyectil.configurar(tipo.proyectil, global_position, direccion, objetivo, limite)
-	get_parent().add_child(proyectil)
-	Sonido.tocar(tipo.proyectil.sonido)
+		direccion = (_punto_objetivo() - global_position).normalized()
+	disparar_hacia(direccion)
+	disparos += 1
 
 
 func _dejar_de_apuntar() -> void:
@@ -422,6 +457,70 @@ func _dejar_de_apuntar() -> void:
 	_apuntando = 0.0
 	_sprite.modulate = Color.WHITE
 	queue_redraw()
+
+
+# --- Lo que usan los comportamientos (scripts/comportamientos/) ---------------
+
+## Un disparo de su proyectil hacia 'direccion', con su sonido. La parabola
+## cae donde esta el jugador ahora.
+func disparar_hacia(direccion: Vector2) -> void:
+	var sala_propia := sala()
+	var limite := sala_propia.rect_con_muros() if sala_propia != null else Rect2()
+	var proyectil := ProyectilEnemigo.new()
+	proyectil.configurar(tipo.proyectil, global_position, direccion, _punto_objetivo(), limite)
+	get_parent().add_child(proyectil)
+	Sonido.tocar(tipo.proyectil.sonido)
+
+
+## Anda a su velocidad por 'factor' hacia 'direccion' sin salir de su sala.
+## Con 'atravesar_rocas' (el fantasma, lo que va bajo tierra) las rocas no le
+## paran.
+func andar(direccion: Vector2, delta: float, factor: float = 1.0, atravesar_rocas: bool = false) -> void:
+	global_position += direccion * tipo.velocidad * factor * delta
+	mantener_en_la_sala(not atravesar_rocas)
+
+
+## Anda en linea recta y, si choca con un muro o una roca, rebota como una
+## pelota. Devuelve la direccion despues del rebote.
+func andar_rebotando(direccion: Vector2, delta: float, factor: float = 1.0) -> Vector2:
+	var intento := global_position + direccion * tipo.velocidad * factor * delta
+	global_position = intento
+	mantener_en_la_sala()
+	# Lo que la sala le ha empujado para dejarlo dentro es la normal de lo que
+	# ha tocado: se refleja contra ella.
+	var empuje := global_position - intento
+	if empuje.length() > 0.01:
+		direccion = direccion.bounce(empuje.normalized())
+	return direccion
+
+
+## Del enemigo al cuerpo del jugador.
+func hacia_objetivo() -> Vector2:
+	return _punto_objetivo() - global_position
+
+
+## El brillo de "va a atacar", de 0 (nada) a 1 (a punto). El mismo aviso que
+## los de distancia antes de disparar.
+func brillo(avance: float) -> void:
+	_sprite.modulate = Color.WHITE.lerp(tipo.color_efectos * 1.8, clampf(avance, 0.0, 1.0))
+
+
+## Mueve, estira y transparenta el dibujo sin mover al enemigo: el arco de un
+## salto, el aplastarse antes de saltar, desvanecerse.
+func poner_sprite(desplazamiento: Vector2, escala: Vector2, alfa: float) -> void:
+	_sprite.position = desplazamiento
+	_sprite.scale = _escala_base * escala
+	_sprite.self_modulate.a = alfa
+
+
+func sala() -> Sala:
+	return get_parent() as Sala
+
+
+## False mientras su comportamiento lo hace intocable (desvanecido, bajo
+## tierra): ni se le puede dar ni hace dano al tocar. Las bolas lo atraviesan.
+func es_tangible() -> bool:
+	return tipo == null or tipo.comportamiento == null or tipo.comportamiento.tangible(self)
 
 
 ## Donde apuntar: al cuerpo del jugador, no a sus pies.
@@ -440,7 +539,7 @@ func _punto_objetivo() -> Vector2:
 ## solape en cada paso vuelve a pegar en cuanto acaba la invulnerabilidad, y
 ## no pega de mas porque recibir_dano() ignora los golpes mientras dura.
 func _golpear_lo_que_toca() -> void:
-	if tipo == null:
+	if tipo == null or not es_tangible():
 		return
 	for cuerpo in get_overlapping_bodies():
 		if cuerpo.has_method("recibir_dano"):
@@ -509,6 +608,8 @@ func _draw() -> void:
 		_pintar_escarcha()
 	if _quemaduras > 0 and tipo != null:
 		_pintar_llamas()
+	if tipo != null and tipo.comportamiento != null:
+		tipo.comportamiento.dibujar(self)
 	if tipo == null or not tipo.es_a_distancia():
 		return
 	if tipo.proyectil.estilo != TipoProyectil.Estilo.RAYO:

@@ -9,7 +9,11 @@ profundidad. Basta con dejar aquí otro `.tres`.
 
 ## Los que hay
 
-Dos formas de pelear (`ataque`):
+**Cada uno hace algo distinto** (pedido por Matías el 2026-10-13): lo decide
+su `comportamiento`, un recurso de `scripts/comportamientos/` con sus números
+ajustables, que va dentro del propio `.tres` (ver «Comportamientos» más abajo).
+
+Además, dos formas de pelear (`ataque`), que deciden el reparto:
 
 - **Cuerpo a cuerpo**: van directos a por ti y son **rápidos**. Hay que
   pararlos antes de que lleguen.
@@ -20,19 +24,19 @@ Dos formas de pelear (`ataque`):
   `tiempo_apuntar` a 0 dispara sin avisar, y si es un rayo su línea sale a la
   vez que el disparo (el cristal).
 
-| Tipo | Ataque | Vida | Velocidad | Desde el piso | Qué tiene de especial |
+| Tipo | Ataque | Vida | Velocidad | Desde el piso | Qué hace (`comportamiento`) |
 |---|---|---|---|---|---|
-| Slime verde | cuerpo a cuerpo | 2 | 100 | 1 | al morir, explota (radio 70) y se parte en 2 crías |
-| Rata | cuerpo a cuerpo | 1 | 160 | 2 | |
-| Serpiente | distancia: **veneno** | 2 | 55 | 2 | el veneno quita 1 y te frena 2,5 s |
-| Planta venenosa | distancia: **veneno** | 3 | 28 | 3 | ve poco (360): emboscada |
-| Murciélago | cuerpo a cuerpo | 1 | **195** | 3 | el más rápido del juego |
-| Gólem de roca | distancia: **magma** | 5 | 38 | 4 | lo tira por el aire: quita 2 y deja lava 3,5 s |
-| Slime naranja | cuerpo a cuerpo | 3 | 132 | 5 | explota (75) y se parte en 2 |
-| Slime de magma | cuerpo a cuerpo | 3 | 118 | 5 | explota (85) y se parte en 2 |
-| Cristal vivo | distancia: **rayo** | 3 | **0** | 5 | dispara en cuanto sale su línea, sin apuntar antes; el rayo quita 2 |
-| Fantasma | cuerpo a cuerpo | 2 | 115 | 6 | ve desde más lejos que nadie (800) |
-| Planta azul | cuerpo a cuerpo | 2 | 150 | 7 | |
+| Slime verde | cuerpo a cuerpo | 2 | 100 | 1 | **a saltos**: se aplasta (el aviso), salta hacia ti y descansa. Al morir explota (radio 70) y se parte en 2 crías |
+| Rata | cuerpo a cuerpo | 1 | 160 | 2 | **en zigzag**: corre hacia ti haciendo eses; de cerca, recta |
+| Serpiente | distancia: **veneno** | 2 | 55 | 2 | **en abanico**: te rodea de lado y dispara 3 bolas abiertas. El veneno quita 1 y te frena 2,5 s |
+| Planta venenosa | distancia: **veneno** | 3 | 28 | 3 | **en anillo**: no se mueve; se hincha y suelta 8 esporas en todas direcciones, cada anillo girado |
+| Murciélago | cuerpo a cuerpo | 1 | **195** | 3 | **en picado**: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo |
+| Gólem de roca | distancia: **magma** | 5 | 38 | 4 | **pisotón**: de lejos tira magma (quita 2 y deja lava 3,5 s); si te acercas, avisa con un aro y suelta una onda que hay que esquivar alejándose |
+| Slime naranja | cuerpo a cuerpo | 3 | 132 | 5 | **rebota**: no te persigue; cruza la sala en diagonal y rebota en muros y rocas. Explota (75) y se parte en 2 |
+| Slime de magma | cuerpo a cuerpo | 3 | 118 | 5 | **a saltos, dejando lava** donde cae (2,5 s). Explota (85) y se parte en 2 |
+| Cristal vivo | distancia: **rayo** | 3 | **0** | 5 | **teletransporte**: dispara en cuanto sale su línea y, poco después, desaparece y sale en otro sitio de la sala, lejos de ti |
+| Fantasma | cuerpo a cuerpo | 2 | 115 | 6 | **se desvanece**: atraviesa las rocas y, a ratos, se vuelve casi invisible; entonces ni le das ni te da |
+| Planta azul | cuerpo a cuerpo | 2 | 150 | 7 | **excava**: se entierra, el montículo avanza bajo el suelo y sale debajo de ti tras avisar con un aro; bajo tierra no se le puede dar |
 
 El más lento de cuerpo a cuerpo (100) es casi el doble de rápido que el más
 rápido a distancia (55). El contacto quita 1 en todos.
@@ -51,6 +55,36 @@ cuenta.
 
 Los proyectiles (veneno, magma, rayo) son su propio `.tres`, en
 `resources/proyectiles/`: dos enemigos pueden tirar lo mismo.
+
+## Comportamientos
+
+Cada uno es un script de `scripts/comportamientos/` que hereda de
+`ComportamientoEnemigo`, con sus números como `@export` (duración del salto,
+radio de la órbita, balas del abanico...). En el `.tres` del enemigo va como
+`comportamiento` y se le cambian los números ahí mismo, en el inspector.
+Varios enemigos pueden usar el mismo (los slimes verde y de magma usan
+`saltos.gd`, el de magma con charco). Sin comportamiento, el enemigo hace lo
+de antes: ir directo a por ti, o quedarse lejos y disparar.
+
+| Script | Lo usa | Qué hace |
+|---|---|---|
+| `saltos.gd` | slime verde, slime de magma | avanza a saltos; con `charco_radio` deja lava al caer |
+| `zigzag.gd` | rata | corre haciendo eses |
+| `picado.gd` | murciélago | órbita, aviso con línea y picado |
+| `rebote.gd` | slime naranja | cruza la sala rebotando |
+| `fantasma.gd` | fantasma | atraviesa rocas y se desvanece a ratos |
+| `excavar.gd` | planta azul | se entierra y sale debajo de ti |
+| `abanico.gd` | serpiente | se mueve de lado y dispara en abanico |
+| `anillo.gd` | planta venenosa | quieta, anillos de esporas |
+| `pisoton.gd` | gólem | magma de lejos, onda de cerca (`OndaChoque`) |
+| `teletransporte.gd` | cristal vivo | dispara y salta a otro sitio |
+
+Todos avisan antes de lo que pega fuerte o de golpe (aplastarse, una línea,
+un aro), igual que los de distancia antes de disparar. Lo que va escondido o
+desvanecido es **intocable**: las bolas lo atraviesan y no hace daño al tocar.
+
+Un comportamiento nuevo es un script más en esa carpeta: lo que guarda de
+cada enemigo va en `enemigo.estado` (el recurso es uno para todo el tipo).
 
 ## Por qué son Resources y no una escena por enemigo
 

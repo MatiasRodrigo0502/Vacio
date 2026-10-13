@@ -95,7 +95,7 @@ hace falta aclararlos. Siguen en el historial de git.
   `herramientas/generar_efectos.py` y `herramientas/generar_musica.py`
   (comparten `herramientas/sintesis.py`)
 - **Licencia**: propio, sin problema de licencia
-- **Archivos**: `assets/sonido/efectos/` (20 efectos) y
+- **Archivos**: `assets/sonido/efectos/` (23 efectos) y
   `assets/sonido/musica/` (portada, superficie, profundo, victoria y derrota)
 - **Nota**: no hay ni una muestra grabada ni bajada: todo son osciladores,
   ruido y filtros calculados en Python.

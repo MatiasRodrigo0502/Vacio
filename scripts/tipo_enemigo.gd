@@ -54,6 +54,14 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## A que distancia del jugador intenta quedarse. Si te acercas, retrocede.
 @export var distancia_preferida: float = 320.0
 
+@export_group("Comportamiento")
+## Como se mueve y ataca: un recurso de scripts/comportamientos/ (saltos,
+## zigzag, picado, abanico...). Vacio = lo de siempre: cuerpo a cuerpo va
+## directo a por ti; a distancia se queda lejos y dispara. Los de distancia lo
+## siguen siendo para el reparto (como mucho la mitad de cada sala), lleven el
+## comportamiento que lleven.
+@export var comportamiento: ComportamientoEnemigo = null
+
 @export_group("Al morir")
 ## Cuantas crias suelta al morir. Las crias son el mismo enemigo en pequeno,
 ## con 1 de vida y sin dividirse otra vez.

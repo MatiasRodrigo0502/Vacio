@@ -139,6 +139,10 @@ func _apagar(punto: Vector2) -> void:
 func _al_tocar(area: Area2D) -> void:
 	# Duck typing como en todo el proyecto: la bola no pregunta contra que ha
 	# chocado, solo si eso se puede romper.
+	# Un enemigo intocable (el fantasma desvanecido, la planta bajo tierra) no
+	# se lleva la bola: la bola sigue de largo.
+	if area.has_method("es_tangible") and not area.es_tangible():
+		return
 	if area.has_method("herir"):
 		area.herir(dano, frena)
 		Sonido.tocar(&"golpe_enemigo")

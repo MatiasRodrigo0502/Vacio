@@ -126,6 +126,10 @@ func _notification(que: int) -> void:
 
 ## Toca un efecto por su nombre (el del archivo, sin .wav).
 func tocar(nombre: StringName) -> void:
+	# Saliendo, ya no suena nada: un efecto que empezara en la espera de
+	# salir() seguiria sonando al cerrar, y es justo lo que esa espera evita.
+	if _saliendo:
+		return
 	var sonido: AudioStream = _efectos.get(nombre)
 	if sonido == null:
 		# Una vez por nombre: un efecto que falta no tiene que llenar la

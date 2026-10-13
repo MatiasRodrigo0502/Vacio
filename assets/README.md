@@ -252,7 +252,7 @@ agujeros lo repite `scripts/pinchos.gd` (sus constantes `MARGEN`, `GROSOR`,
 
 Todo el sonido del juego, generado por síntesis (sin nada bajado):
 
-- `efectos/`: 20 efectos, uno por archivo, que hace
+- `efectos/`: 23 efectos, uno por archivo, que hace
   `herramientas/generar_efectos.py`. El autoload `Sonido` carga todos los de
   la carpeta por su nombre: `Sonido.tocar(&"disparo")` toca `disparo.wav`. Un
   efecto nuevo es una función más en ese script y una llamada donde suene.

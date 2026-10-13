@@ -142,7 +142,13 @@ espaldas, te ve a ti y no a la salida.
 Las rocas y plataformas son sólidas: no se cruzan ni se rompen, pero te sirven
 de parapeto. Lo que te quita vida son los **enemigos** al tocarte, con ~1 s de
 invulnerabilidad después de cada golpe. Del piso 2 en adelante los hay, y van a
-más según bajas.
+más según bajas. **Cada uno pelea a su manera**: los slimes saltan (el de
+magma dejando lava) o rebotan por la sala, la rata corre en zigzag, el
+murciélago se lanza en picado, el fantasma atraviesa rocas y se desvanece, la
+planta azul se entierra y sale debajo de ti, la serpiente dispara en abanico,
+la planta venenosa suelta anillos de esporas, el gólem da pisotones con onda y
+el cristal se teletransporta. Todos avisan antes de lo que pega de golpe. Lo
+que hace cada uno está en [`resources/enemigos/`](resources/enemigos/README.md).
 
 Disparas bolas mágicas para matarlos, con las flechas en las cuatro direcciones
 o con el clic izquierdo apuntando donde quieras: una cada medio segundo,
@@ -175,7 +181,7 @@ Superar el piso 12 gana; quedarte sin vida termina la partida.
 ### Sonido y música
 
 Todo el sonido es nuestro: lo generan por síntesis
-`herramientas/generar_efectos.py` (20 efectos) y `generar_musica.py` (la
+`herramientas/generar_efectos.py` (23 efectos) y `generar_musica.py` (la
 música), sin nada bajado. Suena una música en la portada, otra en los pisos
 1 a 6 y otra más grave, con tambores, en los 7 a 12; al ganar y al perder,
 la suya. Hay efecto para los disparos (los tuyos y los de cada enemigo), los

@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-08.**
+**Última actualización: 2026-10-13.**
 
 ---
 
@@ -46,6 +46,7 @@ hechos.
 | Mecánicas | `resources/mecanicas/*.tres` (+ script que herede de `Mecanica`) | otro `.tres` |
 | Tipos de enemigo | `resources/enemigos/*.tres` (`TipoEnemigo`) | otro `.tres` |
 | Proyectiles enemigos | `resources/proyectiles/*.tres` (`TipoProyectil`) | otro `.tres` |
+| Cómo se mueve y ataca cada enemigo | `scripts/comportamientos/*.gd` (`ComportamientoEnemigo`), dentro del `.tres` del enemigo como `comportamiento` | números en el `.tres`; uno nuevo, otro script en esa carpeta |
 | Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
@@ -146,7 +147,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 - **Sonido y música** (2026-10-09, pedido por Matías), todo generado por
   síntesis: `herramientas/sintesis.py` (osciladores, filtros, eco,
-  reverberación, WAV), `generar_efectos.py` (20 efectos en
+  reverberación, WAV), `generar_efectos.py` (23 efectos en
   `assets/sonido/efectos/`) y `generar_musica.py` (portada, superficie para
   los pisos 1-6, profundo para los 7-12, victoria y derrota). El autoload
   `Sonido` (`scripts/sonido.gd`) toca los efectos por nombre de archivo
@@ -260,11 +261,21 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   sala en el piso 2 y 0,5 más por piso, hasta 8 en el 12 (378 al empezar los
   pisos; unas 600 muertes por partida con las crías). Los siete últimos los
   dibujó Matías. Ninguno se queda dentro de una roca (`Sala.sacar_de_las_rocas`).
+  - **Cada uno hace algo distinto** (pedido por Matías el 2026-10-13): su
+    `TipoEnemigo.comportamiento` (`scripts/comportamientos/`). Slime verde a
+    saltos; slime de magma a saltos dejando lava; slime naranja rebota por la
+    sala sin perseguir; rata en zigzag; murciélago en órbita y picado;
+    fantasma que atraviesa rocas y se desvanece; planta azul que excava y sale
+    debajo; serpiente que rodea y dispara en abanico; planta venenosa quieta
+    con anillos de esporas; gólem con magma de lejos y pisotón con onda
+    (`OndaChoque`) de cerca; cristal que se teletransporta tras cada rayo.
+    Todos avisan antes de lo que pega de golpe. Lo de cada enemigo va en
+    `enemigo.estado`: el recurso es uno para todo el tipo.
   - **Cuerpo a cuerpo** (slimes, rata, murciélago, fantasma, planta azul):
     rápidos, de 100 a 195.
   - **A distancia** (serpiente y planta venenosa con veneno, gólem con magma,
-    cristal con rayos): lentos, de 0 a 55, se quedan lejos y pegan más. Antes
-    de disparar se paran y avisan. Como mucho la mitad de cada sala.
+    cristal con rayos): lentos, de 0 a 55, y pegan más. Como mucho la mitad
+    de cada sala.
   - **Los slimes** explotan al morir (radio 70-85) y sueltan dos crías. Los
     demás dejan un destello pequeño de su color, sin daño.
   - La **línea de mira del cristal** acaba en la primera roca o muro: el rayo
@@ -516,6 +527,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de colisión, que no se ha tocado (radio 15 en y=−16).
 
 ## Trampas ya pisadas (no repetirlas)
+
+- **Intocable no puede querer decir inmortal.** Con los comportamientos, un
+  enemigo escondido o desvanecido no recibe daño (`herir` lo ignora), y
+  `matar()` (F4) pasaba por ahí: dejaba vivos al fantasma y a la planta bajo
+  tierra, y la sala no se abría. `matar()` va directo a `_quitar_vida()`. Lo
+  destapó la revisión de las 63 salas: 18 no se abrían.
+- **En GDScript, una función anónima copia las variables locales al crearse.**
+  Un contador sumado dentro de una lambda conectada a una señal se queda a 0
+  fuera. Para contar desde una lambda, un diccionario o un array (que se
+  comparten).
 
 - **Los enemigos despiertan al asomarse a su sala, no al entrar del todo.**
   Las puertas sí esperan a que el jugador entre del todo (el rastrillo no

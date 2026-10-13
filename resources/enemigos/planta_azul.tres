@@ -1,7 +1,11 @@
-[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
 [ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_planta_azul.tres" id="2_anim"]
+[ext_resource type="Script" path="res://scripts/comportamientos/excavar.gd" id="9_comportamiento"]
+
+[sub_resource type="Resource" id="Resource_comportamiento"]
+script = ExtResource("9_comportamiento")
 
 [resource]
 script = ExtResource("1_tipo")
@@ -20,3 +24,4 @@ distancia_preferida = 320.0
 division = 0
 radio_explosion = 0.0
 dano_explosion = 1
+comportamiento = SubResource("Resource_comportamiento")
