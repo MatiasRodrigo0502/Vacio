@@ -361,6 +361,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
 
+- **Los corazones solo se recuperan, no se añaden** (Matías, 2026-10-13):
+  ningún objeto sube la vida máxima. Se quitó el «Corazón de roca»
+  (`resources/objetos/`); curan el vendaje y los corazones del suelo. La
+  vida de más del mago rojo es de salida, no se gana jugando.
 - **Las rocas no hacen daño.** Si no se pueden atravesar, cobrar vida además
   castigaría por rozar una pared al esquivar. El daño viene de los enemigos.
 - **Los disparos no rompen rocas.** Las rocas son el terreno; si el disparo las

@@ -11,12 +11,17 @@ partida** y se pierden al empezar una nueva.
 
 | Objeto | Qué hace | Desde el piso |
 |---|---|---|
-| Corazón de roca | +1 al máximo de vida (y lo llena) | 1 |
 | Vendaje | Cura 2 corazones | 1 |
 | Botas ligeras | +45 de velocidad | 1 |
 | Dedal rápido | Cadencia ×0,76 (disparas más seguido) | 2 |
 | Núcleo ardiente | +190 de velocidad de bola | 3 |
 | Piedra hinchada | +6 de radio de bola | 4 |
+
+**Ningún objeto sube la vida máxima** (decisión de Matías, 2026-10-13): los
+corazones solo se recuperan, no se añaden. Lo que cura son el vendaje y los
+corazones que caen al limpiar una sala. Había un «Corazón de roca» que daba
+uno más; se quitó, y está en el historial de git. El campo
+`vida_maxima_extra` sigue en `ObjetoMejora` por si algún día vuelve.
 
 ## El código de color
 

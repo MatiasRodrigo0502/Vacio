@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/10/2026 | Cada enemigo pelea a su manera (11 comportamientos) | — |
+| 13/10/2026 | Ningún objeto añade corazones: solo se recuperan | — |
+| 13/10/2026 | Cada enemigo pelea a su manera (11 comportamientos) | `c41a82a` |
 | 09/10/2026 | Revisión: enemigos congelados en el paso entre salas y quietos en las salas grandes; el espacio apunta con las flechas | `ef589db` |
 | 09/10/2026 | El volumen también en la portada | `635802c` |
 | 09/10/2026 | Sonido y música, generados por síntesis, con el volumen en la pausa | `d7cf4ff` |
