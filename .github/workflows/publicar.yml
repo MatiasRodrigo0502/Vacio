@@ -2,7 +2,8 @@
 # que cambie el juego: "Version 0.1", "Version 0.2"... cada una con su
 # etiqueta (v0.1, v0.2...), sus archivos y lo que cambia desde la anterior.
 # Asi cualquiera (el profesor, alguien sin el proyecto) se baja la ultima,
-# para Windows (Vacio.exe) o Linux (Vacio-linux.tar.gz), sin tener Godot:
+# para Windows (Vacio.exe), Linux (Vacio-linux.tar.gz) o Mac (Vacio-mac.zip),
+# sin tener Godot:
 #
 #     https://github.com/MatiasRodrigo0502/Vacio/releases/latest
 #
@@ -34,9 +35,16 @@ permissions:
 env:
   GODOT_VERSION: "4.7.2"
 
+# Tres trabajos: se exporta en Linux, se arranca la version de Mac en un Mac
+# de verdad (GitHub los presta) y, si todo ha ido bien, se publica. Si el Mac
+# falla, no sale ninguna version: mejor ninguna que una que no abre.
 jobs:
-  publicar:
+  exportar:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      anterior: ${{ steps.version.outputs.anterior }}
+      publicar: ${{ steps.version.outputs.publicar }}
     steps:
       # Con toda la historia y las etiquetas: hacen falta para saber que numero
       # toca y que ha cambiado desde la version anterior.
@@ -70,13 +78,14 @@ jobs:
           unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
           echo "GODOT=$RUNNER_TEMP/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" >> "$GITHUB_ENV"
 
-      - name: Instalar las plantillas de Windows y Linux
-        run: python3 herramientas/instalar_plantillas.py
+      - name: Instalar las plantillas de Windows, Linux y Mac
+        run: python3 herramientas/instalar_plantillas.py --mac
 
       # Con el numero dentro: el menu del juego lo ensena.
       - name: Exportar
         env:
           VERSION_JUEGO: ${{ steps.version.outputs.version }}
+          EXPORTAR_MAC: "1"
         run: bash herramientas/exportar.sh
 
       # Aqui nadie puede abrir build/exportar.log: si falla, se ensena.
@@ -108,12 +117,70 @@ jobs:
           tar -tvzf build/Vacio-linux.tar.gz
           tar -tvzf build/Vacio-linux.tar.gz | grep -q '^-rwx' || { echo "Va sin permiso de ejecutarse"; exit 1; }
 
+      # Los tres archivos pasan a los otros dos trabajos. Un dia basta: lo que
+      # queda es la release.
+      - name: Guardar lo exportado
+        uses: actions/upload-artifact@v4
+        with:
+          name: juego
+          path: |
+            build/Vacio.exe
+            build/Vacio-linux.tar.gz
+            build/Vacio-mac.zip
+          retention-days: 1
+          if-no-files-found: error
+
+  # El .zip de Mac lleva Vacio.app con una firma ad-hoc (la gratuita): sin
+  # firma, los Mac con chip de Apple no lo abren. Aqui se comprueba que esta
+  # firmada, que trae los dos procesadores (Apple e Intel) y que el juego
+  # arranca sin errores, como la version de Linux.
+  probar-mac:
+    needs: exportar
+    runs-on: macos-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: juego
+
+      - name: Arrancar la version de Mac
+        run: |
+          ditto -x -k Vacio-mac.zip mac
+          app="$(find mac -maxdepth 1 -name '*.app' | head -1)"
+          test -n "$app" || { echo "El .zip no trae ningun .app"; unzip -l Vacio-mac.zip | head -20; exit 1; }
+          binario="$(find "$app/Contents/MacOS" -type f -perm -u+x | head -1)"
+          echo "App: $app  Programa: $binario"
+          codesign -dv --verbose=2 "$app" 2>&1 | tee firma.txt
+          grep -q "Signature=adhoc" firma.txt || { echo "Va sin la firma ad-hoc"; exit 1; }
+          codesign --verify --deep --strict "$app"
+          lipo -archs "$binario" | tee arquitecturas.txt
+          grep -q arm64 arquitecturas.txt && grep -q x86_64 arquitecturas.txt || { echo "Le falta un procesador"; exit 1; }
+          "$binario" --headless --quit-after 300 > arranque.log 2>&1 || true
+          cat arranque.log
+          grep -q "Godot Engine" arranque.log || { echo "No ha llegado a arrancar"; exit 1; }
+          if grep -qE "SCRIPT ERROR|^ERROR" arranque.log; then
+            echo "El juego arranca con errores"; exit 1
+          fi
+
+  publicar:
+    needs: [exportar, probar-mac]
+    if: needs.exportar.outputs.publicar == 'si'
+    runs-on: ubuntu-latest
+    steps:
+      # Con la historia: las notas dicen que ha cambiado desde la anterior.
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: juego
+          path: build
+
       - name: Publicar
-        if: steps.version.outputs.publicar == 'si'
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.version.outputs.version }}
-          ANTERIOR: ${{ steps.version.outputs.anterior }}
+          VERSION: ${{ needs.exportar.outputs.version }}
+          ANTERIOR: ${{ needs.exportar.outputs.anterior }}
         run: |
           fecha="$(TZ=Europe/Madrid date '+%d/%m/%Y')"
           {
@@ -123,6 +190,7 @@ jobs:
             echo
             echo "- **Windows:** descarga \`Vacio.exe\` y ábrelo. Puede avisar de que es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*."
             echo "- **Linux:** descarga \`Vacio-linux.tar.gz\`, extráelo (clic derecho → *Extraer aquí*) y abre \`Vacio.x86_64\` con doble clic."
+            echo "- **Mac:** descarga \`Vacio-mac.zip\`, ábrelo y abre \`Vacio.app\` (si quieres, arrástrala antes a *Aplicaciones*). La primera vez macOS avisa de que no puede comprobar si es segura, porque no está verificada por Apple: ve a *Ajustes del Sistema → Privacidad y seguridad* y pulsa *Abrir igualmente*. Solo hace falta una vez."
             echo
             echo "Desde la 0.18, el juego avisa al abrirlo si hay una versión más nueva y, en Windows, se actualiza con un botón."
             echo
@@ -140,5 +208,5 @@ jobs:
           } > "$RUNNER_TEMP/notas.md"
           # La mas nueva queda como "latest": el enlace de descarga de siempre
           # (releases/latest/download/Vacio.exe) lleva a ella.
-          gh release create "v$VERSION" build/Vacio.exe build/Vacio-linux.tar.gz --target "$GITHUB_SHA" \
+          gh release create "v$VERSION" build/Vacio.exe build/Vacio-linux.tar.gz build/Vacio-mac.zip --target "$GITHUB_SHA" \
             --title "Versión $VERSION" --notes-file "$RUNNER_TEMP/notas.md" --latest

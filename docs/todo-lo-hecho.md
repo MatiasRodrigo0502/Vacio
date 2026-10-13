@@ -25,7 +25,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 **Dónde está:**
 
 - **Código:** [github.com/MatiasRodrigo0502/Vacio](https://github.com/MatiasRodrigo0502/Vacio)
-- **Para jugar sin Godot:** [Vacio.exe para Windows](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe) o [Vacio-linux.tar.gz para Linux](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-linux.tar.gz), última versión
+- **Para jugar sin Godot:** [Vacio.exe para Windows](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe), [Vacio-linux.tar.gz para Linux](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-linux.tar.gz) o [Vacio-mac.zip para Mac](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-mac.zip), última versión
 
 ## Reglas y forma de trabajar
 
@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/10/2026 | Antesala y sala del jefe en el piso 12 (todavía sin jefe) | — |
+| 13/10/2026 | Versión para Mac en cada release, probada en un Mac de GitHub antes de publicar | — |
+| 13/10/2026 | Antesala y sala del jefe en el piso 12 (todavía sin jefe) | `f93f6b4` |
 | 13/10/2026 | Registro de partidas para equilibrar la dificultad con datos | `3f98758` |
 | 13/10/2026 | El juego avisa de las versiones nuevas y, en Windows, se actualiza con un botón | `5cbc558` |
 | 13/10/2026 | El escudo del mago blanco pasa a ser una burbuja que lo cubre entero y hace rebotar | `9ec57e7` |
@@ -198,6 +199,7 @@ El juego se exporta solo a un único archivo por sistema que se abre sin tener G
 - **Si una exportación falla,** se queda la versión anterior y el motivo está en `build/exportar.log`, o en la pestaña Actions de GitHub.
 - **Windows puede avisar** de que el `.exe` es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*.
 - **En Linux** se descarga `Vacio-linux.tar.gz`, se extrae y se abre `Vacio.x86_64` con doble clic. Va comprimido porque, suelto, el navegador le quita el permiso de ejecutarse y Ubuntu no lo abre.
+- **En Mac** (desde la 0.21) se descarga `Vacio-mac.zip` y se abre `Vacio.app`, que vale para chip de Apple e Intel. Va con la firma gratuita de Apple, no verificada: la primera vez hay que permitirla en *Ajustes del Sistema → Privacidad y seguridad → Abrir igualmente*. La saca solo GitHub, que antes de publicar la arranca en un Mac de verdad.
 - **Comprobado:** una copia de prueba del `.exe` recorrió sola los 12 pisos y llegó a la victoria. El de GitHub mide exactamente lo mismo que el local. La versión de Linux la arranca GitHub antes de publicarla, y no publica nada si da errores.
 
 **Para que un compañero tenga las versiones en su ordenador,** una vez por ordenador:

@@ -31,11 +31,12 @@ from collections import Counter, defaultdict
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-# Donde las guarda el juego en Windows y en Linux (user://partidas de Godot,
-# con el nombre del proyecto, "Vacio").
+# Donde las guarda el juego en Windows, Linux y Mac (user://partidas de
+# Godot, con el nombre del proyecto, "Vacio").
 CARPETAS_DEL_JUEGO = [
     os.path.join(os.environ.get("APPDATA", ""), "Godot", "app_userdata", "Vacio", "partidas"),
     os.path.expanduser("~/.local/share/godot/app_userdata/Vacio/partidas"),
+    os.path.expanduser("~/Library/Application Support/Godot/app_userdata/Vacio/partidas"),
 ]
 # Cuántas filas se enseñan en las listas de "lo que más".
 TOP = 8

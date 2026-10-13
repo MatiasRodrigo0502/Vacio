@@ -92,6 +92,12 @@ SISTEMAS=(
 	"Windows Desktop|Vacio.exe"
 	"Linux|Vacio.x86_64"
 )
+# Mac solo si se pide (EXPORTAR_MAC=1): lo hace GitHub para la release, con la
+# plantilla de Mac instalada (instalar_plantillas.py --mac). En los ordenadores
+# del equipo no hace falta, y asi nadie tiene que bajarse esa plantilla.
+if [ "${EXPORTAR_MAC:-}" = "1" ]; then
+	SISTEMAS+=("macOS|Vacio-mac.zip")
+fi
 
 # El nombre de esta version del juego.
 #

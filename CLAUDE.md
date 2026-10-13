@@ -126,6 +126,18 @@ falla, el registro sale en la pestaña Actions. `gh` no tiene sesión iniciada e
 este ordenador: el estado de las ejecuciones se mira con la API pública
 (`curl https://api.github.com/repos/MatiasRodrigo0502/Vacio/actions/runs`).
 
+**Versión de Mac** (2026-10-13, pedida por Matías): `Vacio-mac.zip` con
+`Vacio.app` universal (chip de Apple e Intel), preset «macOS» de
+`export_presets.cfg`. **Solo la saca GitHub**: `instalar_plantillas.py --mac`
+y `EXPORTAR_MAC=1` en el workflow; los hooks locales siguen con Windows y
+Linux. El workflow tiene tres trabajos: `exportar` (Linux), `probar-mac`
+(un `macos-latest` de GitHub: firma ad-hoc, `lipo` con arm64 y x86_64 y
+arranque sin ventana sin errores) y `publicar`, que solo corre si los dos
+anteriores salen bien. Firma **ad-hoc** (`codesign/codesign=1`, la gratuita):
+sin firma, los Mac con chip de Apple no la abren; sin notarizar (99 €/año),
+la primera vez hay que darle a *Abrir igualmente* en Privacidad y seguridad.
+Nadie del equipo la ha probado con ventana en un Mac todavía.
+
 Para probar algo **dentro del `.exe` exportado** (no en el editor): exportar a
 otra carpeta y dejar al lado un `override.cfg` con
 `[application] run/main_scene="res://<escena de prueba>.tscn"`. Los binarios
@@ -610,6 +622,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Trampas ya pisadas (no repetirlas)
 
+- **Exportar a Mac universal pide `import_etc2_astc` en el proyecto**
+  (`rendering/textures/vram_compression/import_etc2_astc=true` en
+  `project.godot`). Sin eso Godot se niega a exportar para arm64. Se vio
+  intentando la exportación aquí sin la plantilla: Godot lista todos los
+  errores de configuración, no solo el de la plantilla. El `.exe` de Windows
+  no cambia (su preset tiene `etc2_astc=false`).
 - **Intocable no puede querer decir inmortal.** Con los comportamientos, un
   enemigo escondido o desvanecido no recibe daño (`herir` lo ignora), y
   `matar()` (F4) pasaba por ahí: dejaba vivos al fantasma y a la planta bajo

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Instala las plantillas de exportacion de Windows y Linux de Godot, sin el resto.
+"""Instala las plantillas de exportacion de Windows y Linux de Godot (y Mac, si se pide), sin el resto.
 
 Para sacar el juego exportado, Godot necesita sus "plantillas de exportacion".
 El gestor del editor baja un .tpz oficial de 1,28 GB con todas las
@@ -13,6 +13,11 @@ Cada archivo se comprueba con el CRC32 que trae el propio indice: si la
 descarga llega mal, no se instala.
 
     python herramientas/instalar_plantillas.py
+    python herramientas/instalar_plantillas.py --mac
+
+Con --mac instala tambien la de Mac (macos.zip). La usa GitHub, que es quien
+saca la version de Mac (.github/workflows/publicar.yml); en los ordenadores
+del equipo no hace falta.
 
 Solo hace falta una vez por ordenador y por version de Godot. Lo que ya esta
 instalado y entero no se vuelve a bajar. Si se cambia
@@ -34,6 +39,8 @@ QUEREMOS = [
     "templates/windows_release_x86_64.exe",
     "templates/linux_release.x86_64",
 ]
+# La de Mac, solo con --mac: es grande y solo la necesita GitHub.
+PLANTILLA_MAC = "templates/macos.zip"
 
 def carpeta_godot():
     """Donde guarda Godot sus datos en cada sistema. Ademas de Windows, Linux:
@@ -134,7 +141,8 @@ def main():
     os.makedirs(DESTINO, exist_ok=True)
     print("Leyendo el indice de", URL)
     entradas = leer_indice()
-    for nombre in QUEREMOS:
+    queremos = QUEREMOS + ([PLANTILLA_MAC] if "--mac" in sys.argv[1:] else [])
+    for nombre in queremos:
         if nombre not in entradas:
             sys.exit("El .tpz no trae %s." % nombre)
         # Ya instalada y del tamano que dice el indice: no hace falta bajarla

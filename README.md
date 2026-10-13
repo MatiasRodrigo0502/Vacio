@@ -33,6 +33,13 @@ La última versión, lista para jugar sin instalar nada ni tener Godot:
   `.tar.gz` el permiso se conserva. La 0.1 lleva el archivo suelto: para
   abrirlo, clic derecho → *Propiedades* → *Ejecutable como programa*, o
   `chmod +x Vacio.x86_64` en una terminal.
+- **Mac:** [Vacio-mac.zip](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-mac.zip)
+  (desde la 0.21). Se abre el `.zip` y luego `Vacio.app`; vale para los Mac
+  con chip de Apple y para los de Intel. **La primera vez** macOS dice que no
+  puede comprobar si es segura, porque no está verificada por Apple (eso
+  cuesta 99 € al año): *Ajustes del Sistema → Privacidad y seguridad → Abrir
+  igualmente*. Solo una vez. En versiones de macOS anteriores a la 15 basta
+  con clic derecho sobre la app → *Abrir*.
 
 Página de la release:
 [releases/latest](https://github.com/MatiasRodrigo0502/Vacio/releases/latest).
@@ -40,11 +47,13 @@ Página de la release:
 **Cada vez que el juego cambia hay una versión nueva**, con su número: la
 0.1, la 0.2, la 0.3... GitHub la publica sola con cada push a `main`
 (`.github/workflows/publicar.yml`, unos minutos), con su etiqueta (`v0.1`...),
-sus dos archivos y la lista de lo que cambia desde la anterior. Los enlaces de
+sus archivos (Windows, Linux y Mac) y la lista de lo que cambia desde la anterior. Los enlaces de
 arriba llevan siempre a la última, y las anteriores siguen en
 [releases](https://github.com/MatiasRodrigo0502/Vacio/releases). Si solo cambian
 archivos `.md`, no hay versión nueva. Antes de publicar, GitHub arranca la
-versión de Linux y no publica nada si da errores.
+versión de Linux y la de Mac (en un Mac de verdad, que presta GitHub), y no
+publica nada si alguna da errores. En Mac también comprueba que va firmada y
+que trae los dos procesadores.
 
 El juego enseña su versión abajo a la derecha del menú. El `.exe` de cada
 ordenador (ver abajo) dice «0.3 + cambios» si tiene cosas que aún no están en
@@ -78,6 +87,11 @@ git config core.hooksPath .githooks
 La primera línea baja de la release oficial de Godot solo las plantillas de
 Windows y Linux (66 MB en vez del paquete entero de 1,28 GB). La segunda activa
 los hooks de `.githooks/`: git no los activa solo, por seguridad.
+
+**La de Mac solo la saca GitHub**, para la release: hace falta la plantilla
+de Mac (`instalar_plantillas.py --mac`) y en los ordenadores del equipo no
+merece la pena. Quien la quiera en local, con esa plantilla y
+`EXPORTAR_MAC=1 bash herramientas/exportar.sh`.
 
 Si Godot no está en una de las rutas que conoce el script, hay que definir la
 variable `GODOT` con la ruta del ejecutable de Godot (o añadirla en
