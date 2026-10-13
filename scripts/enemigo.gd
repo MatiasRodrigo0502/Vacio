@@ -34,6 +34,8 @@ const COLOR_FRENADO := Color(0.62, 0.84, 1.25)
 const TIC_QUEMADURA: float = 1.0
 ## Lo que dura la linea del rayo que sale con el disparo, sin apuntar antes.
 const DURACION_LINEA_DISPARO: float = 0.3
+## Lo que frena el empuje del escudo, en px/s por segundo.
+const FRENO_EMPUJE: float = 1600.0
 
 ## De donde salen vida, velocidad, dibujo y demas. Lo pone la mecanica que los
 ## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
@@ -80,6 +82,9 @@ var _largo_mira: float = 0.0
 var _linea_disparo: float = 0.0
 ## Cuantos disparos lleva. Lo mira el cristal para saltar despues de cada uno.
 var disparos: int = 0
+## Velocidad con la que sale despedido (al chocar con el escudo del mago
+## blanco). Se frena sola; mientras dura, no hace lo suyo: se le ve rebotar.
+var _empuje: Vector2 = Vector2.ZERO
 
 ## Lo que el comportamiento de su tipo necesita recordar de ESTE enemigo (en
 ## que fase va, cuanto le queda). El comportamiento es uno para todo el tipo,
@@ -140,6 +145,11 @@ func _physics_process(delta: float) -> void:
 	_golpear_lo_que_toca()
 	_arder(delta)
 	if _muriendo:
+		return
+	if _empuje != Vector2.ZERO:
+		global_position += _empuje * delta
+		_empuje = _empuje.move_toward(Vector2.ZERO, FRENO_EMPUJE * delta)
+		mantener_en_la_sala()
 		return
 	# Frenado, anda, apunta y recarga a la mitad: el tiempo le pasa mas lento.
 	# Pegar al tocarte no: eso no depende de su ritmo, sino de que le toques.
@@ -513,6 +523,12 @@ func poner_sprite(desplazamiento: Vector2, escala: Vector2, alfa: float) -> void
 	_sprite.self_modulate.a = alfa
 
 
+## Lo despide con esa velocidad (px/s), que se frena sola. Lo usa el escudo
+## del mago blanco con lo que le toca.
+func empujar(impulso: Vector2) -> void:
+	_empuje = impulso
+
+
 func sala() -> Sala:
 	return get_parent() as Sala
 
@@ -542,6 +558,10 @@ func _golpear_lo_que_toca() -> void:
 	if tipo == null or not es_tangible():
 		return
 	for cuerpo in get_overlapping_bodies():
+		# Con el escudo del mago blanco puesto no le hace nada: la burbuja lo
+		# despide (EscudoBurbuja).
+		if cuerpo.has_method("escudo_activo") and cuerpo.escudo_activo():
+			continue
 		if cuerpo.has_method("recibir_dano"):
 			cuerpo.recibir_dano(tipo.dano)
 
@@ -574,7 +594,8 @@ func _explotar() -> void:
 	get_parent().add_child(destello)
 	if is_instance_valid(_objetivo) and _objetivo.has_method("centro_colision") \
 			and _objetivo.centro_colision().distance_to(global_position) \
-				< tipo.radio_explosion + RADIO_JUGADOR:
+				< tipo.radio_explosion + RADIO_JUGADOR \
+			and not (_objetivo.has_method("escudo_activo") and _objetivo.escudo_activo()):
 		_objetivo.recibir_dano(tipo.dano_explosion)
 
 

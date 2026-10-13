@@ -130,7 +130,7 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 |---|---|---|
 | **Mago oscuro** | Anda un 13 % más rápido, y su bola cargada abre un **agujero negro** donde se acaba, que atrae a los enemigos y quita vida a los del centro | Su bola cargada llega menos lejos que la del rojo |
 | **Mago rojo** | Un corazón más, y el ataque cargado sale en medio tiempo y mata de un golpe a cualquier cosa. Sus disparos **queman**: 0,25 de vida por segundo durante 3 s | Anda un 9 % más lento |
-| **Mago blanco** | Su ataque especial es un escudo pequeño delante que para los disparos enemigos de frente durante 5 s. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | Su disparo normal quita la mitad y no tiene bola cargada |
+| **Mago blanco** | Su ataque especial es una burbuja que lo cubre entero durante 5 s: los disparos rebotan en ella y los enemigos que la tocan salen despedidos. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | Su disparo normal quita la mitad y no tiene bola cargada |
 
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese
 mago, no un objeto que se recoge.
@@ -165,9 +165,11 @@ La bola del mago oscuro llega menos lejos (320 px, media sala) y, donde se
 acaba, abre un **agujero negro** durante 2,5 s: tira de los enemigos que están
 cerca hacia su centro y a los que llegan les quita vida (2 por segundo).
 
-El mago blanco no carga bola: con ese mismo botón saca su **escudo**, un arco
-pequeño delante que para los disparos enemigos que le llegan de frente. Dura
-5 s y parpadea cuando se va a acabar.
+El mago blanco no carga bola: con ese mismo botón saca su **escudo**, una
+burbuja que lo cubre entero durante 5 s (parpadea cuando se va a acabar). Los
+disparos enemigos rebotan en ella (el magma del gólem bota y cae fuera) y los
+enemigos que la tocan salen despedidos. Mientras está, nada de lo que lanzan
+los enemigos le quita vida; lo del suelo (lava, pinchos, caer) sí.
 
 **El ataque especial, sea cual sea, es uno por piso.** Arriba a la izquierda,
 debajo de la vida, pone si te queda («ESPECIAL · AGUJERO NEGRO») o si ya lo

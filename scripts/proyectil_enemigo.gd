@@ -27,6 +27,9 @@ var limite: Rect2 = Rect2()
 var _recorrido: float = 0.0
 var _fase: float = 0.0
 var _acabado: bool = false
+## True despues de rebotar en el escudo del mago blanco: ya no le hace dano
+## (sale despedido lejos de el) ni vuelve a rebotar si cae encima.
+var _rebotado: bool = false
 ## El jugador, para preguntarle si su escudo para el disparo.
 var _jugador: Node = null
 # Parabola: de donde sale, donde cae y cuanto tarda.
@@ -83,12 +86,18 @@ func _physics_process(delta: float) -> void:
 	global_position += direccion * paso
 	_recorrido += paso
 	# El escudo del mago blanco, antes que nada: se mira aqui, recien movido,
-	# y no al tocar al jugador, para que el disparo se pare en el escudo y no
-	# llegue a tocarle. La parabola no pasa por aqui: cae desde arriba.
-	if _jugador != null and _jugador.has_method("escudo_bloquea") \
-			and _jugador.escudo_bloquea(antes, global_position, tipo.radio):
-		_acabar()
-		return
+	# y no al tocar al jugador, para que el disparo rebote en la burbuja y no
+	# llegue a tocarle. Sale reflejado desde donde estaba antes de tocarla.
+	# La parabola no pasa por aqui: cae desde arriba (ver _caer).
+	if _jugador != null and _jugador.has_method("escudo_rebota"):
+		var normal: Vector2 = _jugador.escudo_rebota(antes, global_position, tipo.radio)
+		if normal != Vector2.ZERO:
+			# Solo si iba hacia dentro: uno que ya sale no se vuelve a girar.
+			if direccion.dot(normal) < 0.0:
+				direccion = direccion.bounce(normal)
+			global_position = antes
+			_rebotado = true
+			return
 	if Terreno.choque(get_world_2d(), antes, global_position, tipo.radio, MASCARA_TERRENO) != null:
 		_acabar()
 	elif _recorrido >= tipo.alcance:
@@ -98,7 +107,12 @@ func _physics_process(delta: float) -> void:
 
 
 func _al_tocar(cuerpo: Node2D) -> void:
-	if _acabado:
+	if _acabado or _rebotado:
+		return
+	# Por si acaso llega a tocarle con el escudo puesto (un disparo que nace
+	# dentro de la burbuja): no hace dano y se deshace.
+	if cuerpo.has_method("escudo_activo") and cuerpo.escudo_activo():
+		_acabar()
 		return
 	if cuerpo.has_method("recibir_dano"):
 		_golpear(cuerpo)
@@ -116,9 +130,24 @@ func _golpear(jugador: Node2D) -> void:
 ## La parabola llega al suelo: dano a quien este debajo y, si toca, el charco.
 func _caer() -> void:
 	var jugador := get_tree().get_first_node_in_group("jugador")
+	# Cae sobre la burbuja del mago blanco: bota y cae un poco mas alla, fuera
+	# de ella (con su charco, si lo deja). Una vez; la segunda cae donde sea.
+	if not _rebotado and jugador != null and jugador.has_method("escudo_cubre") \
+			and jugador.escudo_cubre(global_position, tipo.radio * 1.6):
+		var centro: Vector2 = jugador.escudo_centro()
+		var fuera := global_position - centro
+		fuera = fuera.normalized() if fuera.length() > 1.0 else Vector2.DOWN
+		_rebotado = true
+		_origen = global_position
+		_destino = centro + fuera * (EscudoBurbuja.RADIO + tipo.charco_radio + 40.0)
+		_tiempo = 0.0
+		_duracion = 0.35
+		Sonido.tocar(&"escudo_golpe")
+		return
 	if jugador != null and jugador.has_method("centro_colision") \
 			and jugador.centro_colision().distance_to(global_position) \
-				< tipo.radio * 1.6 + RADIO_JUGADOR:
+				< tipo.radio * 1.6 + RADIO_JUGADOR \
+			and not (jugador.has_method("escudo_activo") and jugador.escudo_activo()):
 		_golpear(jugador)
 	_acabar()
 

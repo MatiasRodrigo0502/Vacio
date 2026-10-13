@@ -44,7 +44,9 @@ func _physics_process(delta: float) -> void:
 	var distancia := Vector2(hacia.x, hacia.y / ACHATADO).length()
 	if absf(distancia - _radio()) <= GROSOR * 0.5 + RADIO_JUGADOR:
 		_ha_dado = true
-		_jugador.recibir_dano(dano)
+		# El escudo del mago blanco la para.
+		if not (_jugador.has_method("escudo_activo") and _jugador.escudo_activo()):
+			_jugador.recibir_dano(dano)
 
 
 func _radio() -> float:

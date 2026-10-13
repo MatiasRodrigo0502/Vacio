@@ -72,7 +72,7 @@ var dano_disparo: float = 1.0
 var frena_disparo: float = 0.0
 ## El escudo direccional, si es el ataque especial del mago. Si no, null, y
 ## el especial es la bola cargada.
-var _escudo: EscudoDireccional = null
+var _escudo: EscudoBurbuja = null
 ## El mago con el que se juega. Principal mira aqui lo que es solo de un mago
 ## y no del jugador en general (el agujero negro de su bola cargada).
 var mago: PersonajeJugable = null
@@ -214,7 +214,7 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 	# duplica si se vuelve a llamar con el mismo (cada reinicio lo hace).
 	var con_escudo := personaje.ataque_especial == PersonajeJugable.ESPECIAL_ESCUDO
 	if con_escudo and _escudo == null:
-		_escudo = EscudoDireccional.new(self)
+		_escudo = EscudoBurbuja.new(self)
 		add_child(_escudo)
 	elif not con_escudo and _escudo != null:
 		_escudo.queue_free()
@@ -536,10 +536,31 @@ func direccion_mirada() -> Vector2:
 	return _vector_de(_mirando)
 
 
-## True si el escudo para algo de 'radio' que ha ido de 'desde' a 'hasta' en
-## este paso. Lo preguntan los proyectiles enemigos; sin escudo, nunca.
-func escudo_bloquea(desde: Vector2, hasta: Vector2, radio: float) -> bool:
-	return _escudo != null and _escudo.bloquea(desde, hasta, radio)
+## Si el escudo hace rebotar algo de 'radio' que ha ido de 'desde' a 'hasta'
+## en este paso, la normal del rebote; si no, Vector2.ZERO. Lo preguntan los
+## proyectiles enemigos; sin escudo, nunca.
+func escudo_rebota(desde: Vector2, hasta: Vector2, radio: float) -> Vector2:
+	if _escudo == null:
+		return Vector2.ZERO
+	return _escudo.rebota(desde, hasta, radio)
+
+
+## True mientras el escudo esta levantado. Mientras, nada de lo que lanzan los
+## enemigos (contacto, explosiones, ondas) le quita vida; lo comprueba quien
+## hace el dano, antes de hacerlo.
+func escudo_activo() -> bool:
+	return _escudo != null and _escudo.activo()
+
+
+## Si un punto con su radio cae dentro del escudo. El magma, que cae desde
+## arriba, lo pregunta al llegar al suelo.
+func escudo_cubre(punto: Vector2, radio: float) -> bool:
+	return _escudo != null and _escudo.cubre(punto, radio)
+
+
+## Centro del escudo en el mundo: desde donde rebota lo que cae encima.
+func escudo_centro() -> Vector2:
+	return _escudo.global_position if _escudo != null else centro_colision()
 
 
 ## Centro real de la forma de colision, que NO es el origen del nodo: el origen

@@ -17,7 +17,7 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 |---|---|---|
 | Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
 | Mago rojo | +1 corazón, tiempo de carga ×0,5, +2 de daño cargado; sus disparos queman 3 s | −25 px/s de velocidad |
-| Mago blanco | ataque especial: escudo direccional (5 s); su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1; no tiene bola cargada |
+| Mago blanco | ataque especial: escudo burbuja (5 s); su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1; no tiene bola cargada |
 
 ## Cómo añadir uno
 
@@ -39,12 +39,13 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 - `ataque_especial`: lo que sale con el clic derecho o el espacio. **Bola
   cargada** (oscuro y rojo) o **Escudo** (blanco). Sea cual sea, **se usa
   una vez por piso** (lo cuenta `Jugador.especial_disponible`; el HUD dice si
-  queda). El escudo se saca al pulsar y dura `duracion_escudo` (5 s en el blanco). Es un
-  arco pequeño (76°,
-  a 30 px) delante del mago, hacia donde mira, que para los disparos enemigos
-  de frente. No para lo que le llega de lado o por la espalda, ni el magma del
-  gólem (cae desde arriba), ni los golpes de los de cuerpo a cuerpo. Ver
-  `scripts/escudo_direccional.gd`.
+  queda). El escudo se saca al pulsar y dura `duracion_escudo` (5 s en el
+  blanco). Es una burbuja que cubre al mago entero (radio 42): los disparos
+  enemigos rebotan en ella, el magma del gólem bota y cae fuera, y los
+  enemigos que la tocan salen despedidos. Mientras está, nada de lo que lanzan
+  los enemigos (contacto, disparos, explosiones, la onda del gólem) le quita
+  vida; lo del suelo (lava, pinchos, caer), sí. Ver
+  `scripts/escudo_burbuja.gd`.
 - `quemadura_duracion` y `quemadura_dano`: cada bola que da (la normal y la
   cargada) deja al enemigo quemándose esos segundos, quitándole `dano` cada
   segundo (el rojo: 3 s y 0,25). Otro golpe mientras arde vuelve a poner la

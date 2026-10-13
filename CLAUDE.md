@@ -172,13 +172,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`herramientas/generar_mago_blanco.py`). Su disparo normal quita **medio
   punto** (`dano_disparo`, vía `Enemigo.herir()`) y **frena** 1,5 s
   (`frena_disparo`: anda, apunta y recarga a la mitad, con un aro de escarcha
-  a los pies). Su **ataque especial es un escudo direccional** pequeño
-  (`scripts/escudo_direccional.gd`) que para los disparos enemigos de frente:
-  se saca con el clic derecho o el espacio y dura 5 s (eran 3; Matías lo
-  subió el 2026-10-09)
-  (`PersonajeJugable.ataque_especial`, `duracion_escudo`).
-  No tiene bola cargada. Al principio el escudo era una pasiva siempre puesta;
-  Matías lo cambió el 2026-10-09.
+  a los pies). Su **ataque especial es un escudo burbuja**
+  (`scripts/escudo_burbuja.gd`, desde el 2026-10-13) que lo cubre entero
+  durante 5 s: los disparos rebotan (`Jugador.escudo_rebota`; el magma bota y
+  cae fuera), los enemigos que la tocan salen despedidos (`Enemigo.empujar`)
+  y mientras está nada de los enemigos le quita vida (lo comprueba quien hace
+  el daño con `Jugador.escudo_activo`); lo del suelo sí. Se saca con el clic
+  derecho o el espacio (`PersonajeJugable.ataque_especial`,
+  `duracion_escudo`). No tiene bola cargada. Antes fue un arco pequeño
+  delante, primero como pasiva siempre puesta y luego como especial: lo
+  cambió Matías las dos veces.
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve.
@@ -445,10 +448,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   los rápidos se le escapaban andando hacia el jugador. Después de moverlos
   llama a `Enemigo.mantener_en_la_sala()`, para que el tirón no los meta en
   una roca.
-- **El escudo solo para disparos de frente**, no golpes cuerpo a cuerpo ni el
-  magma que cae: si lo parara todo, los enemigos a distancia no tendrían nada
-  que hacer contra el mago blanco. Lo pregunta el proyectil justo después de
-  moverse (`Jugador.escudo_bloquea`), antes de llegar a tocar al jugador.
+- **El escudo burbuja para todo lo de los enemigos, pero no el suelo**
+  (Matías, 2026-10-13: «que cubra todo el personaje»). Antes solo paraba lo
+  de frente para que los de distancia tuvieran algo que hacer; ahora eso lo
+  da que dure 5 s y sea uno por piso. Lava, pinchos y caer no los lanza nadie
+  y siguen haciendo daño. Los disparos lo preguntan justo después de moverse
+  (`Jugador.escudo_rebota`) y rebotan desde donde estaban antes de tocarla;
+  rebotados ya no hacen daño al jugador.
 - **Las rocas se calibran contra el suelo de su piso.** La cuenta es la de
   la nota de `tinte_profundidad()`: luminosidad de la roca entre la del suelo
   (gamma, no lineal). La cueva daba 0,32 en el piso 9, y a partir de 0,48 la

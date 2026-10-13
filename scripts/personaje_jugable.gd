@@ -98,8 +98,9 @@ const ESPECIAL_ESCUDO := 1
 ##
 ## Bola cargada: se mantiene y se suelta cuando el aro se cierra (los campos
 ## "del ataque cargado" de arriba). Escudo: se pulsa y sale un escudo
-## direccional (EscudoDireccional), un arco pequeno delante del mago que para
-## los disparos enemigos que le vienen de frente, durante 'duracion_escudo'.
+## (EscudoBurbuja): una burbuja que cubre al mago entero durante
+## 'duracion_escudo'; los disparos rebotan en ella y los enemigos que la tocan
+## salen despedidos.
 ##
 ## Sea cual sea, se puede usar UNA VEZ POR PISO (pedido por Matias el
 ## 2026-10-09): lo cuenta el jugador (Jugador.especial_disponible) y el HUD

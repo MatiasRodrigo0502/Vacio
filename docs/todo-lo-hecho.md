@@ -14,9 +14,9 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 **Cómo se juega ahora:**
 
-- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; los disparos del rojo queman; el blanco, en vez de ataque cargado, saca un escudo pequeño delante que para los disparos enemigos, y su disparo frena a los enemigos pero quita la mitad.
+- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; los disparos del rojo queman; el blanco, en vez de ataque cargado, saca una burbuja que lo cubre entero y hace rebotar disparos y enemigos, y su disparo frena a los enemigos pero quita la mitad.
 - **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón: una bola cada medio segundo.
-- **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y hace 3 de daño. La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca un escudo que dura 5 s. El ataque especial es uno por piso. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o hacia donde mira el mago.
+- **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y hace 3 de daño. La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca una burbuja de 5 s en la que rebotan los disparos y los enemigos. El ataque especial es uno por piso. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o hacia donde mira el mago.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Enemigos:** salen desde el piso 2, y cada uno pelea a su manera: slimes que saltan (el de magma dejando lava) o rebotan, rata en zigzag, murciélago en picado, fantasma que se desvanece, planta que excava, serpiente en abanico, planta con anillos de esporas, gólem con pisotón y cristal que se teletransporta. Todos avisan antes de lo que pega de golpe.
 - **Peligros del suelo:** pinchos, agujeros al vacío y lava.
@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/10/2026 | Ningún objeto añade corazones: solo se recuperan | — |
+| 13/10/2026 | El escudo del mago blanco pasa a ser una burbuja que lo cubre entero y hace rebotar | — |
+| 13/10/2026 | Ningún objeto añade corazones: solo se recuperan | `9e90b06` |
 | 13/10/2026 | Cada enemigo pelea a su manera (11 comportamientos) | `c41a82a` |
 | 09/10/2026 | Revisión: enemigos congelados en el paso entre salas y quietos en las salas grandes; el espacio apunta con las flechas | `ef589db` |
 | 09/10/2026 | El volumen también en la portada | `635802c` |
