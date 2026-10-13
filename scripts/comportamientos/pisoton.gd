@@ -60,6 +60,7 @@ func _pisar(enemigo: Enemigo) -> void:
 	onda.duracion = duracion_onda
 	onda.dano = dano_onda
 	onda.color = enemigo.tipo.color_efectos
+	onda.origen = enemigo.tipo.nombre + " (pisotón)"
 	onda.position = sala.to_local(enemigo.global_position + _pies(enemigo))
 	sala.add_child(onda)
 	Sonido.tocar(&"pisoton")

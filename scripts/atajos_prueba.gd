@@ -16,6 +16,10 @@
 class_name AtajosPrueba
 extends CanvasLayer
 
+## Se emite cada vez que se usa un atajo. La partida deja de valer para
+## equilibrar, y el registro de partidas lo apunta.
+signal usado
+
 ## Cuantas vueltas da F4 como mucho. Los slimes sueltan crias al morir, y las
 ## crias se apuntan en la sala un fotograma despues: hay que repetir hasta que
 ## no quede nadie. Las crias no se dividen, asi que bastan dos o tres.
@@ -66,6 +70,7 @@ func _unhandled_input(evento: InputEvent) -> void:
 			_jugador.recargar_especial()
 		_:
 			return
+	usado.emit()
 	get_viewport().set_input_as_handled()
 
 

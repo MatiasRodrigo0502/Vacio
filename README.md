@@ -293,6 +293,33 @@ La regla práctica para no pisarse:
 - `export_presets.cfg` **sí se versiona**: es la receta del `.exe` y del ejecutable de Linux. Si alguien
   cambia la exportación desde el editor, se sube como cualquier otro cambio.
 
+## Registro de partidas (para equilibrar)
+
+Cada partida se guarda sola en un archivo `.json`, en la carpeta de datos del
+juego. Se apunta cuánto se tarda en cada piso y en cada sala de pelea, cada
+golpe recibido (de qué y cuánta vida), la vida recuperada, los enemigos
+muertos, los objetos cogidos, el ataque especial y cómo acaba la partida
+(`scripts/registro_partida.gd`). El tiempo en pausa no cuenta, y las partidas
+de menos de 10 s que se reinician o se dejan no se guardan. No sale nada del
+ordenador.
+
+- **Dónde están:** botón *Abrir la carpeta de partidas* en el menú de pausa y
+  en la pantalla final. En Windows es
+  `%APPDATA%\Godot\app_userdata\Vacio\partidas`.
+- **Para equilibrar:** cada uno juega partidas normales y manda su carpeta.
+  Luego, desde la raíz del proyecto:
+
+  ```
+  python herramientas/analizar_partidas.py carpeta_dani carpeta_matias ...
+  ```
+
+  Sin carpetas lee las de su propio ordenador. Saca, por mago, victorias y
+  piso medio; por piso, cuántos mueren ahí, el tiempo, la vida perdida y
+  recuperada y lo que más quita; lo que más vida quita en total; las salas más
+  duras, y los objetos cogidos.
+- **Las partidas con atajos de prueba (F1-F5) quedan marcadas** y el análisis
+  las deja fuera (`--con-trucos` para verlas): no son partidas normales.
+
 ## Qué NO está hecho todavía (fases siguientes)
 
 Las mejoras grandes que el equipo ha valorado para más adelante, con su

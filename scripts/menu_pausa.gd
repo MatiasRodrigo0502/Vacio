@@ -25,6 +25,7 @@ func _ready() -> void:
 	_boton_continuar.pressed.connect(continuar)
 	$Centro/Caja/BotonReiniciar.pressed.connect(_al_reiniciar)
 	$Centro/Caja/BotonMenu.pressed.connect(_al_ir_al_menu)
+	$Centro/Caja/BotonPartidas.pressed.connect(func() -> void: RegistroPartida.abrir_carpeta())
 
 
 func _unhandled_input(evento: InputEvent) -> void:

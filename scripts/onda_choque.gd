@@ -20,6 +20,8 @@ var radio_maximo: float = 170.0
 var duracion: float = 0.45
 var dano: int = 1
 var color: Color = Color(1.0, 0.6, 0.2)
+## Como sale en el registro de partidas. La pone quien da el pisoton.
+var origen: String = "Onda"
 
 var _tiempo: float = 0.0
 var _ha_dado: bool = false
@@ -46,7 +48,7 @@ func _physics_process(delta: float) -> void:
 		_ha_dado = true
 		# El escudo del mago blanco la para.
 		if not (_jugador.has_method("escudo_activo") and _jugador.escudo_activo()):
-			_jugador.recibir_dano(dano)
+			_jugador.recibir_dano(dano, false, origen)
 
 
 func _radio() -> float:

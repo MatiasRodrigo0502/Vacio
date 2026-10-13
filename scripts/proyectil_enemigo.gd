@@ -30,6 +30,9 @@ var _acabado: bool = false
 ## True despues de rebotar en el escudo del mago blanco: ya no le hace dano
 ## (sale despedido lejos de el) ni vuelve a rebotar si cae encima.
 var _rebotado: bool = false
+## Quien lo ha disparado (el nombre de su tipo de enemigo). Para el registro
+## de partidas: el veneno lo tiran dos enemigos distintos.
+var autor: String = ""
 ## El jugador, para preguntarle si su escudo para el disparo.
 var _jugador: Node = null
 # Parabola: de donde sale, donde cae y cuanto tarda.
@@ -122,7 +125,7 @@ func _al_tocar(cuerpo: Node2D) -> void:
 func _golpear(jugador: Node2D) -> void:
 	# El efecto solo si el golpe ha contado: durante la invulnerabilidad el
 	# jugador no recibe nada, tampoco el veneno.
-	if jugador.recibir_dano(tipo.dano) and tipo.ralentiza > 0.0 \
+	if jugador.recibir_dano(tipo.dano, false, _origen_golpe()) and tipo.ralentiza > 0.0 \
 			and jugador.has_method("envenenar"):
 		jugador.envenenar(tipo.ralentiza)
 
@@ -152,6 +155,13 @@ func _caer() -> void:
 	_acabar()
 
 
+## "Serpiente (veneno)": quien lo ha tirado y con que.
+func _origen_golpe() -> String:
+	if autor == "":
+		return tipo.nombre
+	return "%s (%s)" % [autor, tipo.nombre.to_lower()]
+
+
 func _acabar() -> void:
 	if _acabado:
 		return
@@ -160,6 +170,9 @@ func _acabar() -> void:
 		var charco := Lava.new()
 		charco.radio = tipo.charco_radio
 		charco.duracion = tipo.charco_duracion
+		charco.origen = "Charco de %s" % tipo.nombre.to_lower()
+		if autor != "":
+			charco.origen += " (%s)" % autor
 		charco.position = get_parent().to_local(global_position)
 		# Diferido: esto puede venir de body_entered, en mitad del paso de
 		# fisica, y meter un Area2D nueva ahi hace quejarse al motor.

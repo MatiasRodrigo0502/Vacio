@@ -19,6 +19,8 @@ const ESCENA_BOLA := preload("res://scenes/BolaMagica.tscn")
 @onready var _menu_pausa: MenuPausa = $MenuPausa
 
 var _piso_actual: Piso = null
+## Apunta cada partida en user://partidas/ para equilibrar con datos.
+var _registro: RegistroPartida
 
 
 func _ready() -> void:
@@ -52,8 +54,13 @@ func _ready() -> void:
 	# Atajos para probar (F1 invencible, F2/F3 piso, F4 limpiar sala). Solo al
 	# jugar desde Godot: en el .exe exportado is_debug_build() es false y el
 	# nodo ni se crea.
+	_registro = RegistroPartida.new(_jugador)
+	add_child(_registro)
+
 	if OS.is_debug_build():
-		add_child(AtajosPrueba.new(_jugador, func() -> Piso: return _piso_actual))
+		var atajos := AtajosPrueba.new(_jugador, func() -> Piso: return _piso_actual)
+		atajos.usado.connect(_registro.marcar_trucos)
+		add_child(atajos)
 
 	GestorProgreso.iniciar_partida()
 
@@ -89,6 +96,7 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	# anterior, sigue sin cortarse.
 	Sonido.poner_musica(datos.musica)
 	_hud.mostrar_mapa(piso)
+	_registro.nuevo_piso(numero_piso, datos, piso)
 
 
 ## La bola cuelga del piso, no de Principal: asi al cambiar de piso se va con el
@@ -206,6 +214,9 @@ func _volver_al_menu() -> void:
 
 
 func _reiniciar() -> void:
+	# Antes que nada: restaurar la vida contaria como vida recuperada en la
+	# partida que se deja.
+	_registro.terminar("reiniciada")
 	# El mago elegido en el menu, antes de que el HUD lea la vida: la ventaja
 	# puede cambiar cuantos corazones tiene.
 	_jugador.usar_personaje(GestorProgreso.personaje_elegido)

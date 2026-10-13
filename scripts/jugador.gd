@@ -9,6 +9,11 @@ extends CharacterBody2D
 
 signal vida_cambiada(vida_actual: int, vida_maxima: int)
 signal dano_recibido
+## Cada golpe que quita vida: cuanta y quien lo ha dado ("Rata", "Lava"...).
+## Lo apunta el registro de partidas (RegistroPartida). Va aparte de
+## dano_recibido porque a esa la escucha la camara con un valor ya atado, y un
+## argumento mas se lo descolocaria.
+signal golpeado(cantidad: int, origen: String)
 signal sin_vida
 ## Se emite en cada disparo, con el punto de salida, hacia donde va y si es el
 ## ataque cargado. Va en la misma senal y no en otra aparte porque quien la
@@ -511,17 +516,24 @@ func _color_normal() -> Color:
 ##
 ## 'forzar' se salta la invulnerabilidad. Solo lo usa la caida: caerse tiene
 ## que costar siempre, o caer justo despues de un golpe saldria gratis.
-func recibir_dano(cantidad: int = 1, forzar: bool = false) -> bool:
+## 'origen' dice quien lo da, para el registro de partidas: el nombre del
+## enemigo, del peligro o del disparo. Vacio si no se sabe.
+func recibir_dano(cantidad: int = 1, forzar: bool = false, origen: String = "") -> bool:
 	if vida_actual <= 0 or invencible:
 		return false
 	if not forzar and (esta_invulnerable() or _cayendo):
 		return false
 
-	vida_actual = maxi(vida_actual - cantidad, 0)
+	# Lo que quita de verdad: con un corazon, un golpe de 2 quita uno.
+	var quitada := mini(cantidad, vida_actual)
+	vida_actual -= quitada
 	_tiempo_invulnerable = duracion_invulnerabilidad
 	dano_recibido.emit()
 	Sonido.tocar(&"herido")
 	vida_cambiada.emit(vida_actual, vida_maxima)
+	# Antes que sin_vida: el registro tiene que saber que golpe ha matado
+	# antes de enterarse de que la partida se ha perdido.
+	golpeado.emit(quitada, origen)
 
 	if vida_actual == 0:
 		_control_activo = false
@@ -646,7 +658,7 @@ func reaparecer(posicion: Vector2) -> void:
 	global_position = posicion
 	velocity = Vector2.ZERO
 	_control_activo = true
-	recibir_dano(DANO_CAIDA, true)
+	recibir_dano(DANO_CAIDA, true, "Caída al vacío")
 
 
 func _parar_caida() -> void:

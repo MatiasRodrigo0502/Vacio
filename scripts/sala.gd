@@ -19,6 +19,9 @@ signal despejada(sala: Sala)
 ## Se emite cada vez que muere un enemigo de la sala. La usa la mecanica de
 ## objetos para que, alguna vez, suelte una ventaja.
 signal enemigo_muerto(enemigo: Enemigo)
+## Se emite al cerrarse las puertas con enemigos dentro: empieza la pelea. La
+## usa el registro de partidas para medir cuanto dura cada sala.
+signal pelea_empezada(sala: Sala)
 
 ## Grosor de cada muro. Generoso a proposito: con muros finos y velocidades
 ## altas el jugador puede atravesarlos (tunneling).
@@ -354,6 +357,7 @@ func activar() -> void:
 		# despertar a un nodo liberado revienta el juego.
 		if is_instance_valid(enemigo):
 			enemigo.despertar()
+	pelea_empezada.emit(self)
 
 
 ## El jugador se asoma a la sala (ya esta en ella, aunque sea en el umbral)

@@ -16,6 +16,7 @@ signal menu_solicitado
 func _ready() -> void:
 	_boton.pressed.connect(func() -> void: reinicio_solicitado.emit())
 	_boton_menu.pressed.connect(func() -> void: menu_solicitado.emit())
+	$Centro/Caja/BotonPartidas.pressed.connect(func() -> void: RegistroPartida.abrir_carpeta())
 
 
 func mostrar_victoria(total_pisos: int) -> void:

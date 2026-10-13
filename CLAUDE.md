@@ -137,6 +137,24 @@ no puede llamarse `prueba_temporal.*`: el preset la excluye.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
+- **Registro de partidas** (2026-10-13, pedido por Matías para equilibrar
+  con datos): `RegistroPartida` (`scripts/registro_partida.gd`), un nodo que
+  crea Principal, guarda cada partida en `user://partidas/partida_<fecha>.json`
+  y la reescribe en cada piso (si el juego se cierra de golpe, lo jugado se
+  queda). Por piso: tiempo, vida al entrar y al salir, cada golpe (segundo,
+  sala, `por`, vida), vida recuperada, objetos, especial, disparos, enemigos
+  muertos y cada pelea de sala (enemigos, tiempo, golpes). Por partida: mago,
+  versión, resultado (`victoria`, `derrota`, `reiniciada`, `abandonada`),
+  qué mató y `trucos` si se usó un atajo (`AtajosPrueba.usado`). El origen de
+  cada golpe lo pasa quien lo da como tercer argumento de
+  `Jugador.recibir_dano(cantidad, forzar, origen)` y sale en la señal
+  `golpeado` («Serpiente», «Serpiente (veneno)», «Gólem de roca (pisotón)»,
+  «Charco de magma (Slime de magma)», «Lava», «Pinchos», «Caída al vacío»).
+  **Lo nuevo que quite vida tiene que pasar su origen**, o saldrá como
+  «desconocido». Las peleas las marca `Sala.pelea_empezada`. El resumen de
+  todos los archivos, `herramientas/analizar_partidas.py`. Botón *Abrir la
+  carpeta de partidas* en la pausa y en la pantalla final.
+
 - **Aviso de versión nueva y actualización desde el juego** (2026-10-13,
   pedido por Matías). El autoload `Actualizacion` (`scripts/actualizacion.gd`)
   pregunta al abrir el juego por las releases (API pública de GitHub, sin
@@ -379,6 +397,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
 
+- **El registro apunta, no juzga**: guarda lo que pasa y el análisis va
+  aparte, en Python. Así se pueden sacar otras cuentas de partidas ya jugadas
+  sin volver a jugarlas. Las reiniciadas o dejadas antes de 10 s no se
+  guardan (entrar y salir ensuciaría las medias); el tiempo en pausa no
+  cuenta.
 - **Solo busca versiones nuevas el juego exportado con número publicado**
   («0.17»). Desde Godot no hay versión, y el `.exe` de cada ordenador con
   cambios sin publicar («0.17 + cambios») lleva cosas que no están en

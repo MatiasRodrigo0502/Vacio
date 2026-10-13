@@ -478,6 +478,7 @@ func disparar_hacia(direccion: Vector2) -> void:
 	var limite := sala_propia.rect_con_muros() if sala_propia != null else Rect2()
 	var proyectil := ProyectilEnemigo.new()
 	proyectil.configurar(tipo.proyectil, global_position, direccion, _punto_objetivo(), limite)
+	proyectil.autor = tipo.nombre
 	get_parent().add_child(proyectil)
 	Sonido.tocar(tipo.proyectil.sonido)
 
@@ -563,7 +564,7 @@ func _golpear_lo_que_toca() -> void:
 		if cuerpo.has_method("escudo_activo") and cuerpo.escudo_activo():
 			continue
 		if cuerpo.has_method("recibir_dano"):
-			cuerpo.recibir_dano(tipo.dano)
+			cuerpo.recibir_dano(tipo.dano, false, tipo.nombre)
 
 
 # --- Muerte -----------------------------------------------------------------
@@ -596,7 +597,7 @@ func _explotar() -> void:
 			and _objetivo.centro_colision().distance_to(global_position) \
 				< tipo.radio_explosion + RADIO_JUGADOR \
 			and not (_objetivo.has_method("escudo_activo") and _objetivo.escudo_activo()):
-		_objetivo.recibir_dano(tipo.dano_explosion)
+		_objetivo.recibir_dano(tipo.dano_explosion, false, tipo.nombre + " (explosión)")
 
 
 ## Un destello pequeno de su color al morir, sin dano. Antes los enemigos

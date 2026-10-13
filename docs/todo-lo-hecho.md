@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/10/2026 | El juego avisa de las versiones nuevas y, en Windows, se actualiza con un botón | — |
+| 13/10/2026 | Registro de partidas para equilibrar la dificultad con datos | — |
+| 13/10/2026 | El juego avisa de las versiones nuevas y, en Windows, se actualiza con un botón | `5cbc558` |
 | 13/10/2026 | El escudo del mago blanco pasa a ser una burbuja que lo cubre entero y hace rebotar | `9ec57e7` |
 | 13/10/2026 | Ningún objeto añade corazones: solo se recuperan | `9e90b06` |
 | 13/10/2026 | Cada enemigo pelea a su manera (11 comportamientos) | `c41a82a` |
@@ -250,7 +251,7 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 **Antes de entregar:**
 
-- [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones, con 3 o 4 corazones de vida. Todo se ajusta en los `.tres` de `resources/`.
+- [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones, con 3 o 4 corazones de vida. Todo se ajusta en los `.tres` de `resources/`. Desde el 13/10/2026 cada partida se guarda en un registro (tiempo por piso y por sala, cada golpe y de qué, vida recuperada, enemigos, objetos) y `herramientas/analizar_partidas.py` saca las medias de todas: el equipo juega, junta los archivos y se ajusta con datos.
 - [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así. El blanco sale de la del rojo.
 - [ ] **Verificar las licencias de lo que queda de fuera.** Los escenarios ya son todos propios; de fuera quedan los magos (ver el punto anterior). Los packs de itch.io de antes ya no se usan.
 

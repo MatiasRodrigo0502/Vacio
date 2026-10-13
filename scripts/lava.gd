@@ -35,6 +35,9 @@ const SHADER := preload("res://shaders/lava.gdshader")
 var radio: float = 50.0
 ## Segundos que dura. 0 = para siempre.
 var duracion: float = 0.0
+## Como sale en el registro de partidas: la lava del suelo o el charco que ha
+## dejado un enemigo.
+var origen: String = "Lava"
 
 var _variante: int = 0
 ## Un material por charco: cada uno late a su ritmo y se enfria por su cuenta.
@@ -74,7 +77,7 @@ func _al_pisar(cuerpo: Node2D) -> void:
 	if _enfriandose():
 		return
 	if cuerpo.has_method("recibir_dano"):
-		cuerpo.recibir_dano(DANO)
+		cuerpo.recibir_dano(DANO, false, origen)
 
 
 func _enfriandose() -> bool:

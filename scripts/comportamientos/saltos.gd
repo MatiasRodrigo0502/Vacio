@@ -66,6 +66,7 @@ func _dejar_charco(enemigo: Enemigo) -> void:
 	var lava := Lava.new()
 	lava.radio = charco_radio
 	lava.duracion = charco_duracion
+	lava.origen = "Charco de magma (%s)" % enemigo.tipo.nombre
 	# A los pies, que es donde ha caido.
 	lava.position = sala.to_local(enemigo.global_position + Vector2(0.0, enemigo.tipo.alto * 0.3))
 	# Diferido: esto llega en mitad del paso de fisica, y el charco trae su

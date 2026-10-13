@@ -57,7 +57,7 @@ func estan_fuera() -> bool:
 
 func _al_pisar(cuerpo: Node2D) -> void:
 	if estan_fuera() and cuerpo.has_method("recibir_dano"):
-		cuerpo.recibir_dano(DANO)
+		cuerpo.recibir_dano(DANO, false, "Pinchos")
 
 
 ## Cuanto han salido, de 0 (dentro) a 1 (fuera del todo).

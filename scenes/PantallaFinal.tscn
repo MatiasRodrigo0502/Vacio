@@ -52,3 +52,11 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 16
 text = "Menú principal"
+
+[node name="BotonPartidas" type="Button" parent="Centro/Caja"]
+modulate = Color(1, 1, 1, 0.7)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "Abrir la carpeta de partidas"
+flat = true
