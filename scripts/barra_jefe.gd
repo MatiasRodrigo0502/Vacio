@@ -6,8 +6,8 @@
 ## que darle durante un par de minutos, y sin ver que baja no se sabe si se le
 ## esta haciendo algo. Las rayitas marcan donde cambia de fase.
 ##
-## Abajo y no arriba: arriba a la izquierda esta la vida del jugador y arriba a
-## la derecha el minimapa.
+## Abajo en el centro: arriba a la izquierda van el piso y el especial, arriba
+## a la derecha el minimapa y abajo a la derecha la vida del jugador.
 ##
 ## La pone el HUD (Hud.mostrar_jefe) cuando se cierran las puertas de la sala
 ## del jefe, y se va sola cuando el jefe muere.
@@ -16,7 +16,9 @@ extends Control
 
 const ANCHO: float = 460.0
 const ALTO: float = 14.0
-const MARGEN_ABAJO: float = 40.0
+## Por encima de la barra de vida del jugador, que va abajo a la derecha:
+## con el mago rojo (130 de vida) llegaban a tocarse a la misma altura.
+const MARGEN_ABAJO: float = 64.0
 ## Oro, el color del Mago Caido.
 const COLOR_RELLENO := Color(1.0, 0.78, 0.26)
 const COLOR_FONDO := Color(0.06, 0.05, 0.03, 0.85)

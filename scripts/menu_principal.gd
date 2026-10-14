@@ -7,7 +7,7 @@
 ## los tres magos, asi que el titulo de piedra y los magos en pixel art de
 ## antes (assets/titulo/) ya no salen: dos titulos uno encima de otro no se
 ## leerian. Los botones van abajo, en fila, sobre una sombra que los separa del
-## dibujo, para no tapar a los magos; el volumen, arriba a la izquierda.
+## dibujo, para no tapar a los magos; el volumen, abajo a la izquierda.
 ##
 ## POR QUE ES LA ESCENA PRINCIPAL Y NO UNA CAPA DENTRO DE Principal.tscn:
 ## el menu no necesita nada del juego (ni gestor, ni pool, ni pisos) y el juego

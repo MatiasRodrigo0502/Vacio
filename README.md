@@ -167,7 +167,7 @@ de parapeto. Lo que te quita vida son los **enemigos** al tocarte, con ~1 s de
 invulnerabilidad después de cada golpe.
 
 **La vida va en puntos** (desde la 0.25): tienes **100** (130 el mago rojo), en
-una barra arriba a la izquierda que baja lo que te quita cada golpe; lo que se
+una barra abajo a la derecha que baja lo que te quita cada golpe; lo que se
 acaba de perder se queda un momento en blanco. Cada golpe enseña encima del
 mago lo que te ha quitado, en rojo. A los enemigos les pasa lo mismo: al
 darles salta **el número de vida que les quitas** (blanco el disparo normal,
@@ -208,7 +208,7 @@ enemigos que la tocan salen despedidos. Mientras está, nada de lo que lanzan
 los enemigos le quita vida; lo del suelo (lava, pinchos, caer) sí.
 
 **El ataque especial, sea cual sea, es uno por piso.** Arriba a la izquierda,
-debajo de la vida, pone si te queda («ESPECIAL · AGUJERO NEGRO») o si ya lo
+debajo del piso, pone si te queda («ESPECIAL · AGUJERO NEGRO») o si ya lo
 has usado. Vuelve al bajar al piso siguiente.
 
 En cada piso hay además un objeto que te mejora para el resto de la partida, y

@@ -186,7 +186,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 - **Menú principal:** el título VACÍO en pixel art (piedra con grietas de lava y estalactitas, hecho con `generar_titulo.py`), los tres magos debajo, brasas subiendo y el volumen abajo a la izquierda; jugar, controles y salir, con la elección de mago al pulsar Jugar.
 - **Menú de pausa** con Escape, con el volumen de la música y de los efectos.
 - **Sonido y música**, todo generado por síntesis con nuestros scripts: una música para la portada, otra para los pisos 1-6 y otra más grave para los 7-12, más la de ganar y la de perder; y 23 efectos (disparos, golpes, muertes, explosiones, puertas, objetos, escudo, agujero negro, caídas, botones...).
-- **HUD:** piso y capa, la vida en una barra con su número («70 / 100») y, debajo, el icono de cada ventaja recogida («x2» si se repite). Al dar a un enemigo salta el número de vida que le quitas, y al recibir un golpe, el que te quitan.
+- **HUD:** arriba a la izquierda, el piso y la capa, el ataque especial y el icono de cada ventaja recogida («x2» si se repite); abajo a la derecha, la vida en una barra con su número («70 / 100»). Al dar a un enemigo salta el número de vida que le quitas, y al recibir un golpe, el que te quitan.
 - **Minimapa** arriba a la derecha, con las salas visitadas, el objeto y la bajada.
 - **Pantalla final** de victoria o derrota.
 

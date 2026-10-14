@@ -27,46 +27,45 @@ offset_bottom = 76.0
 theme_override_font_sizes/font_size = 16
 text = "CORTEZA CONTINENTAL"
 
-[node name="EtiquetaVida" type="Label" parent="."]
-offset_left = 28.0
-offset_top = 86.0
-offset_right = 118.0
-offset_bottom = 118.0
-theme_override_font_sizes/font_size = 20
-text = "VIDA"
-vertical_alignment = 1
-
 [node name="BarraVida" type="Control" parent="."]
-offset_left = 100.0
-offset_top = 86.0
-offset_right = 380.0
-offset_bottom = 118.0
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -380.0
+offset_top = -58.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
 mouse_filter = 2
 script = ExtResource("2_barra_vida")
 
 [node name="Especial" type="Label" parent="."]
 offset_left = 28.0
-offset_top = 122.0
+offset_top = 86.0
 offset_right = 560.0
-offset_bottom = 148.0
+offset_bottom = 112.0
 theme_override_font_sizes/font_size = 17
 text = "ESPECIAL  ·  BOLA CARGADA"
 vertical_alignment = 1
 
 [node name="Mejoras" type="Control" parent="."]
 offset_left = 28.0
-offset_top = 156.0
+offset_top = 120.0
 offset_right = 560.0
-offset_bottom = 194.0
+offset_bottom = 158.0
 mouse_filter = 2
 script = ExtResource("4_mejoras")
 
 [node name="Aviso" type="Label" parent="."]
 visible = false
 offset_left = 28.0
-offset_top = 204.0
+offset_top = 168.0
 offset_right = 760.0
-offset_bottom = 236.0
+offset_bottom = 200.0
 theme_override_font_sizes/font_size = 19
 text = "objeto"
 vertical_alignment = 1

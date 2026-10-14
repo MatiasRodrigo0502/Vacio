@@ -8,6 +8,11 @@
 ##
 ## Es mas larga cuanta mas vida maxima hay (ANCHO_POR_PUNTO): el mago rojo,
 ## con 30 de mas, la tiene mas larga, como antes tenia un corazon mas.
+##
+## ABAJO A LA DERECHA (Matias, 2026-10-14; antes arriba a la izquierda): la
+## barra va pegada al borde derecho de su nodo y crece hacia la izquierda, con
+## «VIDA» delante. Asi el borde de la pantalla no se mueve aunque cambie lo
+## larga que es.
 class_name BarraVida
 extends Control
 
@@ -20,6 +25,8 @@ const COLOR_BRILLO := Color(1.0, 0.5, 0.5)
 const COLOR_CURA := Color(0.5, 1.0, 0.55)
 ## Por debajo de esta parte de la vida, la barra late: queda poco.
 const POCA_VIDA: float = 0.3
+## Lo que hay entre «VIDA» y la barra.
+const HUECO_ETIQUETA: float = 10.0
 ## Lo que baja el rastro blanco, en partes de la barra por segundo.
 const BAJADA_RASTRO: float = 0.45
 
@@ -52,7 +59,7 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var ancho := _maxima * ANCHO_POR_PUNTO
-	var caja := Rect2(Vector2(0.0, (size.y - ALTO) * 0.5), Vector2(ancho, ALTO))
+	var caja := Rect2(Vector2(size.x - ancho, (size.y - ALTO) * 0.5), Vector2(ancho, ALTO))
 	draw_rect(caja.grow(2.0), Color(0.0, 0.0, 0.0, 0.6))
 	draw_rect(caja, COLOR_FONDO)
 	var parte := clampf(float(_actual) / _maxima, 0.0, 1.0)
@@ -70,6 +77,13 @@ func _draw() -> void:
 	var fuente := ThemeDB.fallback_font
 	var tamano := 14
 	var medida := fuente.get_string_size(texto, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano)
-	var sitio := Vector2((ancho - medida.x) * 0.5, caja.position.y + (ALTO + medida.y) * 0.5 - 4.0)
+	var sitio := Vector2(caja.position.x + (ancho - medida.x) * 0.5, caja.position.y + (ALTO + medida.y) * 0.5 - 4.0)
 	draw_string_outline(fuente, sitio, texto, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano, 4, Color(0, 0, 0, 0.85))
 	draw_string(fuente, sitio, texto, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano, Color.WHITE)
+	# «VIDA», delante de la barra, como las demas etiquetas del HUD.
+	var etiqueta := "VIDA"
+	var grande := 20
+	var largo := fuente.get_string_size(etiqueta, HORIZONTAL_ALIGNMENT_LEFT, -1, grande)
+	var donde := Vector2(caja.position.x - HUECO_ETIQUETA - largo.x, caja.position.y + (ALTO + largo.y) * 0.5 - 5.0)
+	draw_string_outline(fuente, donde, etiqueta, HORIZONTAL_ALIGNMENT_LEFT, -1, grande, 5, Color(0, 0, 0, 0.7))
+	draw_string(fuente, donde, etiqueta, HORIZONTAL_ALIGNMENT_LEFT, -1, grande, Color.WHITE)
