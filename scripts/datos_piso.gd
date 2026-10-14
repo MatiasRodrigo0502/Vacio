@@ -79,13 +79,15 @@ extends Resource
 
 @export_group("Sala del jefe")
 ## El piso acaba en la sala del jefe: de la sala mas lejana sale una antesala
-## tranquila (un altar que recarga el ataque especial y un corazon) y, detras
+## tranquila (un altar que recarga el ataque especial y un vendaje) y, detras
 ## de una puerta con runas, la sala del jefe, mas grande que las demas y con la
 ## bajada en el centro. Pedido por Matias el 2026-10-13 para el piso 12.
 @export var sala_jefe: bool = false
 ## Lo que mide el suelo de la sala del jefe, en px. Mas ancha que alta, como
 ## la pantalla: la camara la ensena entera (CamaraJuego.ver_entera).
 @export var tamano_sala_jefe: Vector2 = Vector2(1200.0, 700.0)
+## Lo que espera en la antesala, junto al altar (el vendaje). Vacio = nada.
+@export var objeto_antesala: ObjetoMejora = null
 ## El jefe que espera en su sala (resources/jefes/). Vacio = sala sin jefe,
 ## con la bajada abierta. Mientras viva, la bajada esta tapada.
 @export var jefe: TipoEnemigo = null

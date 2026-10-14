@@ -8,6 +8,10 @@ extends Area2D
 
 signal recogido(mejora: ObjetoMejora)
 
+## La escena se carga al soltarlo y no con preload: el script es parte de la
+## propia escena, y precargarla desde aqui seria una referencia circular.
+const RUTA_ESCENA := "res://scenes/Objeto.tscn"
+
 ## Alto que ocupa en el mundo.
 @export var alto_objetivo: float = 58.0
 
@@ -19,8 +23,14 @@ var _recogido: bool = false
 @onready var _sprite: Sprite2D = $Sprite
 
 
-func _ready() -> void:
-	body_entered.connect(_al_entrar_cuerpo)
+## Deja 'mejora_objeto' en el suelo de 'sala', en 'posicion' (global). Lo usan
+## lo que suelta un vendaje: la mecanica de vendajes, la antesala del jefe y
+## el jefe al cambiar de fase.
+static func soltar(sala: Node, mejora_objeto: ObjetoMejora, posicion: Vector2) -> Objeto:
+	var objeto: Objeto = load(RUTA_ESCENA).instantiate()
+	sala.add_child(objeto)
+	objeto.preparar(mejora_objeto, posicion)
+	return objeto
 
 
 ## Lo llama la mecanica que los reparte.
@@ -43,13 +53,28 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
-func _al_entrar_cuerpo(cuerpo: Node2D) -> void:
-	# La guarda evita entregarlo dos veces si el jugador entra y sale en dos
-	# frames seguidos, que con la inercia pasa.
+## Se mira en cada paso quien lo esta tocando, y no con body_entered: lo que
+## solo cura no se coge con la vida llena, y si al jugador le dan estando
+## encima, tiene que poder cogerlo sin salir y volver a entrar. body_entered
+## solo avisa una vez (era lo que hacian los corazones del suelo).
+func _physics_process(_delta: float) -> void:
 	if _recogido or mejora == null:
 		return
-	if not cuerpo.has_method("aplicar_mejora"):
-		return
+	for cuerpo in get_overlapping_bodies():
+		if cuerpo.has_method("aplicar_mejora") and _le_hace_falta(cuerpo):
+			_entregar(cuerpo)
+			return
+
+
+## Con la vida llena, lo que solo cura se queda en el suelo: cogerlo seria
+## tirarlo (como en Isaac).
+func _le_hace_falta(cuerpo: Node2D) -> bool:
+	if not mejora.solo_cura():
+		return true
+	return not ("vida_actual" in cuerpo and cuerpo.vida_actual >= cuerpo.vida_maxima)
+
+
+func _entregar(cuerpo: Node2D) -> void:
 	_recogido = true
 	cuerpo.aplicar_mejora(mejora)
 	Sonido.tocar(&"objeto")

@@ -20,7 +20,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Enemigos:** salen desde el piso 2, y cada uno pelea a su manera: slimes que saltan (el de magma dejando lava) o rebotan, rata en zigzag, murciélago en picado, fantasma que se desvanece, planta que excava, serpiente en abanico, planta con anillos de esporas, gólem con pisotón y cristal que se teletransporta. Todos avisan antes de lo que pega de golpe.
 - **Peligros del suelo:** pinchos, agujeros al vacío y lava.
-- **Recompensas:** un objeto de mejora por piso. Además, los enemigos sueltan ventajas a veces y, al limpiar una sala, a veces cae un corazón.
+- **Recompensas:** un objeto de mejora por piso. Además, los enemigos sueltan ventajas a veces y, al limpiar una sala, a veces cae un vendaje que cura 60 (es lo único que cura).
 
 **Dónde está:**
 
@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 14/10/2026 | Vida en puntos: barra de vida, números de daño al dar y al recibir, y aro de tiempo en el escudo | — |
+| 14/10/2026 | Solo cura el vendaje (60): sustituye al corazón del suelo (30), que se quedaba corto | — |
+| 14/10/2026 | Vida en puntos: barra de vida, números de daño al dar y al recibir, y aro de tiempo en el escudo | `83b4506` |
 | 14/10/2026 | Portada nueva en el menú principal; el mago blanco quita lo mismo que los demás | `0b98c63` |
 | 14/10/2026 | El Mago Caído pasa a negro y oro, con guadaña; su rayo de fuego rompe los pilares | `ddf6bae` |
 | 14/10/2026 | El Mago Caído, jefe del piso 12: rayos y las habilidades de los otros tres magos, en tres fases | `14d42b9` |
@@ -145,7 +146,7 @@ Los enemigos se reparten en dos tipos de ataque. Los de cuerpo a cuerpo son ráp
 
 - **Objeto de mejora:** uno por piso, en un callejón lejos del camino.
 - **Ventajas al matar:** cada enemigo tiene un 3 % de soltar una (entre 9 y 16 por partida en las pruebas). Las crías no sueltan nada.
-- **Corazones:** al limpiar una sala, un 25 % de que caiga uno (unos 16 por partida). Con la vida llena no se coge.
+- **Vendajes:** al limpiar una sala, un 25 % de que caiga uno (unos 16 por partida). Cura 60; con la vida llena no se coge. Hasta el 14/10/2026 caía un corazón que curaba 30, y se quedaba corto en los pisos hondos.
 
 **Al recibir un golpe,** la cámara tiembla 7 px durante un cuarto de segundo.
 
@@ -258,7 +259,7 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 **Antes de entregar:**
 
-- [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones que curan 30, con 100 de vida (130 el rojo). Todo se ajusta en los `.tres` de `resources/`. Desde el 13/10/2026 cada partida se guarda en un registro (tiempo por piso y por sala, cada golpe y de qué, vida recuperada, enemigos, objetos) y `herramientas/analizar_partidas.py` saca las medias de todas: el equipo juega, junta los archivos y se ajusta con datos.
+- [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 vendajes que curan 60, con 100 de vida (130 el rojo). Todo se ajusta en los `.tres` de `resources/`. Desde el 13/10/2026 cada partida se guarda en un registro (tiempo por piso y por sala, cada golpe y de qué, vida recuperada, enemigos, objetos) y `herramientas/analizar_partidas.py` saca las medias de todas: el equipo juega, junta los archivos y se ajusta con datos.
 - [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así. El blanco sale de la del rojo.
 - [ ] **Verificar las licencias de lo que queda de fuera.** Los escenarios ya son todos propios; de fuera quedan los magos (ver el punto anterior). Los packs de itch.io de antes ya no se usan.
 
@@ -268,7 +269,7 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 **En marcha:**
 
-- [ ] **Probar y ajustar el jefe del piso 12, el Mago Caído.** Está hecho entero (antesala con altar y corazón, sala grande con puerta de runas, y el jefe: rayos, agujero negro, escudo con hielo y rayo de fuego, en tres fases, con barra de vida y música propia), pero nadie lo ha jugado. Sus números están en `resources/jefes/mago_caido.tres`.
+- [ ] **Probar y ajustar el jefe del piso 12, el Mago Caído.** Está hecho entero (antesala con altar y vendaje, sala grande con puerta de runas, y el jefe: rayos, agujero negro, escudo con hielo y rayo de fuego, en tres fases, con barra de vida y música propia), pero nadie lo ha jugado. Sus números están en `resources/jefes/mago_caido.tres`.
 
 **Ideas no pedidas todavía:**
 

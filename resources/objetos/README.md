@@ -18,8 +18,10 @@ partida** y se pierden al empezar una nueva.
 | Piedra hinchada | +6 de radio de bola | 4 |
 
 **Ningún objeto sube la vida máxima** (decisión de Matías, 2026-10-13): los
-corazones solo se recuperan, no se añaden. Lo que cura son el vendaje y los
-corazones que caen al limpiar una sala. Había un «Corazón de roca» que daba
+la vida solo se recupera, no se añade. **Lo único que cura es el vendaje**
+(60): sale como objeto, a veces lo suelta un enemigo y cae al limpiar una sala
+una de cada cuatro veces (`resources/mecanicas/vendajes.tres`). Con la vida
+llena no se coge (`ObjetoMejora.solo_cura`). Había un «Corazón de roca» que daba
 uno más; se quitó, y está en el historial de git. El campo
 `vida_maxima_extra` sigue en `ObjetoMejora` por si algún día vuelve.
 

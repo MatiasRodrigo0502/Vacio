@@ -38,6 +38,14 @@ extends Resource
 ## Radio que suma a la bola. Bola mas gorda, mas facil acertar.
 @export var radio_bola_extra: float = 0.0
 
+## True si lo unico que hace es curar (el vendaje). Esos no se cogen con la
+## vida llena: se quedan en el suelo para cuando hagan falta (ver Objeto).
+func solo_cura() -> bool:
+	return cura > 0 and vida_maxima_extra == 0 and velocidad_extra == 0.0 \
+		and cadencia_multiplicador == 1.0 and velocidad_bola_extra == 0.0 \
+		and radio_bola_extra == 0.0
+
+
 @export_group("Cuando aparece")
 ## Primer piso en el que puede salir.
 @export_range(1, 12) var piso_minimo: int = 1

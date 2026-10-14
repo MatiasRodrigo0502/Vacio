@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MecanicaVendajes" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/mecanicas/vendajes.gd" id="1_vendajes"]
+[ext_resource type="Resource" path="res://resources/objetos/vendaje.tres" id="2_vendaje"]
+
+[resource]
+script = ExtResource("1_vendajes")
+nombre_mecanica = "Vendajes"
+descripcion = "Al limpiar una sala de pelea, a veces (25 %) cae un vendaje que cura 60. Con la vida llena no se coge: se queda en el suelo."
+piso_desbloqueo = 2
+activa = true
+probabilidad = 0.25
+objeto = ExtResource("2_vendaje")

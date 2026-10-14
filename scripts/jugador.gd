@@ -524,7 +524,7 @@ func recibir_dano(cantidad: int = 1, forzar: bool = false, origen: String = "") 
 	if not forzar and (esta_invulnerable() or _cayendo):
 		return false
 
-	# Lo que quita de verdad: con un corazon, un golpe de 2 quita uno.
+	# Lo que quita de verdad: con 10 de vida, un golpe de 30 quita 10.
 	var quitada := mini(cantidad, vida_actual)
 	vida_actual -= quitada
 	_tiempo_invulnerable = duracion_invulnerabilidad
@@ -582,8 +582,8 @@ func centro_colision() -> Vector2:
 	return $Forma.global_position
 
 
-## Cura sin pasar del maximo. Devuelve false si no ha curado nada: con la vida
-## llena, el corazon del suelo se queda donde esta para cuando haga falta.
+## Cura sin pasar del maximo. Devuelve false si no ha curado nada (con la
+## vida llena).
 func curar(cantidad: int) -> bool:
 	if vida_actual <= 0 or vida_actual >= vida_maxima or _cayendo:
 		return false
@@ -598,7 +598,7 @@ func aplicar_mejora(mejora: ObjetoMejora) -> void:
 		return
 
 	vida_maxima += mejora.vida_maxima_extra
-	# Un corazon nuevo viene lleno, y ademas se cura lo que diga el objeto.
+	# La vida maxima de mas viene llena, y ademas se cura lo que diga el objeto.
 	vida_actual = mini(vida_actual + mejora.vida_maxima_extra + mejora.cura, vida_maxima)
 
 	velocidad_maxima += mejora.velocidad_extra

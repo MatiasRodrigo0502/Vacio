@@ -50,7 +50,7 @@ números en el `.tres` (el `comportamiento`):
 - Cada fase va más deprisa (`ritmo_fases`: 1, 1,15 y 1,35) y entre una
   habilidad y otra pasan 5 s.
 - **Al cambiar de fase** se va al centro, no se le puede dar 1,6 s, suelta
-  una onda (quita 25) y deja un corazón.
+  una onda (quita 25) y deja un vendaje (cura 60).
 - **Al morir**: explosión grande y un segundo a cámara lenta.
 
 Hasta que se cierran las puertas y acaba su presentación (2,2 s) no se le

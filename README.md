@@ -175,7 +175,9 @@ dorado y grande el cargado, naranja la quemadura y violeta el agujero negro).
 Un disparo normal quita **10** (hasta 13: varía un poco hacia arriba) y el
 cargado 30; una rata o un murciélago tienen 10, un slime 20, un gólem 50. Un
 golpe de un enemigo te quita de 20 (una rata) a 50 (el rayo del cristal), y
-el corazón que cae al limpiar una sala cura 30. Del piso 2 en adelante los hay, y van a
+el **vendaje** cura 60. Es lo único que cura: sale como objeto, a veces lo
+suelta un enemigo y, al limpiar una sala, cae uno de cada cuatro veces. Con
+la vida llena no se coge: se queda en el suelo para luego. Del piso 2 en adelante los hay, y van a
 más según bajas. **Cada uno pelea a su manera**: los slimes saltan (el de
 magma dejando lava) o rebotan por la sala, la rata corre en zigzag, el
 murciélago se lanza en picado, el fantasma atraviesa rocas y se desvanece, la
@@ -213,7 +215,7 @@ En cada piso hay además un objeto que te mejora para el resto de la partida, y
 las mejoras se notan también en el ataque cargado, que parte de esos números.
 
 **El piso 12 acaba en la sala del jefe.** De su sala más lejana sale una
-**antesala** tranquila, sin enemigos, con un corazón y un **altar** que, al
+**antesala** tranquila, sin enemigos, con un vendaje y un **altar** que, al
 pisarlo, recupera el ataque especial. Delante hay una puerta con runas que
 brillan, y detrás está la **sala del jefe**: más grande que las demás (la
 cámara se abre para que se vea entera), con un sello grabado en el suelo,
@@ -233,7 +235,7 @@ otros tres magos, más cuanto menos vida le queda:
   sala ardiendo. Un pilar te cubre, pero el rayo lo rompe: cada pilar sirve
   una vez. Y los rayos salen de tres en tres.
 
-Al cambiar de fase suelta una onda y deja un corazón. Mientras vive, la bajada
+Al cambiar de fase suelta una onda y deja un vendaje. Mientras vive, la bajada
 está tapada; al morir se abre. Sus números están en
 [`resources/jefes/`](resources/jefes/README.md).
 

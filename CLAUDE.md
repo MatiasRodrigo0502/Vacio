@@ -180,7 +180,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   enfrente. La bajada está en la del jefe: **para la sala con bajada, usar
   `Piso.sala_bajada()` y `Sala.tiene_bajada()`, nunca `Tipo.SALIDA`**.
   Antesala: altar que recarga el especial al pisarlo
-  (`scripts/altar_especial.gd`) y un corazón. Puerta con runas a los dos lados
+  (`scripts/altar_especial.gd`) y un vendaje (`DatosPiso.objeto_antesala`). Puerta con runas a los dos lados
   (`runas_puerta.gd`, signos en `runas.gd`), sello en el suelo del jefe
   (`sello_jefe.gd`), cuatro pilares simétricos (`Piso._pilares_jefe`) y la
   cámara abierta para verla entera (`CamaraJuego.ver_entera`, desde
@@ -384,7 +384,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   con el seguimiento ni con el límite de la sala.
 - **Peligros del suelo** (`scripts/mecanicas/peligros.gd`), de 1 a 3 por sala
   de pelea: **pinchos** que salen a ratos (desde el piso 2), **agujeros** que
-  cuestan un corazón y te devuelven a la entrada de la sala (desde el 3) y
+  cuestan 30 de vida y te devuelven a la entrada de la sala (desde el 3) y
   **lava** (desde el 4). Nunca pisan el paso de una puerta al centro.
 - **Pinchos en las puertas** (pedido por Matías el 2026-10-08): desde el
   piso 3, un 40 % de las puertas de las salas de pelea tienen una placa de
@@ -398,11 +398,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   encima de un agujero, lava, pinchos, una roca o la bajada: si el enemigo
   murió ahí, cae en el sitio libre más cercano. Las mejoras se acumulan toda
   la partida y se pierden al empezar otra.
-- **Corazones en el suelo** (`scripts/mecanicas/corazones.gd`,
-  `scripts/corazon_suelto.gd`): al limpiar una sala de pelea, un 25 % de que
-  caiga un corazón que cura 30, en el centro o en el sitio libre más cercano.
-  Con la vida llena no se coge y se queda en el suelo. Una partida tiene 63
-  salas con enemigos: unos 16 corazones (10 y 17 en las pruebas).
+- **Vendajes al limpiar una sala** (`scripts/mecanicas/vendajes.gd`): un
+  25 % de que caiga un vendaje que cura 60, en el centro o en el sitio libre
+  más cercano. Una partida tiene 63 salas con enemigos: unos 16. **Hasta el
+  2026-10-14 caía un corazón que curaba 30**; Matías lo cambió por el vendaje
+  porque en los pisos hondos se quedaba corto. Es el mismo vendaje que hay
+  entre los objetos (`Objeto.soltar`), y lo deja también la antesala del
+  jefe y el jefe al cambiar de fase. **Lo que solo cura no se coge con la
+  vida llena** (`ObjetoMejora.solo_cura`, mirado en cada paso en
+  `Objeto._physics_process`): se queda en el suelo para luego.
 - **Vida y daño en puntos** (2026-10-14, pedido por Matías: «ver el número
   de vida que le quitas»). El jugador tiene **100** (130 el rojo) en una barra
   (`scripts/barra_vida.gd`, en lugar de los corazones), más larga cuanta más
@@ -413,13 +417,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   3 por tic y el agujero negro 10 por tic; los enemigos tienen de 10 (rata,
   murciélago, crías) a 50 (gólem), y el jefe 900. Lo que quitan ellos ya no
   es 1 para todos: de 20 (rata, murciélago, veneno) a 50 (rayo del cristal),
-  pinchos 25, lava 20, caer 30; curan 30 el corazón del suelo y 60 el
-  vendaje. **Cada golpe enseña su número** (`scripts/numero_dano.gd`, del
+  pinchos 25, lava 20, caer 30; el vendaje cura 60. **Cada golpe enseña su número** (`scripts/numero_dano.gd`, del
   tamaño de pantalla aunque cambie el zoom): blanco el normal, dorado el
   cargado, naranja la quemadura, violeta el agujero negro y rojo encima del
   jugador. El número es lo que quita de verdad (el golpe que mata enseña lo
-  que le quedaba). El corazón que cae al suelo se quedó con el dibujo de
-  corazón (`CorazonSuelto.pintar_corazon`). **El escudo del mago blanco lleva
+  que le quedaba). **El escudo del mago blanco lleva
   un aro** por fuera que se vacía con el tiempo que le queda (y el del jefe,
   igual).
 - **Arte por piso**: desde el 2026-10-08, cada uno de los 12 pisos tiene sus
@@ -460,8 +462,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar
   el piso, más las crías de los slimes: una partida entera son unas 600
   muertes, y los enemigos sueltan 9-16 ventajas además de las 12 de los pisos.
-  Desde el 2026-09-30 caen además unos 16 corazones por partida al limpiar
-  salas.
+  Al limpiar salas caen además unos 16 vendajes por partida (60 cada uno).
   Los de distancia quitan de 20 a 50 y hay pinchos, lava y agujeros, con 100
   de vida (130 el rojo). Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
   (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
@@ -502,7 +503,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   juego.
 - **Los corazones solo se recuperan, no se añaden** (Matías, 2026-10-13):
   ningún objeto sube la vida máxima. Se quitó el «Corazón de roca»
-  (`resources/objetos/`); curan el vendaje y los corazones del suelo. La
+  (`resources/objetos/`); solo cura el vendaje. La
   vida de más del mago rojo es de salida, no se gana jugando.
 - **Las rocas no hacen daño.** Si no se pueden atravesar, cobrar vida además
   castigaría por rozar una pared al esquivar. El daño viene de los enemigos.
@@ -651,12 +652,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   semilla del piso.** Los pisos son fijos; el botín puede cambiar de una
   partida a otra. Y las crías no sueltan nada, o matar slimes sería la forma
   de conseguirlas.
-- **Los corazones del suelo no se cogen con la vida llena** (como en Isaac):
-  recogerlo sin necesitarlo sería tirarlo. Por eso se mira quién lo toca en
-  cada paso y no con `body_entered`: si llegas lleno, te quedas encima y te
-  dan, tiene que poder cogerse sin salir y volver a entrar.
+- **Lo que solo cura (el vendaje) no se coge con la vida llena** (como en
+  Isaac): recogerlo sin necesitarlo sería tirarlo. Por eso se mira quién lo
+  toca en cada paso y no con `body_entered`: si llegas lleno, te quedas
+  encima y te dan, tiene que poder cogerse sin salir y volver a entrar. Lo
+  hacían los corazones del suelo; desde el 2026-10-14, el vendaje.
 - **Lo que cae para recoger busca sitio con `Piso.sitio_libre_cerca()`**, la
-  misma para las ventajas y los corazones: nunca encima de un agujero, lava,
+  misma para las ventajas y los vendajes: nunca encima de un agujero, lava,
   pinchos, una roca o la bajada.
 - **El muro se pinta alineado con el mundo, no con cada sala.** Las
   coordenadas de su textura salen de la posición en el piso, así que la roca

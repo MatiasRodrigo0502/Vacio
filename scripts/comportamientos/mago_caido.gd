@@ -21,7 +21,7 @@
 ## era violeta y se confundia con el mago oscuro. Sus efectos van en oro.
 ##
 ## Al cambiar de fase se va al centro, se protege, suelta una onda y deja un
-## corazon: un respiro, y el aviso de que ahora viene mas.
+## vendaje: un respiro, y el aviso de que ahora viene mas.
 ##
 ## No hace nada hasta que se cierran las puertas de su sala, y luego espera a
 ## que acabe la presentacion (BarraJefe). Hasta entonces no se le puede dar:
@@ -88,6 +88,8 @@ const COLOR_FUEGO := Color(1.0, 0.55, 0.15)
 @export var duracion_cambio: float = 1.6
 @export var radio_onda: float = 300.0
 @export var dano_onda: int = 25
+## Lo que deja al cambiar de fase para recuperarse (el vendaje).
+@export var cura: ObjetoMejora
 
 ## Lo que dura el rayo de fuego en pantalla una vez sale.
 const DURACION_FUEGO: float = 0.4
@@ -328,10 +330,9 @@ func _soltar_onda(enemigo: Enemigo) -> void:
 	onda.position = sala.to_local(enemigo.global_position + Vector2(0.0, enemigo.tipo.alto * 0.42))
 	sala.add_child(onda)
 	Sonido.tocar(&"pisoton")
-	# Un corazon debajo del centro: lejos de los pilares y de la bajada.
-	var corazon := CorazonSuelto.new()
-	corazon.position = Vector2(0.0, minf(sala.tamano.y * 0.32, 160.0))
-	sala.add_child(corazon)
+	# Un vendaje debajo del centro: lejos de los pilares y de la bajada.
+	if cura != null:
+		Objeto.soltar(sala, cura, sala.to_global(Vector2(0.0, minf(sala.tamano.y * 0.32, 160.0))))
 
 
 ## Mira al jugador: anda o se queda quieto en la direccion que toca.

@@ -39,7 +39,7 @@ const DENTRO_REAPARICION: float = 70.0
 ## jugador (15) y algo de aire.
 const MARGEN_TRAMPA: float = 40.0
 ## Distancia minima entre lo que se deja en el suelo para recoger (ventajas,
-## corazones) y el agujero de bajada. Recogerlo no puede obligar a pisarla.
+## vendajes) y el agujero de bajada. Recogerlo no puede obligar a pisarla.
 const DESPEJE_BAJADA: float = 110.0
 ## Cuanto sobra la roca del fondo por fuera del mapa. En los pisos de arriba la
 ## camara ve mas que la sala; sin esto, por fuera del muro asomaba negro.
@@ -680,13 +680,13 @@ func _preparar_jefe() -> void:
 	jefe.add_child(SelloJefe.new(jefe.tamano))
 
 	# El altar, en el centro: de camino de una puerta a la otra, que estan
-	# enfrente. El corazon, a un lado, fuera del camino: se coge si hace falta.
+	# enfrente. El vendaje, a un lado, fuera del camino: se coge si hace falta.
 	var altar := AltarEspecial.new()
 	antesala.add_child(altar)
 	var lado := Vector2(direccion).orthogonal()
-	var corazon := CorazonSuelto.new()
-	corazon.position = lado * minf(antesala.tamano.x, antesala.tamano.y) * 0.28
-	antesala.add_child(corazon)
+	var junto := antesala.to_global(lado * minf(antesala.tamano.x, antesala.tamano.y) * 0.28)
+	if datos.objeto_antesala != null:
+		Objeto.soltar(antesala, datos.objeto_antesala, junto)
 	# El jefe, si el piso tiene, en el centro de su sala (encima de la bajada,
 	# que esta tapada mientras viva). Se apunta en la sala como cualquier
 	# enemigo: duerme hasta que entras y, al morir, la sala queda limpia y la
@@ -697,9 +697,9 @@ func _preparar_jefe() -> void:
 		enemigo.preparar(datos.jefe, jefe.global_position)
 		jefe.registrar_enemigo(enemigo)
 
-	# Sin piedrecitas pintadas encima del altar ni del corazon.
+	# Sin piedrecitas pintadas encima del altar ni del vendaje.
 	despejar_decoracion(Rect2(antesala.global_position - Vector2(80.0, 80.0), Vector2(160.0, 160.0)))
-	despejar_decoracion(Rect2(antesala.to_global(corazon.position) - Vector2(40.0, 40.0), Vector2(80.0, 80.0)))
+	despejar_decoracion(Rect2(junto - Vector2(40.0, 40.0), Vector2(80.0, 80.0)))
 
 
 ## Levanta la pared de roca de cada sala, con la de este piso (ver ParedSala y
