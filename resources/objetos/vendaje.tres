@@ -7,10 +7,10 @@
 script = ExtResource("1_objeto")
 icono = ExtResource("2_icono")
 nombre = "Vendaje"
-descripcion = "Recupera dos corazones"
+descripcion = "Recupera 60 de vida"
 color = Color(0.95, 0.45, 0.45, 1)
 vida_maxima_extra = 0
-cura = 2
+cura = 60
 velocidad_extra = 0.0
 cadencia_multiplicador = 1.0
 velocidad_bola_extra = 0.0

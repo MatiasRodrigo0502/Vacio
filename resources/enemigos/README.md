@@ -24,22 +24,25 @@ Además, dos formas de pelear (`ataque`), que deciden el reparto:
   `tiempo_apuntar` a 0 dispara sin avisar, y si es un rayo su línea sale a la
   vez que el disparo (el cristal).
 
-| Tipo | Ataque | Vida | Velocidad | Desde el piso | Qué hace (`comportamiento`) |
-|---|---|---|---|---|---|
-| Slime verde | cuerpo a cuerpo | 2 | 100 | 1 | **a saltos**: se aplasta (el aviso), salta hacia ti y descansa. Al morir explota (radio 70) y se parte en 2 crías |
-| Rata | cuerpo a cuerpo | 1 | 160 | 2 | **en zigzag**: corre hacia ti haciendo eses; de cerca, recta |
-| Serpiente | distancia: **veneno** | 2 | 55 | 2 | **en abanico**: te rodea de lado y dispara 3 bolas abiertas. El veneno quita 1 y te frena 2,5 s |
-| Planta venenosa | distancia: **veneno** | 3 | 28 | 3 | **en anillo**: no se mueve; se hincha y suelta 8 esporas en todas direcciones, cada anillo girado |
-| Murciélago | cuerpo a cuerpo | 1 | **195** | 3 | **en picado**: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo |
-| Gólem de roca | distancia: **magma** | 5 | 38 | 4 | **pisotón**: de lejos tira magma (quita 2 y deja lava 3,5 s); si te acercas, avisa con un aro y suelta una onda que hay que esquivar alejándose |
-| Slime naranja | cuerpo a cuerpo | 3 | 132 | 5 | **rebota**: no te persigue; cruza la sala en diagonal y rebota en muros y rocas. Explota (75) y se parte en 2 |
-| Slime de magma | cuerpo a cuerpo | 3 | 118 | 5 | **a saltos, dejando lava** donde cae (2,5 s). Explota (85) y se parte en 2 |
-| Cristal vivo | distancia: **rayo** | 3 | **0** | 5 | **teletransporte**: dispara en cuanto sale su línea y, poco después, desaparece y sale en otro sitio de la sala, lejos de ti |
-| Fantasma | cuerpo a cuerpo | 2 | 115 | 6 | **se desvanece**: atraviesa las rocas y, a ratos, se vuelve casi invisible; entonces ni le das ni te da |
-| Planta azul | cuerpo a cuerpo | 2 | 150 | 7 | **excava**: se entierra, el montículo avanza bajo el suelo y sale debajo de ti tras avisar con un aro; bajo tierra no se le puede dar |
+La vida va en puntos (un disparo normal quita 10) y «Contacto» es lo que te
+quitan al tocarte (tú tienes 100).
+
+| Tipo | Ataque | Vida | Contacto | Velocidad | Desde el piso | Qué hace (`comportamiento`) |
+|---|---|---|---|---|---|---|
+| Slime verde | cuerpo a cuerpo | 20 | 25 | 100 | 1 | **a saltos**: se aplasta (el aviso), salta hacia ti y descansa. Al morir explota (radio 70) y se parte en 2 crías |
+| Rata | cuerpo a cuerpo | 10 | 20 | 160 | 2 | **en zigzag**: corre hacia ti haciendo eses; de cerca, recta |
+| Serpiente | distancia: **veneno** | 20 | 25 | 55 | 2 | **en abanico**: te rodea de lado y dispara 3 bolas abiertas. El veneno quita 20 y te frena 2,5 s |
+| Planta venenosa | distancia: **veneno** | 30 | 25 | 28 | 3 | **en anillo**: no se mueve; se hincha y suelta 8 esporas en todas direcciones, cada anillo girado |
+| Murciélago | cuerpo a cuerpo | 10 | 20 | **195** | 3 | **en picado**: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo |
+| Gólem de roca | distancia: **magma** | 50 | 35 | 38 | 4 | **pisotón**: de lejos tira magma (quita 45 y deja lava 3,5 s); si te acercas, avisa con un aro y suelta una onda (quita 30) que hay que esquivar alejándose |
+| Slime naranja | cuerpo a cuerpo | 30 | 25 | 132 | 5 | **rebota**: no te persigue; cruza la sala en diagonal y rebota en muros y rocas. Explota (75) y se parte en 2 |
+| Slime de magma | cuerpo a cuerpo | 30 | 30 | 118 | 5 | **a saltos, dejando lava** donde cae (2,5 s). Explota (85) y se parte en 2 |
+| Cristal vivo | distancia: **rayo** (quita 50) | 30 | 25 | **0** | 5 | **teletransporte**: dispara en cuanto sale su línea y, poco después, desaparece y sale en otro sitio de la sala, lejos de ti |
+| Fantasma | cuerpo a cuerpo | 20 | 25 | 115 | 6 | **se desvanece**: atraviesa las rocas y, a ratos, se vuelve casi invisible; entonces ni le das ni te da |
+| Planta azul | cuerpo a cuerpo | 20 | 30 | 150 | 7 | **excava**: se entierra, el montículo avanza bajo el suelo y sale debajo de ti tras avisar con un aro; bajo tierra no se le puede dar |
 
 El más lento de cuerpo a cuerpo (100) es casi el doble de rápido que el más
-rápido a distancia (55). El contacto quita 1 en todos.
+rápido a distancia (55).
 
 **Salen al azar.** Cada sala elige entre todos los tipos cuyo `piso_minimo` ya
 se ha alcanzado. Como mucho **la mitad** de una sala son de distancia
@@ -47,8 +50,8 @@ se ha alcanzado. Como mucho **la mitad** de una sala son de distancia
 de tiradores sería una lluvia de disparos desde todas partes.
 
 **Los slimes** (`division`, `radio_explosion`): al morir explotan en un radio
-pequeño, que te quita 1 si estás dentro, y sueltan dos crías. Las crías son el
-mismo slime en pequeño, más rápidas y con 1 de vida, y ni explotan ni se
+pequeño, que te quita 25 si estás dentro, y sueltan dos crías. Las crías son el
+mismo slime en pequeño, más rápidas y con 10 de vida, y ni explotan ni se
 dividen: si no, matar un slime desataría una cadena imposible de esquivar. La
 sala no se abre hasta matar también a las crías. Matarlos de lejos sale a
 cuenta.

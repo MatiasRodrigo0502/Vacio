@@ -27,14 +27,17 @@ signal apagada(punto: Vector2)
 ## que toca y se apaga.
 @export var atraviesa: bool = false
 
-## Cuanta vida quita a lo que toca. El disparo normal quita 1 (0,5 el del mago
-## blanco); el ataque cargado, mas.
+## Cuanta vida quita a lo que toca. El disparo normal quita 10 (desde el
+## 2026-10-14; antes 1, con la vida de los enemigos en disparos); el ataque
+## cargado, 30 o mas.
 ##
-## A los enemigos se lo pasa con herir(), que admite medios. A lo demas que
-## se pueda romper, con romper() repetido, que es el contrato de siempre ("un
-## golpe, sin parametros"): asi nada de lo que ya era rompible tiene que
+## A los enemigos se lo pasa con herir(). A lo demas que se pueda romper, con
+## romper() repetido (un golpe por cada 10), que es el contrato de siempre
+## ("un golpe, sin parametros"): asi nada de lo que ya era rompible tiene que
 ## cambiar.
-@export var dano: float = 1.0
+@export var dano: float = 10.0
+## Cada golpe quita entre 'dano' y esto por 'dano' (10 a 13 el normal).
+const VARIACION: float = 1.3
 ## Segundos que deja frenado al enemigo que toca. 0 = no frena.
 @export var frena: float = 0.0
 ## Segundos que deja quemandose al enemigo que toca, y lo que le quita la
@@ -144,12 +147,18 @@ func _al_tocar(area: Area2D) -> void:
 	if area.has_method("es_tangible") and not area.es_tangible():
 		return
 	if area.has_method("herir"):
-		area.herir(dano, frena)
+		# Lo que quita varia un poco hacia arriba (de 10 a 13 el normal): los
+		# numeros que saltan no son siempre el mismo. Solo hacia arriba, para
+		# que lo que caia de un disparo siga cayendo de uno.
+		var golpe := float(roundi(dano * randf_range(1.0, VARIACION)))
+		var estilo := NumeroDano.Estilo.FUERTE if cargada else NumeroDano.Estilo.NORMAL
+		area.herir(golpe, frena, estilo)
 		Sonido.tocar(&"golpe_enemigo")
 		if quema > 0.0 and area.has_method("quemar"):
 			area.quemar(quema, dano_quema)
 	elif area.has_method("romper"):
-		for i in int(ceil(dano)):
+		# romper() es un golpe de un disparo normal (10).
+		for i in int(ceil(dano / 10.0)):
 			if not is_instance_valid(area):
 				break
 			area.romper()

@@ -18,7 +18,7 @@ const ACHATADO: float = 0.55
 
 var radio_maximo: float = 170.0
 var duracion: float = 0.45
-var dano: int = 1
+var dano: int = 25
 var color: Color = Color(1.0, 0.6, 0.2)
 ## Como sale en el registro de partidas. La pone quien da el pisoton.
 var origen: String = "Onda"

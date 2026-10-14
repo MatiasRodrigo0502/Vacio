@@ -16,8 +16,8 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 | Mago | Ventaja | Pega |
 |---|---|---|
 | Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
-| Mago rojo | +1 corazón, tiempo de carga ×0,5, +2 de daño cargado; sus disparos queman 3 s | −25 px/s de velocidad |
-| Mago blanco | ataque especial: escudo burbuja (5 s); su disparo frena 1,5 s | su disparo quita 0,5 en vez de 1; no tiene bola cargada |
+| Mago rojo | +30 de vida, tiempo de carga ×0,5, +20 de daño cargado (50); sus disparos queman 3 por segundo durante 3 s | −25 px/s de velocidad |
+| Mago blanco | ataque especial: escudo burbuja (5 s, con un aro que va marcando lo que le queda); su disparo frena 1,5 s | no tiene bola cargada |
 
 ## Cómo añadir uno
 
@@ -30,9 +30,11 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 
 ## Disparo normal y ataque especial
 
-- `dano_disparo`: lo que quita cada bola normal. Los tres quitan 1 (el mago
-  blanco quitaba 0,5 hasta el 2026-10-14; Matías lo igualó a los demás). El
-  cargado no cambia.
+- `dano_disparo`: lo que quita cada bola normal. Los tres quitan **10** (de
+  10 a 13: `BolaMagica.VARIACION`). La vida va en puntos desde el
+  2026-10-14: el jugador tiene 100 y los enemigos de 10 a 50. El mago blanco
+  quitaba la mitad hasta ese día; Matías lo igualó a los demás. El cargado
+  quita 30 (`Jugador.dano_bola_cargada`) más `dano_cargado_extra`.
 - `frena_disparo`: segundos que deja frenado al enemigo que toca. Frenado,
   anda, apunta y recarga a la mitad, y lleva un aro de escarcha a los pies.
 - Los tres disparan una bola cada 0,5 s (`cadencia_disparo` del jugador;

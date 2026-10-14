@@ -37,7 +37,7 @@ signal caido
 @export var friccion: float = 2800.0
 
 @export_group("Vida")
-@export var vida_maxima: int = 3
+@export var vida_maxima: int = 100
 ## Segundos de invulnerabilidad tras un golpe. Evita perder toda la vida de
 ## golpe cuando el jugador se queda encima de un obstaculo.
 @export var duracion_invulnerabilidad: float = 1.1
@@ -59,7 +59,7 @@ signal caido
 ## Dano del disparo cargado. El normal hace 1. Con 3 mata de una a todos los
 ## enemigos menos al golem, que aguanta 5 (el del mago rojo, con +2, tambien a
 ## ese).
-@export var dano_bola_cargada: int = 3
+@export var dano_bola_cargada: int = 30
 ## Lo grande y lo rapida que sale respecto al disparo normal.
 @export var factor_radio_cargada: float = 2.1
 @export var factor_velocidad_cargada: float = 1.3
@@ -73,7 +73,7 @@ signal caido
 
 ## Lo que quita y lo que frena cada bola normal. Son del mago (los pone
 ## usar_personaje) y ningun objeto los cambia. Ver PersonajeJugable.
-var dano_disparo: float = 1.0
+var dano_disparo: float = 10.0
 var frena_disparo: float = 0.0
 ## El escudo direccional, si es el ataque especial del mago. Si no, null, y
 ## el especial es la bola cargada.
@@ -104,7 +104,7 @@ const COLOR_VENENO := Color(0.6, 1.0, 0.55)
 ## Lo que tarda la animacion de caer por un agujero.
 const DURACION_CAIDA: float = 0.4
 ## Lo que cuesta caerse.
-const DANO_CAIDA: int = 1
+const DANO_CAIDA: int = 30
 
 ## Las ocho direcciones del mago, en el orden de los sectores de 45 grados que
 ## devuelve Vector2.angle(): empieza en la derecha y gira en el sentido de las

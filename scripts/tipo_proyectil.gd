@@ -27,8 +27,8 @@ enum Estilo { BOLA, RAYO, PARABOLA }
 ## px/s. En la parabola es la velocidad sobre el suelo.
 @export var velocidad: float = 320.0
 @export var radio: float = 9.0
-## Corazones que quita al acertar.
-@export var dano: int = 1
+## Vida que quita al acertar (el jugador tiene 100).
+@export var dano: int = 20
 ## Distancia maxima. La parabola no la usa: cae donde apunto.
 @export var alcance: float = 900.0
 ## El efecto que suena al dispararlo: el nombre de un archivo de

@@ -59,7 +59,7 @@ const COLOR_FUEGO := Color(1.0, 0.55, 0.15)
 @export var duracion_pozo: float = 3.4
 ## Lo que tarda en tirar desde que aparece: el aviso.
 @export var aviso_pozo: float = 0.9
-@export var dano_pozo: int = 1
+@export var dano_pozo: int = 15
 
 @export_group("Escudo")
 @export var duracion_escudo: float = 4.0
@@ -74,7 +74,7 @@ const COLOR_FUEGO := Color(1.0, 0.55, 0.15)
 @export var carga_fuego: float = 1.4
 @export var fija_fuego: float = 0.45
 @export var ancho_fuego: float = 46.0
-@export var dano_fuego: int = 2
+@export var dano_fuego: int = 50
 ## Charcos de fuego que deja por donde pasa, y como son.
 @export var charcos_fuego: int = 5
 @export var radio_charco: float = 30.0
@@ -87,7 +87,7 @@ const COLOR_FUEGO := Color(1.0, 0.55, 0.15)
 @export_group("Cambio de fase")
 @export var duracion_cambio: float = 1.6
 @export var radio_onda: float = 300.0
-@export var dano_onda: int = 1
+@export var dano_onda: int = 25
 
 ## Lo que dura el rayo de fuego en pantalla una vez sale.
 const DURACION_FUEGO: float = 0.4
@@ -456,3 +456,9 @@ func _pintar_escudo(enemigo: Enemigo, accion: StringName, destello: float, fase:
 	enemigo.draw_arc(Vector2.ZERO, radio, 0.0, TAU, 48, Color(color, 0.85 * alfa), 2.0, true)
 	var giro := fase * 1.6
 	enemigo.draw_arc(Vector2.ZERO, radio - 3.0, giro, giro + 0.9, 12, Color(1.0, 1.0, 1.0, 0.5 * alfa), 2.0, true)
+	# Lo que le queda de escudo, como en la burbuja del mago blanco.
+	if accion == &"escudo":
+		var queda := clampf(1.0 - float(enemigo.estado["t"]) / duracion_escudo, 0.0, 1.0)
+		enemigo.draw_arc(Vector2.ZERO, radio + 9.0, 0.0, TAU, 48, Color(0.0, 0.0, 0.0, 0.35 * alfa), 5.0, true)
+		enemigo.draw_arc(Vector2.ZERO, radio + 9.0, -PI * 0.5, -PI * 0.5 + TAU * queda, 48,
+			Color(1.0, 1.0, 1.0, 0.9 * alfa), 3.5, true)

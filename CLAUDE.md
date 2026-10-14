@@ -400,11 +400,28 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   la partida y se pierden al empezar otra.
 - **Corazones en el suelo** (`scripts/mecanicas/corazones.gd`,
   `scripts/corazon_suelto.gd`): al limpiar una sala de pelea, un 25 % de que
-  caiga un corazón que cura uno, en el centro o en el sitio libre más cercano.
+  caiga un corazón que cura 30, en el centro o en el sitio libre más cercano.
   Con la vida llena no se coge y se queda en el suelo. Una partida tiene 63
   salas con enemigos: unos 16 corazones (10 y 17 en las pruebas).
-- **Vida**: corazones dibujados por código. La fuente de Godot no tiene glifos
-  de corazón ni emoji: un "♥" de texto sale como un cuadradito.
+- **Vida y daño en puntos** (2026-10-14, pedido por Matías: «ver el número
+  de vida que le quitas»). El jugador tiene **100** (130 el rojo) en una barra
+  (`scripts/barra_vida.gd`, en lugar de los corazones), más larga cuanta más
+  vida máxima, con lo que se acaba de perder en blanco un momento. Todo va
+  ×10 respecto a antes: un disparo normal quita **10** (de 10 a 13,
+  `BolaMagica.VARIACION`, solo hacia arriba para que lo que caía de un
+  disparo siga cayendo de uno), el cargado 30 (50 el del rojo), la quemadura
+  3 por tic y el agujero negro 10 por tic; los enemigos tienen de 10 (rata,
+  murciélago, crías) a 50 (gólem), y el jefe 900. Lo que quitan ellos ya no
+  es 1 para todos: de 20 (rata, murciélago, veneno) a 50 (rayo del cristal),
+  pinchos 25, lava 20, caer 30; curan 30 el corazón del suelo y 60 el
+  vendaje. **Cada golpe enseña su número** (`scripts/numero_dano.gd`, del
+  tamaño de pantalla aunque cambie el zoom): blanco el normal, dorado el
+  cargado, naranja la quemadura, violeta el agujero negro y rojo encima del
+  jugador. El número es lo que quita de verdad (el golpe que mata enseña lo
+  que le quedaba). El corazón que cae al suelo se quedó con el dibujo de
+  corazón (`CorazonSuelto.pintar_corazon`). **El escudo del mago blanco lleva
+  un aro** por fuera que se vacía con el tiempo que le queda (y el del jefe,
+  igual).
 - **Arte por piso**: desde el 2026-10-08, cada uno de los 12 pisos tiene sus
   propias rocas de dentro (`assets/rocas/piso_NN/`), de la misma roca que su
   pared: cantos con musgo, basalto mojado, caliza, magma con olivino,
@@ -445,8 +462,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   muertes, y los enemigos sueltan 9-16 ventajas además de las 12 de los pisos.
   Desde el 2026-09-30 caen además unos 16 corazones por partida al limpiar
   salas.
-  Los de distancia quitan 2 y hay pinchos, lava y agujeros, con 3 o 4
-  corazones. Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
+  Los de distancia quitan de 20 a 50 y hay pinchos, lava y agujeros, con 100
+  de vida (130 el rojo). Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
   (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
 - **Posibles mejoras de las salas**, no pedidas: oscurecer las salas vecinas
   (cuando la vista es más ancha o más alta que la sala, se asoma un trozo de
@@ -591,14 +608,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de Matías: dispara sin avisar.
 - **Como mucho la mitad de cada sala son de distancia.** Una sala solo de
   tiradores es una lluvia de disparos desde todas partes.
-- **El veneno frena, no quita más vida.** Con tres corazones, un daño que
+- **El veneno frena, no quita más vida.** Con poca vida, un daño que
   siguiera bajando la vida sería demasiado. Frenado, el peligro es el
   siguiente golpe.
 - **Las crías de slime ni explotan ni se dividen**, o matar un slime
   desataría una cadena que no se puede esquivar. Y **se apuntan en la sala
   antes de que la madre avise de que muere**: si no, las puertas se abrirían
   un instante con las crías vivas.
-- **Caer por un agujero cuesta un corazón y no mata.** Se reaparece dentro de
+- **Caer por un agujero cuesta 30 de vida y no mata.** Se reaparece dentro de
   la puerta por la que se entró (que siempre está libre). Cuesta aunque se
   esté parpadeando tras un golpe (`recibir_dano(..., true)`): si no, caer
   justo después de un golpe saldría gratis.

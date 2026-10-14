@@ -10,7 +10,7 @@
 class_name Lava
 extends Peligro
 
-const DANO: int = 1
+const DANO: int = 20
 ## Lo que tarda en apagarse al final, para que no desaparezca de golpe.
 const ENFRIADO: float = 0.8
 ## Lo que tarda en crecer al aparecer. Los charcos del magma se ven caer.

@@ -15,7 +15,7 @@ extends ComportamientoEnemigo
 @export var duracion_onda: float = 0.5
 ## Segundos sin poder volver a pisar.
 @export var recarga: float = 3.0
-@export var dano_onda: int = 1
+@export var dano_onda: int = 30
 
 
 func empezar(enemigo: Enemigo) -> void:

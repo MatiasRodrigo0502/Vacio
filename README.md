@@ -152,7 +152,7 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 | Mago | Ventaja | Pega |
 |---|---|---|
 | **Mago oscuro** | Anda un 13 % más rápido, y su bola cargada abre un **agujero negro** donde se acaba, que atrae a los enemigos y quita vida a los del centro | Su bola cargada llega menos lejos que la del rojo |
-| **Mago rojo** | Un corazón más, y el ataque cargado sale en medio tiempo y mata de un golpe a cualquier cosa. Sus disparos **queman**: 0,25 de vida por segundo durante 3 s | Anda un 9 % más lento |
+| **Mago rojo** | 30 de vida más, y el ataque cargado sale en medio tiempo y quita 50: mata de un golpe a cualquier enemigo. Sus disparos **queman**: 3 de vida por segundo durante 3 s | Anda un 9 % más lento |
 | **Mago blanco** | Su ataque especial es una burbuja que lo cubre entero durante 5 s: los disparos rebotan en ella y los enemigos que la tocan salen despedidos. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | No tiene bola cargada: su ataque especial protege, pero no hace daño |
 
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese
@@ -164,7 +164,18 @@ espaldas, te ve a ti y no a la salida.
 
 Las rocas y plataformas son sólidas: no se cruzan ni se rompen, pero te sirven
 de parapeto. Lo que te quita vida son los **enemigos** al tocarte, con ~1 s de
-invulnerabilidad después de cada golpe. Del piso 2 en adelante los hay, y van a
+invulnerabilidad después de cada golpe.
+
+**La vida va en puntos** (desde la 0.25): tienes **100** (130 el mago rojo), en
+una barra arriba a la izquierda que baja lo que te quita cada golpe; lo que se
+acaba de perder se queda un momento en blanco. Cada golpe enseña encima del
+mago lo que te ha quitado, en rojo. A los enemigos les pasa lo mismo: al
+darles salta **el número de vida que les quitas** (blanco el disparo normal,
+dorado y grande el cargado, naranja la quemadura y violeta el agujero negro).
+Un disparo normal quita **10** (hasta 13: varía un poco hacia arriba) y el
+cargado 30; una rata o un murciélago tienen 10, un slime 20, un gólem 50. Un
+golpe de un enemigo te quita de 20 (una rata) a 50 (el rayo del cristal), y
+el corazón que cae al limpiar una sala cura 30. Del piso 2 en adelante los hay, y van a
 más según bajas. **Cada uno pelea a su manera**: los slimes saltan (el de
 magma dejando lava) o rebotan por la sala, la rata corre en zigzag, el
 murciélago se lanza en picado, el fantasma atraviesa rocas y se desvanece, la

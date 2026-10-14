@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
-[ext_resource type="Script" path="res://scripts/corazones.gd" id="2_corazones"]
+[ext_resource type="Script" path="res://scripts/barra_vida.gd" id="2_barra_vida"]
 [ext_resource type="Script" path="res://scripts/minimapa.gd" id="3_minimapa"]
 [ext_resource type="Script" path="res://scripts/mejoras_recogidas.gd" id="4_mejoras"]
 [ext_resource type="Script" path="res://scripts/barra_jefe.gd" id="5_barra_jefe"]
@@ -36,12 +36,13 @@ theme_override_font_sizes/font_size = 20
 text = "VIDA"
 vertical_alignment = 1
 
-[node name="Corazones" type="Control" parent="."]
+[node name="BarraVida" type="Control" parent="."]
 offset_left = 100.0
 offset_top = 86.0
-offset_right = 360.0
+offset_right = 380.0
 offset_bottom = 118.0
-script = ExtResource("2_corazones")
+mouse_filter = 2
+script = ExtResource("2_barra_vida")
 
 [node name="Especial" type="Label" parent="."]
 offset_left = 28.0

@@ -36,6 +36,10 @@ func _ready() -> void:
 	_jugador.caido.connect(_al_caer)
 	# Temblor corto con cada golpe: 7 px que se calman en un cuarto de segundo.
 	_jugador.dano_recibido.connect(_camara.sacudir.bind(7.0))
+	# Lo que te quita cada golpe, en rojo, encima del mago.
+	_jugador.golpeado.connect(func(cantidad: int, _origen: String) -> void:
+		NumeroDano.soltar(self, _jugador.centro_colision() + Vector2(0.0, -40.0), cantidad,
+			NumeroDano.Estilo.JUGADOR))
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 	_menu_pausa.reinicio_solicitado.connect(_reiniciar)

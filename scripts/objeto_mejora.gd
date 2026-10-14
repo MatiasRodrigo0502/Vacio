@@ -25,9 +25,9 @@ extends Resource
 @export var color: Color = Color(0.6, 0.8, 1.0)
 
 @export_group("Lo que mejora")
-## Corazones que suma al maximo. Ademas cura esa misma cantidad.
+## Vida que suma al maximo. Ademas cura esa misma cantidad.
 @export var vida_maxima_extra: int = 0
-## Corazones que cura sin subir el maximo.
+## Vida que cura sin subir el maximo (el jugador tiene 100).
 @export var cura: int = 0
 ## Velocidad de movimiento que suma, en px/s.
 @export var velocidad_extra: float = 0.0

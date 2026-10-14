@@ -7,7 +7,7 @@ extends CanvasLayer
 
 @onready var _etiqueta_piso: Label = $EtiquetaPiso
 @onready var _etiqueta_capa: Label = $EtiquetaCapa
-@onready var _corazones: Corazones = $Corazones
+@onready var _barra_vida: BarraVida = $BarraVida
 @onready var _especial: Label = $Especial
 @onready var _aviso: Label = $Aviso
 @onready var _minimapa: Minimapa = $Minimapa
@@ -35,7 +35,7 @@ func mostrar_mapa(piso: Piso) -> void:
 
 
 func actualizar_vida(vida_actual: int, vida_maxima: int) -> void:
-	_corazones.actualizar(vida_actual, vida_maxima)
+	_barra_vida.actualizar(vida_actual, vida_maxima)
 
 
 ## Dice si queda el ataque especial en este piso (es uno por piso): con su

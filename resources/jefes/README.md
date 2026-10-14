@@ -29,8 +29,8 @@ oro.
 
 | | |
 |---|---|
-| Vida | 90 |
-| Rayo (`proyectiles/rayo_caido.tres`) | 1 de daño, cada 1,5 s, con 0,55 s de línea de aviso |
+| Vida | 900 |
+| Rayo (`proyectiles/rayo_caido.tres`) | quita 20, cada 1,5 s, con 0,55 s de línea de aviso |
 | Distancia | se queda a unos 380 px |
 
 Cómo pelea lo decide `scripts/comportamientos/mago_caido.gd`, con todos sus
@@ -38,19 +38,19 @@ números en el `.tres` (el `comportamiento`):
 
 - **Fase 1 (100–66 %)**: rayos y el **agujero negro** del mago oscuro al
   revés: se abre donde estás (0,9 s de aviso mientras crece) y tira de ti;
-  en el centro quita 1. Ver `scripts/pozo_vacio.gd`.
+  en el centro quita 15. Ver `scripts/pozo_vacio.gd`.
 - **Fase 2 (66–33 %)**: además, el **escudo** del mago blanco: 4 s en los que
   no se le puede dar (ni quemar) y suelta anillos de 10 esquirlas de hielo
-  que frenan (`proyectiles/esquirla_hielo.tres`).
+  que frenan y quitan 12 (`proyectiles/esquirla_hielo.tres`).
 - **Fase 3 (33–0 %)**: además, el **ataque cargado** del mago rojo: carga
   1,4 s un rayo de fuego (la línea te sigue y se queda quieta los últimos
-  0,45 s), quita 2 y deja charcos de fuego. **Un pilar lo para, pero se
+  0,45 s), quita 50 y deja charcos de fuego. **Un pilar lo para, pero se
   rompe** (`Obstaculo.romper()`, con escombros): cada pilar cubre una vez.
   Los rayos salen de tres en tres.
 - Cada fase va más deprisa (`ritmo_fases`: 1, 1,15 y 1,35) y entre una
   habilidad y otra pasan 5 s.
 - **Al cambiar de fase** se va al centro, no se le puede dar 1,6 s, suelta
-  una onda (quita 1) y deja un corazón.
+  una onda (quita 25) y deja un corazón.
 - **Al morir**: explosión grande y un segundo a cámara lenta.
 
 Hasta que se cierran las puertas y acaba su presentación (2,2 s) no se le

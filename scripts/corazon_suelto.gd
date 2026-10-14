@@ -9,8 +9,10 @@
 class_name CorazonSuelto
 extends Area2D
 
-## Corazones que cura.
-const CURA: int = 1
+## Vida que cura (el jugador tiene 100).
+const CURA: int = 30
+const COLOR_LLENO := Color(0.90, 0.22, 0.25)
+const COLOR_BRILLO := Color(1.0, 0.55, 0.55)
 ## Ancho del dibujo. Algo mas grande que los del HUD: en el suelo, con la
 ## camara lejos en los pisos hondos, tiene que verse.
 const ANCHO: float = 30.0
@@ -68,8 +70,23 @@ func _draw() -> void:
 	var latido := 0.5 + 0.5 * sin(_fase * 4.0)
 	draw_circle(centro, ANCHO * 0.75 * escala, Color(1.0, 0.25, 0.28, 0.12 + 0.1 * latido))
 
-	Corazones.pintar_corazon(self, centro + Vector2(0.0, 1.5), ANCHO * escala * 1.12,
+	pintar_corazon(self, centro + Vector2(0.0, 1.5), ANCHO * escala * 1.12,
 		Color(0.25, 0.04, 0.05))
-	Corazones.pintar_corazon(self, centro, ANCHO * escala, Corazones.COLOR_LLENO)
+	pintar_corazon(self, centro, ANCHO * escala, COLOR_LLENO)
 	draw_circle(centro + Vector2(-ANCHO * 0.18, -ANCHO * 0.22) * escala,
-		ANCHO * 0.09 * escala, Corazones.COLOR_BRILLO)
+		ANCHO * 0.09 * escala, COLOR_BRILLO)
+
+
+## Un corazon son dos circulos arriba y un triangulo apuntando hacia abajo.
+##
+## Era de los corazones del HUD (Corazones), que se quitaron el 2026-10-14
+## al poner la barra de vida; el corazon del suelo se quedo con el dibujo.
+static func pintar_corazon(lienzo: CanvasItem, centro: Vector2, ancho: float, color: Color) -> void:
+	var radio := ancho * 0.28
+	var alto := ancho * 0.92
+	lienzo.draw_circle(centro + Vector2(-ancho * 0.22, -alto * 0.18), radio, color)
+	lienzo.draw_circle(centro + Vector2(ancho * 0.22, -alto * 0.18), radio, color)
+	lienzo.draw_colored_polygon(PackedVector2Array([
+		centro + Vector2(-ancho * 0.48, -alto * 0.10),
+		centro + Vector2(ancho * 0.48, -alto * 0.10),
+		centro + Vector2(0.0, alto * 0.48)]), color)

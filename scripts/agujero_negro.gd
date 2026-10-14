@@ -97,7 +97,7 @@ func _physics_process(delta: float) -> void:
 			# Que el tiron no lo meta en una roca ni lo saque de la sala.
 			enemigo.mantener_en_la_sala()
 		if toca_dano and distancia <= NUCLEO:
-			enemigo.herir(_dano * TIC)
+			enemigo.herir(_dano * TIC, 0.0, NumeroDano.Estilo.VACIO)
 	queue_redraw()
 	_nucleo.queue_redraw()
 

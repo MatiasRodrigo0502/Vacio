@@ -6,9 +6,9 @@ mismo script, `scripts/proyectil_enemigo.gd`: lo que cambia son estos números.
 
 | Proyectil | Estilo | Daño | Velocidad | Efecto | Lo tiran |
 |---|---|---|---|---|---|
-| `veneno.tres` | bola | 1 | 300 | frena al jugador 2,5 s (va al 60 %) | serpiente, planta venenosa |
-| `magma.tres` | parábola | 2 | 330 | al caer deja un charco de lava 3,5 s | gólem de roca |
-| `rayo.tres` | rayo | 2 | 1300 | ninguno: es rápido y va recto | cristal vivo |
+| `veneno.tres` | bola | 20 | 300 | frena al jugador 2,5 s (va al 60 %) | serpiente, planta venenosa |
+| `magma.tres` | parábola | 45 | 330 | al caer deja un charco de lava 3,5 s | gólem de roca |
+| `rayo.tres` | rayo | 50 | 1300 | ninguno: es rápido y va recto | cristal vivo |
 
 Los tres estilos:
 

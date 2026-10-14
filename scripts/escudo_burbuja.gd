@@ -174,5 +174,12 @@ func _draw() -> void:
 	# izquierda: se lee como una burbuja y no como un aro plano.
 	var giro := _fase * 1.6
 	draw_arc(Vector2.ZERO, r - 3.0, giro, giro + 0.9, 12, Color(1.0, 1.0, 1.0, 0.55 * alfa), 2.0, true)
+	# El tiempo que le queda: un aro por fuera que se va vaciando desde arriba,
+	# en el sentido del reloj (pedido por Matias el 2026-10-14). El hueco se
+	# ve flojo, para que se lea cuanto falta.
+	var queda := _levantado / duracion
+	draw_arc(Vector2.ZERO, r + 8.0, 0.0, TAU, 48, Color(0.0, 0.0, 0.0, 0.35 * alfa), 5.0, true)
+	draw_arc(Vector2.ZERO, r + 8.0, -PI * 0.5, -PI * 0.5 + TAU * queda, 48,
+		Color(1.0, 1.0, 1.0, 0.9 * alfa), 3.5, true)
 	draw_arc(Vector2.ZERO, r * 0.72, deg_to_rad(200.0), deg_to_rad(245.0), 10,
 		Color(1.0, 1.0, 1.0, 0.6 * alfa), 3.0, true)

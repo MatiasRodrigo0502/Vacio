@@ -21,14 +21,14 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## Las animaciones. Ahora mismo todas tienen una sola: "moverse".
 @export var animaciones: SpriteFrames = null
 
-## Cuantos disparos aguanta.
-@export var vida: int = 2
+## Cuanta vida tiene. Un disparo normal quita 10 (de 10 a 13).
+@export var vida: int = 20
 
 ## Velocidad de persecucion en px/s. A 0 se queda quieto, como el cristal.
 @export var velocidad: float = 78.0
 
 ## Vida que quita al tocar al jugador.
-@export var dano: int = 1
+@export var dano: int = 25
 
 ## Alto que ocupa en el mundo. El sprite se escala a esto.
 @export var alto: float = 54.0
@@ -77,8 +77,8 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 @export var division: int = 0
 ## Radio de la explosion al morir. 0 = no explota.
 @export var radio_explosion: float = 0.0
-## Corazones que quita la explosion si pilla al jugador dentro.
-@export var dano_explosion: int = 1
+## Vida que quita la explosion si pilla al jugador dentro.
+@export var dano_explosion: int = 25
 
 ## La cria se fabrica una vez y se reutiliza: todas las crias de un tipo son
 ## iguales, y asi no se crea un Resource nuevo por cada slime que muere.
@@ -92,14 +92,14 @@ func es_a_distancia() -> bool:
 	return ataque == Ataque.DISTANCIA and proyectil != null
 
 
-## El mismo enemigo en pequeno: mas rapido, 1 de vida, sin crias ni
+## El mismo enemigo en pequeno: mas rapido, 10 de vida, sin crias ni
 ## explosion. Si las crias explotaran o se dividieran, matar un slime
 ## desataria una cadena que no se puede esquivar.
 func cria() -> TipoEnemigo:
 	if _cria == null:
 		_cria = duplicate()
 		_cria.nombre = nombre + " (cria)"
-		_cria.vida = 1
+		_cria.vida = 10
 		_cria.alto = alto * 0.62
 		_cria.velocidad = velocidad * 1.25
 		_cria.division = 0

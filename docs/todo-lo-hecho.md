@@ -16,7 +16,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 - **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; los disparos del rojo queman; el blanco, en vez de ataque cargado, saca una burbuja que lo cubre entero y hace rebotar disparos y enemigos, y su disparo frena a los enemigos.
 - **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón: una bola cada medio segundo.
-- **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y hace 3 de daño. La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca una burbuja de 5 s en la que rebotan los disparos y los enemigos. El ataque especial es uno por piso. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o hacia donde mira el mago.
+- **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y quita 30 (el normal, 10). La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca una burbuja de 5 s en la que rebotan los disparos y los enemigos. El ataque especial es uno por piso. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o hacia donde mira el mago.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Enemigos:** salen desde el piso 2, y cada uno pelea a su manera: slimes que saltan (el de magma dejando lava) o rebotan, rata en zigzag, murciélago en picado, fantasma que se desvanece, planta que excava, serpiente en abanico, planta con anillos de esporas, gólem con pisotón y cristal que se teletransporta. Todos avisan antes de lo que pega de golpe.
 - **Peligros del suelo:** pinchos, agujeros al vacío y lava.
@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 14/10/2026 | Portada nueva en el menú principal; el mago blanco quita lo mismo que los demás | — |
+| 14/10/2026 | Vida en puntos: barra de vida, números de daño al dar y al recibir, y aro de tiempo en el escudo | — |
+| 14/10/2026 | Portada nueva en el menú principal; el mago blanco quita lo mismo que los demás | `0b98c63` |
 | 14/10/2026 | El Mago Caído pasa a negro y oro, con guadaña; su rayo de fuego rompe los pilares | `ddf6bae` |
 | 14/10/2026 | El Mago Caído, jefe del piso 12: rayos y las habilidades de los otros tres magos, en tres fases | `14d42b9` |
 | 13/10/2026 | Versión para Mac en cada release, probada en un Mac de GitHub antes de publicar | `b7f000c` |
@@ -117,7 +118,7 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 ## Combate, enemigos y peligros
 
-Los enemigos se reparten en dos tipos de ataque. Los de cuerpo a cuerpo son rápidos (velocidad de 100 a 195). Los de distancia son lentos (0 a 55), pero quitan 2 corazones y avisan antes de cada disparo. Hay 11 tipos, que salen al azar desde el piso 2 entre los que ya pueden aparecer a esa profundidad.
+Los enemigos se reparten en dos tipos de ataque. Los de cuerpo a cuerpo son rápidos (velocidad de 100 a 195). Los de distancia son lentos (0 a 55), pero pegan más fuerte (hasta 50 de tus 100 de vida) y avisan antes de cada disparo. Hay 11 tipos, que salen al azar desde el piso 2 entre los que ya pueden aparecer a esa profundidad.
 
 | Enemigo | Ataque | Qué hace |
 | --- | --- | --- |
@@ -136,7 +137,7 @@ Los enemigos se reparten en dos tipos de ataque. Los de cuerpo a cuerpo son ráp
 **Peligros del suelo:** de 1 a 3 por sala de pelea, repartidos sin tapar nunca el paso de una puerta al centro.
 
 - **Pinchos** (desde el piso 2): salen a ratos.
-- **Agujeros al vacío** (desde el 3): cuestan un corazón y devuelven a la entrada de la sala.
+- **Agujeros al vacío** (desde el 3): cuestan 30 de vida y devuelven a la entrada de la sala.
 - **Lava** (desde el 4): hace daño mientras se pisa.
 - **Pinchos en las puertas** (desde el 3): en el 40 % de las puertas de las salas de pelea, una placa de pinchos ocupa todo el paso al entrar. Se cruza esperando a que bajen.
 
@@ -184,7 +185,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 - **Menú principal:** el título VACÍO en pixel art (piedra con grietas de lava y estalactitas, hecho con `generar_titulo.py`), los tres magos debajo, brasas subiendo y el volumen abajo a la izquierda; jugar, controles y salir, con la elección de mago al pulsar Jugar.
 - **Menú de pausa** con Escape, con el volumen de la música y de los efectos.
 - **Sonido y música**, todo generado por síntesis con nuestros scripts: una música para la portada, otra para los pisos 1-6 y otra más grave para los 7-12, más la de ganar y la de perder; y 23 efectos (disparos, golpes, muertes, explosiones, puertas, objetos, escudo, agujero negro, caídas, botones...).
-- **HUD:** piso y capa, vida con corazones dibujados por código y, debajo, el icono de cada ventaja recogida («x2» si se repite).
+- **HUD:** piso y capa, la vida en una barra con su número («70 / 100») y, debajo, el icono de cada ventaja recogida («x2» si se repite). Al dar a un enemigo salta el número de vida que le quitas, y al recibir un golpe, el que te quitan.
 - **Minimapa** arriba a la derecha, con las salas visitadas, el objeto y la bajada.
 - **Pantalla final** de victoria o derrota.
 
@@ -257,7 +258,7 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 **Antes de entregar:**
 
-- [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones, con 3 o 4 corazones de vida. Todo se ajusta en los `.tres` de `resources/`. Desde el 13/10/2026 cada partida se guarda en un registro (tiempo por piso y por sala, cada golpe y de qué, vida recuperada, enemigos, objetos) y `herramientas/analizar_partidas.py` saca las medias de todas: el equipo juega, junta los archivos y se ajusta con datos.
+- [ ] **Equilibrar la dificultad jugando.** Son unas 600 muertes por partida, 9-16 ventajas extra y unos 16 corazones que curan 30, con 100 de vida (130 el rojo). Todo se ajusta en los `.tres` de `resources/`. Desde el 13/10/2026 cada partida se guarda en un registro (tiempo por piso y por sala, cada golpe y de qué, vida recuperada, enemigos, objetos) y `herramientas/analizar_partidas.py` saca las medias de todas: el equipo juega, junta los archivos y se ajusta con datos.
 - [ ] **Aclarar de dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del rojo traen autor; son los únicos assets así. El blanco sale de la del rojo.
 - [ ] **Verificar las licencias de lo que queda de fuera.** Los escenarios ya son todos propios; de fuera quedan los magos (ver el punto anterior). Los packs de itch.io de antes ya no se usan.
 

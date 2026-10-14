@@ -229,22 +229,26 @@ func matar() -> void:
 	_quitar_vida(1.0, 0.0)
 
 
-## Un golpe de un punto de vida: el contrato de todo lo que se puede romper.
+## Un golpe: el contrato de todo lo que se puede romper. Lo que quita un
+## disparo normal (10).
 func romper() -> void:
-	herir(1.0)
+	herir(10.0)
 
 
 ## La llama la bola magica: le quita 'cantidad' de vida (1 el disparo
 ## normal, varios el cargado; cada mago puede cambiarlo, ver
 ## PersonajeJugable.dano_disparo) y, si 'frena' > 0, lo deja ese
 ## tiempo frenado. Intocable (bajo tierra, desvanecido), no le entra.
-func herir(cantidad: float, frena: float = 0.0) -> void:
+##
+## 'estilo' es de donde viene, para el numero que salta (NumeroDano): el
+## disparo, el cargado, la quemadura, el agujero negro.
+func herir(cantidad: float, frena: float = 0.0, estilo: NumeroDano.Estilo = NumeroDano.Estilo.NORMAL) -> void:
 	if not es_tangible():
 		return
 	if es_invulnerable():
 		tipo.comportamiento.bloqueado(self)
 		return
-	_quitar_vida(cantidad, frena)
+	_quitar_vida(cantidad, frena, estilo)
 
 
 ## El dano de verdad, para herir() y matar().
@@ -252,9 +256,13 @@ func herir(cantidad: float, frena: float = 0.0) -> void:
 ## Puede llegar cuando el enemigo ya esta muerto: queue_free() no lo borra
 ## hasta el final del fotograma y hasta entonces sigue siendo un objeto
 ## valido. Sin este guardia, emitiria "muerto" mas de una vez.
-func _quitar_vida(cantidad: float, frena: float) -> void:
+func _quitar_vida(cantidad: float, frena: float, estilo: NumeroDano.Estilo = NumeroDano.Estilo.NORMAL) -> void:
 	if _vida <= 0:
 		return
+	# Lo que le ha quitado, encima de la cabeza. Con lo que de verdad quita:
+	# al ultimo golpe no le sobra vida que quitar.
+	NumeroDano.soltar(get_parent(), global_position + Vector2(0.0, -tipo.alto * 0.55),
+		minf(cantidad, _vida), estilo)
 	_vida -= cantidad
 	if frena > 0.0 and _vida > 0:
 		frenar(frena)
@@ -305,7 +313,7 @@ func _arder(delta: float) -> void:
 		return
 	_tic_quemadura += TIC_QUEMADURA
 	_quemaduras -= 1
-	herir(_dano_quemadura)
+	herir(_dano_quemadura, 0.0, NumeroDano.Estilo.FUEGO)
 
 
 ## Lo deja frenado 'segundos' (si ya lo estaba, se queda con lo que dure mas).

@@ -17,7 +17,7 @@ extends Peligro
 const DENTRO: float = 1.5
 const AVISO: float = 0.45
 const FUERA: float = 1.0
-const DANO: int = 1
+const DANO: int = 25
 
 ## Lo que tardan en subir del todo, en bajar y en asomar para avisar.
 const SUBIDA: float = 0.06

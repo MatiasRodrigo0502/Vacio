@@ -46,7 +46,7 @@ const ESPECIAL_ESCUDO := 1
 @export var halo_cargado: Color = Color(0.52, 0.28, 0.95)
 
 @export_group("Ventajas")
-## Corazones de mas (o de menos) con los que empieza.
+## Vida de mas (o de menos) con la que empieza (sobre 100).
 @export var vida_maxima_extra: int = 0
 ## Velocidad punta de mas, en px/s.
 @export var velocidad_extra: float = 0.0
@@ -75,12 +75,12 @@ const ESPECIAL_ESCUDO := 1
 ## Hasta donde atrae a los enemigos, en px desde su centro.
 @export var radio_agujero: float = 150.0
 ## Vida por segundo que quita a los que estan en su centro.
-@export var dano_agujero: float = 2.0
+@export var dano_agujero: float = 20.0
 
 @export_group("Disparo normal")
-## Cuanta vida quita cada bola normal a un enemigo. 1 es lo de siempre; con
-## 0,5 hacen falta el doble de impactos. El ataque cargado no cambia.
-@export var dano_disparo: float = 1.0
+## Cuanta vida quita cada bola normal a un enemigo: 10 (y hasta un 30 % mas,
+## ver BolaMagica.VARIACION). El ataque cargado no cambia.
+@export var dano_disparo: float = 10.0
 ## Segundos que deja frenado a un enemigo cada bola normal (anda y dispara a
 ## la mitad). 0 = no frena.
 @export var frena_disparo: float = 0.0
@@ -91,7 +91,7 @@ const ESPECIAL_ESCUDO := 1
 ## cuenta en estos segundos: no se suman dos quemaduras a la vez.
 @export var quemadura_duracion: float = 0.0
 ## Vida que quita la quemadura cada segundo.
-@export var quemadura_dano: float = 0.25
+@export var quemadura_dano: float = 3.0
 
 @export_group("Ataque especial")
 ## Lo que sale con el clic derecho o el espacio.

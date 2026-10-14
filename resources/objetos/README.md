@@ -11,7 +11,7 @@ partida** y se pierden al empezar una nueva.
 
 | Objeto | Qué hace | Desde el piso |
 |---|---|---|
-| Vendaje | Cura 2 corazones | 1 |
+| Vendaje | Cura 60 de vida | 1 |
 | Botas ligeras | +45 de velocidad | 1 |
 | Dedal rápido | Cadencia ×0,76 (disparas más seguido) | 2 |
 | Núcleo ardiente | +190 de velocidad de bola | 3 |
