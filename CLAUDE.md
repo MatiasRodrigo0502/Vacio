@@ -304,7 +304,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **El ataque especial es uno por piso** (pedido por Matías el 2026-10-09),
   sea la bola cargada o el escudo: `Jugador.especial_disponible`, que se gasta
   al soltar la bola o sacar el escudo y vuelve en `reubicar()` (piso nuevo) y
-  `restaurar_vida()`. El HUD lo enseña arriba a la izquierda, debajo del piso
+  `restaurar_vida()`. El HUD lo enseña debajo de la vida
   (`Hud.actualizar_especial`).
 - **Agujero negro del mago oscuro** (2026-10-09): su bola cargada llega a
   320 px (`alcance_cargado`; la del rojo, hasta chocar) y donde se apaga
@@ -415,8 +415,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de vida que le quitas»). El jugador tiene **100** (130 el rojo) en una barra
   (`scripts/barra_vida.gd`, en lugar de los corazones), más larga cuanta más
   vida máxima, con lo que se acaba de perder en blanco un momento. Va
-  **abajo a la derecha** (Matías, 2026-10-14), pegada al borde y creciendo
-  hacia la izquierda, con «VIDA» delante dibujado por la propia barra. Todo va
+  **arriba a la izquierda**: en la 0.27 estuvo abajo a la derecha y Matías la
+  devolvió (2026-10-14) porque en la sala del jefe quedaba junto a la barra
+  del jefe y se veía mal. Todo va
   ×10 respecto a antes: un disparo normal quita **10** (de 10 a 13,
   `BolaMagica.VARIACION`, solo hacia arriba para que lo que caía de un
   disparo siga cayendo de uno), el cargado 30 (50 el del rojo), la quemadura
