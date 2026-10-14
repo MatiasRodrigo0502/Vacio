@@ -253,6 +253,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   lo había oído al hacerlo**: Claude no puede oír, solo medir (picos, volumen
   medio, recortes, que el bucle empalme). Hay que escucharlo y ajustar.
 
+- **Pantalla completa** (2026-10-14, pedido por Matías): el autoload
+  `Pantalla` (`scripts/pantalla.gd`) pone el juego exportado a pantalla
+  completa sin bordes (`WINDOW_MODE_FULLSCREEN`, no la exclusiva: no cambia la
+  resolución y Alt+Tab no parpadea). F11 o Alt+Intro pasan a ventana y
+  vuelven, también en pausa, y se guarda en `user://ajustes.cfg`
+  (`[pantalla] completa`). **Desde Godot (editor o `jugar.bat`) arranca en
+  ventana** y lo que se elija con F11 no se guarda, para no cambiar cómo
+  arranca el `.exe` del mismo ordenador. Las pruebas con ventana de Claude
+  usan el binario del editor, así que tampoco se ponen a pantalla completa.
+
 - **Elección de mago**: al pulsar Jugar se elige entre los magos de
   `resources/personajes/`. Cada uno trae su arte y su ventaja, y la ventaja va
   a los valores **de fábrica** del jugador, así que sobrevive a reiniciar. El

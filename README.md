@@ -107,6 +107,7 @@ se queda y el motivo está en `build/exportar.log`.
 | Disparar | Flechas, o clic izquierdo apuntando con el ratón |
 | Ataque especial | Clic derecho o espacio, **una vez por piso**. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o, sin ninguna, hacia donde mira el mago (para jugar sin ratón). Mago blanco: saca el escudo |
 | Pausa (continuar, reiniciar o volver al menú) | Esc |
+| Pantalla completa o ventana | F11 (o Alt+Intro). El juego empieza a pantalla completa y se acuerda de lo último que elegiste |
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
 el piso 1 hace de tutorial y los explica con carteles pintados sobre el suelo,
