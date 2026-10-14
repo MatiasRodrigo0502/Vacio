@@ -55,6 +55,7 @@ func _init(jugador: Jugador) -> void:
 
 func _ready() -> void:
 	_jugador.golpeado.connect(_al_recibir_golpe)
+	_jugador.veneno_quita.connect(_al_quitar_veneno)
 	_jugador.vida_cambiada.connect(_al_cambiar_vida)
 	_jugador.bola_lanzada.connect(_al_disparar)
 	_jugador.especial_cambiado.connect(_al_cambiar_especial)
@@ -215,6 +216,27 @@ func _al_recibir_golpe(cantidad: int, origen: String) -> void:
 	_ultimo_golpe = {"sala": golpe.sala, "origen": golpe.por}
 
 
+## Lo que quita el veneno poco a poco va con los golpes, para que la vida
+## perdida cuadre, pero marcado ("veneno": true) y con su propio nombre
+## ("Serpiente (veneno), poco a poco"): asi no cuenta como un golpe mas y se
+## ve aparte cuanto quita el veneno y cuanto el escupitajo.
+func _al_quitar_veneno(cantidad: int, origen: String) -> void:
+	if _piso.is_empty():
+		return
+	var golpe := {
+		"segundo": _piso.segundos,
+		"sala": _nombre_sala(_piso_nodo.sala_actual() if is_instance_valid(_piso_nodo) else null),
+		"por": (origen if origen != "" else "veneno") + ", poco a poco",
+		"vida": cantidad,
+		"queda": _jugador.vida_actual,
+		"veneno": true,
+	}
+	_piso.golpes.append(golpe)
+	if not _pelea.is_empty():
+		_pelea.vida_perdida += cantidad
+	# _ultimo_golpe no se toca: el veneno no mata, asi que nunca es la muerte.
+
+
 func _al_cambiar_vida(vida: int, _maxima: int) -> void:
 	if not _piso.is_empty() and vida > _ultima_vida:
 		_piso.vida_recuperada += vida - _ultima_vida
@@ -303,9 +325,10 @@ func _resumen() -> Dictionary:
 	var vida_recuperada := 0
 	var muertos := 0
 	for piso: Dictionary in _partida.pisos:
-		golpes += piso.golpes.size()
 		for golpe: Dictionary in piso.golpes:
 			vida_perdida += int(golpe.vida)
+			if not golpe.get("veneno", false):
+				golpes += 1
 		vida_recuperada += int(piso.vida_recuperada)
 		for cuantos: int in piso.enemigos_muertos.values():
 			muertos += cuantos

@@ -39,6 +39,10 @@ enum Estilo { BOLA, RAYO, PARABOLA }
 @export_group("Efectos")
 ## Segundos que el jugador va frenado (envenenado) tras recibirlo. 0 = nada.
 @export var ralentiza: float = 0.0
+## Vida que quita el veneno mientras dura (los segundos de 'ralentiza'), de
+## punto en punto y repartida: con 2 en 3 s, un punto cada segundo y medio.
+## Va aparte de 'dano', que es el golpe. 0 = solo frena.
+@export var veneno_vida: int = 0
 ## Al caer deja un charco de lava de este radio. 0 = no deja nada.
 @export var charco_radio: float = 0.0
 ## Segundos que dura el charco antes de enfriarse.

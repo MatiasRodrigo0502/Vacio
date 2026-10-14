@@ -40,6 +40,10 @@ func _ready() -> void:
 	_jugador.golpeado.connect(func(cantidad: int, _origen: String) -> void:
 		NumeroDano.soltar(self, _jugador.centro_colision() + Vector2(0.0, -40.0), cantidad,
 			NumeroDano.Estilo.JUGADOR))
+	# Y lo que quita el veneno poco a poco, en verde y mas pequeno.
+	_jugador.veneno_quita.connect(func(cantidad: int, _origen: String) -> void:
+		NumeroDano.soltar(self, _jugador.centro_colision() + Vector2(0.0, -40.0), cantidad,
+			NumeroDano.Estilo.VENENO))
 	_pantalla_final.reinicio_solicitado.connect(_reiniciar)
 	_pantalla_final.menu_solicitado.connect(_volver_al_menu)
 	_menu_pausa.reinicio_solicitado.connect(_reiniciar)

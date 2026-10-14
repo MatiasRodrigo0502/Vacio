@@ -66,7 +66,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 14/10/2026 | Pantalla completa al abrir el juego; F11 o Alt+Intro para pasar a ventana | — |
+| 14/10/2026 | El veneno quita 2 de vida poco a poco en sus 3 s (sin llegar a matar) | — |
+| 14/10/2026 | Pantalla completa al abrir el juego; F11 o Alt+Intro para pasar a ventana | `cae0707` |
 | 14/10/2026 | Solo cura el vendaje (60): sustituye al corazón del suelo (30), que se quedaba corto | — |
 | 14/10/2026 | Vida en puntos: barra de vida, números de daño al dar y al recibir, y aro de tiempo en el escudo | `83b4506` |
 | 14/10/2026 | Portada nueva en el menú principal; el mago blanco quita lo mismo que los demás | `0b98c63` |
@@ -130,7 +131,7 @@ Los enemigos se reparten en dos tipos de ataque. Los de cuerpo a cuerpo son ráp
 | Murciélago | Cuerpo a cuerpo | De los más rápidos |
 | Fantasma | Cuerpo a cuerpo | Persigue al jugador |
 | Planta azul | Cuerpo a cuerpo | Persigue al jugador |
-| Serpiente | Distancia | Veneno: el jugador va al 60 % de velocidad mientras dura |
+| Serpiente | Distancia | Veneno: 3 s al 60 % de velocidad, perdiendo 2 de vida poco a poco (no mata) |
 | Planta venenosa | Distancia | Veneno, como la serpiente |
 | Gólem | Distancia | Lanza magma en parábola, con un aro que marca dónde cae, y deja un charco de lava |
 | Cristal | Distancia | Rayo en línea recta. Marca antes la línea, que acaba en la primera roca |

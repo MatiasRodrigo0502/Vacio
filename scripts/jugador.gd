@@ -14,6 +14,10 @@ signal dano_recibido
 ## dano_recibido porque a esa la escucha la camara con un valor ya atado, y un
 ## argumento mas se lo descolocaria.
 signal golpeado(cantidad: int, origen: String)
+## Cada punto que quita el veneno mientras dura. Va aparte de golpeado porque
+## no es un golpe: ni tiembla la camara, ni parpadea, ni suena, y el registro
+## no lo cuenta como un golpe mas de la pelea.
+signal veneno_quita(cantidad: int, origen: String)
 signal sin_vida
 ## Se emite en cada disparo, con el punto de salida, hacia donde va y si es el
 ## ataque cargado. Va en la misma senal y no en otra aparte porque quien la
@@ -97,8 +101,9 @@ const CADENCIA_MINIMA: float = 0.09
 ## pasa a la animacion de reposo. No es 0 porque la friccion deja residuos.
 const VELOCIDAD_MINIMA_ANDAR: float = 12.0
 
-## Envenenado se va a esta fraccion de la velocidad. Frenar es lo que hace
-## peligroso al veneno: no quita mas vida, pero te deja a tiro del siguiente.
+## Envenenado se va a esta fraccion de la velocidad. Frenar es lo que mas
+## pesa del veneno: te deja a tiro del siguiente. Desde el 2026-10-14 (Matias)
+## ademas quita un poco de vida mientras dura (TipoProyectil.veneno_vida).
 const FACTOR_VENENO: float = 0.6
 const COLOR_VENENO := Color(0.6, 1.0, 0.55)
 ## Lo que tarda la animacion de caer por un agujero.
@@ -167,6 +172,12 @@ var _mirando: StringName = &"abajo"
 
 ## Segundos que le quedan envenenado (frenado). 0 = sano.
 var _tiempo_veneno: float = 0.0
+## Los puntos de vida que le quedan por quitar al veneno, cada cuanto quita
+## uno, lo que falta para el siguiente y quien lo tiro (para el registro).
+var _veneno_quedan: int = 0
+var _veneno_cada: float = 0.0
+var _veneno_reloj: float = 0.0
+var _veneno_origen: String = ""
 ## True mientras cae por un agujero: sin control y sin recibir golpes, que ya
 ## le va a costar un corazon la caida.
 var _cayendo: bool = false
@@ -488,6 +499,7 @@ func _lado(v: Vector2) -> StringName:
 ## Invulnerabilidad y veneno: cuentan hacia atras y deciden el color.
 func _actualizar_estados(delta: float) -> void:
 	_tiempo_veneno = maxf(_tiempo_veneno - delta, 0.0)
+	_actualizar_veneno(delta)
 	if _tiempo_invulnerable <= 0.0:
 		_sprite.modulate = _color_normal()
 		return
@@ -619,10 +631,44 @@ func _notification(que: int) -> void:
 		_cancelar_carga()
 
 
-## Lo frena un rato. Lo llama el proyectil de veneno al acertar. No se suma:
-## un segundo veneno reinicia la cuenta, no la alarga.
-func envenenar(segundos: float) -> void:
+## Lo frena un rato y, si 'vida' > 0, le quita esa vida de punto en punto
+## mientras dura. Lo llama el proyectil de veneno al acertar. No se suma: un
+## segundo veneno reinicia la cuenta, no la alarga ni quita el doble.
+func envenenar(segundos: float, vida: int = 0, origen: String = "") -> void:
 	_tiempo_veneno = maxf(_tiempo_veneno, segundos)
+	if vida <= 0 or segundos <= 0.0:
+		return
+	_veneno_quedan = vida
+	_veneno_cada = segundos / vida
+	_veneno_reloj = _veneno_cada
+	_veneno_origen = origen
+
+
+## Quita un punto cada _veneno_cada segundos hasta que no le quede. Sin
+## invulnerabilidad de por medio: viene del golpe de antes, que ya la dio. Se
+## para sin control (cayendo por un agujero, al acabar la partida).
+##
+## NO MATA, como caer por un agujero: el ultimo punto no lo quita. Si has
+## aguantado el escupitajo con 2 de vida, morir segundos despues por lo que
+## queda del veneno se sentiria injusto.
+func _actualizar_veneno(delta: float) -> void:
+	if _veneno_quedan <= 0 or not _control_activo:
+		return
+	_veneno_reloj -= delta
+	if _veneno_reloj > 0.0:
+		return
+	_veneno_reloj += _veneno_cada
+	_veneno_quedan -= 1
+	if invencible or vida_actual <= 1:
+		return
+	vida_actual -= 1
+	vida_cambiada.emit(vida_actual, vida_maxima)
+	veneno_quita.emit(1, _veneno_origen)
+
+
+func _parar_veneno() -> void:
+	_tiempo_veneno = 0.0
+	_veneno_quedan = 0
 
 
 func esta_envenenado() -> bool:
@@ -684,7 +730,7 @@ func reubicar(posicion: Vector2) -> void:
 	_espera_disparo = 0.0
 	_cancelar_carga()
 	_parar_caida()
-	_tiempo_veneno = 0.0
+	_parar_veneno()
 	# Cada piso trae su ataque especial, y empieza con el escudo bajado.
 	if _escudo != null:
 		_escudo.bajar()
@@ -708,7 +754,7 @@ func restaurar_vida() -> void:
 	_control_activo = true
 	_sprite.modulate = Color.WHITE
 	_parar_caida()
-	_tiempo_veneno = 0.0
+	_parar_veneno()
 	_espera_disparo = 0.0
 	_cancelar_carga()
 	if _escudo != null:

@@ -6,7 +6,7 @@ mismo script, `scripts/proyectil_enemigo.gd`: lo que cambia son estos números.
 
 | Proyectil | Estilo | Daño | Velocidad | Efecto | Lo tiran |
 |---|---|---|---|---|---|
-| `veneno.tres` | bola | 20 | 300 | frena al jugador 2,5 s (va al 60 %) | serpiente, planta venenosa |
+| `veneno.tres` | bola | 20 | 300 | 3 s envenenado: va al 60 % y pierde 2 de vida poco a poco (`veneno_vida`); el veneno no mata | serpiente, planta venenosa |
 | `magma.tres` | parábola | 45 | 330 | al caer deja un charco de lava 3,5 s | gólem de roca |
 | `rayo.tres` | rayo | 50 | 1300 | ninguno: es rápido y va recto | cristal vivo |
 

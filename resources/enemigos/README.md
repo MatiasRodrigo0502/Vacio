@@ -31,7 +31,7 @@ quitan al tocarte (tú tienes 100).
 |---|---|---|---|---|---|---|
 | Slime verde | cuerpo a cuerpo | 20 | 25 | 100 | 1 | **a saltos**: se aplasta (el aviso), salta hacia ti y descansa. Al morir explota (radio 70) y se parte en 2 crías |
 | Rata | cuerpo a cuerpo | 10 | 20 | 160 | 2 | **en zigzag**: corre hacia ti haciendo eses; de cerca, recta |
-| Serpiente | distancia: **veneno** | 20 | 25 | 55 | 2 | **en abanico**: te rodea de lado y dispara 3 bolas abiertas. El veneno quita 20 y te frena 2,5 s |
+| Serpiente | distancia: **veneno** | 20 | 25 | 55 | 2 | **en abanico**: te rodea de lado y dispara 3 bolas abiertas. El veneno quita 20, te frena 3 s y en ese rato te quita 2 más |
 | Planta venenosa | distancia: **veneno** | 30 | 25 | 28 | 3 | **en anillo**: no se mueve; se hincha y suelta 8 esporas en todas direcciones, cada anillo girado |
 | Murciélago | cuerpo a cuerpo | 10 | 20 | **195** | 3 | **en picado**: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo |
 | Gólem de roca | distancia: **magma** | 50 | 35 | 38 | 4 | **pisotón**: de lejos tira magma (quita 45 y deja lava 3,5 s); si te acercas, avisa con un aro y suelta una onda (quita 30) que hay que esquivar alejándose |

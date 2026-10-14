@@ -13,7 +13,7 @@ class_name NumeroDano
 extends Node2D
 
 ## De donde viene, para el color y el tamano.
-enum Estilo { NORMAL, FUERTE, FUEGO, VACIO, JUGADOR }
+enum Estilo { NORMAL, FUERTE, FUEGO, VACIO, JUGADOR, VENENO }
 
 const DURACION: float = 0.8
 ## Lo que sube, en px de pantalla.
@@ -23,6 +23,7 @@ const SALTO: float = 0.12
 
 const TAMANOS := {
 	Estilo.NORMAL: 17, Estilo.FUERTE: 24, Estilo.FUEGO: 14, Estilo.VACIO: 15, Estilo.JUGADOR: 19,
+	Estilo.VENENO: 15,
 }
 const COLORES := {
 	Estilo.NORMAL: Color(1.0, 1.0, 1.0),
@@ -30,6 +31,8 @@ const COLORES := {
 	Estilo.FUEGO: Color(1.0, 0.56, 0.2),
 	Estilo.VACIO: Color(0.82, 0.62, 1.0),
 	Estilo.JUGADOR: Color(1.0, 0.32, 0.3),
+	# Lo que quita el veneno al jugador, del verde del veneno.
+	Estilo.VENENO: Color(0.6, 1.0, 0.4),
 }
 
 var _texto: String = ""
@@ -44,7 +47,8 @@ static func soltar(padre: Node, posicion: Vector2, cantidad: float, estilo: Esti
 	if padre == null or cantidad <= 0.0:
 		return
 	var numero := NumeroDano.new()
-	numero._texto = ("-" if estilo == Estilo.JUGADOR else "") + str(maxi(1, roundi(cantidad)))
+	var al_jugador := estilo == Estilo.JUGADOR or estilo == Estilo.VENENO
+	numero._texto = ("-" if al_jugador else "") + str(maxi(1, roundi(cantidad)))
 	numero._estilo = estilo
 	# Un poco a un lado o a otro: si llegan varios seguidos (el agujero negro,
 	# la quemadura), no se pintan uno encima de otro.

@@ -405,7 +405,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   pinchos justo al cruzarlas, de lado a lado del hueco (26 en una partida).
   Se cruzan esperando a que bajen. Quien cae a un agujero reaparece por
   detrás de la placa (`Sala.fondo_trampa`, `Piso.MARGEN_TRAMPA`).
-- **Veneno**: el jugador va al 60 % de velocidad y en verde mientras dura.
+- **Veneno**: 3 s en los que el jugador va al 60 % de velocidad, en verde, y
+  pierde 2 de vida poco a poco (uno cada segundo y medio, en verde encima del
+  mago). Lo de la vida se pidió el 2026-10-14 (Matías: «un punto o 2 como
+  mucho en 3 segundos»); está en `veneno.tres` (`veneno_vida`, y la duración
+  en `ralentiza`, que pasó de 2,5 a 3 s). No es un golpe: ni parpadea, ni
+  tiembla, ni suena; señal aparte `Jugador.veneno_quita`, y en el registro va
+  marcado `"veneno": true` como «Serpiente (veneno), poco a poco».
 - **Objetos**: uno por piso, en el centro de su sala, con icono de lo que hacen.
   Además, cada enemigo que muere tiene un **3 %** de soltar otro al azar
   (entre 9 y 16 por partida en las pruebas); las crías no sueltan nada. Nunca cae
@@ -626,9 +632,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de Matías: dispara sin avisar.
 - **Como mucho la mitad de cada sala son de distancia.** Una sala solo de
   tiradores es una lluvia de disparos desde todas partes.
-- **El veneno frena, no quita más vida.** Con poca vida, un daño que
-  siguiera bajando la vida sería demasiado. Frenado, el peligro es el
-  siguiente golpe.
+- **El veneno quita poco y no mata.** Lo que más pesa es que frena: el
+  peligro es el siguiente golpe. Desde el 2026-10-14 quita además 2 en 3 s,
+  pero nunca el último punto (como caer por un agujero): aguantar el
+  escupitajo con 2 de vida y morir después por el veneno sería injusto. Un
+  segundo veneno reinicia la cuenta, no se suma.
 - **Las crías de slime ni explotan ni se dividen**, o matar un slime
   desataría una cadena que no se puede esquivar. Y **se apuntan en la sala
   antes de que la madre avise de que muere**: si no, las puertas se abrirían

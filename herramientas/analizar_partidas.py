@@ -152,7 +152,9 @@ def resumir(partidas):
     for p in partidas:
         for piso in p["pisos"]:
             for golpe in piso["golpes"]:
-                golpes[golpe["por"]] += 1
+                # Lo que quita el veneno poco a poco no es un golpe.
+                if not golpe.get("veneno"):
+                    golpes[golpe["por"]] += 1
                 vida[golpe["por"]] += golpe["vida"]
     tabla(["qué", "golpes", "vida", "muertes"],
           [[por, golpes[por], v, mata[por]] for por, v in vida.most_common(TOP)])

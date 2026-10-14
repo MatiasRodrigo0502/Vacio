@@ -127,7 +127,7 @@ func _golpear(jugador: Node2D) -> void:
 	# jugador no recibe nada, tampoco el veneno.
 	if jugador.recibir_dano(tipo.dano, false, _origen_golpe()) and tipo.ralentiza > 0.0 \
 			and jugador.has_method("envenenar"):
-		jugador.envenenar(tipo.ralentiza)
+		jugador.envenenar(tipo.ralentiza, tipo.veneno_vida, _origen_golpe())
 
 
 ## La parabola llega al suelo: dano a quien este debajo y, si toca, el charco.
