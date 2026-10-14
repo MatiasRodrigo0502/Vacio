@@ -157,7 +157,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `scripts/comportamientos/mago_caido.gd`: rayos con aviso por
   `pelear_a_distancia` y tres fases por vida (agujero negro al revés,
   `PozoVacio`; escudo con anillos de esquirlas de hielo; rayo de fuego cargado
-  que deja charcos y lo paran los pilares). Todo detallado en
+  que deja charcos y rompe el pilar que lo para, con `Escombros`).
+  **Negro y oro, con guadaña** (Matías, 2026-10-14: el violeta se confundía
+  con el mago oscuro); sus efectos van en oro (`COLOR_ORO`). Todo detallado en
   `resources/jefes/README.md`. Para él, `ComportamientoEnemigo` ganó
   `invulnerable`/`bloqueado` (la bola se gasta sin quitar vida),
   `voltear` (con animación por dirección no se voltea),
@@ -165,8 +167,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `es_invulnerable` y un segundo proyectil en `disparar_hacia`. Barra de vida
   y presentación: `scripts/barra_jefe.gd`, en el HUD, que pone Principal
   cuando se cierran las puertas (`Sala.pelea_empezada`), con su música
-  (`DatosPiso.musica_jefe`, `jefe.wav`). Arte: el mago rojo con otra paleta,
-  a ×2 (`herramientas/generar_mago_caido.py`). **Nadie lo ha jugado.**
+  (`DatosPiso.musica_jefe`, `jefe.wav`). Arte: el mago rojo con otra paleta
+  y la guadaña dibujada encima, en casillas de 96 × 72, a ×2
+  (`herramientas/generar_mago_caido.py`). **Nadie lo ha jugado.**
 - **Sala del jefe del piso 12** (2026-10-13, pedida por Matías). Con `DatosPiso.sala_jefe`, `MapaSalas` cuelga de
   la sala más lejana (o de la siguiente, si no cabe) una **antesala** y detrás
   la sala del **jefe** (`Tipo.ANTESALA` y `Tipo.JEFE`; con jefe no hay
@@ -454,9 +457,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **La antesala recarga el especial con un altar que se pisa, no sola al
   entrar**: tiene que verse de dónde sale. Está en el centro, de camino entre
   las dos puertas, así que se pisa sin buscarlo, y lleva escrito qué hace.
-- **Los pilares de la sala del jefe no se rompen (de momento).** Romperlos
-  sería saltarse a propósito «los disparos no rompen rocas»; si el jefe los
-  rompe, se decidirá con el jefe.
+- **Los pilares de la sala del jefe los rompe el rayo de fuego del jefe**
+  (Matías, 2026-10-14), y nada más: los disparos del jugador siguen sin
+  romper rocas. El pilar para ese rayo (no te da) y se rompe: cada pilar
+  cubre una vez, y la fase 3 se va quedando sin sitios donde esconderse. Al
+  romperse, la sala lo olvida (`Sala.olvidar_roca`) para no seguir
+  apartando a nadie de donde estaba.
 - **El registro apunta, no juzga**: guarda lo que pasa y el análisis va
   aparte, en Python. Así se pueden sacar otras cuentas de partidas ya jugadas
   sin volver a jugarlas. Las reiniciadas o dejadas antes de 10 s no se

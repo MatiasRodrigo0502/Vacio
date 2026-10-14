@@ -37,12 +37,14 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 
 ### Mago Caído — el jefe del piso 12
 
-- **Origen**: la hoja del **mago rojo** (ver abajo) con otra paleta: túnica
-  casi negra, ribete de plata apagada, orbe violeta y ojos magenta. Mismas
-  poses y misma animación, dibujado a ×2.
-- **Archivos**: `assets/mago_caido/atlas_8dir.png`,
-  `animaciones_mago_caido.tres` y `retrato.png`
-- **Procesado**: `herramientas/generar_mago_caido.py`, color a color.
+- **Origen**: la hoja del **mago rojo** (ver abajo) con otra paleta (túnica
+  negra, ribete de oro, ojos amarillos) y, en vez del báculo con el orbe, una
+  guadaña dibujada por código en cada pose. Mismas poses y misma animación,
+  dibujado a ×2.
+- **Archivos**: `assets/mago_caido/atlas_8dir.png` y
+  `animaciones_mago_caido.tres`
+- **Procesado**: `herramientas/generar_mago_caido.py`: color a color, y la
+  guadaña con `ImageDraw` (la hoja es nuestra).
 - **Licencia**: la misma duda que el mago rojo, del que sale.
 
 ### Mago oscuro — personaje jugable

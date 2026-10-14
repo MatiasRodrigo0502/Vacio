@@ -17,8 +17,9 @@ extends Control
 const ANCHO: float = 460.0
 const ALTO: float = 14.0
 const MARGEN_ABAJO: float = 40.0
-const COLOR_RELLENO := Color(0.72, 0.42, 1.0)
-const COLOR_FONDO := Color(0.05, 0.02, 0.08, 0.85)
+## Oro, el color del Mago Caido.
+const COLOR_RELLENO := Color(1.0, 0.78, 0.26)
+const COLOR_FONDO := Color(0.06, 0.05, 0.03, 0.85)
 ## Lo que tarda en salir la barra: despues de la presentacion.
 const ESPERA_BARRA: float = 1.6
 ## Lo que acaba de perder se queda un momento en blanco y baja despacio:
@@ -40,9 +41,9 @@ var _nombre: Label
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	visible = false
-	_titulo = _etiqueta(46, Color(0.86, 0.72, 1.0))
-	_subtitulo = _etiqueta(18, Color(0.85, 0.8, 0.9))
-	_nombre = _etiqueta(17, Color(0.9, 0.82, 1.0))
+	_titulo = _etiqueta(46, Color(1.0, 0.84, 0.4))
+	_subtitulo = _etiqueta(18, Color(0.9, 0.86, 0.78))
+	_nombre = _etiqueta(17, Color(1.0, 0.9, 0.62))
 	resized.connect(_colocar)
 	_colocar()
 
@@ -96,12 +97,12 @@ func _draw() -> void:
 	var caja := _caja()
 	draw_rect(caja.grow(3.0), Color(COLOR_FONDO, COLOR_FONDO.a * _alfa_barra))
 	draw_rect(Rect2(caja.position, Vector2(caja.size.x * _rastro, caja.size.y)),
-		Color(1.0, 0.95, 1.0, 0.7 * _alfa_barra))
+		Color(1.0, 0.98, 0.9, 0.7 * _alfa_barra))
 	draw_rect(Rect2(caja.position, Vector2(caja.size.x * _mostrada, caja.size.y)),
 		Color(COLOR_RELLENO, _alfa_barra))
 	# Un brillo arriba del relleno, para que no sea un rectangulo plano.
 	draw_rect(Rect2(caja.position, Vector2(caja.size.x * _mostrada, 3.0)),
-		Color(1.0, 0.9, 1.0, 0.35 * _alfa_barra))
+		Color(1.0, 0.97, 0.85, 0.35 * _alfa_barra))
 	for marca in _marcas:
 		var x := caja.position.x + caja.size.x * marca
 		draw_line(Vector2(x, caja.position.y - 3.0), Vector2(x, caja.end.y + 3.0),

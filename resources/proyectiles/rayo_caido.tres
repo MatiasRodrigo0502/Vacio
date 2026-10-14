@@ -6,8 +6,8 @@
 script = ExtResource("1_proyectil")
 nombre = "Rayo"
 estilo = 1
-color = Color(0.96, 0.88, 1, 1)
-color_halo = Color(0.62, 0.24, 1, 1)
+color = Color(1, 0.97, 0.75, 1)
+color_halo = Color(1, 0.7, 0.14, 1)
 velocidad = 1250.0
 radio = 8.0
 dano = 1

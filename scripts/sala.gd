@@ -185,6 +185,13 @@ func registrar_roca(caja_global: Rect2) -> void:
 	_rocas.append(Rect2(to_local(caja_global.position), caja_global.size))
 
 
+## Olvida las rocas que haya en ese punto (global): se han roto (el rayo de
+## fuego del jefe rompe los pilares de su sala).
+func olvidar_roca(punto_global: Vector2) -> void:
+	var punto := to_local(punto_global)
+	_rocas.assign(_rocas.filter(func(caja: Rect2) -> bool: return not caja.has_point(punto)))
+
+
 ## El punto (global) mas cercano en el que algo de ese radio no queda dentro de
 ## ninguna roca de la sala.
 ##

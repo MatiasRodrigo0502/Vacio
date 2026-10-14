@@ -209,8 +209,8 @@ cámara se abre para que se vea entera), con un sello grabado en el suelo,
 cuatro pilares de cristal para cubrirse y la bajada en el centro. En el
 minimapa sale con una estrella roja desde que pisas la antesala.
 
-**El jefe es el Mago Caído**, el cuarto mago, el que bajó antes que tú. Se
-presenta al cerrarse las puertas, su vida sale en una barra abajo y, en vez
+**El jefe es el Mago Caído**, el cuarto mago, el que bajó antes que tú:
+negro y oro, con una guadaña. Se presenta al cerrarse las puertas, su vida sale en una barra abajo y, en vez
 de bolas, dispara **rayos** (con su línea de aviso). Además usa lo de los
 otros tres magos, más cuanto menos vida le queda:
 
@@ -219,8 +219,8 @@ otros tres magos, más cuanto menos vida le queda:
 - **Fase 2:** el escudo del blanco: no se le puede dar y suelta anillos de
   esquirlas de hielo que frenan.
 - **Fase 3:** el ataque cargado del rojo: un rayo de fuego enorme que deja la
-  sala ardiendo (escóndete detrás de un pilar). Y los rayos salen de tres en
-  tres.
+  sala ardiendo. Un pilar te cubre, pero el rayo lo rompe: cada pilar sirve
+  una vez. Y los rayos salen de tres en tres.
 
 Al cambiar de fase suelta una onda y deja un corazón. Mientras vive, la bajada
 está tapada; al morir se abre. Sus números están en

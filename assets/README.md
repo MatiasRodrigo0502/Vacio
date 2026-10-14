@@ -5,10 +5,15 @@ los packs originales viven fuera del repositorio (ver `CREDITS.md` en la raíz).
 
 ## mago_caido/
 
-El jefe del piso 12. Mismo formato que `mago_rojo/`, del que sale con otra
-paleta (`herramientas/generar_mago_caido.py`), y una animación más,
-`moverse` (la misma que `caminar_abajo`): es la que `Enemigo` pide al
-prepararse. El juego lo dibuja a ×2 (`alto = 144` en su `.tres`).
+El jefe del piso 12. Sale del `mago_rojo/` con
+`herramientas/generar_mago_caido.py`: negro y oro y con una **guadaña** en
+vez del báculo (se quita el orbe, se alarga el mango y se dibuja la hoja en
+cada pose). La hoja no cabía en las casillas de 64 px, así que **cada casilla
+mide 96 × 72**, con el mago en el centro (16 px más a cada lado; el
+`SpriteFrames` ya recorta así). Tiene una animación más, `moverse` (la misma
+que `caminar_abajo`): es la que `Enemigo` pide al prepararse. El juego lo
+dibuja a ×2 (`alto = 144` en su `.tres`). Sin retrato: no sale en la
+elección de mago.
 
 ## mago_rojo/
 

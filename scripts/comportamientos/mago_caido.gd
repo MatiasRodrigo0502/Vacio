@@ -13,8 +13,12 @@
 ##    esquirlas de hielo que frenan, como el disparo del blanco.
 ## 3. Del 33 % al final: ademas, el ATAQUE CARGADO del mago rojo: carga un
 ##    rayo de fuego enorme (su linea avisa y se queda quieta al final) que deja
-##    fuego por donde pasa. Los pilares lo paran. Y los rayos salen de tres en
+##    fuego por donde pasa. Un pilar lo para, pero se rompe (Matias,
+##    2026-10-14): cada pilar sirve una vez. Y los rayos salen de tres en
 ##    tres, mas deprisa.
+##
+## Negro y oro, con una guadana (generar_mago_caido.py): la primera version
+## era violeta y se confundia con el mago oscuro. Sus efectos van en oro.
 ##
 ## Al cambiar de fase se va al centro, se protege, suelta una onda y deja un
 ## corazon: un respiro, y el aviso de que ahora viene mas.
@@ -33,7 +37,8 @@ const LADOS: Array[StringName] = [
 	&"derecha", &"abajo_derecha", &"abajo", &"abajo_izquierda",
 	&"izquierda", &"arriba_izquierda", &"arriba", &"arriba_derecha",
 ]
-const COLOR_VACIO := Color(0.72, 0.42, 1.0)
+## Su color: el de sus ojos, el ribete y el filo de la guadana.
+const COLOR_ORO := Color(1.0, 0.8, 0.28)
 const COLOR_HIELO := Color(0.7, 0.92, 1.0)
 const COLOR_FUEGO := Color(1.0, 0.55, 0.15)
 
@@ -142,7 +147,9 @@ func procesar(enemigo: Enemigo, delta: float) -> void:
 			if t < carga_fuego - fija_fuego:
 				e["dir"] = hacia.normalized() if hacia.length() > 1.0 else Vector2.DOWN
 			_mirar(enemigo, e["dir"], false)
-			e["largo"] = _alcance(enemigo, e["dir"])
+			var linea := _linea(enemigo, e["dir"])
+			e["largo"] = linea["largo"]
+			e["pilar"] = linea["pilar"]
 			enemigo.brillo(t / carga_fuego)
 			if t >= carga_fuego:
 				enemigo.brillo(0.0)
@@ -212,7 +219,7 @@ func _abrir_pozo(enemigo: Enemigo) -> void:
 	if sala == null or jugador == null:
 		return
 	var pozo := PozoVacio.new(sala, duracion_pozo, radio_pozo, float(dano_pozo),
-		COLOR_VACIO, Color(0.42, 0.16, 0.8))
+		COLOR_ORO, Color(0.55, 0.36, 0.06))
 	pozo.aviso = aviso_pozo
 	sala.add_child(pozo)
 	var suelo := sala.rect_suelo_global().grow(-PozoVacio.NUCLEO)
@@ -239,6 +246,10 @@ func _soltar_fuego(enemigo: Enemigo) -> void:
 	var desde := enemigo.global_position
 	var hasta := desde + dir * largo
 	Sonido.tocar(&"disparo_cargado")
+	# Si lo ha parado un pilar, el pilar se rompe.
+	var pilar: Variant = e.get("pilar")
+	if pilar is Obstaculo and is_instance_valid(pilar):
+		_romper_pilar(enemigo, pilar)
 	var jugador := enemigo.get_tree().get_first_node_in_group("jugador") as Jugador
 	if jugador != null:
 		var centro := jugador.centro_colision()
@@ -260,6 +271,23 @@ func _soltar_fuego(enemigo: Enemigo) -> void:
 		charco.position = sala.to_local(punto)
 		# Diferido: esto llega en mitad del paso de fisica.
 		sala.add_child.call_deferred(charco)
+
+
+## Rompe el pilar que ha parado el rayo de fuego: se quita (y la sala lo
+## olvida, para no seguir apartando a nadie de donde estaba) y saltan sus
+## trozos.
+func _romper_pilar(enemigo: Enemigo, pilar: Obstaculo) -> void:
+	var sala := enemigo.sala()
+	var donde := pilar.global_position
+	var ancho := pilar.tamano().x
+	if sala != null:
+		sala.olvidar_roca(donde)
+		var escombros := Escombros.new()
+		escombros.ancho = ancho
+		escombros.position = sala.to_local(donde)
+		sala.add_child(escombros)
+	pilar.romper()
+	Sonido.tocar(&"explosion")
 
 
 ## El cambio de fase: se desvanece, aparece en el centro, suelta la onda y
@@ -295,7 +323,7 @@ func _soltar_onda(enemigo: Enemigo) -> void:
 	onda.radio_maximo = radio_onda
 	onda.duracion = 0.6
 	onda.dano = dano_onda
-	onda.color = COLOR_VACIO
+	onda.color = COLOR_ORO
 	onda.origen = "Mago caído (onda)"
 	onda.position = sala.to_local(enemigo.global_position + Vector2(0.0, enemigo.tipo.alto * 0.42))
 	sala.add_child(onda)
@@ -317,16 +345,17 @@ func _pasar(enemigo: Enemigo, accion: StringName) -> void:
 	enemigo.estado["t"] = 0.0
 
 
-## Hasta donde llega el rayo de fuego: la primera roca o muro. Los pilares
-## lo paran: para eso estan.
-func _alcance(enemigo: Enemigo, dir: Vector2) -> float:
+## Hasta donde llega el rayo de fuego ("largo"): la primera roca o muro. Y si
+## lo para un pilar, cual ("pilar"; si no, null): al soltarlo, se rompe.
+func _linea(enemigo: Enemigo, dir: Vector2) -> Dictionary:
 	var maximo := 2000.0
 	var rayo := PhysicsRayQueryParameters2D.create(enemigo.global_position,
 		enemigo.global_position + dir * maximo, Terreno.CAPA_MUROS | Terreno.CAPA_ROCAS)
 	var golpe := enemigo.get_world_2d().direct_space_state.intersect_ray(rayo)
 	if golpe.is_empty():
-		return maximo
-	return enemigo.global_position.distance_to(golpe["position"])
+		return {"largo": maximo, "pilar": null}
+	var pilar: Variant = golpe["collider"] if golpe["collider"] is Obstaculo else null
+	return {"largo": enemigo.global_position.distance_to(golpe["position"]), "pilar": pilar}
 
 
 func invulnerable(enemigo: Enemigo) -> bool:
@@ -352,7 +381,7 @@ func marcas_vida() -> PackedFloat32Array:
 func al_morir(enemigo: Enemigo) -> void:
 	var sala := enemigo.sala()
 	if sala != null:
-		for capa in [[260.0, COLOR_VACIO], [150.0, Color(1.0, 0.92, 1.0)]]:
+		for capa in [[260.0, COLOR_ORO], [150.0, Color(1.0, 0.97, 0.85)]]:
 			var explosion := Explosion.new()
 			explosion.radio = capa[0]
 			explosion.color = capa[1]
@@ -374,18 +403,18 @@ func dibujar(enemigo: Enemigo) -> void:
 	var fase := Time.get_ticks_msec() * 0.001
 	var alto := enemigo.tipo.alto
 	var pies := Vector2(0.0, alto * 0.42)
-	# El aura: una sombra violeta a los pies, que late.
+	# El aura: una sombra negra a los pies, con un aro de oro que late.
 	enemigo.draw_set_transform(pies, 0.0, Vector2(1.0, 0.4))
-	enemigo.draw_circle(Vector2.ZERO, alto * 0.55, Color(0.25, 0.05, 0.4, 0.35 + 0.1 * sin(fase * 3.0)))
-	enemigo.draw_arc(Vector2.ZERO, alto * 0.55, 0.0, TAU, 40, Color(COLOR_VACIO, 0.5), 2.0, true)
+	enemigo.draw_circle(Vector2.ZERO, alto * 0.55, Color(0.04, 0.03, 0.02, 0.45 + 0.1 * sin(fase * 3.0)))
+	enemigo.draw_arc(Vector2.ZERO, alto * 0.55, 0.0, TAU, 40, Color(COLOR_ORO, 0.45 + 0.15 * sin(fase * 3.0)), 2.0, true)
 	enemigo.draw_set_transform(Vector2.ZERO)
-	# Jirones de vacio que suben desde el aura.
+	# Chispas de oro que suben desde el aura.
 	for k in 6:
 		var avance := fposmod(fase * 0.5 + k / 6.0, 1.0)
 		var x := sin(k * 2.3) * alto * 0.4
 		var y := pies.y - avance * alto * 0.9
-		enemigo.draw_circle(Vector2(x + sin(fase * 2.0 + k) * 6.0, y), 5.0 * (1.0 - avance),
-			Color(COLOR_VACIO, 0.5 * (1.0 - avance)))
+		enemigo.draw_circle(Vector2(x + sin(fase * 2.0 + k) * 6.0, y), 3.5 * (1.0 - avance),
+			Color(COLOR_ORO, 0.6 * (1.0 - avance)))
 
 	match accion:
 		&"escudo", &"cambio", &"presentacion":
@@ -412,10 +441,10 @@ func dibujar(enemigo: Enemigo) -> void:
 
 
 ## La burbuja: la del escudo (azul hielo, la del mago blanco) y la de cuando
-## no se le puede dar (presentacion, cambio de fase), violeta.
+## no se le puede dar (presentacion, cambio de fase), de oro.
 func _pintar_escudo(enemigo: Enemigo, accion: StringName, destello: float, fase: float) -> void:
 	var radio := enemigo.tipo.alto * 0.62
-	var color := COLOR_HIELO if accion == &"escudo" else COLOR_VACIO
+	var color := COLOR_HIELO if accion == &"escudo" else COLOR_ORO
 	var alfa := 0.8
 	if accion == &"escudo":
 		var t: float = enemigo.estado["t"]

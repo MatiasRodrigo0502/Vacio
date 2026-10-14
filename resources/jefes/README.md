@@ -21,8 +21,11 @@ Ser jefe (`jefe = true`) también quiere decir:
 
 Pedido por Matías el 2026-10-14: el cuarto mago, el que bajó antes que tú,
 con las habilidades de los otros tres y **rayos en vez de bolas**. El dibujo
-es el del mago rojo con otra paleta, a ×2
-(`herramientas/generar_mago_caido.py` → `assets/mago_caido/`).
+es el del mago rojo **en negro y oro y con una guadaña** en vez del báculo, a
+×2 (`herramientas/generar_mago_caido.py` → `assets/mago_caido/`). Al
+principio era violeta y se confundía con el mago oscuro: Matías lo cambió el
+mismo día. Sus efectos (rayos, aura, barra, agujero negro) también van en
+oro.
 
 | | |
 |---|---|
@@ -41,8 +44,9 @@ números en el `.tres` (el `comportamiento`):
   que frenan (`proyectiles/esquirla_hielo.tres`).
 - **Fase 3 (33–0 %)**: además, el **ataque cargado** del mago rojo: carga
   1,4 s un rayo de fuego (la línea te sigue y se queda quieta los últimos
-  0,45 s), quita 2 y deja charcos de fuego. Los pilares lo paran. Los rayos
-  salen de tres en tres.
+  0,45 s), quita 2 y deja charcos de fuego. **Un pilar lo para, pero se
+  rompe** (`Obstaculo.romper()`, con escombros): cada pilar cubre una vez.
+  Los rayos salen de tres en tres.
 - Cada fase va más deprisa (`ritmo_fases`: 1, 1,15 y 1,35) y entre una
   habilidad y otra pasan 5 s.
 - **Al cambiar de fase** se va al centro, no se le puede dar 1,6 s, suelta
