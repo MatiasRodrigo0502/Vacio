@@ -94,6 +94,10 @@ func _physics_process(_delta: float) -> void:
 
 
 func _despedir(enemigo: Enemigo) -> void:
+	# Al jefe no: es demasiado grande para salir rebotado. La burbuja le
+	# sigue parando el golpe (mientras esta, el contacto no quita vida).
+	if enemigo.tipo.jefe:
+		return
 	var hacia := enemigo.global_position - global_position
 	var normal := hacia.normalized() if hacia.length() > 1.0 else Vector2.DOWN
 	# Fuera de la burbuja ya, para que no llegue a tocar al mago.

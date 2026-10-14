@@ -687,6 +687,16 @@ func _preparar_jefe() -> void:
 	var corazon := CorazonSuelto.new()
 	corazon.position = lado * minf(antesala.tamano.x, antesala.tamano.y) * 0.28
 	antesala.add_child(corazon)
+	# El jefe, si el piso tiene, en el centro de su sala (encima de la bajada,
+	# que esta tapada mientras viva). Se apunta en la sala como cualquier
+	# enemigo: duerme hasta que entras y, al morir, la sala queda limpia y la
+	# bajada se abre.
+	if datos.jefe != null:
+		var enemigo: Enemigo = load(Enemigo.RUTA_ESCENA).instantiate()
+		jefe.add_child(enemigo)
+		enemigo.preparar(datos.jefe, jefe.global_position)
+		jefe.registrar_enemigo(enemigo)
+
 	# Sin piedrecitas pintadas encima del altar ni del corazon.
 	despejar_decoracion(Rect2(antesala.global_position - Vector2(80.0, 80.0), Vector2(160.0, 160.0)))
 	despejar_decoracion(Rect2(antesala.to_global(corazon.position) - Vector2(40.0, 40.0), Vector2(80.0, 80.0)))

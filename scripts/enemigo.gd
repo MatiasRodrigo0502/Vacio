@@ -36,6 +36,10 @@ const TIC_QUEMADURA: float = 1.0
 const DURACION_LINEA_DISPARO: float = 0.3
 ## Lo que frena el empuje del escudo, en px/s por segundo.
 const FRENO_EMPUJE: float = 1600.0
+## A un jefe el frio del mago blanco le dura esta parte: con el frio entero,
+## disparandole sin parar iria siempre a la mitad, y la pelea final seria la
+## mas facil del juego.
+const FRIO_JEFE: float = 0.4
 
 ## De donde salen vida, velocidad, dibujo y demas. Lo pone la mecanica que los
 ## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
@@ -165,7 +169,8 @@ func _physics_process(delta: float) -> void:
 
 	if tipo.comportamiento != null:
 		tipo.comportamiento.procesar(self, delta)
-		_sprite.flip_h = _objetivo.global_position.x < global_position.x
+		if tipo.comportamiento.voltear(self):
+			_sprite.flip_h = _objetivo.global_position.x < global_position.x
 		queue_redraw()
 		return
 
@@ -234,6 +239,9 @@ func romper() -> void:
 func herir(cantidad: float, frena: float = 0.0) -> void:
 	if not es_tangible():
 		return
+	if es_invulnerable():
+		tipo.comportamiento.bloqueado(self)
+		return
 	_quitar_vida(cantidad, frena)
 
 
@@ -272,7 +280,7 @@ func _quitar_vida(cantidad: float, frena: float) -> void:
 ## reiniciara la espera del primer golpe, disparandole sin parar no le
 ## quemaria nunca.
 func quemar(segundos: float, dano: float) -> void:
-	if _vida <= 0 or segundos <= 0.0:
+	if _vida <= 0 or segundos <= 0.0 or es_invulnerable():
 		return
 	if _quemaduras == 0:
 		_tic_quemadura = TIC_QUEMADURA
@@ -300,6 +308,8 @@ func _arder(delta: float) -> void:
 
 ## Lo deja frenado 'segundos' (si ya lo estaba, se queda con lo que dure mas).
 func frenar(segundos: float) -> void:
+	if tipo != null and tipo.jefe:
+		segundos *= FRIO_JEFE
 	_frenado = maxf(_frenado, segundos)
 	# El color va en el nodo y no en el sprite: el sprite ya cambia de color al
 	# recibir un golpe y al apuntar, y se pisarian.
@@ -472,15 +482,35 @@ func _dejar_de_apuntar() -> void:
 # --- Lo que usan los comportamientos (scripts/comportamientos/) ---------------
 
 ## Un disparo de su proyectil hacia 'direccion', con su sonido. La parabola
-## cae donde esta el jugador ahora.
-func disparar_hacia(direccion: Vector2) -> void:
+## cae donde esta el jugador ahora. Con 'otro', ese proyectil y no el suyo (el
+## jefe tira mas de una cosa).
+func disparar_hacia(direccion: Vector2, otro: TipoProyectil = null) -> void:
+	var que := otro if otro != null else tipo.proyectil
 	var sala_propia := sala()
 	var limite := sala_propia.rect_con_muros() if sala_propia != null else Rect2()
 	var proyectil := ProyectilEnemigo.new()
-	proyectil.configurar(tipo.proyectil, global_position, direccion, _punto_objetivo(), limite)
+	proyectil.configurar(que, global_position, direccion, _punto_objetivo(), limite)
 	proyectil.autor = tipo.nombre
 	get_parent().add_child(proyectil)
-	Sonido.tocar(tipo.proyectil.sonido)
+	Sonido.tocar(que.sonido)
+
+
+## Pone esa animacion de su SpriteFrames, si la tiene y no esta ya puesta.
+## La usa el jefe, que tiene una por direccion como los magos.
+func animar(nombre: StringName) -> void:
+	if _sprite.sprite_frames != null and _sprite.sprite_frames.has_animation(nombre) \
+			and _sprite.animation != nombre:
+		_sprite.play(nombre)
+
+
+## La vida que le queda, de 0 a 1. La ensena la barra del jefe.
+func fraccion_vida() -> float:
+	return clampf(_vida / tipo.vida, 0.0, 1.0) if tipo != null and tipo.vida > 0 else 0.0
+
+
+## True mientras su comportamiento lo hace invulnerable (el escudo del jefe).
+func es_invulnerable() -> bool:
+	return tipo != null and tipo.comportamiento != null and tipo.comportamiento.invulnerable(self)
 
 
 ## Anda a su velocidad por 'factor' hacia 'direccion' sin salir de su sala.
@@ -583,6 +613,8 @@ func _morir() -> void:
 		Sonido.tocar(&"muerte_enemigo")
 	for i in tipo.division:
 		_soltar_cria(i)
+	if tipo.comportamiento != null:
+		tipo.comportamiento.al_morir(self)
 	muerto.emit(self)
 	queue_free()
 

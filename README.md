@@ -207,8 +207,24 @@ pisarlo, recupera el ataque especial. Delante hay una puerta con runas que
 brillan, y detrás está la **sala del jefe**: más grande que las demás (la
 cámara se abre para que se vea entera), con un sello grabado en el suelo,
 cuatro pilares de cristal para cubrirse y la bajada en el centro. En el
-minimapa sale con una estrella roja desde que pisas la antesala. **El jefe
-todavía no está**: de momento la sala está vacía y la bajada, abierta.
+minimapa sale con una estrella roja desde que pisas la antesala.
+
+**El jefe es el Mago Caído**, el cuarto mago, el que bajó antes que tú. Se
+presenta al cerrarse las puertas, su vida sale en una barra abajo y, en vez
+de bolas, dispara **rayos** (con su línea de aviso). Además usa lo de los
+otros tres magos, más cuanto menos vida le queda:
+
+- **Fase 1:** el agujero negro del oscuro, al revés: se abre donde estás y
+  tira de ti. Sal mientras crece.
+- **Fase 2:** el escudo del blanco: no se le puede dar y suelta anillos de
+  esquirlas de hielo que frenan.
+- **Fase 3:** el ataque cargado del rojo: un rayo de fuego enorme que deja la
+  sala ardiendo (escóndete detrás de un pilar). Y los rayos salen de tres en
+  tres.
+
+Al cambiar de fase suelta una onda y deja un corazón. Mientras vive, la bajada
+está tapada; al morir se abre. Sus números están en
+[`resources/jefes/`](resources/jefes/README.md).
 
 Superar el piso 12 gana; quedarte sin vida termina la partida.
 
@@ -217,8 +233,8 @@ Superar el piso 12 gana; quedarte sin vida termina la partida.
 Todo el sonido es nuestro: lo generan por síntesis
 `herramientas/generar_efectos.py` (23 efectos) y `generar_musica.py` (la
 música), sin nada bajado. Suena una música en la portada, otra en los pisos
-1 a 6 y otra más grave, con tambores, en los 7 a 12; al ganar y al perder,
-la suya. Hay efecto para los disparos (los tuyos y los de cada enemigo), los
+1 a 6, otra más grave, con tambores, en los 7 a 12, y la del jefe, más
+rápida, en su pelea; al ganar y al perder, la suya. Hay efecto para los disparos (los tuyos y los de cada enemigo), los
 golpes, las muertes, las explosiones, las puertas, los objetos, el escudo, el
 agujero negro, caer, bajar de piso y los botones.
 

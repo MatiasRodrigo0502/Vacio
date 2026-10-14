@@ -62,6 +62,15 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## comportamiento que lleven.
 @export var comportamiento: ComportamientoEnemigo = null
 
+@export_group("Jefe")
+## Es un jefe: lo coloca su piso (DatosPiso.jefe), no el reparto al azar, y
+## su vida sale en una barra arriba (BarraJefe). Ni el agujero negro del mago
+## oscuro ni la burbuja del blanco lo mueven, y el frio del blanco le dura
+## menos (FRIO_JEFE en enemigo.gd).
+@export var jefe: bool = false
+## La frase que sale debajo de su nombre al presentarse.
+@export var titulo: String = ""
+
 @export_group("Al morir")
 ## Cuantas crias suelta al morir. Las crias son el mismo enemigo en pequeno,
 ## con 1 de vida y sin dividirse otra vez.

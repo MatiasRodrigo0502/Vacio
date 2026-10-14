@@ -4,6 +4,7 @@
 - portada.wav: el menu. Lenta y misteriosa, en re menor.
 - superficie.wav: pisos 1 a 6. Ritmo de aventura, en la menor.
 - profundo.wav: pisos 7 a 12. Mas grave y con tambores, en mi menor.
+- jefe.wav: la pelea con el Mago Caido. Rapida y tensa, en mi frigio.
 - victoria.wav y derrota.wav: lo que suena al ganar o perder (no se repiten).
 
 Las tres primeras se repiten sin corte: las notas que suenan al acabar caen
@@ -283,6 +284,50 @@ def profundo():
     return en_bucle(lambda x: reverberacion(x, SR, 0.38, 0.84, 0.4), mezcla)
 
 
+def jefe():
+    """La pelea con el Mago Caido: mi frigio a 132. Bajo en corcheas sin
+    parar, bombo a negras, caja en el 2 y el 4, timbales cada cuatro compases
+    y un dron con el fa encima del mi: esa segunda menor es la que no deja
+    respirar. Em - F - Em - Dm - C - B - Em - F, dos compases cada uno, y la
+    melodia en la segunda mitad."""
+    azar = random.Random(7)
+    p = Pieza(bpm=132, compases=16)
+    p.poner("dron", 0, dron("E1", p.segundos(64)), 0.45)
+    p.poner("dron", 0, dron("F1", p.segundos(64)), 0.12)
+    colchon = [["E3", "G3", "B3"], ["F3", "A3", "C4"], ["E3", "G3", "B3"], ["D3", "F3", "A3"],
+               ["C3", "E3", "G3"], ["B2", "D#3", "F#3"], ["E3", "G3", "B3"], ["F3", "A3", "C4"]]
+    acordes(p, colchon, 8, 0.05)
+    raices = ["E2", "F2", "E2", "D2", "C2", "B1", "E2", "F2"]
+    for k, raiz in enumerate(raices):
+        octava = raiz[:-1] + str(int(raiz[-1]) + 1)
+        for j in range(16):
+            nota = octava if j % 4 == 3 else raiz
+            p.poner("bajo", k * 8 + j * 0.5, bajo(nota, p.segundos(0.3)), 0.3 if j % 2 == 0 else 0.22)
+    for compas in range(16):
+        base = compas * 4
+        for pulso in range(4):
+            p.poner("bateria", base + pulso, bombo(azar), 0.55 if pulso % 2 == 0 else 0.4)
+        p.poner("bateria", base + 1, caja(azar), 0.4)
+        p.poner("bateria", base + 3, caja(azar), 0.45)
+        for j in range(8):
+            p.poner("bateria", base + j * 0.5, charles(azar), (0.1 if j % 2 else 0.07) * azar.uniform(0.7, 1.0))
+        if compas % 4 == 3:
+            for paso, nota in enumerate(("C3", "A2", "F2", "E2")):
+                p.poner("bateria", base + 2 + paso * 0.5, timbal(nota, azar), 0.35)
+    arpegios = [["E4", "G4", "B4"], ["F4", "A4", "C5"], ["E4", "G4", "B4"], ["D4", "F4", "A4"],
+                ["C4", "E4", "G4"], ["B3", "D#4", "F#4"], ["E4", "G4", "B4"], ["F4", "A4", "C5"]]
+    arpegio(p, arpegios, 8, [0, 1, 2, 1], paso=0.5, ganancia=0.06, azar=azar)
+    melodia(p, [(0, "E5", 1), (1, "F5", 1), (2, "G5", 2), (4, "F5", 1), (5, "E5", 1), (6, "B4", 2),
+                (8, "C5", 1), (9, "D5", 1), (10, "E5", 2), (12, "F5", 2), (14, "E5", 2),
+                (16, "G5", 1), (17, "A5", 1), (18, "B5", 2), (20, "A5", 1), (21, "G5", 1), (22, "F5", 2),
+                (24, "E5", 2), (26, "D#5", 2), (28, "E5", 3), (31, "F5", 1)],
+            "lider", inicio=32, ganancia=0.1)
+    mezcla = p.mezclar({"dron": 1.0, "pad": 1.0, "bajo": 1.0, "bateria": 1.0, "arpegio": 1.0, "melodia": 1.0},
+                       {"arpegio": lambda x: eco(x, SR, p.segundos(0.75), 0.3, 0.35),
+                        "melodia": lambda x: eco(x, SR, p.segundos(1.5), 0.25, 0.3)})
+    return en_bucle(lambda x: reverberacion(x, SR, 0.32, 0.8, 0.3), mezcla)
+
+
 def victoria():
     """Al ganar: arpegio de do mayor hacia arriba y el acorde abierto."""
     p = Pieza(bpm=100, compases=3, bucle=False)
@@ -321,6 +366,7 @@ PIEZAS = {
     "portada": (portada, True),
     "superficie": (superficie, True),
     "profundo": (profundo, True),
+    "jefe": (jefe, True),
     "victoria": (victoria, False),
     "derrota": (derrota, False),
 }

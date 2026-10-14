@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
 [ext_resource type="Script" path="res://scripts/corazones.gd" id="2_corazones"]
 [ext_resource type="Script" path="res://scripts/minimapa.gd" id="3_minimapa"]
 [ext_resource type="Script" path="res://scripts/mejoras_recogidas.gd" id="4_mejoras"]
+[ext_resource type="Script" path="res://scripts/barra_jefe.gd" id="5_barra_jefe"]
 
 [node name="Hud" type="CanvasLayer"]
 layer = 2
@@ -80,3 +81,14 @@ offset_bottom = 152.0
 grow_horizontal = 0
 mouse_filter = 2
 script = ExtResource("3_minimapa")
+
+[node name="BarraJefe" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_barra_jefe")

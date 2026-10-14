@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="SpriteFrames" path="res://assets/mago_caido/animaciones_mago_caido.tres" id="2_anim"]
+[ext_resource type="Resource" path="res://resources/proyectiles/rayo_caido.tres" id="3_rayo"]
+[ext_resource type="Resource" path="res://resources/proyectiles/esquirla_hielo.tres" id="4_esquirla"]
+[ext_resource type="Script" path="res://scripts/comportamientos/mago_caido.gd" id="9_comportamiento"]
+
+[sub_resource type="Resource" id="Resource_comportamiento"]
+script = ExtResource("9_comportamiento")
+esquirla = ExtResource("4_esquirla")
+
+[resource]
+script = ExtResource("1_tipo")
+nombre = "Mago caído"
+animaciones = ExtResource("2_anim")
+vida = 90
+velocidad = 110.0
+dano = 1
+alto = 144.0
+piso_minimo = 12
+color_efectos = Color(0.72, 0.42, 1, 1)
+ataque = 1
+proyectil = ExtResource("3_rayo")
+cadencia = 1.5
+tiempo_apuntar = 0.55
+distancia_preferida = 380.0
+comportamiento = SubResource("Resource_comportamiento")
+jefe = true
+titulo = "El cuarto mago. Bajó antes que tú."
+division = 0
+radio_explosion = 0.0
+dano_explosion = 1

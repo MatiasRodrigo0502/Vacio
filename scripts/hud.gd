@@ -12,6 +12,7 @@ extends CanvasLayer
 @onready var _aviso: Label = $Aviso
 @onready var _minimapa: Minimapa = $Minimapa
 @onready var _mejoras: MejorasRecogidas = $Mejoras
+@onready var _barra_jefe: BarraJefe = $BarraJefe
 
 ## Cuanto dura en pantalla el aviso de un objeto recogido.
 const DURACION_AVISO: float = 2.6
@@ -47,6 +48,12 @@ func actualizar_especial(disponible: bool, nombre: String, color: Color) -> void
 	else:
 		_especial.text = "ESPECIAL  ·  USADO EN ESTE PISO"
 		_especial.modulate = Color(1.0, 1.0, 1.0, 0.4)
+
+
+## Empieza la pelea con el jefe: su presentacion y su barra de vida. La
+## barra se va sola cuando muere.
+func mostrar_jefe(jefe: Enemigo) -> void:
+	_barra_jefe.presentar(jefe)
 
 
 ## Vacia la fila de ventajas. Principal la llama al empezar otra partida.

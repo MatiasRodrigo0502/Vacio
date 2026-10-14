@@ -86,3 +86,9 @@ extends Resource
 ## Lo que mide el suelo de la sala del jefe, en px. Mas ancha que alta, como
 ## la pantalla: la camara la ensena entera (CamaraJuego.ver_entera).
 @export var tamano_sala_jefe: Vector2 = Vector2(1200.0, 700.0)
+## El jefe que espera en su sala (resources/jefes/). Vacio = sala sin jefe,
+## con la bajada abierta. Mientras viva, la bajada esta tapada.
+@export var jefe: TipoEnemigo = null
+## Lo que suena desde que se cierran las puertas de la sala del jefe. Vacia =
+## sigue la del piso.
+@export var musica_jefe: AudioStream = null

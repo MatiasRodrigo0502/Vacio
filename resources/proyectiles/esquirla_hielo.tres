@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TipoProyectil" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_proyectil.gd" id="1_proyectil"]
+
+[resource]
+script = ExtResource("1_proyectil")
+nombre = "Esquirla de hielo"
+estilo = 0
+color = Color(0.88, 0.98, 1, 1)
+color_halo = Color(0.42, 0.76, 1, 1)
+velocidad = 220.0
+radio = 8.0
+dano = 1
+alcance = 1100.0
+sonido = &"disparo_enemigo"
+ralentiza = 2.0
+charco_radio = 0.0
+charco_duracion = 3.0

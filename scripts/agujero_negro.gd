@@ -87,7 +87,9 @@ func _physics_process(delta: float) -> void:
 		var distancia := hacia.length()
 		if distancia > _radio:
 			continue
-		if distancia > 1.0:
+		# Al jefe no lo mueve: una pelea final que se gana arrastrandolo a un
+		# rincon no seria una pelea. Quitarle vida en el centro, si.
+		if distancia > 1.0 and not enemigo.tipo.jefe:
 			var tiron := lerpf(TIRON_CENTRO, TIRON_BORDE, distancia / _radio) * fuerza
 			# Sin pasarse del centro: si no, lo que esta dentro tiembla de
 			# un lado al otro.

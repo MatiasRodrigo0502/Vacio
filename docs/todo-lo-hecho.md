@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/10/2026 | Versión para Mac en cada release, probada en un Mac de GitHub antes de publicar | — |
+| 14/10/2026 | El Mago Caído, jefe del piso 12: rayos y las habilidades de los otros tres magos, en tres fases | — |
+| 13/10/2026 | Versión para Mac en cada release, probada en un Mac de GitHub antes de publicar | `b7f000c` |
 | 13/10/2026 | Antesala y sala del jefe en el piso 12 (todavía sin jefe) | `f93f6b4` |
 | 13/10/2026 | Registro de partidas para equilibrar la dificultad con datos | `3f98758` |
 | 13/10/2026 | El juego avisa de las versiones nuevas y, en Windows, se actualiza con un botón | `5cbc558` |
@@ -264,7 +265,7 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 **En marcha:**
 
-- [ ] **El jefe del piso 12.** Ya están la antesala (altar que recarga el ataque especial y un corazón) y la sala del jefe: más grande, con puerta de runas, sello en el suelo, cuatro pilares y la cámara abierta. Falta el jefe: la propuesta es el Corazón del Núcleo, en tres fases.
+- [ ] **Probar y ajustar el jefe del piso 12, el Mago Caído.** Está hecho entero (antesala con altar y corazón, sala grande con puerta de runas, y el jefe: rayos, agujero negro, escudo con hielo y rayo de fuego, en tres fases, con barra de vida y música propia), pero nadie lo ha jugado. Sus números están en `resources/jefes/mago_caido.tres`.
 
 **Ideas no pedidas todavía:**
 

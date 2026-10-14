@@ -97,6 +97,9 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	Sonido.poner_musica(datos.musica)
 	_hud.mostrar_mapa(piso)
 	_registro.nuevo_piso(numero_piso, datos, piso)
+	var sala_jefe := piso.sala_de_tipo(MapaSalas.Tipo.JEFE)
+	if sala_jefe != null:
+		sala_jefe.pelea_empezada.connect(_al_empezar_jefe)
 
 
 ## La bola cuelga del piso, no de Principal: asi al cambiar de piso se va con el
@@ -178,6 +181,17 @@ func _al_cambiar_sala(sala: Sala) -> void:
 		_camara.ver_entera(sala.rect_con_muros())
 	elif _piso_actual != null:
 		_camara.aplicar_radio_vision(_piso_actual.datos.radio_vision)
+
+
+## Se han cerrado las puertas de la sala del jefe: su presentacion, su barra
+## de vida y su musica.
+func _al_empezar_jefe(sala: Sala) -> void:
+	for enemigo in sala.enemigos():
+		if is_instance_valid(enemigo) and enemigo.tipo.jefe:
+			_hud.mostrar_jefe(enemigo)
+			break
+	if _piso_actual != null and _piso_actual.datos.musica_jefe != null:
+		Sonido.poner_musica(_piso_actual.datos.musica_jefe, 0.6)
 
 
 ## El jugador ha caido por un agujero: vuelve a la entrada de la sala. El

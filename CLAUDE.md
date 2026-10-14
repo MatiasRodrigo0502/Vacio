@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-13.**
+**Última actualización: 2026-10-14.**
 
 ---
 
@@ -149,8 +149,25 @@ no puede llamarse `prueba_temporal.*`: el preset la excluye.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
-- **Sala del jefe del piso 12** (2026-10-13, pedida por Matías; **el jefe
-  aún no está**, va después). Con `DatosPiso.sala_jefe`, `MapaSalas` cuelga de
+- **El Mago Caído, jefe del piso 12** (2026-10-14, pedido por Matías: «las
+  habilidades de los otros magos y rayos en vez de bolas»). Es un
+  `TipoEnemigo` con `jefe = true` en `resources/jefes/mago_caido.tres` (no
+  en `resources/enemigos/`, que se reparte al azar) y lo pone el piso
+  (`DatosPiso.jefe`, en `Piso._preparar_jefe`). Su pelea es
+  `scripts/comportamientos/mago_caido.gd`: rayos con aviso por
+  `pelear_a_distancia` y tres fases por vida (agujero negro al revés,
+  `PozoVacio`; escudo con anillos de esquirlas de hielo; rayo de fuego cargado
+  que deja charcos y lo paran los pilares). Todo detallado en
+  `resources/jefes/README.md`. Para él, `ComportamientoEnemigo` ganó
+  `invulnerable`/`bloqueado` (la bola se gasta sin quitar vida),
+  `voltear` (con animación por dirección no se voltea),
+  `marcas_vida` y `al_morir`, y `Enemigo` `animar`, `fraccion_vida`,
+  `es_invulnerable` y un segundo proyectil en `disparar_hacia`. Barra de vida
+  y presentación: `scripts/barra_jefe.gd`, en el HUD, que pone Principal
+  cuando se cierran las puertas (`Sala.pelea_empezada`), con su música
+  (`DatosPiso.musica_jefe`, `jefe.wav`). Arte: el mago rojo con otra paleta,
+  a ×2 (`herramientas/generar_mago_caido.py`). **Nadie lo ha jugado.**
+- **Sala del jefe del piso 12** (2026-10-13, pedida por Matías). Con `DatosPiso.sala_jefe`, `MapaSalas` cuelga de
   la sala más lejana (o de la siguiente, si no cabe) una **antesala** y detrás
   la sala del **jefe** (`Tipo.ANTESALA` y `Tipo.JEFE`; con jefe no hay
   `SALIDA`). La del jefe mide `tamano_sala_jefe` (1200 × 700) y tapa varias
@@ -213,7 +230,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   síntesis: `herramientas/sintesis.py` (osciladores, filtros, eco,
   reverberación, WAV), `generar_efectos.py` (23 efectos en
   `assets/sonido/efectos/`) y `generar_musica.py` (portada, superficie para
-  los pisos 1-6, profundo para los 7-12, victoria y derrota). El autoload
+  los pisos 1-6, profundo para los 7-12, jefe, victoria y derrota). El autoload
   `Sonido` (`scripts/sonido.gd`) toca los efectos por nombre de archivo
   (`Sonido.tocar(&"golpe_enemigo")`) y funde la música
   (`Sonido.poner_musica`); cada piso dice la suya en `DatosPiso.musica` y el
@@ -424,10 +441,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
 - **Posibles mejoras de las salas**, no pedidas: oscurecer las salas vecinas
   (cuando la vista es más ancha o más alta que la sala, se asoma un trozo de
-  las de al lado), una sala de jefe en el piso 12, y salas de otras formas.
+  las de al lado) y salas de otras formas.
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
 
+- **Al jefe no lo mueve nada** (ni el agujero negro ni la burbuja) **y el
+  frío le dura el 40 %**: arrastrarlo a un rincón o tenerlo siempre a medio
+  ritmo haría de la pelea final la más fácil del juego.
+- **El jefe no se puede dañar hasta acabar su presentación**: desde el
+  umbral (la sala ya es la actual, las puertas aún no se han cerrado) se le
+  podía quitar vida sin que pelease.
 - **La antesala recarga el especial con un altar que se pisa, no sola al
   entrar**: tiene que verse de dónde sale. Está en el centro, de camino entre
   las dos puertas, así que se pisa sin buscarlo, y lleva escrito qué hace.

@@ -36,6 +36,35 @@ func tangible(_enemigo: Enemigo) -> bool:
 	return true
 
 
+## True mientras los golpes no le hacen nada aunque le den (el escudo del
+## jefe): la bola se gasta, pero no quita vida ni quema.
+func invulnerable(_enemigo: Enemigo) -> bool:
+	return false
+
+
+## Le ha dado algo estando invulnerable. Para que se vea que ha parado el
+## golpe (un destello en el escudo).
+func bloqueado(_enemigo: Enemigo) -> void:
+	pass
+
+
+## Si el dibujo se voltea solo para mirar al jugador. Los que tienen una
+## animacion por direccion (el jefe, que es un mago) eligen la suya.
+func voltear(_enemigo: Enemigo) -> bool:
+	return true
+
+
+## Donde marcar la barra de vida del jefe (BarraJefe): las vidas, de 0 a 1,
+## a las que cambia de fase. Vacio = sin marcas.
+func marcas_vida() -> PackedFloat32Array:
+	return PackedFloat32Array()
+
+
+## Justo antes de morir: lo que tenga que hacer al caer (el jefe, su final).
+func al_morir(_enemigo: Enemigo) -> void:
+	pass
+
+
 ## Avisos que se pintan con el enemigo (aros, lineas). Se llama desde su
 ## _draw(), asi que se dibuja con enemigo.draw_*.
 func dibujar(_enemigo: Enemigo) -> void:

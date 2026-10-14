@@ -3,6 +3,13 @@
 Arte del juego. Aquí entra **solo lo que se usa**, ya recortado y reescalado;
 los packs originales viven fuera del repositorio (ver `CREDITS.md` en la raíz).
 
+## mago_caido/
+
+El jefe del piso 12. Mismo formato que `mago_rojo/`, del que sale con otra
+paleta (`herramientas/generar_mago_caido.py`), y una animación más,
+`moverse` (la misma que `caminar_abajo`): es la que `Enemigo` pide al
+prepararse. El juego lo dibuja a ×2 (`alto = 144` en su `.tres`).
+
 ## mago_rojo/
 
 El segundo mago elegible. Mismo formato que `mago_oscuro/`: `atlas_8dir.png`
@@ -259,8 +266,9 @@ Todo el sonido del juego, generado por síntesis (sin nada bajado):
   El volumen de cada uno respecto a los demás está en ese script (su pico):
   los que suenan sin parar (el disparo) van flojos.
 - `musica/`: `portada.wav` (el menú), `superficie.wav` (pisos 1-6),
-  `profundo.wav` (pisos 7-12), `victoria.wav` y `derrota.wav`, de
-  `herramientas/generar_musica.py`. Las tres primeras llevan dentro su punto
+  `profundo.wav` (pisos 7-12), `jefe.wav` (la pelea con el Mago Caído),
+  `victoria.wav` y `derrota.wav`, de `herramientas/generar_musica.py`. Las
+  cuatro primeras llevan dentro su punto
   de repetición (un bloque `smpl` del WAV) y Godot las repite solas al
   importarlas. Qué música suena en cada piso lo dice su `.tres`
   (`DatosPiso.musica`).
