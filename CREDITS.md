@@ -35,6 +35,14 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Procesado**: `herramientas/generar_mago_blanco.py`, color a color.
 - **Licencia**: la misma duda que el mago rojo, del que sale.
 
+### Portada — «Los tres Magos de Vacío: El Bosque Ancestral»
+
+- **Archivo**: `assets/portada/portada.jpg` (1416 × 752), el fondo del menú
+  principal.
+- **Origen**: la trajo Matías el 2026-10-14. **Hay que apuntar aquí de dónde
+  sale y con qué licencia** (quién la hizo o con qué herramienta) antes de
+  entregar o publicar.
+
 ### Mago Caído — el jefe del piso 12
 
 - **Origen**: la hoja del **mago rojo** (ver abajo) con otra paleta (túnica

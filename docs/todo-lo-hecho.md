@@ -14,7 +14,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 **Cómo se juega ahora:**
 
-- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; los disparos del rojo queman; el blanco, en vez de ataque cargado, saca una burbuja que lo cubre entero y hace rebotar disparos y enemigos, y su disparo frena a los enemigos pero quita la mitad.
+- **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; los disparos del rojo queman; el blanco, en vez de ataque cargado, saca una burbuja que lo cubre entero y hace rebotar disparos y enemigos, y su disparo frena a los enemigos.
 - **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón: una bola cada medio segundo.
 - **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y hace 3 de daño. La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca una burbuja de 5 s en la que rebotan los disparos y los enemigos. El ataque especial es uno por piso. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o hacia donde mira el mago.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
@@ -65,7 +65,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 14/10/2026 | El Mago Caído pasa a negro y oro, con guadaña; su rayo de fuego rompe los pilares | — |
+| 14/10/2026 | Portada nueva en el menú principal; el mago blanco quita lo mismo que los demás | — |
+| 14/10/2026 | El Mago Caído pasa a negro y oro, con guadaña; su rayo de fuego rompe los pilares | `ddf6bae` |
 | 14/10/2026 | El Mago Caído, jefe del piso 12: rayos y las habilidades de los otros tres magos, en tres fases | `14d42b9` |
 | 13/10/2026 | Versión para Mac en cada release, probada en un Mac de GitHub antes de publicar | `b7f000c` |
 | 13/10/2026 | Antesala y sala del jefe en el piso 12 (todavía sin jefe) | `f93f6b4` |

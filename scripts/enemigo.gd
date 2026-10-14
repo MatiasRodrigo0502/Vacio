@@ -45,7 +45,8 @@ const FRIO_JEFE: float = 0.4
 ## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
 var tipo: TipoEnemigo = null
 
-## Con decimales: el disparo del mago blanco quita medio punto.
+## Con decimales: la quemadura del mago rojo quita 0,25 por golpe y el
+## agujero negro del oscuro, medio punto en cada tic.
 var _vida: float = 0.0
 ## Segundos de frenado que le quedan (ver herir).
 var _frenado: float = 0.0
@@ -233,8 +234,9 @@ func romper() -> void:
 	herir(1.0)
 
 
-## La llama la bola magica: le quita 'cantidad' de vida (medio punto el
-## disparo del mago blanco, varios el cargado) y, si 'frena' > 0, lo deja ese
+## La llama la bola magica: le quita 'cantidad' de vida (1 el disparo
+## normal, varios el cargado; cada mago puede cambiarlo, ver
+## PersonajeJugable.dano_disparo) y, si 'frena' > 0, lo deja ese
 ## tiempo frenado. Intocable (bajo tierra, desvanecido), no le entra.
 func herir(cantidad: float, frena: float = 0.0) -> void:
 	if not es_tangible():

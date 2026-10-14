@@ -221,13 +221,17 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   0.16: encontró la 0.17, la bajó (48 s, lo mismo que `curl` con esta
   conexión), se cambió y se abrió.
 
-- **Portada del menú** (2026-10-09, pedida por Matías): el título VACÍO es
-  pixel art generado (`herramientas/generar_titulo.py` → `assets/titulo/`):
-  letras de piedra tallada con grietas de lava y estalactitas, a x4 sin
-  suavizar. El resplandor va en otra imagen (`titulo_brillo.png`) y late
-  (`_latir_titulo`). Debajo, los magos de `GestorProgreso.personajes`
-  flotando y mirando al centro (`_montar_magos`): un mago nuevo sale solo.
-  Brasas (`CPUParticles2D`) suben por detrás.
+- **Portada del menú** (2026-10-14, la trajo Matías): la ilustración
+  «Los tres Magos de Vacío: El Bosque Ancestral»
+  (`assets/portada/portada.jpg`, 1416 × 752) a pantalla completa, recortada
+  para cubrirla sin deformarse (`stretch_mode` 6). Ya trae el título y los
+  tres magos, así que los botones van abajo en fila, sobre una sombra
+  degradada, el volumen abajo a la izquierda (barras más estrechas,
+  `ControlVolumen.ancho_barra = 150`) y la versión abajo a la derecha. El
+  aviso de versión nueva sube encima de los botones. **Sustituye** al título
+  de piedra en pixel art y a los magos flotando del 2026-10-09
+  (`assets/titulo/` y `generar_titulo.py` siguen ahí, sin usar; el código que
+  los montaba está en el historial de git).
 
 - **Sonido y música** (2026-10-09, pedido por Matías), todo generado por
   síntesis: `herramientas/sintesis.py` (osciladores, filtros, eco,
@@ -253,8 +257,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   normal y del cargado): el oscuro azul y morado, el rojo en rojo, el blanco
   en azul hielo.
 - **Mago blanco** (2026-10-08, pedido por Matías): es el rojo con otra paleta
-  (`herramientas/generar_mago_blanco.py`). Su disparo normal quita **medio
-  punto** (`dano_disparo`, vía `Enemigo.herir()`) y **frena** 1,5 s
+  (`herramientas/generar_mago_blanco.py`). Su disparo normal quita **lo
+  mismo que los demás**, 1 (`dano_disparo`; quitaba medio punto hasta el
+  2026-10-14, cuando Matías lo igualó; su pega es no tener bola cargada) y
+  **frena** 1,5 s
   (`frena_disparo`: anda, apunta y recarga a la mitad, con un aro de escarcha
   a los pies). Su **ataque especial es un escudo burbuja**
   (`scripts/escudo_burbuja.gd`, desde el 2026-10-13) que lo cubre entero

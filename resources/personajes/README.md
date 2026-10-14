@@ -30,8 +30,9 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 
 ## Disparo normal y ataque especial
 
-- `dano_disparo`: lo que quita cada bola normal (1 de siempre; 0,5 el mago
-  blanco, que necesita el doble de impactos). El cargado no cambia.
+- `dano_disparo`: lo que quita cada bola normal. Los tres quitan 1 (el mago
+  blanco quitaba 0,5 hasta el 2026-10-14; Matías lo igualó a los demás). El
+  cargado no cambia.
 - `frena_disparo`: segundos que deja frenado al enemigo que toca. Frenado,
   anda, apunta y recarga a la mitad, y lleva un aro de escarcha a los pies.
 - Los tres disparan una bola cada 0,5 s (`cadencia_disparo` del jugador;

@@ -283,9 +283,16 @@ tardan un segundo; la música, unos minutos (Python puro, sin numpy). Se
 puede generar una sola pieza: `python herramientas/generar_musica.py
 portada`.
 
+## portada/
+
+`portada.jpg`: la portada del juego, «Los tres Magos de Vacío: El Bosque
+Ancestral» (1416 × 752). La trajo Matías el 2026-10-14 y es el fondo del menú
+principal, a pantalla completa. Ver su origen en `CREDITS.md`.
+
 ## titulo/
 
-El título del menú, VACÍO, hecho con `herramientas/generar_titulo.py`: letras
+**Sin usar desde el 2026-10-14**: la portada ya trae el título. Era el título
+del menú, VACÍO, hecho con `herramientas/generar_titulo.py`: letras
 de piedra tallada en pixel art, con grietas de lava y estalactitas colgando,
 ampliadas x4 sin suavizar. `titulo.png` son las letras y `titulo_brillo.png`
 el resplandor de la lava, aparte para que el menú lo haga latir. Para cambiar

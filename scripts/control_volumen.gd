@@ -7,7 +7,9 @@
 class_name ControlVolumen
 extends GridContainer
 
-const ANCHO_BARRA: float = 220.0
+## Lo ancho de cada barra. En la portada, mas estrechas: van a la izquierda de
+## los botones y no caben las de la pausa.
+@export var ancho_barra: float = 220.0
 
 
 func _ready() -> void:
@@ -34,7 +36,7 @@ func _fila(nombre: String, valor: float, al_cambiar: Callable) -> HSlider:
 	barra.max_value = 1.0
 	barra.step = 0.05
 	barra.value = valor
-	barra.custom_minimum_size = Vector2(ANCHO_BARRA, 24.0)
+	barra.custom_minimum_size = Vector2(ancho_barra, 24.0)
 	barra.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	barra.value_changed.connect(al_cambiar)
 	add_child(barra)
