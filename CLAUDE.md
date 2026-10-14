@@ -125,6 +125,10 @@ hacer nada tras el push. Comprobado el 2026-10-08 que se actualiza bien. Si
 falla, el registro sale en la pestaña Actions. `gh` no tiene sesión iniciada en
 este ordenador: el estado de las ejecuciones se mira con la API pública
 (`curl https://api.github.com/repos/MatiasRodrigo0502/Vacio/actions/runs`).
+**Sin sesión, la API deja 60 consultas por hora**: preguntarle cada 20 s
+durante varias versiones seguidas la agotó (2026-10-14). Para esperar a que
+salga una versión, mejor `git ls-remote --tags origin 'v0.*'`, que no cuenta:
+la etiqueta solo aparece cuando la release ya está publicada.
 
 **Versión de Mac** (2026-10-13, pedida por Matías): `Vacio-mac.zip` con
 `Vacio.app` universal (chip de Apple e Intel), preset «macOS» de
