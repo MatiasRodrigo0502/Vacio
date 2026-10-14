@@ -64,7 +64,8 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 
 ## Colores del disparo
 
-Cada mago dispara de su color: el oscuro en azul (y morado el cargado), el rojo
+Cada mago dispara de su color: el oscuro en lila, el de la llama de su bastón
+(y morado, más azulado y grande, el cargado), el rojo
 en rojo, el blanco en azul hielo (no tiene cargado). Son cuatro campos, centro y resplandor para cada ataque
 (`color_disparo`, `halo_disparo`, `color_cargado`, `halo_cargado`). La bola que
 se forma mientras cargas sale de los dos del cargado, así que lo que se forma y

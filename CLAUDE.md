@@ -268,8 +268,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   a los valores **de fábrica** del jugador, así que sobrevive a reiniciar. El
   menú monta una ficha por `.tres`, así que un mago nuevo no toca código.
   Cada mago trae también **el color de sus disparos** (centro y resplandor del
-  normal y del cargado): el oscuro azul y morado, el rojo en rojo, el blanco
-  en azul hielo.
+  normal y del cargado): el oscuro lila (el normal, del color de la llama de
+  su bastón, desde el 2026-10-14; antes azul) y morado el cargado, el rojo en
+  rojo, el blanco en azul hielo.
 - **Mago blanco** (2026-10-08, pedido por Matías): es el rojo con otra paleta
   (`herramientas/generar_mago_blanco.py`). Su disparo normal quita **lo
   mismo que los demás**, 1 (`dano_disparo`; quitaba medio punto hasta el

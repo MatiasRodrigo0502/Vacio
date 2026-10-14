@@ -66,7 +66,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 14/10/2026 | El veneno quita 2 de vida poco a poco en sus 3 s (sin llegar a matar) | — |
+| 14/10/2026 | El disparo normal del mago oscuro pasa de azul a lila, como la llama de su bastón | — |
+| 14/10/2026 | El veneno quita 2 de vida poco a poco en sus 3 s (sin llegar a matar) | `cdb1021` |
 | 14/10/2026 | Pantalla completa al abrir el juego; F11 o Alt+Intro para pasar a ventana | `cae0707` |
 | 14/10/2026 | Solo cura el vendaje (60): sustituye al corazón del suelo (30), que se quedaba corto | — |
 | 14/10/2026 | Vida en puntos: barra de vida, números de daño al dar y al recibir, y aro de tiempo en el escudo | `83b4506` |
