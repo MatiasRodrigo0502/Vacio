@@ -175,7 +175,7 @@ darles salta **el número de vida que les quitas** (blanco el disparo normal,
 dorado y grande el cargado, naranja la quemadura y violeta el agujero negro).
 Un disparo normal quita **10** (hasta 13: varía un poco hacia arriba) y el
 cargado 30; una rata o un murciélago tienen 10, un slime 20, un gólem 50. Un
-golpe de un enemigo te quita de 20 (una rata) a 50 (el rayo del cristal), y
+golpe de un enemigo te quita de 20 (una rata) a 45 (el magma del gólem), y
 el **vendaje** cura 60. Es lo único que cura: sale como objeto, a veces lo
 suelta un enemigo y, al limpiar una sala, cae uno de cada cuatro veces. Con
 la vida llena no se coge: se queda en el suelo para luego. Del piso 2 en adelante los hay, y van a

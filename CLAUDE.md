@@ -442,8 +442,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   disparo siga cayendo de uno), el cargado 30 (50 el del rojo), la quemadura
   3 por tic y el agujero negro 10 por tic; los enemigos tienen de 10 (rata,
   murciélago, crías) a 50 (gólem), y el jefe 900. Lo que quitan ellos ya no
-  es 1 para todos: de 20 (rata, murciélago, veneno) a 50 (rayo del cristal),
-  pinchos 25, lava 20, caer 30; el vendaje cura 60. **Cada golpe enseña su número** (`scripts/numero_dano.gd`, del
+  es 1 para todos: de 20 (rata, murciélago, veneno) a 45 (magma del gólem),
+  30 el rayo del cristal, pinchos 25, lava 20, caer 30; el vendaje cura 60.
+  **El rayo del cristal quitaba 50 hasta el 2026-10-15**: en las cinco
+  partidas guardadas de Matías (0.27 a 0.31) mató en tres, todas en los pisos
+  5 y 6, y ninguna pasó del 7. Matías lo bajó a 30 y quiso que siguiera
+  disparando sin avisar. **Cada golpe enseña su número** (`scripts/numero_dano.gd`, del
   tamaño de pantalla aunque cambie el zoom): blanco el normal, dorado el
   cargado, naranja la quemadura, violeta el agujero negro y rojo encima del
   jugador. El número es lo que quita de verdad (el golpe que mata enseña lo

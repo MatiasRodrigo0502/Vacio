@@ -66,7 +66,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 15/10/2026 | Escudo del mago blanco: los rebotes ya no se quedan pegados y dañan a los enemigos | — |
+| 15/10/2026 | El rayo del cristal vivo quita 30 en vez de 50 (mataba en 3 de cada 5 partidas) | — |
+| 15/10/2026 | Escudo del mago blanco: los rebotes ya no se quedan pegados y dañan a los enemigos | `b9c9fd8` |
 | 14/10/2026 | El disparo normal del mago oscuro pasa de azul a lila, como la llama de su bastón | `2298e36` |
 | 14/10/2026 | El veneno quita 2 de vida poco a poco en sus 3 s (sin llegar a matar) | `cdb1021` |
 | 14/10/2026 | Pantalla completa al abrir el juego; F11 o Alt+Intro para pasar a ventana | `cae0707` |

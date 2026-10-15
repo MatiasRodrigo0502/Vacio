@@ -2,7 +2,7 @@
 ## por Matias el 2026-10-14, en lugar de los corazones.
 ##
 ## POR QUE UNA BARRA: con la vida en puntos (100, y cada golpe quita lo suyo:
-## 20 una rata, 50 un rayo), los corazones se quedaban cortos. La barra baja
+## 20 una rata, 45 el magma), los corazones se quedaban cortos. La barra baja
 ## lo que quita cada golpe, y lo que se acaba de perder se queda un momento en
 ## blanco y baja despacio: asi se ve cuanto ha quitado.
 ##
