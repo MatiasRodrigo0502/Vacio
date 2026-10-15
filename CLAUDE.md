@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-14.**
+**Última actualización: 2026-10-15.**
 
 ---
 
@@ -280,7 +280,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   a los pies). Su **ataque especial es un escudo burbuja**
   (`scripts/escudo_burbuja.gd`, desde el 2026-10-13) que lo cubre entero
   durante 5 s: los disparos rebotan (`Jugador.escudo_rebota`; el magma bota y
-  cae fuera), los enemigos que la tocan salen despedidos (`Enemigo.empujar`)
+  cae fuera) y, rebotados, **quitan a los enemigos que toquen lo mismo que
+  quitaban al mago** (desde el 2026-10-15, `ProyectilEnemigo._golpear_enemigos`;
+  también a quien lo tiró y al jefe), los enemigos que la tocan salen despedidos (`Enemigo.empujar`)
   y mientras está nada de los enemigos le quita vida (lo comprueba quien hace
   el daño con `Jugador.escudo_activo`); lo del suelo sí. Se saca con el clic
   derecho o el espacio (`PersonajeJugable.ataque_especial`,
@@ -614,8 +616,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de frente para que los de distancia tuvieran algo que hacer; ahora eso lo
   da que dure 5 s y sea uno por piso. Lava, pinchos y caer no los lanza nadie
   y siguen haciendo daño. Los disparos lo preguntan justo después de moverse
-  (`Jugador.escudo_rebota`) y rebotan desde donde estaban antes de tocarla;
-  rebotados ya no hacen daño al jugador.
+  (`Jugador.escudo_rebota`). El rebote se hace **con lo que se mueven el uno
+  respecto al otro** (el mago puede ir andando), como una pelota contra una
+  raqueta: sale más rápido si el mago iba hacia él (`RAQUETA_MAXIMA`, hasta
+  el doble), nunca más lento. Se saca al borde de la burbuja. Rebotados ya
+  no hacen daño al jugador, sino a los enemigos.
 - **Las rocas se calibran contra el suelo de su piso.** La cuenta es la de
   la nota de `tinte_profundidad()`: luminosidad de la roca entre la del suelo
   (gamma, no lineal). La cueva daba 0,32 en el piso 9, y a partir de 0,48 la
@@ -708,6 +713,17 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   intentando la exportación aquí sin la plantilla: Godot lista todos los
   errores de configuración, no solo el de la plantilla. El `.exe` de Windows
   no cambia (su preset tiene `etc2_astc=false`).
+- **Un rebote no puede devolver el disparo a donde estaba.** El escudo
+  dejaba el disparo rebotado en su sitio del paso anterior. Si ese sitio ya
+  quedaba dentro de la burbuja (el mago andando hacia el disparo, o la
+  burbuja abriéndose encima), volvía a él en cada paso y se quedaba pegado
+  hasta que acababa el escudo (lo vio Matías jugando). Se arregló el
+  2026-10-15 sacándolo al borde: por donde la tocó si rebota, por donde está
+  ahora si ya se alejaba. Ojo: el escudo mira también el sitio de antes del
+  disparo, que con la burbuja moviéndose cuenta como tocarla aunque el
+  disparo ya se aleje; sacarlo con la normal de ese sitio también lo
+  pegaba. Medido con el mago andando de verdad (`Input.action_press`): con
+  la posición cambiada a mano su `velocity` es 0 y el fallo no sale.
 - **Intocable no puede querer decir inmortal.** Con los comportamientos, un
   enemigo escondido o desvanecido no recibe daño (`herir` lo ignora), y
   `matar()` (F4) pasaba por ahí: dejaba vivos al fantasma y a la planta bajo

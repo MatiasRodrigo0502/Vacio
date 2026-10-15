@@ -12,6 +12,12 @@ extends Area2D
 ## se mira a mano con Terreno: un Area2D no detecta los StaticBody2D. Las rocas
 ## lo paran igual que paran las bolas del jugador: son el parapeto de los dos.
 const CAPA_JUGADOR: int = 1
+## Capa de los enemigos (Enemigo.tscn). Solo la mira lo rebotado en el escudo.
+const CAPA_ENEMIGOS: int = 32
+## Lo que se separa del borde de la burbuja al rebotar, para quedar fuera.
+const HOLGURA_ESCUDO: float = 1.0
+## Lo mas rapido que sale un rebote, en veces su velocidad.
+const RAQUETA_MAXIMA: float = 2.0
 const MASCARA_TERRENO: int = Terreno.CAPA_MUROS | Terreno.CAPA_ROCAS
 ## Radio del jugador, para saber si la parabola le cae encima.
 const RADIO_JUGADOR: float = 15.0
@@ -20,6 +26,9 @@ const ALTURA_MAXIMA: float = 150.0
 
 var tipo: TipoProyectil = null
 var direccion: Vector2 = Vector2.RIGHT
+## px/s. La de su tipo, salvo despues de rebotar en la burbuja de un mago que
+## anda hacia el: entonces sale mas rapido, como de una raqueta.
+var _velocidad: float = 0.0
 ## Casilla de la sala, como en las bolas del jugador: lo que sale de ella se
 ## apaga, para que un disparo no cruce una puerta abierta.
 var limite: Rect2 = Rect2()
@@ -28,7 +37,8 @@ var _recorrido: float = 0.0
 var _fase: float = 0.0
 var _acabado: bool = false
 ## True despues de rebotar en el escudo del mago blanco: ya no le hace dano
-## (sale despedido lejos de el) ni vuelve a rebotar si cae encima.
+## (sale despedido lejos de el) ni vuelve a rebotar si cae encima, y ahora se
+## lo hace a los enemigos que toque (pedido por Matias el 2026-10-15).
 var _rebotado: bool = false
 ## Quien lo ha disparado (el nombre de su tipo de enemigo). Para el registro
 ## de partidas: el veneno lo tiran dos enemigos distintos.
@@ -47,6 +57,7 @@ func configurar(tipo_proyectil: TipoProyectil, desde: Vector2, hacia: Vector2,
 		destino: Vector2, limite_sala: Rect2) -> void:
 	tipo = tipo_proyectil
 	direccion = hacia.normalized() if hacia != Vector2.ZERO else Vector2.DOWN
+	_velocidad = tipo.velocidad
 	limite = limite_sala
 	_origen = desde
 	_destino = destino
@@ -84,24 +95,52 @@ func _physics_process(delta: float) -> void:
 			_caer()
 		return
 
-	var paso := tipo.velocidad * delta
+	var paso := _velocidad * delta
 	var antes := global_position
 	global_position += direccion * paso
 	_recorrido += paso
 	# El escudo del mago blanco, antes que nada: se mira aqui, recien movido,
 	# y no al tocar al jugador, para que el disparo rebote en la burbuja y no
-	# llegue a tocarle. Sale reflejado desde donde estaba antes de tocarla.
-	# La parabola no pasa por aqui: cae desde arriba (ver _caer).
+	# llegue a tocarle. La parabola no pasa por aqui: cae desde arriba (ver
+	# _caer).
 	if _jugador != null and _jugador.has_method("escudo_rebota"):
-		var normal: Vector2 = _jugador.escudo_rebota(antes, global_position, tipo.radio)
+		# La burbuja va con el mago, que puede ir andando: el rebote se hace
+		# con lo que se mueven el uno respecto al otro, como una pelota contra
+		# una raqueta. Si no, al andar hacia un disparo que pasa de lado, este
+		# rebotaba hacia donde el mago iba a seguir empujandolo y se quedaba
+		# un rato resbalando por el borde, que se ve como pegado.
+		var mueve: Vector2 = _jugador.velocity if _jugador is CharacterBody2D else Vector2.ZERO
+		var relativa := direccion * _velocidad - mueve
+		var normal: Vector2 = _jugador.escudo_rebota(antes, global_position, tipo.radio, relativa)
 		if normal != Vector2.ZERO:
-			# Solo si iba hacia dentro: uno que ya sale no se vuelve a girar.
-			if direccion.dot(normal) < 0.0:
-				direccion = direccion.bounce(normal)
-			global_position = antes
 			_rebotado = true
-			return
-	if Terreno.choque(get_world_2d(), antes, global_position, tipo.radio, MASCARA_TERRENO) != null:
+			# Fuera de la burbuja, al borde. ANTES SE DEVOLVIA A DONDE ESTABA EN
+			# EL PASO ANTERIOR, y eso lo dejaba pegado: si ese sitio ya quedaba
+			# dentro (el mago andando hacia el, o la burbuja abriendose encima),
+			# volvia a el en cada paso sin avanzar nunca.
+			var centro: Vector2 = _jugador.escudo_centro()
+			var fuera := EscudoBurbuja.RADIO + tipo.radio + HOLGURA_ESCUDO
+			# Solo si se acercaba a la burbuja: uno que ya se aleja no se gira.
+			if relativa.dot(normal) < 0.0:
+				var sale := relativa.bounce(normal) + mueve
+				direccion = sale.normalized() if sale.length() > 0.01 else normal
+				# Y con la velocidad que le da el golpe: el mago blanco anda a
+				# 265 y el veneno va a 300; a su velocidad de siempre apenas le
+				# sacaba ventaja y la burbuja lo volvia a alcanzar. Nunca mas
+				# lento que la suya.
+				_velocidad = clampf(sale.length(), tipo.velocidad, tipo.velocidad * RAQUETA_MAXIMA)
+				# Desde donde la toco.
+				global_position = centro + normal * fuera
+			elif global_position.distance_to(centro) < fuera:
+				# Ya se alejaba: se le deja lo que ha avanzado y, si aun asi
+				# sigue dentro, se saca por donde esta ahora. Con la normal del
+				# sitio de antes perdia el paso entero y no salia nunca.
+				var desde_centro := global_position - centro
+				var hacia_fuera := desde_centro.normalized() if desde_centro.length() > 0.01 else normal
+				global_position = centro + hacia_fuera * fuera
+	if _rebotado and _golpear_enemigos(antes, global_position, tipo.radio):
+		_acabar()
+	elif Terreno.choque(get_world_2d(), antes, global_position, tipo.radio, MASCARA_TERRENO) != null:
 		_acabar()
 	elif _recorrido >= tipo.alcance:
 		_acabar()
@@ -147,12 +186,49 @@ func _caer() -> void:
 		_duracion = 0.35
 		Sonido.tocar(&"escudo_golpe")
 		return
+	# Lo rebotado ya no es del enemigo: cae sobre los enemigos, no sobre el
+	# mago.
+	if _rebotado:
+		_golpear_enemigos(global_position, global_position, tipo.radio * 1.6)
+		_acabar()
+		return
 	if jugador != null and jugador.has_method("centro_colision") \
 			and jugador.centro_colision().distance_to(global_position) \
 				< tipo.radio * 1.6 + RADIO_JUGADOR \
 			and not (jugador.has_method("escudo_activo") and jugador.escudo_activo()):
 		_golpear(jugador)
 	_acabar()
+
+
+## Lo rebotado en el escudo le da al primer enemigo que toque entre 'desde' y
+## 'hasta': le quita lo mismo que le habria quitado al mago. Tambien a quien
+## lo tiro, y al jefe. Devuelve true si ha dado a alguno.
+##
+## Se pregunta al mundo a mano y no con la senal de la propia area: en el
+## paso del rebote ya tiene que poder dar, y la senal llegaria un paso tarde.
+## Se mira en varios puntos del tramo, como el escudo: el rayo va tan deprisa
+## que podria saltar por encima de un enemigo pequeno.
+func _golpear_enemigos(desde: Vector2, hasta: Vector2, radio: float) -> bool:
+	var circulo := CircleShape2D.new()
+	circulo.radius = radio
+	var consulta := PhysicsShapeQueryParameters2D.new()
+	consulta.shape = circulo
+	consulta.collision_mask = CAPA_ENEMIGOS
+	consulta.collide_with_areas = true
+	consulta.collide_with_bodies = false
+	var espacio := get_world_2d().direct_space_state
+	var puntos := maxi(1, ceili(desde.distance_to(hasta) / maxf(radio, 1.0)))
+	for k in range(1, puntos + 1):
+		consulta.transform = Transform2D(0.0, desde.lerp(hasta, float(k) / puntos))
+		for tocado: Dictionary in espacio.intersect_shape(consulta, 4):
+			var enemigo := tocado.collider as Enemigo
+			# Lo escondido (el fantasma desvanecido, la planta bajo tierra) no
+			# se lleva el disparo, como con las bolas del mago.
+			if enemigo != null and enemigo.es_tangible():
+				enemigo.herir(float(tipo.dano))
+				Sonido.tocar(&"golpe_enemigo")
+				return true
+	return false
 
 
 ## "Serpiente (veneno)": quien lo ha tirado y con que.

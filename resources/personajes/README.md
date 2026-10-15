@@ -44,7 +44,8 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
   una vez por piso** (lo cuenta `Jugador.especial_disponible`; el HUD dice si
   queda). El escudo se saca al pulsar y dura `duracion_escudo` (5 s en el
   blanco). Es una burbuja que cubre al mago entero (radio 42): los disparos
-  enemigos rebotan en ella, el magma del gólem bota y cae fuera, y los
+  enemigos rebotan en ella, el magma del gólem bota y cae fuera, lo rebotado
+  quita a los enemigos que toque lo mismo que quitaba al mago, y los
   enemigos que la tocan salen despedidos. Mientras está, nada de lo que lanzan
   los enemigos (contacto, disparos, explosiones, la onda del gólem) le quita
   vida; lo del suelo (lava, pinchos, caer), sí. Ver

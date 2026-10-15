@@ -561,12 +561,12 @@ func direccion_mirada() -> Vector2:
 
 
 ## Si el escudo hace rebotar algo de 'radio' que ha ido de 'desde' a 'hasta'
-## en este paso, la normal del rebote; si no, Vector2.ZERO. Lo preguntan los
-## proyectiles enemigos; sin escudo, nunca.
-func escudo_rebota(desde: Vector2, hasta: Vector2, radio: float) -> Vector2:
+## en este paso, yendo hacia 'direccion', la normal del rebote; si no,
+## Vector2.ZERO. Lo preguntan los proyectiles enemigos; sin escudo, nunca.
+func escudo_rebota(desde: Vector2, hasta: Vector2, radio: float, direccion: Vector2) -> Vector2:
 	if _escudo == null:
 		return Vector2.ZERO
-	return _escudo.rebota(desde, hasta, radio)
+	return _escudo.rebota(desde, hasta, radio, direccion)
 
 
 ## True mientras el escudo esta levantado. Mientras, nada de lo que lanzan los

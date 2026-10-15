@@ -14,6 +14,11 @@
 ## (PersonajeJugable.ataque_especial). Los proyectiles le preguntan al jugador
 ## si rebotan (Jugador.escudo_rebota); a los enemigos los empuja la propia
 ## burbuja, que los ve con un Area2D.
+##
+## LO REBOTADO DA A LOS ENEMIGOS (Matias, 2026-10-15): un disparo que sale de
+## la burbuja quita a quien toque lo mismo que quitaba al mago, tambien a
+## quien lo tiro y al jefe (ProyectilEnemigo._golpear_enemigos). Ese mismo
+## dia se arreglo que algunos rebotes se quedaran pegados a la burbuja.
 class_name EscudoBurbuja
 extends Node2D
 
@@ -134,18 +139,28 @@ func activo() -> bool:
 ## paso ha tocado la burbuja, la normal de la burbuja alli (hacia fuera), para
 ## rebotarlo. Si no, Vector2.ZERO. Se mira en varios puntos del tramo: el rayo
 ## va tan deprisa que, en un solo punto, la cruzaria de un paso al siguiente.
-func rebota(desde: Vector2, hasta: Vector2, radio: float) -> Vector2:
+##
+## El destello y el sonido, solo si se acercaba a la burbuja ('direccion',
+## como se mueve respecto a ella: el proyectil le resta lo que anda el mago).
+## Uno que ya se aleja y al que la burbuja toca se aparta sin mas; si no,
+## sonaria en cada paso.
+func rebota(desde: Vector2, hasta: Vector2, radio: float, direccion: Vector2) -> Vector2:
 	if not activo():
 		return Vector2.ZERO
 	for k in 5:
 		var v := desde.lerp(hasta, k / 4.0) - global_position
 		if v.length() <= RADIO + radio:
-			_destello = DURACION_DESTELLO
-			Sonido.tocar(&"escudo_golpe")
-			# Justo en el centro no hay normal: la de por donde venia.
-			if v.length() > 0.01:
-				return v.normalized()
-			return (desde - global_position).normalized()
+			# Justo en el centro no hay normal: la de por donde venia y, si
+			# tampoco, la contraria a hacia donde va.
+			var normal := v.normalized()
+			if v.length() <= 0.01:
+				normal = (desde - global_position).normalized()
+			if normal == Vector2.ZERO:
+				normal = -direccion.normalized() if direccion != Vector2.ZERO else Vector2.UP
+			if direccion.dot(normal) < 0.0:
+				_destello = DURACION_DESTELLO
+				Sonido.tocar(&"escudo_golpe")
+			return normal
 	return Vector2.ZERO
 
 
