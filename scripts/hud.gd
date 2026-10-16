@@ -66,8 +66,14 @@ func vaciar_mejoras() -> void:
 ## ventajas, que no se va.
 func anunciar_mejora(mejora: ObjetoMejora) -> void:
 	_mejoras.anadir(mejora)
-	_aviso.text = "%s  ·  %s" % [mejora.nombre, mejora.descripcion]
-	_aviso.modulate = mejora.color
+	avisar("%s  ·  %s" % [mejora.nombre, mejora.descripcion], mejora.color)
+
+
+## Un aviso de unos segundos debajo del piso, el mismo sitio en el que se
+## anuncian los objetos. Lo usa tambien el cooperativo (quien entra y sale).
+func avisar(texto: String, color: Color) -> void:
+	_aviso.text = texto
+	_aviso.modulate = color
 	_aviso.show()
 
 	if _desvanecer != null and _desvanecer.is_valid():

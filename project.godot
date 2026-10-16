@@ -21,6 +21,7 @@ GestorProgreso="*res://scripts/gestor_progreso.gd"
 Sonido="*res://scripts/sonido.gd"
 Actualizacion="*res://scripts/actualizacion.gd"
 Pantalla="*res://scripts/pantalla.gd"
+Red="*res://scripts/red.gd"
 
 [display]
 

@@ -257,6 +257,27 @@ El volumen de la música y el de los efectos se cambian abajo a la izquierda
 de la portada o en el menú de pausa (Esc), y se recuerdan para la próxima
 vez.
 
+### Cooperativo en red local (en pruebas)
+
+Hasta **3 jugadores en la misma red** (la wifi de clase o de casa), cada uno
+en su ordenador. En **Jugar → Cooperativo en red local**:
+
+1. Uno pulsa **Crear sala** y le sale un código de 7 letras y números
+   (`30AG-R1N`). Si Windows pregunta por el cortafuegos, hay que darle permiso
+   en redes privadas, o los demás no podrán entrar.
+2. Los demás escriben ese código y pulsan **Unirse**. También vale la
+   dirección que sale debajo (`192.168.1.37`).
+3. Cada uno elige un mago **distinto**, y quien creó la sala pulsa
+   **Empezar**.
+
+Tenéis que tener **la misma versión** del juego: si no, la sala no deja
+entrar. Es la **fase 1** del multijugador: de momento solo se juega el
+**piso 1** (la bajada está cerrada). Os veis, andáis y disparáis juntos, y el
+objeto que coge uno es para todos. En la pausa el juego no se para (los demás
+siguen) y no se puede reiniciar; *Salir de la sala* deja la partida, y si se
+va quien la creó, se acaba para todos. Lo que falta, y por qué se hace por
+fases, está en [`docs/mejoras-futuras/multijugador.md`](docs/mejoras-futuras/multijugador.md).
+
 ## Estructura del proyecto
 
 ```
@@ -379,7 +400,8 @@ ordenador.
 Las mejoras grandes que el equipo ha valorado para más adelante, con su
 estudio (qué haría falta, riesgos y decisiones pendientes), están en
 [`docs/mejoras-futuras/`](docs/mejoras-futuras/): de momento, el multijugador
-cooperativo con sala por código.
+cooperativo con sala por código, que ya tiene hecha la fase 1 (red local,
+piso 1).
 
 Sistema de puntuación y guardado. Los obstáculos móviles ya
 están: del piso 4 en adelante, parte de las rocas van y vienen, y es la primera

@@ -228,7 +228,11 @@ func _voz_libre() -> AudioStreamPlayer:
 
 func _al_anadir_nodo(nodo: Node) -> void:
 	if nodo is BaseButton:
-		nodo.pressed.connect(tocar.bind(&"clic"))
+		# Un boton que se cambia de sitio (reparent) vuelve a entrar en el
+		# arbol: sin mirarlo, se conectaria dos veces y el motor da error.
+		var clic := tocar.bind(&"clic")
+		if not nodo.pressed.is_connected(clic):
+			nodo.pressed.connect(clic)
 
 
 # --- Volumen --------------------------------------------------------------------

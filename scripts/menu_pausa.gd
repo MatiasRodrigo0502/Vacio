@@ -16,6 +16,9 @@ extends CanvasLayer
 signal reinicio_solicitado
 signal menu_solicitado
 
+## En cooperativo: el menu sale, pero el juego sigue (ver modo_cooperativo).
+var _sin_congelar: bool = false
+
 @onready var _subtitulo: Label = $Centro/Caja/Subtitulo
 @onready var _boton_continuar: Button = $Centro/Caja/BotonContinuar
 
@@ -40,13 +43,22 @@ func _unhandled_input(evento: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
+## En cooperativo la pausa no congela el juego (los demas siguen jugando) y
+## no se puede reiniciar, que seria solo para uno. Lo pone Principal.
+func modo_cooperativo() -> void:
+	_sin_congelar = true
+	$Centro/Caja/BotonReiniciar.visible = false
+	$Centro/Caja/BotonMenu.text = "Salir de la sala"
+
+
 func pausar() -> void:
 	var datos := GestorProgreso.obtener_datos_piso(GestorProgreso.piso_actual)
 	var capa := datos.nombre_capa.to_upper() if datos != null else ""
 	_subtitulo.text = "Piso %d de %d  ·  %s" % [
 		GestorProgreso.piso_actual, GestorProgreso.total_pisos(), capa]
 	visible = true
-	get_tree().paused = true
+	if not _sin_congelar:
+		get_tree().paused = true
 	# El foco en "Continuar", para que con el teclado baste con Enter.
 	_boton_continuar.grab_focus()
 

@@ -768,3 +768,21 @@ func bloquear_control() -> void:
 	_control_activo = false
 	velocity = Vector2.ZERO
 	_cancelar_carga()
+
+
+## Lo contrario, si sigue vivo. Lo usa el cooperativo al cerrar la pausa,
+## que alli no congela el juego: solo para al mago mientras esta abierta.
+func desbloquear_control() -> void:
+	if vida_actual > 0 and not _cayendo:
+		_control_activo = true
+
+
+## Como se le ve ahora, para ensenarlo igual en los otros ordenadores del
+## cooperativo: la animacion y el color (el parpadeo de un golpe, el verde
+## del veneno).
+func animacion_actual() -> StringName:
+	return _sprite.animation
+
+
+func color_actual() -> Color:
+	return _sprite.modulate

@@ -32,6 +32,9 @@ const ANCHO_FICHA: float = 300.0
 
 ## El primer boton de mago, para dejarle el foco al abrir el panel.
 var _primer_boton: Button = null
+## El panel del cooperativo (crear sala, unirse, sala de espera).
+var _cooperativo: SalaCooperativo
+var _boton_cooperativo: Button
 
 
 func _ready() -> void:
@@ -42,11 +45,50 @@ func _ready() -> void:
 	$PanelPersonajes/Centro/Caja/BotonVolver.pressed.connect(_mostrar_personajes.bind(false))
 
 	_montar_fichas()
+	_montar_cooperativo()
 	_poner_version()
 	Sonido.poner_musica(MUSICA)
 	_panel_controles.hide()
 	_panel_personajes.hide()
 	_boton_jugar.grab_focus()
+	# Se vuelve de una partida cooperativa que se ha cortado: se cuenta por
+	# que, en el propio panel del cooperativo.
+	if Red.mensaje_pendiente != "":
+		_mostrar_cooperativo(true)
+		_cooperativo.mostrar_mensaje(Red.mensaje_pendiente)
+		Red.mensaje_pendiente = ""
+
+
+## El cooperativo sale desde "Jugar", debajo de los magos: es otra forma de
+## jugar, no otra cosa del menu. En la fila de abajo no cabia otro boton sin
+## pisar el volumen.
+func _montar_cooperativo() -> void:
+	_cooperativo = SalaCooperativo.new()
+	_cooperativo.visible = false
+	_cooperativo.cerrado.connect(_mostrar_cooperativo.bind(false))
+	add_child(_cooperativo)
+
+	var caja := $PanelPersonajes/Centro/Caja
+	var volver: Button = $PanelPersonajes/Centro/Caja/BotonVolver
+	var fila := HBoxContainer.new()
+	fila.alignment = BoxContainer.ALIGNMENT_CENTER
+	fila.add_theme_constant_override("separation", 16)
+	caja.add_child(fila)
+	caja.move_child(fila, volver.get_index())
+	_boton_cooperativo = Button.new()
+	_boton_cooperativo.text = "Cooperativo en red local"
+	_boton_cooperativo.custom_minimum_size = Vector2(300, 46)
+	_boton_cooperativo.add_theme_font_size_override("font_size", 20)
+	_boton_cooperativo.pressed.connect(_mostrar_cooperativo.bind(true))
+	volver.reparent(fila)
+	fila.add_child(_boton_cooperativo)
+
+
+func _mostrar_cooperativo(visible_ahora: bool) -> void:
+	_cooperativo.visible = visible_ahora
+	_panel_personajes.visible = not visible_ahora
+	if not visible_ahora:
+		_boton_cooperativo.grab_focus()
 
 
 ## La version del juego, pequena abajo a la derecha. Por codigo y no en la
@@ -134,6 +176,11 @@ func _unhandled_input(evento: InputEvent) -> void:
 		return
 	if _panel_controles.visible:
 		_mostrar_controles(false)
+		get_viewport().set_input_as_handled()
+	elif _cooperativo.visible:
+		# Dentro de una sala no: salir de ella tiene su boton.
+		if not Red.en_sala():
+			_mostrar_cooperativo(false)
 		get_viewport().set_input_as_handled()
 	elif _panel_personajes.visible:
 		_mostrar_personajes(false)

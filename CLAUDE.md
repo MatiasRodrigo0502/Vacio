@@ -253,6 +253,43 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   lo había oído al hacerlo**: Claude no puede oír, solo medir (picos, volumen
   medio, recortes, que el bucle empalme). Hay que escucharlo y ajustar.
 
+- **Cooperativo en red local, fase 1** (2026-10-16, pedido por Matías;
+  estudio y fases en `docs/mejoras-futuras/multijugador.md`). En **Jugar →
+  Cooperativo en red local** (`scripts/sala_cooperativo.gd`, montado por
+  código en el menú): crear sala, unirse con código y sala de espera. Hasta 3
+  jugadores, **cada uno con un mago distinto**, y misma versión del juego
+  (si no, no entra). Solo se juega el **piso 1**, que no tiene enemigos ni
+  peligros: la bajada está cerrada (`Cooperativo.bajada_cerrada`). Piezas:
+  - Autoload **`Red`** (`scripts/red.gd`): la conexión (ENet, puerto 24701)
+    y la sala. El **código** es la IP local del anfitrión en 7 caracteres de
+    base 32 de Crockford (`codigo_de_ip`/`ip_de_codigo`; también vale la IP
+    tal cual). El anfitrión reparte la lista (`jugadores`: id → número y
+    mago) y decide quién entra (`_presentarse`: versión, sala llena,
+    partida empezada). `Red.cooperativo()` es lo que pregunta el juego.
+  - **`Cooperativo`** (`scripts/cooperativo.gd`), que crea Principal solo en
+    cooperativo: **cada uno manda en su mago** y avisa de dónde está unas 20
+    veces por segundo; los de los demás se enseñan con **`MagoRemoto`**
+    (`scripts/mago_remoto.gd`: sprite, «J2» encima y la burbuja si la lleva;
+    no es un `Jugador` ni está en el grupo `jugador`). Los disparos van ya
+    hechos (`mandar_disparo` → `Principal.lanzar_bola_remota`). **Los objetos
+    son para todos menos para quien esté muerto** (Matías): el que lo coge
+    avisa (`Objeto` → grupo `cooperativo`) y a los demás se les quita del
+    suelo y se les aplica. Se reconocen por sitio y recurso: los pisos salen
+    de una semilla.
+  - Llamadas por la red: a `/root/Red` (siempre existe) y a
+    `/root/Principal/Cooperativo`, **solo a los que ya tienen la partida
+    montada** (`Red.listos()`, con el aviso `_listo` de ida y vuelta).
+  - La pausa no congela (`MenuPausa.modo_cooperativo`): para a este mago y
+    quita *Reiniciar*; *Salir de la sala* vuelve al menú. Si se va el
+    anfitrión, los demás vuelven al menú con el porqué
+    (`Red.mensaje_pendiente`). Sin atajos de prueba y sin registro de
+    partidas (`RegistroPartida._de_prueba`) hasta la fase 2.
+  - **Decidido para la fase 2** (Matías, 2026-10-16): el que muere no vuelve
+    hasta el piso siguiente, y con media vida; el ataque especial, uno por
+    piso para cada uno; con más jugadores, enemigos con más vida (no más
+    enemigos). Los enemigos, el daño y lo que sueltan los decidirá el
+    anfitrión.
+
 - **Pantalla completa** (2026-10-14, pedido por Matías): el autoload
   `Pantalla` (`scripts/pantalla.gd`) pone el juego exportado a pantalla
   completa sin bordes (`WINDOW_MODE_FULLSCREEN`, no la exclusiva: no cambia la
@@ -483,10 +520,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   el 2026-10-08 los escenarios son todos propios y los packs de itch.io ya no
   se usan: de fuera solo quedan las hojas de los magos (el blanco sale de la
   del rojo, así que tiene la misma duda).
-- **Multijugador: valorado, sin empezar** (2026-10-09). El estudio está en
-  `docs/mejoras-futuras/multijugador.md`: viable, por fases (red local, juego
-  cooperativo, internet con código de sala). No empezar sin que el equipo
-  cierre las decisiones de su última lista.
+- **Multijugador: fase 1 hecha (2026-10-16), falta probarla en clase.** El
+  estudio está en `docs/mejoras-futuras/multijugador.md`: red local, juego
+  cooperativo entero e internet con código de sala. La fase 1 se probó en un
+  ordenador con dos juegos abiertos; **en la wifi del instituto, no**, y es
+  el mayor riesgo (muchas no dejan que los ordenadores se hablen). Las
+  decisiones ya están cerradas salvo cómo se jugará por internet.
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
   enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar
@@ -716,6 +755,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Trampas ya pisadas (no repetirlas)
 
+- **Para probar el cooperativo hacen falta dos juegos a la vez**, y el
+  controlador de cada prueba tiene que **colgar de la raíz** (un nodo creado
+  desde la escena de prueba con `root.add_child`): la escena de prueba se
+  libera al empezar la partida (cambio de escena) y se llevaría la prueba.
+  Uno con ventana para las capturas y otro con `--headless`, el anfitrión
+  escuchando en `127.0.0.1` (`Red.ip_escucha`) para que Windows no pregunte
+  por el cortafuegos. **Cada uno con su archivo de registro, nuevo en cada
+  intento**: una prueba anterior colgada siguió escribiendo en el mismo y lo
+  dejó ilegible (2026-10-16).
+- **Cambiar un botón de sitio (`reparent`) lo vuelve a meter en el árbol**, y
+  `Sonido` le conectaba el clic otra vez: error del motor por conexión
+  repetida. Ahora mira si ya lo está (`Sonido._al_anadir_nodo`).
 - **Exportar a Mac universal pide `import_etc2_astc` en el proyecto**
   (`rendering/textures/vram_compression/import_etc2_astc=true` en
   `project.godot`). Sin eso Godot se niega a exportar para arm64. Se vio

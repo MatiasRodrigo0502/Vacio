@@ -21,6 +21,9 @@ const ESCENA_BOLA := preload("res://scenes/BolaMagica.tscn")
 var _piso_actual: Piso = null
 ## Apunta cada partida en user://partidas/ para equilibrar con datos.
 var _registro: RegistroPartida
+## Solo en una partida cooperativa (Red.cooperativo()): los demas magos, sus
+## disparos y los objetos compartidos. Jugando solo es null.
+var _cooperativo: Cooperativo = null
 
 
 func _ready() -> void:
@@ -65,12 +68,31 @@ func _ready() -> void:
 	_registro = RegistroPartida.new(_jugador)
 	add_child(_registro)
 
-	if OS.is_debug_build():
+	if Red.cooperativo():
+		_preparar_cooperativo()
+	elif OS.is_debug_build():
+		# En cooperativo no: cambiar de piso o matar enemigos en un solo
+		# ordenador dejaria a cada uno en una partida distinta.
 		var atajos := AtajosPrueba.new(_jugador, func() -> Piso: return _piso_actual)
 		atajos.usado.connect(_registro.marcar_trucos)
 		add_child(atajos)
 
 	GestorProgreso.iniciar_partida()
+
+
+## La partida es cooperativa: los demas magos y lo que cambia por jugar
+## varios. La pausa no congela nada (los demas siguen jugando): solo para a
+## este mago mientras el menu esta abierto. Reiniciar no tiene sentido para
+## uno solo, asi que no esta.
+func _preparar_cooperativo() -> void:
+	_cooperativo = Cooperativo.new(_jugador, self, _hud)
+	add_child(_cooperativo)
+	_menu_pausa.modo_cooperativo()
+	_menu_pausa.visibility_changed.connect(func() -> void:
+		if _menu_pausa.visible:
+			_jugador.bloquear_control()
+		else:
+			_jugador.desbloquear_control())
 
 
 ## Monta el piso indicado. Se llama tanto en el primer piso como en cada avance.
@@ -86,6 +108,8 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	_piso_actual = piso
 
 	_jugador.reubicar(piso.punto_entrada())
+	if _cooperativo != null:
+		_jugador.global_position += _cooperativo.desfase_salida()
 
 	# Las mecanicas tambien pueden tocar al jugador (velocidad, friccion...).
 	for mecanica in GestorProgreso.obtener_mecanicas_activas(numero_piso):
@@ -115,6 +139,44 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 	if _piso_actual == null:
 		return
+	var bola := _bola_del_jugador(direccion, cargada)
+	_soltar_bola(bola, desde, cargada)
+	# A los demas, la bola ya hecha: lleva lo que haya mejorado este mago.
+	if _cooperativo != null:
+		_cooperativo.mandar_disparo(bola, desde, _jugador.mago)
+
+
+## La bola de un disparo de otro jugador, con lo que manda su ordenador. En
+## la fase 1 solo se ve (en el piso 1 no hay enemigos a los que dar).
+func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
+	if _piso_actual == null:
+		return
+	var bola: BolaMagica = ESCENA_BOLA.instantiate()
+	bola.direccion = datos.direccion
+	bola.velocidad = datos.velocidad
+	bola.radio = datos.radio
+	bola.color = datos.color
+	bola.color_halo = datos.color_halo
+	bola.dano = datos.dano
+	bola.cargada = datos.cargada
+	bola.atraviesa = datos.atraviesa
+	bola.alcance = datos.alcance
+	var sala := _piso_actual.sala_en(datos.desde)
+	if sala != null:
+		bola.limite = sala.rect_con_muros()
+		if datos.agujero:
+			bola.apagada.connect(_abrir_agujero.bind(sala, mago))
+	_soltar_bola(bola, datos.desde, datos.cargada)
+
+
+func _soltar_bola(bola: BolaMagica, desde: Vector2, cargada: bool) -> void:
+	_piso_actual.add_child(bola)
+	bola.global_position = desde
+	Sonido.tocar(&"disparo_cargado" if cargada else &"disparo")
+
+
+## La bola de un disparo de este jugador, con lo suyo y lo que ha mejorado.
+func _bola_del_jugador(direccion: Vector2, cargada: bool) -> BolaMagica:
 	var bola: BolaMagica = ESCENA_BOLA.instantiate()
 	bola.direccion = direccion
 	# La bola hereda lo que hayan mejorado los objetos recogidos.
@@ -143,9 +205,7 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 		# rocas siguen parandola, como el disparo normal, porque son el terreno.
 		bola.atraviesa = true
 		_ajustar_al_mago(bola)
-	_piso_actual.add_child(bola)
-	bola.global_position = desde
-	Sonido.tocar(&"disparo_cargado" if cargada else &"disparo")
+	return bola
 
 
 ## Lo que la bola cargada tiene de cada mago: hasta donde llega y si abre un
@@ -157,15 +217,14 @@ func _ajustar_al_mago(bola: BolaMagica) -> void:
 	if mago.alcance_cargado > 0.0:
 		bola.alcance = mago.alcance_cargado
 	if mago.agujero_negro:
-		bola.apagada.connect(_abrir_agujero.bind(_piso_actual.sala_actual()))
+		bola.apagada.connect(_abrir_agujero.bind(_piso_actual.sala_actual(), mago))
 
 
-func _abrir_agujero(punto: Vector2, sala: Sala) -> void:
+func _abrir_agujero(punto: Vector2, sala: Sala, mago: PersonajeJugable) -> void:
 	if _piso_actual == null or not is_instance_valid(sala):
 		return
-	var mago := _jugador.mago
 	var agujero := AgujeroNegro.new(sala, mago.duracion_agujero, mago.radio_agujero,
-		mago.dano_agujero, _jugador.color_cargado, _jugador.halo_cargado)
+		mago.dano_agujero, mago.color_cargado, mago.halo_cargado)
 	# Si la bola se ha apagado contra el muro, el agujero se abre en el suelo,
 	# no medio metido en la pared.
 	var suelo := sala.rect_suelo_global().grow(-AgujeroNegro.NUCLEO)
@@ -211,6 +270,8 @@ func _al_caer() -> void:
 
 
 func _al_alcanzar_salida() -> void:
+	if _cooperativo != null and _cooperativo.bajada_cerrada():
+		return
 	# call_deferred es obligatorio aqui: esta llamada llega desde el body_entered
 	# de la zona de salida, es decir, en mitad de un paso de fisica. Destruir el
 	# piso (con sus cuerpos de colision) en ese momento provoca el error
@@ -234,6 +295,10 @@ func _al_perder() -> void:
 ## Vuelve al menu. Cambiar de escena tira la partida entera, que es justo lo que
 ## queremos: no hay estado que limpiar a mano.
 func _volver_al_menu() -> void:
+	# En cooperativo, tambien se deja la sala: los demas se enteran solos.
+	if _cooperativo != null:
+		Red.volver_al_menu()
+		return
 	# La pausa no es de la escena sino del arbol: si se cambiara de escena con
 	# el arbol en pausa, el menu naceria congelado.
 	get_tree().paused = false

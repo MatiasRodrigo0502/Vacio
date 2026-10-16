@@ -1,6 +1,6 @@
 # Vacío — Modo multijugador: viabilidad
 
-*Estudio del 9 de octubre de 2026. Valorado, todavía no empezado.*
+*Estudio del 9 de octubre de 2026. **Fase 1 hecha el 16 de octubre** (red local, piso 1); falta probarla en la wifi del instituto.*
 
 Es viable jugar 2 o 3 personas en cooperativo desde ordenadores distintos, creando una sala con un código y entrando con él. Es el cambio más grande del proyecto: en la misma red no hace falta servidor, pero por internet sí hace falta uno que haga de intermediario.
 
@@ -63,7 +63,7 @@ Con hasta 63 enemigos y sus disparos, la red no es problema para 3 jugadores.
 
 Por fases, para ver pronto si jugarlo juntos convence antes de meterse con servidores. La conexión va separada del resto del juego: pasar de red local a internet no obliga a rehacer nada.
 
-1. **Prueba en red local.** Pantalla de «Crear sala / Unirse» con código, y 2–3 magos andando y disparando en el mismo piso. Se puede probar en un solo ordenador abriendo varias ventanas del juego.
+1. **Prueba en red local.** ✅ *Hecha el 16/10/2026.* Pantalla de «Crear sala / Unirse» con código, y 2–3 magos andando y disparando en el mismo piso. Se puede probar en un solo ordenador abriendo varias ventanas del juego. Quedó así: en *Jugar → Cooperativo en red local*; solo el piso 1 (la bajada, cerrada); el objeto que coge uno es para todos; probada en un ordenador con dos juegos abiertos. **Falta probarla en la wifi del instituto.**
 2. **El juego completo en cooperativo.** Enemigos, puertas, muerte, objetos, bajar de piso y HUD con la vida de todos. Es la fase más larga.
 3. **Por internet con código de sala**, con la opción elegida de la tabla de arriba.
 
@@ -77,17 +77,17 @@ Por fases, para ver pronto si jugarlo juntos convence antes de meterse con servi
 | Se va el anfitrión | Se pierde la partida de todos | Se acepta en la primera versión; pasar el mando a otro es mucho más trabajo |
 | Servidor de internet | Si se apaga o se pasa del plan gratis, nadie puede entrar | Elegir con calma la opción y quién la mantiene |
 
-## Decisiones pendientes del equipo
+## Decisiones del equipo
 
-Antes de empezar hay que cerrar estas preguntas.
+Cerradas por Matías el 16 de octubre, salvo la de internet.
 
-- [ ] ¿Empezamos en red local (en clase) o directamente por internet?
-- [ ] Si es por internet: ¿servicio externo (GD-Sync) o servidor propio (noray o relé nuestro)? ¿Quién lo crea y lo mantiene?
-- [ ] ¿Qué pasa cuando muere uno: mira hasta el piso siguiente o lo reviven con un corazón?
-- [ ] ¿Para quién son los objetos y los corazones del suelo: para quien los coge o para todos?
-- [ ] ¿El ataque especial sigue siendo uno por piso para cada jugador?
-- [ ] ¿Hay más enemigos, o más fuertes, cuantos más jugadores?
-- [ ] ¿Se puede repetir mago (dos magos rojos) o cada uno elige uno distinto?
+- [x] ¿Empezamos en red local (en clase) o directamente por internet? **Red local.**
+- [ ] Si es por internet: ¿servicio externo (GD-Sync) o servidor propio (noray o relé nuestro)? ¿Quién lo crea y lo mantiene? *Se decide al llegar a la fase 3.*
+- [x] ¿Qué pasa cuando muere uno? **No vuelve hasta el piso siguiente, y con media vida.**
+- [x] ¿Para quién son los objetos y los vendajes del suelo? **Para todos, menos para quien esté muerto.**
+- [x] ¿El ataque especial sigue siendo uno por piso para cada jugador? **Sí.**
+- [x] ¿Hay más enemigos, o más fuertes, cuantos más jugadores? **Más fuertes: más vida, no más enemigos.**
+- [x] ¿Se puede repetir mago? **No: cada uno elige uno distinto.**
 
 ## Fuentes
 

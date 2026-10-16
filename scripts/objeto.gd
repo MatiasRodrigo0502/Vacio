@@ -33,6 +33,11 @@ static func soltar(sala: Node, mejora_objeto: ObjetoMejora, posicion: Vector2) -
 	return objeto
 
 
+func _ready() -> void:
+	# Para que el cooperativo los encuentre al cogerlos otro jugador.
+	add_to_group("objetos")
+
+
 ## Lo llama la mecanica que los reparte.
 func preparar(mejora_objeto: ObjetoMejora, posicion: Vector2) -> void:
 	mejora = mejora_objeto
@@ -77,6 +82,9 @@ func _le_hace_falta(cuerpo: Node2D) -> bool:
 func _entregar(cuerpo: Node2D) -> void:
 	_recogido = true
 	cuerpo.aplicar_mejora(mejora)
+	# En cooperativo, para todos (Cooperativo.objeto_recogido). Jugando solo
+	# no hay nadie en el grupo y no pasa nada.
+	get_tree().call_group("cooperativo", "objeto_recogido", self)
 	Sonido.tocar(&"objeto")
 	recogido.emit(mejora)
 	queue_free()
