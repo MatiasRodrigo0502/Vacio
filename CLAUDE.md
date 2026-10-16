@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-15.**
+**Última actualización: 2026-10-16.**
 
 ---
 
@@ -521,7 +521,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   aparte, en Python. Así se pueden sacar otras cuentas de partidas ya jugadas
   sin volver a jugarlas. Las reiniciadas o dejadas antes de 10 s no se
   guardan (entrar y salir ensuciaría las medias); el tiempo en pausa no
-  cuenta.
+  cuenta. **Las de las escenas de prueba tampoco** (2026-10-16): montan
+  `Principal` dentro de su escena, y el juego la cuelga de la raíz, que es
+  lo que mira `RegistroPartida._de_prueba`. De las nueve primeras partidas
+  guardadas, cuatro eran pruebas de Claude; se movieron a
+  `user://partidas_de_prueba/`, fuera de lo que lee el análisis. Una prueba
+  que quiera que se guarde tiene que añadir `Principal` a la raíz.
 - **Solo busca versiones nuevas el juego exportado con número publicado**
   («0.17»). Desde Godot no hay versión, y el `.exe` de cada ordenador con
   cambios sin publicar («0.17 + cambios») lleva cosas que no están en

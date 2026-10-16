@@ -46,6 +46,9 @@ var _archivo: String = ""
 var _ultima_vida: int = 0
 ## El ultimo golpe: si la partida acaba en derrota, es lo que la ha matado.
 var _ultimo_golpe: Dictionary = {}
+## True si a la partida no la ha montado el juego sino una escena de prueba.
+## Esas no se guardan (ver _ready).
+var _de_prueba: bool = false
 
 
 func _init(jugador: Jugador) -> void:
@@ -54,6 +57,12 @@ func _init(jugador: Jugador) -> void:
 
 
 func _ready() -> void:
+	# LAS ESCENAS DE PRUEBA NO GUARDAN PARTIDAS (2026-10-16). Montan
+	# Principal dentro de su propia escena, y el juego (el menu, o abrir
+	# Principal.tscn desde el editor) la pone colgando de la raiz. No son
+	# partidas: de las nueve primeras guardadas, cuatro eran pruebas de
+	# Claude y salian en las medias como si alguien hubiera jugado.
+	_de_prueba = get_parent().get_parent() != get_tree().root
 	_jugador.golpeado.connect(_al_recibir_golpe)
 	_jugador.veneno_quita.connect(_al_quitar_veneno)
 	_jugador.vida_cambiada.connect(_al_cambiar_vida)
@@ -126,7 +135,8 @@ func terminar(resultado: String) -> void:
 		_partida.muerte = {"piso": _piso.piso, "sala": _ultimo_golpe.sala, "por": _ultimo_golpe.origen}
 	var corta: bool = resultado in ["reiniciada", "abandonada"] and _partida.segundos < SEGUNDOS_MINIMOS
 	if corta:
-		DirAccess.remove_absolute(_archivo)
+		if FileAccess.file_exists(_archivo):
+			DirAccess.remove_absolute(_archivo)
 	else:
 		_guardar()
 	_partida = {}
@@ -307,6 +317,8 @@ func _nombre_sala(sala: Sala) -> String:
 
 
 func _guardar() -> void:
+	if _de_prueba:
+		return
 	_partida.resumen = _resumen()
 	var archivo := FileAccess.open(_archivo, FileAccess.WRITE)
 	if archivo == null:
