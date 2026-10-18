@@ -15,7 +15,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 **Cómo se juega ahora:**
 
 - **Al empezar:** se elige entre el mago oscuro, el rojo y el blanco. Cada uno tiene una ventaja y una pega: la bola cargada del oscuro abre un agujero negro; los disparos del rojo queman; el blanco, en vez de ataque cargado, saca una burbuja que lo cubre entero y hace rebotar disparos y enemigos, y su disparo frena a los enemigos.
-- **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón: una bola cada medio segundo.
+- **Moverse y disparar:** WASD para moverse. Se dispara con las flechas o con clic izquierdo, apuntando con el ratón: una bola cada medio segundo. En Controles se puede elegir moverse con las flechas (y disparar con WASD).
 - **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y quita 30 (el normal, 10). La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca una burbuja de 5 s en la que rebotan los disparos y los enemigos; un disparo rebotado quita al enemigo que toque lo mismo que quitaba al mago. El ataque especial es uno por piso. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o hacia donde mira el mago.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Pantalla completa:** el juego empieza a pantalla completa; F11 (o Alt+Intro) pasa a ventana y vuelve, y se acuerda.
@@ -67,7 +67,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 16/10/2026 | Cooperativo en red local, fase 1: sala con código, hasta 3 magos en el piso 1, objetos para todos | — |
+| 18/10/2026 | En Controles se elige moverse con WASD o con las flechas | — |
+| 16/10/2026 | Cooperativo en red local, fase 1: sala con código, hasta 3 magos en el piso 1, objetos para todos | `5897722` |
 | 16/10/2026 | Las escenas de prueba ya no guardan partidas en el registro | `d1cddcd` |
 | 15/10/2026 | El rayo del cristal vivo quita 30 en vez de 50 (mataba en 3 de cada 5 partidas) | `9b7f330` |
 | 15/10/2026 | Escudo del mago blanco: los rebotes ya no se quedan pegados y dañan a los enemigos | `b9c9fd8` |

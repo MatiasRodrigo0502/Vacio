@@ -21,6 +21,14 @@ extends Node2D
 @onready var _pausa: Label = $Pausa
 
 
+## Los carteles de moverse y disparar dicen las teclas elegidas en Controles
+## (WASD o flechas para moverse). Antes de colocar: se centran por su tamano.
+func _ready() -> void:
+	if Controles.flechas_para_mover:
+		_mover.text = "flechas  para moverte"
+		_bola.text = "WASD  o  clic izquierdo  ·  disparar"
+
+
 ## Reparte los carteles. La llama Piso al construirse, con el centro de la
 ## sala de inicio, el tamano de las salas y el centro de la sala de salida,
 ## todo en coordenadas del piso.

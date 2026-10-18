@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-16.**
+**Última actualización: 2026-10-18.**
 
 ---
 
@@ -328,9 +328,19 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   cambió Matías las dos veces.
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
-  16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve.
+  16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve (o las
+  flechas, ver «Moverse con» más abajo).
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
   aunque te estés alejando.
+- **Moverse con WASD o con las flechas** (2026-10-18, pedido por Matías): en
+  el panel Controles del menú (`MenuPrincipal._montar_eleccion_teclas`). El
+  autoload `Controles` (`scripts/controles.gd`) **intercambia las teclas** de
+  `mover_*` y `disparar_*` en el mapa de teclas (las acciones no cambian de
+  nombre, así que el jugador no sabe nada) y lo guarda en
+  `user://ajustes.cfg` (`[controles] mover`). Con las flechas para moverse,
+  se dispara con WASD. Los textos con teclas (el panel y los carteles del
+  piso 1, `Tutorial._ready`) salen de `Controles.teclas_mover()` /
+  `teclas_disparar()`.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
   ratón, una bola cada **0,5 s** en los tres magos (pedido por Matías el
   2026-10-09; antes 0,34, y el oscuro ×0,85). Matan enemigos; **no** rompen rocas, y las rocas los

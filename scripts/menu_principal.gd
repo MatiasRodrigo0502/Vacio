@@ -29,12 +29,19 @@ const ANCHO_FICHA: float = 300.0
 @onready var _panel_personajes: Control = $PanelPersonajes
 @onready var _fichas: HBoxContainer = $PanelPersonajes/Centro/Caja/Fichas
 @onready var _boton_jugar: Button = $Botones/BotonJugar
+@onready var _teclas: Label = $PanelControles/Centro/Caja/Teclas/Botones
+@onready var _reglas: Label = $PanelControles/Centro/Caja/Reglas
 
 ## El primer boton de mago, para dejarle el foco al abrir el panel.
 var _primer_boton: Button = null
 ## El panel del cooperativo (crear sala, unirse, sala de espera).
 var _cooperativo: SalaCooperativo
 var _boton_cooperativo: Button
+## Los dos botones de "Moverse con" del panel de controles, y las reglas tal
+## cual estan en la escena (con las flechas para disparar).
+var _boton_wasd: Button
+var _boton_flechas: Button
+var _reglas_base: String = ""
 
 
 func _ready() -> void:
@@ -46,6 +53,7 @@ func _ready() -> void:
 
 	_montar_fichas()
 	_montar_cooperativo()
+	_montar_eleccion_teclas()
 	_poner_version()
 	Sonido.poner_musica(MUSICA)
 	_panel_controles.hide()
@@ -57,6 +65,58 @@ func _ready() -> void:
 		_mostrar_cooperativo(true)
 		_cooperativo.mostrar_mensaje(Red.mensaje_pendiente)
 		Red.mensaje_pendiente = ""
+
+
+## "Moverse con: W A S D / Flechas", debajo del titulo de los controles
+## (Matias, 2026-10-18). Lo que se elige lo guarda y lo aplica el autoload
+## Controles; aqui se ensena y se ponen los textos con las teclas elegidas.
+func _montar_eleccion_teclas() -> void:
+	var caja := $PanelControles/Centro/Caja
+	# Un poco mas juntos: con la fila nueva, el panel no cabia en 648 de alto.
+	caja.add_theme_constant_override("separation", 8)
+	var fila := HBoxContainer.new()
+	fila.alignment = BoxContainer.ALIGNMENT_CENTER
+	fila.add_theme_constant_override("separation", 12)
+	var etiqueta := Label.new()
+	etiqueta.text = "Moverse con:"
+	etiqueta.add_theme_font_size_override("font_size", 20)
+	etiqueta.add_theme_color_override("font_color", Color(0.85, 0.82, 0.78))
+	fila.add_child(etiqueta)
+	var grupo := ButtonGroup.new()
+	_boton_wasd = _boton_teclas("W A S D", false, grupo)
+	_boton_flechas = _boton_teclas("Flechas", true, grupo)
+	fila.add_child(_boton_wasd)
+	fila.add_child(_boton_flechas)
+	caja.add_child(fila)
+	# Justo debajo del titulo: es lo primero que se mira al abrir el panel.
+	caja.move_child(fila, 1)
+	_reglas_base = _reglas.text
+	Controles.cambiado.connect(_poner_teclas)
+	_poner_teclas()
+
+
+func _boton_teclas(texto: String, con_flechas: bool, grupo: ButtonGroup) -> Button:
+	var boton := Button.new()
+	boton.text = texto
+	boton.toggle_mode = true
+	boton.button_group = grupo
+	boton.custom_minimum_size = Vector2(150, 40)
+	boton.add_theme_font_size_override("font_size", 18)
+	boton.pressed.connect(func() -> void: Controles.elegir(con_flechas))
+	return boton
+
+
+## Los textos del panel con las teclas que tocan. Las reglas de la escena
+## hablan de disparar con "las flechas": con las flechas para moverse, se
+## dispara con WASD.
+func _poner_teclas() -> void:
+	_boton_wasd.set_pressed_no_signal(not Controles.flechas_para_mover)
+	_boton_flechas.set_pressed_no_signal(Controles.flechas_para_mover)
+	_teclas.text = "%s\n%s o clic izq.\nclic der. o espacio\nEsc\nF11" % [
+		Controles.teclas_mover(), Controles.teclas_disparar()]
+	_reglas.text = _reglas_base
+	if Controles.flechas_para_mover:
+		_reglas.text = _reglas_base.replace("las flechas", "las teclas W A S D")
 
 
 ## El cooperativo sale desde "Jugar", debajo de los magos: es otra forma de

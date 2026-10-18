@@ -22,6 +22,7 @@ Sonido="*res://scripts/sonido.gd"
 Actualizacion="*res://scripts/actualizacion.gd"
 Pantalla="*res://scripts/pantalla.gd"
 Red="*res://scripts/red.gd"
+Controles="*res://scripts/controles.gd"
 
 [display]
 

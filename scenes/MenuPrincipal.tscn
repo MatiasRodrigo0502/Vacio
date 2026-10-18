@@ -140,7 +140,7 @@ alignment = 1
 [node name="Titulo" type="Label" parent="PanelControles/Centro/Caja"]
 modulate = Color(1, 0.741176, 0.360784, 1)
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 34
 text = "CONTROLES"
 horizontal_alignment = 1
 
@@ -174,7 +174,7 @@ F11"
 [node name="Reglas" type="Label" parent="PanelControles/Centro/Caja"]
 modulate = Color(0.85098, 0.803922, 0.760784, 1)
 layout_mode = 2
-theme_override_constants/line_spacing = 3
+theme_override_constants/line_spacing = 0
 theme_override_font_sizes/font_size = 17
 text = "Cada piso es un mapa de salas: busca la del agujero para bajar al siguiente.
 Al entrar en una sala con enemigos se cierran las puertas hasta que acabes con ellos.

@@ -103,11 +103,16 @@ se queda y el motivo está en `build/exportar.log`.
 
 | Acción | Tecla |
 |---|---|
-| Moverse | WASD |
-| Disparar | Flechas, o clic izquierdo apuntando con el ratón |
+| Moverse | WASD (o las flechas: se elige en **Controles**) |
+| Disparar | Flechas (o WASD, si te mueves con las flechas), o clic izquierdo apuntando con el ratón |
 | Ataque especial | Clic derecho o espacio, **una vez por piso**. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o, sin ninguna, hacia donde mira el mago (para jugar sin ratón). Mago blanco: saca el escudo |
 | Pausa (continuar, reiniciar o volver al menú) | Esc |
 | Pantalla completa o ventana | F11 (o Alt+Intro). El juego empieza a pantalla completa y se acuerda de lo último que elegiste |
+
+En el panel **Controles** del menú se elige **moverse con WASD o con las
+flechas**. Con las flechas, se dispara con WASD: son las mismas dos manos al
+revés. Se acuerda para la próxima vez, y los carteles del piso 1 dicen las
+teclas que hayas elegido.
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
 el piso 1 hace de tutorial y los explica con carteles pintados sobre el suelo,
