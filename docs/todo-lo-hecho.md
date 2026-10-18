@@ -19,7 +19,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 - **Ataque especial (clic derecho o espacio):** el mago oscuro y el rojo lo mantienen para cargar una bola, que se suelta cuando está cargada; atraviesa enemigos y quita 30 (el normal, 10). La del oscuro llega menos lejos, pero abre un agujero negro que atrae a los enemigos y les quita vida. El blanco saca una burbuja de 5 s en la que rebotan los disparos y los enemigos; un disparo rebotado quita al enemigo que toque lo mismo que quitaba al mago. El ataque especial es uno por piso. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o hacia donde mira el mago.
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Pantalla completa:** el juego empieza a pantalla completa; F11 (o Alt+Intro) pasa a ventana y vuelve, y se acuerda.
-- **Cooperativo (en pruebas):** en Jugar → Cooperativo en red local, hasta 3 jugadores en la misma red, con un código de sala. De momento solo el piso 1.
+- **Cooperativo:** en Jugar → Cooperativo en red local, hasta 3 jugadores en la misma red, con un código de sala. La partida entera: peleas para todos, se baja juntos y el que cae vuelve en el piso siguiente con media vida.
 - **Enemigos:** salen desde el piso 2, y cada uno pelea a su manera: slimes que saltan (el de magma dejando lava) o rebotan, rata en zigzag, murciélago en picado, fantasma que se desvanece, planta que excava, serpiente en abanico, planta con anillos de esporas, gólem con pisotón y cristal que se teletransporta. Todos avisan antes de lo que pega de golpe.
 - **Peligros del suelo:** pinchos, agujeros al vacío y lava.
 - **Recompensas:** un objeto de mejora por piso. Además, los enemigos sueltan ventajas a veces y, al limpiar una sala, a veces cae un vendaje que cura 60 (es lo único que cura).
@@ -67,7 +67,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 18/10/2026 | En Controles se elige moverse con WASD o con las flechas | — |
+| 18/10/2026 | Cooperativo, fase 2: la partida entera en red local (enemigos del anfitrión, peleas para todos, caer y volver, bajar juntos) | — |
+| 18/10/2026 | En Controles se elige moverse con WASD o con las flechas | `1e486e5` |
 | 16/10/2026 | Cooperativo en red local, fase 1: sala con código, hasta 3 magos en el piso 1, objetos para todos | `5897722` |
 | 16/10/2026 | Las escenas de prueba ya no guardan partidas en el registro | `d1cddcd` |
 | 15/10/2026 | El rayo del cristal vivo quita 30 en vez de 50 (mataba en 3 de cada 5 partidas) | `9b7f330` |

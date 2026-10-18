@@ -35,10 +35,20 @@ func mostrar_derrota(numero_piso: int) -> void:
 	_mostrar()
 
 
+## Cooperativo: no se puede volver a empezar para uno solo; solo salir de la
+## sala (Principal lo hace por Red).
+func modo_cooperativo() -> void:
+	_boton.visible = false
+	_boton_menu.text = "Salir de la sala"
+
+
 func ocultar() -> void:
 	visible = false
 
 
 func _mostrar() -> void:
 	visible = true
-	_boton.grab_focus()
+	if _boton.visible:
+		_boton.grab_focus()
+	else:
+		_boton_menu.grab_focus()

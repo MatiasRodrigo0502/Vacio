@@ -36,11 +36,12 @@ func aplicar_a_piso(piso: Node) -> void:
 ## El azar es suerte, no semilla del piso: los pisos son fijos, pero lo que
 ## cae al limpiar una sala puede cambiar de una partida a otra.
 func _al_despejar(sala: Sala, piso: Node) -> void:
-	if objeto == null or randf() >= probabilidad:
+	# En cooperativo lo decide el anfitrion y lo manda (MundoRed).
+	if objeto == null or not Red.manda() or randf() >= probabilidad:
 		return
 	# En el centro, que es donde se mira al acabar la pelea; si ahi hay una
 	# roca, un peligro o la bajada, lo mas cerca posible.
 	var sitio: Variant = piso.sitio_libre_cerca(sala.global_position, sala, 30.0)
 	if sitio == null:
 		return
-	Objeto.soltar(sala, objeto, sitio)
+	MundoRed.soltar_objeto(sala, objeto, sitio)

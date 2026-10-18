@@ -5,6 +5,12 @@
 ## colision que de todas formas hay que dimensionar aqui.
 ##
 ## Cuelga de la sala del enemigo que lo dispara, asi que se va con el piso.
+##
+## EN COOPERATIVO sale en todos los ordenadores (lo dispara el enemigo del
+## anfitrion y MundoRed lo crea en los demas, con el mismo id_red), y cada uno
+## mira si le da a SU jugador. Lo que solo pasa en uno se avisa a los demas:
+## que ha rebotado en su escudo (avisar_cambio) o que le ha dado y se ha
+## acabado (avisar_fin). Si no, en los otros seguiria de largo.
 class_name ProyectilEnemigo
 extends Area2D
 
@@ -43,6 +49,10 @@ var _rebotado: bool = false
 ## Quien lo ha disparado (el nombre de su tipo de enemigo). Para el registro
 ## de partidas: el veneno lo tiran dos enemigos distintos.
 var autor: String = ""
+## Su numero en la red (cooperativo). -1 = jugando solo.
+var id_red: int = -1
+## Se ha acabado porque lo ha dicho otro ordenador: no hay que volver a avisar.
+var _acabado_por_red: bool = false
 ## El jugador, para preguntarle si su escudo para el disparo.
 var _jugador: Node = null
 # Parabola: de donde sale, donde cae y cuanto tarda.
@@ -131,6 +141,7 @@ func _physics_process(delta: float) -> void:
 				_velocidad = clampf(sale.length(), tipo.velocidad, tipo.velocidad * RAQUETA_MAXIMA)
 				# Desde donde la toco.
 				global_position = centro + normal * fuera
+				MundoRed.avisar_cambio(self)
 			elif global_position.distance_to(centro) < fuera:
 				# Ya se alejaba: se le deja lo que ha avanzado y, si aun asi
 				# sigue dentro, se saca por donde esta ahora. Con la normal del
@@ -185,6 +196,7 @@ func _caer() -> void:
 		_tiempo = 0.0
 		_duracion = 0.35
 		Sonido.tocar(&"escudo_golpe")
+		MundoRed.avisar_cambio(self)
 		return
 	# Lo rebotado ya no es del enemigo: cae sobre los enemigos, no sobre el
 	# mago.
@@ -242,6 +254,10 @@ func _acabar() -> void:
 	if _acabado:
 		return
 	_acabado = true
+	# La parabola no: cae en el mismo sitio en todos, y cada uno tiene que
+	# dejar su charco aunque otro haya caido antes.
+	if not _acabado_por_red and tipo.estilo != TipoProyectil.Estilo.PARABOLA:
+		MundoRed.avisar_fin(self)
 	if tipo.charco_radio > 0.0 and get_parent() != null:
 		var charco := Lava.new()
 		charco.radio = tipo.charco_radio
@@ -253,6 +269,44 @@ func _acabar() -> void:
 		# Diferido: esto puede venir de body_entered, en mitad del paso de
 		# fisica, y meter un Area2D nueva ahi hace quejarse al motor.
 		get_parent().add_child.call_deferred(charco)
+	queue_free()
+
+
+# --- Cooperativo ---------------------------------------------------------------
+
+## Como va ahora, para que los otros ordenadores lo pongan igual tras un
+## rebote en el escudo.
+func datos_red() -> Dictionary:
+	if tipo.estilo == TipoProyectil.Estilo.PARABOLA:
+		return {"origen": _origen, "destino": _destino, "duracion": _duracion,
+			"rebotado": _rebotado}
+	return {"posicion": global_position, "direccion": direccion, "velocidad": _velocidad,
+		"rebotado": _rebotado}
+
+
+func cambiar_red(datos: Dictionary) -> void:
+	if _acabado:
+		return
+	_rebotado = datos.get("rebotado", _rebotado)
+	if datos.has("destino"):
+		_origen = datos.origen
+		_destino = datos.destino
+		_duracion = datos.duracion
+		_tiempo = 0.0
+		global_position = _origen
+	else:
+		global_position = datos.posicion
+		direccion = datos.direccion
+		_velocidad = datos.velocidad
+
+
+## Otro ordenador dice que se ha acabado (le ha dado a su jugador). Se va sin
+## mas: sin charco y sin volver a avisar.
+func terminar_red() -> void:
+	if _acabado or tipo.estilo == TipoProyectil.Estilo.PARABOLA:
+		return
+	_acabado_por_red = true
+	_acabado = true
 	queue_free()
 
 

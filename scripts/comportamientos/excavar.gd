@@ -55,7 +55,7 @@ func procesar(enemigo: Enemigo, delta: float) -> void:
 			enemigo.poner_sprite(Vector2.ZERO, Vector2.ONE, 0.0)
 			if t >= aviso:
 				_pasar(enemigo, &"saliendo")
-				Sonido.tocar(&"emerger")
+				enemigo.sonar(&"emerger")
 		&"saliendo":
 			var k := clampf(t / SALIR, 0.0, 1.0)
 			enemigo.poner_sprite(Vector2(0.0, alto * 0.4 * (1.0 - k)), Vector2(1.0, k), k)

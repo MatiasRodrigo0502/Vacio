@@ -22,6 +22,14 @@ signal enemigo_muerto(enemigo: Enemigo)
 ## Se emite al cerrarse las puertas con enemigos dentro: empieza la pelea. La
 ## usa el registro de partidas para medir cuanto dura cada sala.
 signal pelea_empezada(sala: Sala)
+## Cooperativo: el jugador de este ordenador ha entrado del todo en una sala
+## con enemigos. La pelea no empieza sola: la empieza el anfitrion para todos
+## (Cooperativo), y los que esten fuera aparecen dentro, como en Isaac.
+signal quiere_pelea(sala: Sala)
+
+## Cada cuanto se vuelve a pedir la pelea mientras el jugador sigue dentro
+## esperando (si el anfitrion tenia otra en marcha).
+const PEDIR_PELEA_CADA_MS: int = 500
 
 ## Grosor de cada muro. Generoso a proposito: con muros finos y velocidades
 ## altas el jugador puede atravesarlos (tunneling).
@@ -81,6 +89,11 @@ var _cerrada: bool = false
 ## True desde que el jugador entra del todo por primera vez.
 var _activada: bool = false
 var _enemigos: Array[Enemigo] = []
+## Cuantos nombres de red ha dado (ver registrar_enemigo).
+var _ids_dados: int = 0
+## Cooperativo: el anfitrion ya ha dicho que empieza la pelea (empezar_pelea).
+var _pelea_autorizada: bool = false
+var _ultima_peticion: int = -100000
 var _cierres: Dictionary = {}
 ## Los trozos de pared que chocan: centro (x, y) y radio, en local. Ver
 ## anadir_roca_filo().
@@ -309,6 +322,12 @@ func admite_enemigos() -> bool:
 ## Apunta un enemigo como vecino de esta sala. Lo llama la mecanica que los
 ## reparte, despues de colocarlo.
 func registrar_enemigo(enemigo: Enemigo) -> void:
+	# Su nombre en la red: el piso, la sala y el orden en que se apunta. Los
+	# pisos salen de una semilla, asi que en todos los ordenadores sale el
+	# mismo para el mismo enemigo. Las crias lo traen puesto del anfitrion.
+	if enemigo.id_red == "":
+		enemigo.id_red = "p%d:%d,%d#%d" % [GestorProgreso.piso_actual, celda.x, celda.y, _ids_dados]
+		_ids_dados += 1
 	_enemigos.append(enemigo)
 	enemigo.muerto.connect(_al_morir_enemigo)
 	# Duerme hasta que el jugador entre: si no, vendria a por el a traves de
@@ -359,6 +378,12 @@ func esta_activada() -> bool:
 func activar() -> void:
 	if _activada:
 		return
+	if Red.cooperativo() and not _pelea_autorizada and not esta_despejada():
+		var ahora := Time.get_ticks_msec()
+		if ahora - _ultima_peticion >= PEDIR_PELEA_CADA_MS:
+			_ultima_peticion = ahora
+			quiere_pelea.emit(self)
+		return
 	_activada = true
 	visitada = true
 	if esta_despejada():
@@ -371,6 +396,13 @@ func activar() -> void:
 		if is_instance_valid(enemigo):
 			enemigo.despertar()
 	pelea_empezada.emit(self)
+
+
+## Cooperativo: el anfitrion dice que empieza la pelea de esta sala, en
+## todos los ordenadores a la vez.
+func empezar_pelea() -> void:
+	_pelea_autorizada = true
+	activar()
 
 
 ## El jugador se asoma a la sala (ya esta en ella, aunque sea en el umbral)

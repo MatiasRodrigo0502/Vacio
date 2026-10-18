@@ -26,6 +26,10 @@ signal apagada(punto: Vector2)
 ## Si es true atraviesa y rompe todo lo que pilla. En false, rompe lo primero
 ## que toca y se apaga.
 @export var atraviesa: bool = false
+## En cooperativo, en los ordenadores que no crean la sala: la bola solo se
+## ve. Los enemigos de verdad estan en el anfitrion, y alli otra bola igual es
+## la que les quita vida (MundoRed). Aqui se apaga al tocarlos, sin mas.
+@export var solo_ver: bool = false
 
 ## Cuanta vida quita a lo que toca. El disparo normal quita 10 (desde el
 ## 2026-10-14; antes 1, con la vida de los enemigos en disparos); el ataque
@@ -145,6 +149,10 @@ func _al_tocar(area: Area2D) -> void:
 	# Un enemigo intocable (el fantasma desvanecido, la planta bajo tierra) no
 	# se lleva la bola: la bola sigue de largo.
 	if area.has_method("es_tangible") and not area.es_tangible():
+		return
+	if solo_ver:
+		if (area.has_method("herir") or area.has_method("romper")) and not atraviesa:
+			queue_free()
 		return
 	if area.has_method("herir"):
 		# Lo que quita varia un poco hacia arriba (de 10 a 13 el normal): los

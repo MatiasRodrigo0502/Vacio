@@ -262,7 +262,7 @@ El volumen de la música y el de los efectos se cambian abajo a la izquierda
 de la portada o en el menú de pausa (Esc), y se recuerdan para la próxima
 vez.
 
-### Cooperativo en red local (en pruebas)
+### Cooperativo en red local
 
 Hasta **3 jugadores en la misma red** (la wifi de clase o de casa), cada uno
 en su ordenador. En **Jugar → Cooperativo en red local**:
@@ -276,12 +276,25 @@ en su ordenador. En **Jugar → Cooperativo en red local**:
    **Empezar**.
 
 Tenéis que tener **la misma versión** del juego: si no, la sala no deja
-entrar. Es la **fase 1** del multijugador: de momento solo se juega el
-**piso 1** (la bajada está cerrada). Os veis, andáis y disparáis juntos, y el
-objeto que coge uno es para todos. En la pausa el juego no se para (los demás
-siguen) y no se puede reiniciar; *Salir de la sala* deja la partida, y si se
-va quien la creó, se acaba para todos. Lo que falta, y por qué se hace por
-fases, está en [`docs/mejoras-futuras/multijugador.md`](docs/mejoras-futuras/multijugador.md).
+entrar. Se juega **la partida entera**, del piso 1 al jefe:
+
+- **Las peleas son de todos:** cuando uno entra en una sala con enemigos, se
+  cierran las puertas y los demás aparecen dentro. Una sala a la vez.
+- **Los enemigos tienen más vida** cuantos más sois (×1,5 con dos, ×2 con
+  tres) y van a por el que tengan más cerca.
+- **Se baja juntos:** cuando uno llega al agujero, bajáis todos.
+- **El que cae** no vuelve hasta el piso siguiente, y con media vida.
+  Mientras, su cámara sigue a un compañero. Si caéis todos, se acaba.
+- **Los objetos son para todos** menos para quien esté caído. El ataque
+  especial sigue siendo uno por piso para cada uno.
+- La vida de los compañeros sale abajo a la izquierda.
+- En la pausa el juego no se para (los demás siguen) y no se puede
+  reiniciar; *Salir de la sala* deja la partida, y si se va quien la creó,
+  se acaba para todos.
+
+Falta probarlo en la wifi del instituto y jugarlo por internet (fase 3). El
+estudio y las fases están en
+[`docs/mejoras-futuras/multijugador.md`](docs/mejoras-futuras/multijugador.md).
 
 ## Estructura del proyecto
 

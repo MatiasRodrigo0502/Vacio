@@ -172,7 +172,7 @@ func _pelear(enemigo: Enemigo, delta: float, hacia: Vector2) -> void:
 	if (fase == 1 and enemigo.fraccion_vida() <= paso_fase_2) \
 			or (fase == 2 and enemigo.fraccion_vida() <= paso_fase_3):
 		_pasar(enemigo, &"cambio")
-		Sonido.tocar(&"teletransporte")
+		enemigo.sonar(&"teletransporte")
 		return
 	var ritmo := ritmo_fases[clampi(fase - 1, 0, ritmo_fases.size() - 1)]
 	var antes := enemigo.global_position
@@ -206,27 +206,25 @@ func _usar_habilidad(enemigo: Enemigo) -> void:
 	_pasar(enemigo, cual)
 	match cual:
 		&"pozo":
-			Sonido.tocar(&"carga_lista")
+			enemigo.sonar(&"carga_lista")
 		&"escudo":
 			e["anillos"] = 0
-			Sonido.tocar(&"escudo")
+			enemigo.sonar(&"escudo")
 		&"cargando":
 			e["dir"] = enemigo.hacia_objetivo().normalized()
-			Sonido.tocar(&"carga_lista")
+			enemigo.sonar(&"carga_lista")
 
 
+## Se abre donde esta a quien persigue (en cooperativo, el mas cercano). Por
+## MundoRed: sale en todos los ordenadores y tira del jugador de cada uno.
 func _abrir_pozo(enemigo: Enemigo) -> void:
 	var sala := enemigo.sala()
-	var jugador := enemigo.get_tree().get_first_node_in_group("jugador") as Jugador
-	if sala == null or jugador == null:
+	if sala == null:
 		return
-	var pozo := PozoVacio.new(sala, duracion_pozo, radio_pozo, float(dano_pozo),
-		COLOR_ORO, Color(0.55, 0.36, 0.06))
-	pozo.aviso = aviso_pozo
-	sala.add_child(pozo)
 	var suelo := sala.rect_suelo_global().grow(-PozoVacio.NUCLEO)
-	pozo.global_position = jugador.centro_colision().clamp(suelo.position, suelo.end)
-	Sonido.tocar(&"agujero_negro")
+	var donde := (enemigo.global_position + enemigo.hacia_objetivo()).clamp(suelo.position, suelo.end)
+	MundoRed.crear_pozo(sala, donde, duracion_pozo, radio_pozo, float(dano_pozo),
+		COLOR_ORO, Color(0.55, 0.36, 0.06), aviso_pozo)
 
 
 ## Un anillo de esquirlas alrededor. Cada anillo girado medio hueco respecto
@@ -247,32 +245,24 @@ func _soltar_fuego(enemigo: Enemigo) -> void:
 	var largo: float = e["largo"]
 	var desde := enemigo.global_position
 	var hasta := desde + dir * largo
-	Sonido.tocar(&"disparo_cargado")
 	# Si lo ha parado un pilar, el pilar se rompe.
 	var pilar: Variant = e.get("pilar")
 	if pilar is Obstaculo and is_instance_valid(pilar):
 		_romper_pilar(enemigo, pilar)
-	var jugador := enemigo.get_tree().get_first_node_in_group("jugador") as Jugador
-	if jugador != null:
-		var centro := jugador.centro_colision()
-		var cerca := Geometry2D.get_closest_point_to_segment(centro, desde, hasta)
-		if centro.distance_to(cerca) <= ancho_fuego * 0.5 + 15.0 and not jugador.escudo_activo():
-			jugador.recibir_dano(dano_fuego, false, "Mago caído (rayo de fuego)")
+	# A cada jugador en la linea: por MundoRed, en cooperativo cada ordenador
+	# mira el suyo.
+	MundoRed.fuego(desde, hasta, ancho_fuego, dano_fuego, "Mago caído (rayo de fuego)")
 	var sala := enemigo.sala()
 	if sala == null or charcos_fuego <= 0:
 		return
+	var objetivo := enemigo.global_position + enemigo.hacia_objetivo()
 	for i in charcos_fuego:
 		var punto := desde.lerp(hasta, (i + 1.0) / (charcos_fuego + 1.0))
 		# Uno justo debajo del jugador seria un segundo golpe sin aviso.
-		if jugador != null and punto.distance_to(jugador.global_position) < radio_charco + 30.0:
+		if punto.distance_to(objetivo) < radio_charco + 30.0:
 			continue
-		var charco := Lava.new()
-		charco.radio = radio_charco
-		charco.duracion = duracion_charco
-		charco.origen = "Mago caído (fuego)"
-		charco.position = sala.to_local(punto)
-		# Diferido: esto llega en mitad del paso de fisica.
-		sala.add_child.call_deferred(charco)
+		MundoRed.crear_lava(sala, sala.to_local(punto), radio_charco, duracion_charco,
+			"Mago caído (fuego)")
 
 
 ## Rompe el pilar que ha parado el rayo de fuego: se quita (y la sala lo
@@ -280,16 +270,10 @@ func _soltar_fuego(enemigo: Enemigo) -> void:
 ## trozos.
 func _romper_pilar(enemigo: Enemigo, pilar: Obstaculo) -> void:
 	var sala := enemigo.sala()
-	var donde := pilar.global_position
-	var ancho := pilar.tamano().x
 	if sala != null:
-		sala.olvidar_roca(donde)
-		var escombros := Escombros.new()
-		escombros.ancho = ancho
-		escombros.position = sala.to_local(donde)
-		sala.add_child(escombros)
-	pilar.romper()
-	Sonido.tocar(&"explosion")
+		MundoRed.romper_pilar(sala, pilar)
+	else:
+		pilar.romper()
 
 
 ## El cambio de fase: se desvanece, aparece en el centro, suelta la onda y
@@ -321,18 +305,11 @@ func _soltar_onda(enemigo: Enemigo) -> void:
 	var sala := enemigo.sala()
 	if sala == null:
 		return
-	var onda := OndaChoque.new()
-	onda.radio_maximo = radio_onda
-	onda.duracion = 0.6
-	onda.dano = dano_onda
-	onda.color = COLOR_ORO
-	onda.origen = "Mago caído (onda)"
-	onda.position = sala.to_local(enemigo.global_position + Vector2(0.0, enemigo.tipo.alto * 0.42))
-	sala.add_child(onda)
-	Sonido.tocar(&"pisoton")
+	MundoRed.crear_onda(sala, sala.to_local(enemigo.global_position + Vector2(0.0, enemigo.tipo.alto * 0.42)),
+		radio_onda, 0.6, dano_onda, COLOR_ORO, "Mago caído (onda)")
 	# Un vendaje debajo del centro: lejos de los pilares y de la bajada.
 	if cura != null:
-		Objeto.soltar(sala, cura, sala.to_global(Vector2(0.0, minf(sala.tamano.y * 0.32, 160.0))))
+		MundoRed.soltar_objeto(sala, cura, sala.to_global(Vector2(0.0, minf(sala.tamano.y * 0.32, 160.0))))
 
 
 ## Mira al jugador: anda o se queda quieto en la direccion que toca.
@@ -365,7 +342,7 @@ func invulnerable(enemigo: Enemigo) -> bool:
 
 func bloqueado(enemigo: Enemigo) -> void:
 	enemigo.estado["destello"] = DURACION_DESTELLO
-	Sonido.tocar(&"escudo_golpe")
+	enemigo.sonar(&"escudo_golpe")
 
 
 func voltear(_enemigo: Enemigo) -> bool:

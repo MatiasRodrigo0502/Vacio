@@ -32,7 +32,6 @@ func _ready() -> void:
 	GestorProgreso.partida_perdida.connect(_al_perder)
 
 	_jugador.vida_cambiada.connect(_hud.actualizar_vida)
-	_jugador.sin_vida.connect(GestorProgreso.terminar_por_derrota)
 	_jugador.bola_lanzada.connect(_al_lanzar_bola)
 	_jugador.mejora_recogida.connect(_hud.anunciar_mejora)
 	_jugador.especial_cambiado.connect(_al_cambiar_especial)
@@ -70,12 +69,16 @@ func _ready() -> void:
 
 	if Red.cooperativo():
 		_preparar_cooperativo()
-	elif OS.is_debug_build():
-		# En cooperativo no: cambiar de piso o matar enemigos en un solo
-		# ordenador dejaria a cada uno en una partida distinta.
-		var atajos := AtajosPrueba.new(_jugador, func() -> Piso: return _piso_actual)
-		atajos.usado.connect(_registro.marcar_trucos)
-		add_child(atajos)
+	else:
+		# En cooperativo, quedarse sin vida no acaba la partida (ver
+		# Cooperativo.al_caer_yo).
+		_jugador.sin_vida.connect(GestorProgreso.terminar_por_derrota)
+		if OS.is_debug_build():
+			# En cooperativo no: cambiar de piso o matar enemigos en un solo
+			# ordenador dejaria a cada uno en una partida distinta.
+			var atajos := AtajosPrueba.new(_jugador, func() -> Piso: return _piso_actual)
+			atajos.usado.connect(_registro.marcar_trucos)
+			add_child(atajos)
 
 	GestorProgreso.iniciar_partida()
 
@@ -83,10 +86,12 @@ func _ready() -> void:
 ## La partida es cooperativa: los demas magos y lo que cambia por jugar
 ## varios. La pausa no congela nada (los demas siguen jugando): solo para a
 ## este mago mientras el menu esta abierto. Reiniciar no tiene sentido para
-## uno solo, asi que no esta.
+## uno solo, asi que no esta, ni en la pausa ni al acabar.
 func _preparar_cooperativo() -> void:
-	_cooperativo = Cooperativo.new(_jugador, self, _hud)
+	_cooperativo = Cooperativo.new(_jugador, self, _hud, _camara)
 	add_child(_cooperativo)
+	_jugador.sin_vida.connect(_cooperativo.al_caer_yo)
+	_pantalla_final.modo_cooperativo()
 	_menu_pausa.modo_cooperativo()
 	_menu_pausa.visibility_changed.connect(func() -> void:
 		if _menu_pausa.visible:
@@ -110,6 +115,7 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	_jugador.reubicar(piso.punto_entrada())
 	if _cooperativo != null:
 		_jugador.global_position += _cooperativo.desfase_salida()
+		_cooperativo.al_nuevo_piso(piso)
 
 	# Las mecanicas tambien pueden tocar al jugador (velocidad, friccion...).
 	for mecanica in GestorProgreso.obtener_mecanicas_activas(numero_piso):
@@ -147,7 +153,8 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 
 
 ## La bola de un disparo de otro jugador, con lo que manda su ordenador. En
-## la fase 1 solo se ve (en el piso 1 no hay enemigos a los que dar).
+## el anfitrion es la que da a los enemigos (con su frio y su fuego); en los
+## demas solo se ve (MundoRed).
 func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 	if _piso_actual == null:
 		return
@@ -158,9 +165,13 @@ func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 	bola.color = datos.color
 	bola.color_halo = datos.color_halo
 	bola.dano = datos.dano
+	bola.frena = datos.get("frena", 0.0)
+	bola.quema = datos.get("quema", 0.0)
+	bola.dano_quema = datos.get("dano_quema", 0.0)
 	bola.cargada = datos.cargada
 	bola.atraviesa = datos.atraviesa
 	bola.alcance = datos.alcance
+	bola.solo_ver = Red.es_espejo()
 	var sala := _piso_actual.sala_en(datos.desde)
 	if sala != null:
 		bola.limite = sala.rect_con_muros()
@@ -179,6 +190,9 @@ func _soltar_bola(bola: BolaMagica, desde: Vector2, cargada: bool) -> void:
 func _bola_del_jugador(direccion: Vector2, cargada: bool) -> BolaMagica:
 	var bola: BolaMagica = ESCENA_BOLA.instantiate()
 	bola.direccion = direccion
+	# En cooperativo, fuera del anfitrion, solo se ve: alli otra igual es la
+	# que da a los enemigos (MundoRed).
+	bola.solo_ver = Red.es_espejo()
 	# La bola hereda lo que hayan mejorado los objetos recogidos.
 	bola.velocidad = _jugador.velocidad_bola
 	bola.radio = _jugador.radio_bola
@@ -270,7 +284,9 @@ func _al_caer() -> void:
 
 
 func _al_alcanzar_salida() -> void:
-	if _cooperativo != null and _cooperativo.bajada_cerrada():
+	# En cooperativo se baja juntos: lo decide el anfitrion para todos.
+	if _cooperativo != null:
+		_cooperativo.pedir_bajar()
 		return
 	# call_deferred es obligatorio aqui: esta llamada llega desde el body_entered
 	# de la zona de salida, es decir, en mitad de un paso de fisica. Destruir el

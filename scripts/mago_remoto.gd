@@ -23,6 +23,11 @@ const COLOR_ESCUDO := Color(0.62, 0.9, 1.0)
 
 var numero: int = 2
 var personaje: PersonajeJugable
+## Lo que manda su ordenador de su vida. Caido, no se ensena y los enemigos
+## no van a por el.
+var vivo: bool = true
+var vida: int = 100
+var vida_maxima: int = 100
 
 var _objetivo: Vector2 = Vector2.ZERO
 var _recibido: bool = false
@@ -37,6 +42,10 @@ func _init(mago: PersonajeJugable, numero_jugador: int) -> void:
 
 
 func _ready() -> void:
+	# Los enemigos del anfitrion lo buscan aqui para elegir a por quien van
+	# (Enemigo._buscar_objetivo): no esta en el grupo "jugador", que es el
+	# del mago de este ordenador, al que se le hace dano.
+	add_to_group("jugadores_remotos")
 	# Como el del jugador: por encima del suelo y de los enemigos.
 	z_index = 10
 	visible = false
@@ -47,13 +56,27 @@ func _ready() -> void:
 	add_child(_sprite)
 
 
-## Lo que ha mandado su ordenador: donde esta y como se le ve.
-func recibir(posicion: Vector2, animacion: StringName, color: Color, escudo: bool) -> void:
+func sigue_vivo() -> bool:
+	return vivo
+
+
+## Donde le apuntan los enemigos: al cuerpo, como al jugador (16 px por
+## encima de los pies).
+func centro_colision() -> Vector2:
+	return global_position + Vector2(0.0, -16.0)
+
+
+## Lo que ha mandado su ordenador: donde esta, como se le ve y su vida.
+func recibir(posicion: Vector2, animacion: StringName, color: Color, escudo: bool,
+		vida_ahora: int = 100, maxima: int = 100, sigue: bool = true) -> void:
 	_objetivo = posicion
 	if not _recibido or global_position.distance_to(posicion) > SALTO_MAXIMO:
 		global_position = posicion
 	_recibido = true
-	visible = true
+	vida = vida_ahora
+	vida_maxima = maxima
+	vivo = sigue
+	visible = sigue
 	if _sprite.animation != animacion and _sprite.sprite_frames.has_animation(animacion):
 		_sprite.play(animacion)
 	_sprite.modulate = color

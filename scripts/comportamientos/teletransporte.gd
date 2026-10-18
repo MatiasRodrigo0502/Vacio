@@ -34,7 +34,7 @@ func procesar(enemigo: Enemigo, delta: float) -> void:
 				_pasar(enemigo, &"esperando")
 			elif enemigo.estado["fase"] == &"esperando" and t >= retardo:
 				_pasar(enemigo, &"yendose")
-				Sonido.tocar(&"teletransporte")
+				enemigo.sonar(&"teletransporte")
 		&"yendose":
 			var k := clampf(t / transicion, 0.0, 1.0)
 			enemigo.poner_sprite(Vector2.ZERO, Vector2(1.0 - 0.6 * k, 1.0 + 0.4 * k), 1.0 - k)

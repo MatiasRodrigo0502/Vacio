@@ -14,6 +14,13 @@
 ##
 ## Expone romper() igual que las rocas: la bola no pregunta contra que choca,
 ## solo si eso se puede romper.
+##
+## EN COOPERATIVO (fase 2, 2026-10-16): el ordenador que crea la sala lo
+## mueve, decide y le quita vida; en los demas es un ESPEJO (_espejo): no
+## piensa, se coloca y se pinta como le dicen (aplicar_red), y muere cuando
+## se lo dicen (morir_espejo). Lo que si hace el espejo es pegar al jugador
+## de su ordenador al tocarle: cada uno decide lo que le da a el (ver
+## MundoRed). Va a por el jugador vivo mas cercano (_buscar_objetivo).
 class_name Enemigo
 extends Area2D
 
@@ -34,6 +41,10 @@ const COLOR_FRENADO := Color(0.62, 0.84, 1.25)
 const TIC_QUEMADURA: float = 1.0
 ## Lo que dura la linea del rayo que sale con el disparo, sin apuntar antes.
 const DURACION_LINEA_DISPARO: float = 0.3
+## Espejo: lo rapido que alcanza el sitio que le mandan, y a mas distancia
+## que esto salta de golpe (el cristal se teletransporta).
+const SUAVIZADO_RED: float = 20.0
+const SALTO_RED: float = 90.0
 ## Lo que frena el empuje del escudo, en px/s por segundo.
 const FRENO_EMPUJE: float = 1600.0
 ## A un jefe el frio del mago blanco le dura esta parte: con el frio entero,
@@ -45,9 +56,21 @@ const FRIO_JEFE: float = 0.4
 ## reparte; sin tipo, el enemigo no sabe que es y no se coloca.
 var tipo: TipoEnemigo = null
 
+## Su nombre en la red, igual en todos los ordenadores: lo pone la sala al
+## apuntarlo ("p3:2,-1#0", ver Sala.registrar_enemigo) o llega con el (las
+## crias, que nacen en el anfitrion).
+var id_red: String = ""
+
 ## Con decimales: la quemadura del mago rojo quita 0,25 por golpe y el
 ## agujero negro del oscuro, medio punto en cada tic.
 var _vida: float = 0.0
+## La de su tipo, por mas jugadores si es cooperativo (Red.factor_vida_enemigos).
+var _vida_maxima: float = 1.0
+## Cooperativo, sin crear la sala: copia de lo que manda el anfitrion.
+var _espejo: bool = false
+var _destino_red: Vector2 = Vector2.ZERO
+var _recibido_red: bool = false
+var _fraccion_red: float = 1.0
 ## Segundos de frenado que le quedan (ver herir).
 var _frenado: float = 0.0
 ## Golpes de quemadura que le quedan, lo que quita cada uno y cuanto falta
@@ -106,7 +129,7 @@ var _escala_base: Vector2 = Vector2.ONE
 func _ready() -> void:
 	# El enemigo busca al jugador por grupo en vez de que se lo pasen: asi la
 	# mecanica que los coloca no necesita conocer la escena del juego.
-	_objetivo = get_tree().get_first_node_in_group("jugador")
+	_objetivo = _buscar_objetivo()
 
 
 ## Lo llama la mecanica que los reparte por el piso.
@@ -118,7 +141,9 @@ func _ready() -> void:
 func preparar(tipo_enemigo: TipoEnemigo, posicion: Vector2) -> void:
 	tipo = tipo_enemigo
 	global_position = posicion
-	_vida = tipo.vida
+	_vida = tipo.vida * Red.factor_vida_enemigos()
+	_vida_maxima = maxf(_vida, 1.0)
+	_espejo = Red.es_espejo()
 	_sprite.modulate = Color.WHITE
 	_sprite.sprite_frames = tipo.animaciones
 	_sprite.play(&"moverse")
@@ -147,6 +172,12 @@ func _physics_process(delta: float) -> void:
 	_fase += delta
 	if _muriendo:
 		return
+	if _espejo:
+		_seguir_red(delta)
+		_golpear_lo_que_toca()
+		return
+	if Red.cooperativo():
+		_objetivo = _buscar_objetivo()
 	_golpear_lo_que_toca()
 	_arder(delta)
 	if _muriendo:
@@ -193,6 +224,9 @@ func _physics_process(delta: float) -> void:
 
 
 func dormir() -> void:
+	# El espejo no se duerme: lo que haga lo dice el anfitrion.
+	if _espejo:
+		return
 	_despierto = false
 	# Su comportamiento vuelve al principio: dormido no puede quedarse a
 	# medias (bajo tierra, invisible) hasta que alguien entre.
@@ -243,7 +277,8 @@ func romper() -> void:
 ## 'estilo' es de donde viene, para el numero que salta (NumeroDano): el
 ## disparo, el cargado, la quemadura, el agujero negro.
 func herir(cantidad: float, frena: float = 0.0, estilo: NumeroDano.Estilo = NumeroDano.Estilo.NORMAL) -> void:
-	if not es_tangible():
+	# Al espejo no: la vida la lleva el anfitrion, que ya ha visto el golpe.
+	if _espejo or not es_tangible():
 		return
 	if es_invulnerable():
 		tipo.comportamiento.bloqueado(self)
@@ -263,6 +298,7 @@ func _quitar_vida(cantidad: float, frena: float, estilo: NumeroDano.Estilo = Num
 	# al ultimo golpe no le sobra vida que quitar.
 	NumeroDano.soltar(get_parent(), global_position + Vector2(0.0, -tipo.alto * 0.55),
 		minf(cantidad, _vida), estilo)
+	MundoRed.anunciar_herido(self, minf(cantidad, _vida), estilo)
 	_vida -= cantidad
 	if frena > 0.0 and _vida > 0:
 		frenar(frena)
@@ -290,7 +326,7 @@ func _quitar_vida(cantidad: float, frena: float, estilo: NumeroDano.Estilo = Num
 ## reiniciara la espera del primer golpe, disparandole sin parar no le
 ## quemaria nunca.
 func quemar(segundos: float, dano: float) -> void:
-	if _vida <= 0 or segundos <= 0.0 or es_invulnerable():
+	if _espejo or _vida <= 0 or segundos <= 0.0 or es_invulnerable():
 		return
 	if _quemaduras == 0:
 		_tic_quemadura = TIC_QUEMADURA
@@ -503,6 +539,7 @@ func disparar_hacia(direccion: Vector2, otro: TipoProyectil = null) -> void:
 	proyectil.autor = tipo.nombre
 	get_parent().add_child(proyectil)
 	Sonido.tocar(que.sonido)
+	MundoRed.anunciar_proyectil(proyectil)
 
 
 ## Pone esa animacion de su SpriteFrames, si la tiene y no esta ya puesta.
@@ -515,7 +552,9 @@ func animar(nombre: StringName) -> void:
 
 ## La vida que le queda, de 0 a 1. La ensena la barra del jefe.
 func fraccion_vida() -> float:
-	return clampf(_vida / tipo.vida, 0.0, 1.0) if tipo != null and tipo.vida > 0 else 0.0
+	if _espejo:
+		return _fraccion_red
+	return clampf(_vida / _vida_maxima, 0.0, 1.0) if tipo != null else 0.0
 
 
 ## True mientras su comportamiento lo hace invulnerable (el escudo del jefe).
@@ -567,7 +606,19 @@ func poner_sprite(desplazamiento: Vector2, escala: Vector2, alfa: float) -> void
 ## Lo despide con esa velocidad (px/s), que se frena sola. Lo usa el escudo
 ## del mago blanco con lo que le toca.
 func empujar(impulso: Vector2) -> void:
+	# En un espejo, el empujon se lo pide al anfitrion, que es quien lo mueve.
+	if _espejo:
+		MundoRed.pedir_empuje(self, impulso)
+		return
 	_empuje = impulso
+
+
+## Un sonido suyo que tambien tiene que oirse en los demas ordenadores: sus
+## avisos (teletransportarse, cargar). Lo que crea y suena (disparos, ondas)
+## ya suena alli al crearse.
+func sonar(nombre: StringName) -> void:
+	Sonido.tocar(nombre)
+	MundoRed.anunciar_sonido(nombre)
 
 
 func sala() -> Sala:
@@ -578,6 +629,31 @@ func sala() -> Sala:
 ## tierra): ni se le puede dar ni hace dano al tocar. Las bolas lo atraviesan.
 func es_tangible() -> bool:
 	return tipo == null or tipo.comportamiento == null or tipo.comportamiento.tangible(self)
+
+
+## A por quien va. Jugando solo, el jugador. En cooperativo, el mas cercano
+## de los que siguen vivos, el de este ordenador o el de otro (MagoRemoto), y
+## antes los que estan en su sala: uno de la sala de al lado no le sirve.
+func _buscar_objetivo() -> Node2D:
+	var local := get_tree().get_first_node_in_group("jugador") as Node2D
+	if not Red.cooperativo():
+		return local
+	var candidatos: Array = get_tree().get_nodes_in_group("jugadores_remotos")
+	if local != null:
+		candidatos.append(local)
+	var caja := sala().rect_con_muros() if sala() != null else Rect2()
+	var mejor: Node2D = null
+	var nota_mejor := INF
+	for nodo: Node2D in candidatos:
+		if not nodo.has_method("sigue_vivo") or not nodo.sigue_vivo():
+			continue
+		var nota := global_position.distance_squared_to(nodo.global_position)
+		if caja.has_area() and not caja.has_point(nodo.global_position):
+			nota += 1.0e9
+		if nota < nota_mejor:
+			nota_mejor = nota
+			mejor = nodo
+	return mejor if mejor != null else local
 
 
 ## Donde apuntar: al cuerpo del jugador, no a sus pies.
@@ -607,6 +683,80 @@ func _golpear_lo_que_toca() -> void:
 			cuerpo.recibir_dano(tipo.dano, false, tipo.nombre)
 
 
+# --- Cooperativo ---------------------------------------------------------------
+
+## Como esta ahora, para mandarlo a los espejos (lo llama MundoRed en el
+## anfitrion). Del estado, solo lo que se puede mandar: el jefe guarda ahi el
+## pilar que para su fuego, que es un nodo.
+func estado_red() -> Array:
+	var limpio := {}
+	for clave in estado:
+		var valor: Variant = estado[clave]
+		if not (valor is Object):
+			limpio[clave] = valor
+	var apuntando := _apuntando / tipo.tiempo_apuntar if tipo.tiempo_apuntar > 0.0 else 0.0
+	return [id_red, global_position, _sprite.position, _sprite.scale / _escala_base,
+		_sprite.self_modulate.a, _sprite.modulate, modulate, _sprite.flip_h, _sprite.animation,
+		_frenado > 0.0, _quemaduras > 0, apuntando, _linea_disparo, _mira, _largo_mira,
+		limpio, fraccion_vida(), visible]
+
+
+## Lo contrario, en el espejo: se pone como esta en el anfitrion. El sitio
+## no de golpe (llega unas 20 veces por segundo): lo alcanza en _seguir_red.
+func aplicar_red(datos: Array) -> void:
+	if _muriendo or datos.size() < 18:
+		return
+	_destino_red = datos[1]
+	if not _recibido_red or global_position.distance_to(_destino_red) > SALTO_RED:
+		global_position = _destino_red
+	_recibido_red = true
+	_sprite.position = datos[2]
+	_sprite.scale = _escala_base * Vector2(datos[3])
+	_sprite.self_modulate.a = datos[4]
+	_sprite.modulate = datos[5]
+	modulate = datos[6]
+	_sprite.flip_h = datos[7]
+	var animacion: StringName = datos[8]
+	if _sprite.animation != animacion and _sprite.sprite_frames.has_animation(animacion):
+		_sprite.play(animacion)
+	_frenado = 1.0 if datos[9] else 0.0
+	_sprite.speed_scale = RITMO_FRENADO if datos[9] else 1.0
+	_quemaduras = 1 if datos[10] else 0
+	_apuntando = float(datos[11]) * tipo.tiempo_apuntar
+	_linea_disparo = datos[12]
+	_mira = datos[13]
+	_largo_mira = datos[14]
+	estado = datos[15]
+	_fraccion_red = datos[16]
+	visible = datos[17]
+	queue_redraw()
+
+
+func _seguir_red(delta: float) -> void:
+	if _recibido_red:
+		global_position = global_position.lerp(_destino_red, 1.0 - exp(-SUAVIZADO_RED * delta))
+	queue_redraw()
+
+
+## En el espejo: el anfitrion dice que ha muerto. Lo mismo que _morir menos
+## las crias, que llegan aparte con su nombre (MundoRed._nacer).
+func morir_espejo() -> void:
+	if _muriendo:
+		return
+	_muriendo = true
+	visible = false
+	if tipo.radio_explosion > 0.0:
+		_explotar()
+		Sonido.tocar(&"explosion")
+	else:
+		_destello_muerte()
+		Sonido.tocar(&"muerte_enemigo")
+	if tipo.comportamiento != null:
+		tipo.comportamiento.al_morir(self)
+	muerto.emit(self)
+	queue_free()
+
+
 # --- Muerte -----------------------------------------------------------------
 
 ## Explota y suelta crias si su tipo lo dice, y luego avisa de que ha muerto.
@@ -625,6 +775,9 @@ func _morir() -> void:
 		_soltar_cria(i)
 	if tipo.comportamiento != null:
 		tipo.comportamiento.al_morir(self)
+	# Despues de las crias: alli tambien tienen que apuntarse antes de que la
+	# sala se quede sin enemigos.
+	MundoRed.anunciar_muerte(self)
 	muerto.emit(self)
 	queue_free()
 
@@ -635,11 +788,14 @@ func _explotar() -> void:
 	destello.color = tipo.color_efectos
 	destello.position = position
 	get_parent().add_child(destello)
-	if is_instance_valid(_objetivo) and _objetivo.has_method("centro_colision") \
-			and _objetivo.centro_colision().distance_to(global_position) \
+	# Al jugador de este ordenador, no a quien perseguia: en cooperativo cada
+	# uno mira lo que le da a el, y la explosion sale en todos.
+	var jugador := get_tree().get_first_node_in_group("jugador") as Node2D
+	if jugador != null and jugador.has_method("centro_colision") \
+			and jugador.centro_colision().distance_to(global_position) \
 				< tipo.radio_explosion + RADIO_JUGADOR \
-			and not (_objetivo.has_method("escudo_activo") and _objetivo.escudo_activo()):
-		_objetivo.recibir_dano(tipo.dano_explosion, false, tipo.nombre + " (explosión)")
+			and not (jugador.has_method("escudo_activo") and jugador.escudo_activo()):
+		jugador.recibir_dano(tipo.dano_explosion, false, tipo.nombre + " (explosión)")
 
 
 ## Un destello pequeno de su color al morir, sin dano. Antes los enemigos
@@ -663,6 +819,7 @@ func _soltar_cria(numero: int) -> void:
 	var sala := get_parent() as Sala
 	if sala != null:
 		sala.registrar_enemigo(cria)
+	MundoRed.anunciar_cria(cria, tipo)
 
 
 ## La linea de mira del rayo: mientras apunta, o un momento con el disparo

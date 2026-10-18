@@ -63,12 +63,7 @@ func _dejar_charco(enemigo: Enemigo) -> void:
 	var sala := enemigo.sala()
 	if sala == null:
 		return
-	var lava := Lava.new()
-	lava.radio = charco_radio
-	lava.duracion = charco_duracion
-	lava.origen = "Charco de magma (%s)" % enemigo.tipo.nombre
-	# A los pies, que es donde ha caido.
-	lava.position = sala.to_local(enemigo.global_position + Vector2(0.0, enemigo.tipo.alto * 0.3))
-	# Diferido: esto llega en mitad del paso de fisica, y el charco trae su
-	# area de colision.
-	sala.add_child.call_deferred(lava)
+	# A los pies, que es donde ha caido. Por MundoRed: en cooperativo, el
+	# charco tiene que salir en todos los ordenadores.
+	MundoRed.crear_lava(sala, sala.to_local(enemigo.global_position + Vector2(0.0, enemigo.tipo.alto * 0.3)),
+		charco_radio, charco_duracion, "Charco de magma (%s)" % enemigo.tipo.nombre)

@@ -739,6 +739,23 @@ func reubicar(posicion: Vector2) -> void:
 	_mirando = &"abajo"
 
 
+## Si sigue con vida. Lo preguntan los enemigos en cooperativo para elegir a
+## por quien van (a un caido no).
+func sigue_vivo() -> bool:
+	return vida_actual > 0
+
+
+## Cooperativo: vuelve en el piso siguiente con esa vida (la mitad, decidio
+## Matias el 2026-10-16), visible y con control. Las mejoras no se pierden.
+func revivir(vida: int) -> void:
+	vida_actual = clampi(vida, 1, vida_maxima)
+	visible = true
+	_control_activo = true
+	_tiempo_invulnerable = duracion_invulnerabilidad
+	_sprite.modulate = Color.WHITE
+	vida_cambiada.emit(vida_actual, vida_maxima)
+
+
 ## Deja al jugador como al empezar: vida llena y sin ninguna mejora recogida.
 ## Solo se usa al empezar una partida nueva.
 func restaurar_vida() -> void:

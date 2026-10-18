@@ -1,6 +1,6 @@
 # Vacío — Modo multijugador: viabilidad
 
-*Estudio del 9 de octubre de 2026. **Fase 1 hecha el 16 de octubre** (red local, piso 1); falta probarla en la wifi del instituto.*
+*Estudio del 9 de octubre de 2026. **Fases 1 y 2 hechas** (16 y 18 de octubre): la partida entera en red local. Falta probarla en la wifi del instituto y la fase 3 (internet).*
 
 Es viable jugar 2 o 3 personas en cooperativo desde ordenadores distintos, creando una sala con un código y entrando con él. Es el cambio más grande del proyecto: en la misma red no hace falta servidor, pero por internet sí hace falta uno que haga de intermediario.
 
@@ -64,7 +64,7 @@ Con hasta 63 enemigos y sus disparos, la red no es problema para 3 jugadores.
 Por fases, para ver pronto si jugarlo juntos convence antes de meterse con servidores. La conexión va separada del resto del juego: pasar de red local a internet no obliga a rehacer nada.
 
 1. **Prueba en red local.** ✅ *Hecha el 16/10/2026.* Pantalla de «Crear sala / Unirse» con código, y 2–3 magos andando y disparando en el mismo piso. Se puede probar en un solo ordenador abriendo varias ventanas del juego. Quedó así: en *Jugar → Cooperativo en red local*; solo el piso 1 (la bajada, cerrada); el objeto que coge uno es para todos; probada en un ordenador con dos juegos abiertos. **Falta probarla en la wifi del instituto.**
-2. **El juego completo en cooperativo.** Enemigos, puertas, muerte, objetos, bajar de piso y HUD con la vida de todos. Es la fase más larga.
+2. **El juego completo en cooperativo.** ✅ *Hecha el 18/10/2026.* Enemigos, puertas, muerte, objetos, bajar de piso y HUD con la vida de todos. Quedó así: el anfitrión lleva los enemigos y en los demás son una copia; cada uno decide lo que le da a él (los disparos y charcos salen en todos); las peleas, para todos y una a la vez; se baja juntos; el que cae vuelve en el piso siguiente con media vida; enemigos ×1,5 de vida con dos y ×2 con tres. Probada en un ordenador con dos juegos, jefe incluido.
 3. **Por internet con código de sala**, con la opción elegida de la tabla de arriba.
 
 ## Riesgos

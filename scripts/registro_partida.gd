@@ -63,10 +63,6 @@ func _ready() -> void:
 	# partidas: de las nueve primeras guardadas, cuatro eran pruebas de
 	# Claude y salian en las medias como si alguien hubiera jugado.
 	_de_prueba = get_parent().get_parent() != get_tree().root
-	# Las cooperativas tampoco, de momento: en la fase 1 solo se juega el
-	# piso 1. Cuando se juegue entero, que apunten cuantos eran.
-	if Red.cooperativo():
-		_de_prueba = true
 	_jugador.golpeado.connect(_al_recibir_golpe)
 	_jugador.veneno_quita.connect(_al_quitar_veneno)
 	_jugador.vida_cambiada.connect(_al_cambiar_vida)
@@ -188,6 +184,10 @@ func _empezar() -> void:
 		"segundos": 0.0,
 		"muerte": null,
 		"trucos": false,
+		# Cuantos jugaban (cooperativo, fase 2); 1 jugando solo. El analisis
+		# deja fuera las de varios por defecto: con enemigos mas fuertes y
+		# companeros, no se comparan con las de uno.
+		"jugadores": Red.jugadores.size() if Red.cooperativo() else 1,
 		"resumen": {},
 		"pisos": [],
 	}

@@ -253,13 +253,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   lo había oído al hacerlo**: Claude no puede oír, solo medir (picos, volumen
   medio, recortes, que el bucle empalme). Hay que escucharlo y ajustar.
 
-- **Cooperativo en red local, fase 1** (2026-10-16, pedido por Matías;
-  estudio y fases en `docs/mejoras-futuras/multijugador.md`). En **Jugar →
-  Cooperativo en red local** (`scripts/sala_cooperativo.gd`, montado por
-  código en el menú): crear sala, unirse con código y sala de espera. Hasta 3
-  jugadores, **cada uno con un mago distinto**, y misma versión del juego
-  (si no, no entra). Solo se juega el **piso 1**, que no tiene enemigos ni
-  peligros: la bajada está cerrada (`Cooperativo.bajada_cerrada`). Piezas:
+- **Cooperativo en red local, fases 1 y 2** (2026-10-16 y 18, pedido por
+  Matías; estudio y fases en `docs/mejoras-futuras/multijugador.md`). En
+  **Jugar → Cooperativo en red local** (`scripts/sala_cooperativo.gd`,
+  montado por código en el menú): crear sala, unirse con código y sala de
+  espera. Hasta 3 jugadores, **cada uno con un mago distinto**, y misma
+  versión del juego (si no, no entra). **Se juega la partida entera.** Piezas:
   - Autoload **`Red`** (`scripts/red.gd`): la conexión (ENet, puerto 24701)
     y la sala. El **código** es la IP local del anfitrión en 7 caracteres de
     base 32 de Crockford (`codigo_de_ip`/`ip_de_codigo`; también vale la IP
@@ -280,15 +279,44 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     `/root/Principal/Cooperativo`, **solo a los que ya tienen la partida
     montada** (`Red.listos()`, con el aviso `_listo` de ida y vuelta).
   - La pausa no congela (`MenuPausa.modo_cooperativo`): para a este mago y
-    quita *Reiniciar*; *Salir de la sala* vuelve al menú. Si se va el
-    anfitrión, los demás vuelven al menú con el porqué
-    (`Red.mensaje_pendiente`). Sin atajos de prueba y sin registro de
-    partidas (`RegistroPartida._de_prueba`) hasta la fase 2.
-  - **Decidido para la fase 2** (Matías, 2026-10-16): el que muere no vuelve
-    hasta el piso siguiente, y con media vida; el ataque especial, uno por
-    piso para cada uno; con más jugadores, enemigos con más vida (no más
-    enemigos). Los enemigos, el daño y lo que sueltan los decidirá el
-    anfitrión.
+    quita *Reiniciar* (y la pantalla final también, `PantallaFinal.modo_cooperativo`);
+    *Salir de la sala* vuelve al menú. Si se va el anfitrión, los demás
+    vuelven al menú con el porqué (`Red.mensaje_pendiente`). Sin atajos de
+    prueba. El registro sí guarda las cooperativas, con `"jugadores": N`, y
+    el análisis las deja fuera salvo con `--con-cooperativo`.
+  - **El mundo lo lleva el anfitrión** (fase 2, **`MundoRed`**,
+    `scripts/mundo_red.gd`, hijo de `Cooperativo`): sus enemigos piensan,
+    pierden vida, mueren y sueltan cosas. En los demás ordenadores cada
+    enemigo es un **espejo** (`Enemigo._espejo`, `Red.es_espejo()`): no
+    piensa; se pone como manda el anfitrión unas 20 veces por segundo
+    (`Enemigo.estado_red`/`aplicar_red`, con su `estado` sin objetos) y muere
+    cuando se lo dicen (`morir_espejo`). Cada enemigo tiene un nombre igual en
+    todos (`id_red`, «p3:2,-1#0», que pone `Sala.registrar_enemigo`; las crías
+    lo traen del anfitrión, que manda el `.tres` de la madre porque la cría no
+    tiene). Van a por el jugador vivo más cercano, antes los de su sala
+    (`Enemigo._buscar_objetivo`; los demás magos están en el grupo
+    `jugadores_remotos`).
+  - **Cada uno decide lo que le da a él:** los disparos enemigos (con
+    número, `ProyectilEnemigo.id_red`), charcos, ondas, el pozo y el fuego del
+    jefe se crean en todos (`MundoRed.crear_lava`, `crear_onda`, `crear_pozo`,
+    `fuego`, `romper_pilar`, `soltar_objeto`: el juego los usa también jugando
+    solo) y cada copia solo hace daño al jugador de su ordenador. Lo que pasa
+    solo en uno se avisa: rebotar en su escudo (`avisar_cambio`), darle
+    (`avisar_fin`), que su burbuja empuje a un enemigo (`pedir_empuje`).
+  - **Las bolas de los magos dan en el anfitrión:** en los demás todas son
+    `BolaMagica.solo_ver` (se apagan al tocar, sin quitar vida), y el agujero
+    negro allí no tira. Lo que sale al azar (lo que sueltan, los vendajes)
+    solo lo tira el anfitrión (`Red.manda()`) y lo manda.
+  - **Peleas para todos, una a la vez:** `Sala.activar` en cooperativo no
+    cierra sola; emite `quiere_pelea`, el anfitrión decide
+    (`Cooperativo._pedir_pelea`) y la empieza en todos (`Sala.empezar_pelea`);
+    quien esté fuera aparece dentro. **Se baja juntos**
+    (`Cooperativo.pedir_bajar`). **El que cae** (`al_caer_yo`, en vez de
+    acabar la partida) se esconde y su cámara sigue a otro; vuelve al piso
+    siguiente con media vida (`Jugador.revivir`). Si caen todos, el
+    anfitrión acaba la partida en todos. Enemigos con más vida por jugador
+    (`Red.factor_vida_enemigos`: ×1,5 con dos, ×2 con tres). La vida de los
+    compañeros, abajo a la izquierda (`VidasCompaneros`).
 
 - **Pantalla completa** (2026-10-14, pedido por Matías): el autoload
   `Pantalla` (`scripts/pantalla.gd`) pone el juego exportado a pantalla
@@ -530,12 +558,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   el 2026-10-08 los escenarios son todos propios y los packs de itch.io ya no
   se usan: de fuera solo quedan las hojas de los magos (el blanco sale de la
   del rojo, así que tiene la misma duda).
-- **Multijugador: fase 1 hecha (2026-10-16), falta probarla en clase.** El
-  estudio está en `docs/mejoras-futuras/multijugador.md`: red local, juego
-  cooperativo entero e internet con código de sala. La fase 1 se probó en un
-  ordenador con dos juegos abiertos; **en la wifi del instituto, no**, y es
-  el mayor riesgo (muchas no dejan que los ordenadores se hablen). Las
-  decisiones ya están cerradas salvo cómo se jugará por internet.
+- **Multijugador: fases 1 y 2 hechas (2026-10-18), falta probarlas en
+  clase.** El estudio está en `docs/mejoras-futuras/multijugador.md`. Se
+  probó en un ordenador con dos juegos abiertos (peleas, crías, objetos,
+  caer y volver, bajar juntos, derrota, el jefe con sus fases y pilares);
+  **en la wifi del instituto, no**, y es el mayor riesgo (muchas no dejan
+  que los ordenadores se hablen). Nadie lo ha jugado con varias personas.
+  Falta la fase 3 (internet), sin decidir cómo.
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
   enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar
@@ -774,6 +803,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   por el cortafuegos. **Cada uno con su archivo de registro, nuevo en cada
   intento**: una prueba anterior colgada siguió escribiendo en el mismo y lo
   dejó ilegible (2026-10-16).
+- **Sin ventana (`--headless`) no se dibuja nunca**, así que una prueba que
+  espera `RenderingServer.frame_post_draw` para hacer una captura se queda
+  parada para siempre (y Godot sin ventana gasta toda la CPU, que no es
+  señal de bucle). La del cooperativo pareció un fallo del juego hasta verlo
+  (2026-10-18): las capturas, siempre en el juego con ventana.
+- **Un objeto ya liberado no se puede guardar en una variable con tipo**
+  (`var e: Enemigo = diccionario.get(id)`): el motor da «Trying to assign
+  invalid previously freed instance». Mirarlo antes como `Variant` con
+  `is_instance_valid` (`MundoRed._enemigo`).
 - **Cambiar un botón de sitio (`reparent`) lo vuelve a meter en el árbol**, y
   `Sonido` le conectaba el clic otra vez: error del motor por conexión
   repetida. Ahora mira si ya lo está (`Sonido._al_anadir_nodo`).

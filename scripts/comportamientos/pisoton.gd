@@ -55,15 +55,10 @@ func _pisar(enemigo: Enemigo) -> void:
 	var sala := enemigo.sala()
 	if sala == null:
 		return
-	var onda := OndaChoque.new()
-	onda.radio_maximo = radio_onda
-	onda.duracion = duracion_onda
-	onda.dano = dano_onda
-	onda.color = enemigo.tipo.color_efectos
-	onda.origen = enemigo.tipo.nombre + " (pisotón)"
-	onda.position = sala.to_local(enemigo.global_position + _pies(enemigo))
-	sala.add_child(onda)
-	Sonido.tocar(&"pisoton")
+	# Por MundoRed: en cooperativo, la onda sale en todos los ordenadores.
+	MundoRed.crear_onda(sala, sala.to_local(enemigo.global_position + _pies(enemigo)),
+		radio_onda, duracion_onda, dano_onda, enemigo.tipo.color_efectos,
+		enemigo.tipo.nombre + " (pisotón)")
 
 
 func _pies(enemigo: Enemigo) -> Vector2:

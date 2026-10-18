@@ -74,6 +74,10 @@ func _physics_process(_delta: float) -> void:
 ## Con la vida llena, lo que solo cura se queda en el suelo: cogerlo seria
 ## tirarlo (como en Isaac).
 func _le_hace_falta(cuerpo: Node2D) -> bool:
+	# Un mago caido (cooperativo) no recoge nada: los objetos son para los
+	# que siguen vivos (Matias, 2026-10-16).
+	if "vida_actual" in cuerpo and cuerpo.vida_actual <= 0:
+		return false
 	if not mejora.solo_cura():
 		return true
 	return not ("vida_actual" in cuerpo and cuerpo.vida_actual >= cuerpo.vida_maxima)

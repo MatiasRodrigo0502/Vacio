@@ -69,6 +69,17 @@ func anunciar_mejora(mejora: ObjetoMejora) -> void:
 	avisar("%s  ·  %s" % [mejora.nombre, mejora.descripcion], mejora.color)
 
 
+## La vida de los companeros del cooperativo (ver VidasCompaneros). Se crea
+## la primera vez: jugando solo no hay.
+func actualizar_companeros(companeros: Array) -> void:
+	var vidas := get_node_or_null("VidasCompaneros") as VidasCompaneros
+	if vidas == null:
+		vidas = VidasCompaneros.new()
+		vidas.name = "VidasCompaneros"
+		add_child(vidas)
+	vidas.actualizar(companeros)
+
+
 ## Un aviso de unos segundos debajo del piso, el mismo sitio en el que se
 ## anuncian los objetos. Lo usa tambien el cooperativo (quien entra y sale).
 func avisar(texto: String, color: Color) -> void:

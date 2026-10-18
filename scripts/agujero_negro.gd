@@ -80,6 +80,12 @@ func _physics_process(delta: float) -> void:
 	if toca_dano:
 		_tic += TIC
 	var fuerza := _fuerza()
+	# En un espejo del cooperativo solo se ve: los enemigos de verdad estan en
+	# el anfitrion, y alli tira de ellos el mismo agujero (MundoRed).
+	if Red.es_espejo():
+		queue_redraw()
+		_nucleo.queue_redraw()
+		return
 	for enemigo in _sala.enemigos():
 		if not is_instance_valid(enemigo):
 			continue

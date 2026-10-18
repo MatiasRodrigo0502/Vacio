@@ -75,6 +75,10 @@ func _al_morir_enemigo(enemigo: Enemigo, sala: Sala, piso: Node,
 		disponibles: Array[ObjetoMejora]) -> void:
 	if enemigo.tipo == null or enemigo.tipo.es_cria:
 		return
+	# En cooperativo lo decide el anfitrion y lo manda (MundoRed): si cada
+	# ordenador tirara su azar, cada uno veria caer otra cosa.
+	if not Red.manda():
+		return
 	if randf() >= probabilidad_al_matar:
 		return
 	# Donde murio si se puede, y si no, lo mas cerca posible (ver el piso).
@@ -83,7 +87,7 @@ func _al_morir_enemigo(enemigo: Enemigo, sala: Sala, piso: Node,
 		return
 	var azar := RandomNumberGenerator.new()
 	azar.randomize()
-	_dejar(sala, sala.to_local(sitio), disponibles, azar)
+	MundoRed.soltar_objeto(sala, disponibles[azar.randi() % disponibles.size()], sitio)
 
 
 func _dejar(sala: Sala, sitio: Vector2, disponibles: Array[ObjetoMejora],

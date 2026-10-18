@@ -99,6 +99,29 @@ func cooperativo() -> bool:
 	return en_partida and en_sala()
 
 
+## True en un ordenador que no crea la sala, ya en la partida. En ese, el
+## mundo (los enemigos, su vida, lo que sueltan) es una copia de lo que manda
+## el anfitrion: aqui solo se ensena (fase 2, ver MundoRed).
+func es_espejo() -> bool:
+	return cooperativo() and not multiplayer.is_server()
+
+
+## True si este ordenador decide lo que pasa en el mundo: jugando solo, o
+## siendo el anfitrion. Lo preguntan lo que reparte al azar (lo que sueltan
+## los enemigos, los vendajes) para que no salga distinto en cada uno.
+func manda() -> bool:
+	return not es_espejo()
+
+
+## Por cuanto se multiplica la vida de los enemigos: con mas jugadores,
+## enemigos mas fuertes y no mas enemigos (Matias, 2026-10-16). La mitad mas
+## por cada jugador de mas: 1,5 con dos y el doble con tres.
+func factor_vida_enemigos() -> float:
+	if not cooperativo():
+		return 1.0
+	return 1.0 + 0.5 * maxi(jugadores.size() - 1, 0)
+
+
 func mi_id() -> int:
 	return multiplayer.get_unique_id()
 

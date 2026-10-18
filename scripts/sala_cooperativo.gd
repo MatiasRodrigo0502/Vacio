@@ -124,7 +124,7 @@ func _montar_dentro(caja: VBoxContainer) -> void:
 	_espera = _etiqueta("", 16, COLOR_FLOJO)
 	_dentro.add_child(_espera)
 	_dentro.add_child(_etiqueta(
-		"De momento (fase 1) se juega solo el piso 1: os veis, andáis y disparáis juntos.",
+		"Las peleas y la bajada son para todos a la vez. Quien cae vuelve en el piso siguiente, con media vida.",
 		14, COLOR_FLOJO))
 	var salir := _boton("Salir de la sala", 240)
 	salir.pressed.connect(func() -> void:

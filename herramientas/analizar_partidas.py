@@ -17,7 +17,9 @@ carpetas, lee todos los .json que haya dentro (también en subcarpetas): para
 juntar las de todo el equipo, cada uno manda su carpeta y se pasan todas.
 
 Las partidas con atajos de prueba (F1-F5) se dejan fuera, porque no son
-partidas normales: con --con-trucos entran.
+partidas normales: con --con-trucos entran. Las cooperativas (más de un
+jugador) también, porque los enemigos tienen más vida y hay compañeros: con
+--con-cooperativo entran.
 
 Solo usa la biblioteca estándar de Python.
 """
@@ -190,6 +192,8 @@ def main():
     analizador.add_argument("carpetas", nargs="*", help="carpetas con los .json")
     analizador.add_argument("--con-trucos", action="store_true",
                             help="contar también las partidas con atajos de prueba")
+    analizador.add_argument("--con-cooperativo", action="store_true",
+                            help="contar también las partidas de varios jugadores")
     opciones = analizador.parse_args()
 
     carpetas = opciones.carpetas or [c for c in CARPETAS_DEL_JUEGO if os.path.isdir(c)]
@@ -203,6 +207,13 @@ def main():
         if con_trucos:
             print("(%d partidas con atajos de prueba fuera; --con-trucos para verlas)\n"
                   % len(con_trucos))
+    if not opciones.con_cooperativo:
+        # Las de antes de la fase 2 no traen "jugadores": eran de uno.
+        varios = [p for p in partidas if p.get("jugadores", 1) > 1]
+        partidas = [p for p in partidas if p.get("jugadores", 1) <= 1]
+        if varios:
+            print("(%d partidas cooperativas fuera; --con-cooperativo para verlas)\n"
+                  % len(varios))
     if not partidas:
         print("No hay partidas que resumir.")
         return 1
