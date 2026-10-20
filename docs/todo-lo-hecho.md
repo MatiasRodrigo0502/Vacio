@@ -276,7 +276,7 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 **Mejoras futuras valoradas** (cada una con su estudio en [mejoras-futuras/](mejoras-futuras/)):
 
-- **Multijugador cooperativo** de 2–3 personas desde ordenadores distintos, con sala por código. Es viable; faltan las decisiones del equipo. Ver [el estudio](mejoras-futuras/multijugador.md).
+- **Multijugador cooperativo** de 2–3 personas desde ordenadores distintos, con sala por código. En red local ya se juega la partida entera (fases 1 y 2); falta probarlo en la wifi del instituto y la fase 3, por internet, que necesita elegir un servicio o un servidor. Ver [el estudio](mejoras-futuras/multijugador.md).
 
 **En marcha:**
 
