@@ -87,7 +87,7 @@ Cerradas por Matías el 16 de octubre, salvo la de internet.
 - [x] ¿Para quién son los objetos y los vendajes del suelo? **Para todos, menos para quien esté muerto.**
 - [x] ¿El ataque especial sigue siendo uno por piso para cada jugador? **Sí.**
 - [x] ¿Hay más enemigos, o más fuertes, cuantos más jugadores? **Más fuertes: más vida, no más enemigos.**
-- [x] ¿Se puede repetir mago? **No: cada uno elige uno distinto.**
+- [x] ¿Se puede repetir mago? **No: cada uno elige uno distinto** (confirmado el 20 de octubre).
 
 ## Fuentes
 

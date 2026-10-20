@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-18.**
+**Última actualización: 2026-10-20.**
 
 ---
 
@@ -257,7 +257,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   Matías; estudio y fases en `docs/mejoras-futuras/multijugador.md`). En
   **Jugar → Cooperativo en red local** (`scripts/sala_cooperativo.gd`,
   montado por código en el menú): crear sala, unirse con código y sala de
-  espera. Hasta 3 jugadores, **cada uno con un mago distinto**, y misma
+  espera. Hasta 3 jugadores, **cada uno con un mago distinto** (lo confirmó
+  Matías el 2026-10-20: no se repiten), y misma
   versión del juego (si no, no entra). **Se juega la partida entera.** Piezas:
   - Autoload **`Red`** (`scripts/red.gd`): la conexión (ENet, puerto 24701)
     y la sala. El **código** es la IP local del anfitrión en 7 caracteres de
@@ -408,6 +409,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   enemigos duermen hasta entonces. La bajada está tapada hasta limpiar su
   sala. La cámara se encaja en la sala: si cabe se queda quieta, si no se
   mueve dentro. Las bolas se apagan al salir de la casilla de su sala.
+- **Lo de fuera de la sala, a oscuras** (2026-10-20, pedido por Matías):
+  `Penumbra` (`scripts/penumbra.gd`, la crea Principal) pinta encima de todo
+  lo del mundo (z 30) cuatro bandas negras al 92 % alrededor de la casilla de
+  la sala, con 48 px de degradado. La pantalla es más ancha que la sala en
+  los pisos 1 a 11 (en el 1 sobran 160 px de mundo por lado; en el 11, 16) y
+  más alta en los primeros, y asomaba lo de las salas vecinas. La zona con
+  luz la da `CamaraJuego.zona_iluminada()`, que va hacia el límite con el
+  mismo suavizado que la cámara y salta con ella (`seguir`/`limitar_a` con
+  `inmediato`): al cruzar una puerta la luz se desliza con la vista, y vale
+  igual para la sala del jefe y para quien mira a un compañero en
+  cooperativo. Dentro de la sala no cambia nada (medido: la misma luz con y
+  sin ella). Los compañeros que estén en otra sala quedan también a oscuras.
 - **Pausa con Escape** (`scripts/menu_pausa.gd`, `scenes/MenuPausa.tscn`):
   continuar, reiniciar o volver al menú. Pausa el árbol entero
   (`get_tree().paused`), así que todo se congela sin que ningún script sepa
@@ -574,9 +587,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   Los de distancia quitan de 20 a 50 y hay pinchos, lava y agujeros, con 100
   de vida (130 el rojo). Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
   (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
-- **Posibles mejoras de las salas**, no pedidas: oscurecer las salas vecinas
-  (cuando la vista es más ancha o más alta que la sala, se asoma un trozo de
-  las de al lado) y salas de otras formas.
+- **Posibles mejoras de las salas**, no pedidas: salas de otras formas.
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
 

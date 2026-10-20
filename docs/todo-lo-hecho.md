@@ -67,7 +67,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 18/10/2026 | Cooperativo, fase 2: la partida entera en red local (enemigos del anfitrión, peleas para todos, caer y volver, bajar juntos) | — |
+| 20/10/2026 | Lo que asoma de las salas de al lado queda a oscuras | — |
+| 18/10/2026 | Cooperativo, fase 2: la partida entera en red local (enemigos del anfitrión, peleas para todos, caer y volver, bajar juntos) | `bb08de7` |
 | 18/10/2026 | En Controles se elige moverse con WASD o con las flechas | `1e486e5` |
 | 16/10/2026 | Cooperativo en red local, fase 1: sala con código, hasta 3 magos en el piso 1, objetos para todos | `5897722` |
 | 16/10/2026 | Las escenas de prueba ya no guardan partidas en el registro | `d1cddcd` |
@@ -199,6 +200,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 - **Sonido y música**, todo generado por síntesis con nuestros scripts: una música para la portada, otra para los pisos 1-6 y otra más grave para los 7-12, más la de ganar y la de perder; y 23 efectos (disparos, golpes, muertes, explosiones, puertas, objetos, escudo, agujero negro, caídas, botones...).
 - **HUD:** piso y capa, la vida en una barra con su número («70 / 100») y, debajo, el icono de cada ventaja recogida («x2» si se repite). Al dar a un enemigo salta el número de vida que le quitas, y al recibir un golpe, el que te quitan.
 - **Minimapa** arriba a la derecha, con las salas visitadas, el objeto y la bajada.
+- **Solo se ve la sala en la que estás:** lo que asoma de las de al lado queda a oscuras, y al cruzar una puerta la luz se desliza con la cámara.
 - **Pantalla final** de victoria o derrota.
 
 ## Ejecutable, release y herramientas
@@ -285,6 +287,5 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 **Ideas no pedidas todavía:**
 
 - Una textura sutil para el suelo.
-- Oscurecer las salas vecinas que asoman cuando la vista es más grande que la sala.
 - Salas de otras formas.
 - Puntuación y guardado de partida.

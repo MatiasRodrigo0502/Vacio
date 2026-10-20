@@ -152,6 +152,9 @@ bajar al siguiente piso, con la vida que te quede.
   conoces. El resto se descubre andando.
 - Cuanto más bajas, más salas y más pequeñas, y la cámara se cierra más: en
   los pisos hondos ya no ves la sala entera.
+- **Solo se ve la sala en la que estás**: lo que asoma de las de al lado
+  (la pantalla es más ancha que la sala en casi todos los pisos) queda a
+  oscuras, y al cruzar una puerta la luz se desliza con la cámara.
 
 Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 
@@ -418,8 +421,8 @@ ordenador.
 Las mejoras grandes que el equipo ha valorado para más adelante, con su
 estudio (qué haría falta, riesgos y decisiones pendientes), están en
 [`docs/mejoras-futuras/`](docs/mejoras-futuras/): de momento, el multijugador
-cooperativo con sala por código, que ya tiene hecha la fase 1 (red local,
-piso 1).
+cooperativo con sala por código, que ya se juega entero en red local (fases
+1 y 2); falta jugarlo por internet (fase 3).
 
 Sistema de puntuación y guardado. Los obstáculos móviles ya
 están: del piso 4 en adelante, parte de las rocas van y vienen, y es la primera

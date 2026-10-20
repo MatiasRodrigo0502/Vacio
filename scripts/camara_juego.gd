@@ -19,6 +19,10 @@ var _zoom_objetivo: Vector2 = Vector2.ONE
 ## Zona del mundo de la que la camara no se sale: la sala en la que esta el
 ## jugador. Vacia = sin limite.
 var _limite: Rect2 = Rect2()
+## La sala que se ve con luz (la pinta Penumbra). Va hacia el limite con el
+## mismo suavizado que la camara: al cambiar de sala la luz se desliza con la
+## vista, en vez de saltar de una sala a otra mientras la vista aun se mueve.
+var _zona_iluminada: Rect2 = Rect2()
 
 ## Cuanto tiembla ahora, en pixeles de pantalla. Baja solo hasta 0.
 var _sacudida: float = 0.0
@@ -34,12 +38,17 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	# Interpolacion exponencial: independiente de los FPS, a diferencia de
+	# un lerp con factor fijo por frame. Es tambien lo que hace que, al
+	# cambiar de sala, la camara se deslice a la nueva en vez de saltar.
+	var peso := 1.0 - exp(-velocidad_seguimiento * delta)
 	if is_instance_valid(_objetivo):
-		# Interpolacion exponencial: independiente de los FPS, a diferencia de
-		# un lerp con factor fijo por frame. Es tambien lo que hace que, al
-		# cambiar de sala, la camara se deslice a la nueva en vez de saltar.
-		var peso := 1.0 - exp(-velocidad_seguimiento * delta)
 		global_position = global_position.lerp(_encajar(_objetivo.global_position), peso)
+	if not _zona_iluminada.has_area() or not _limite.has_area():
+		_zona_iluminada = _limite
+	else:
+		_zona_iluminada = Rect2(_zona_iluminada.position.lerp(_limite.position, peso),
+			_zona_iluminada.size.lerp(_limite.size, peso))
 
 	var peso_zoom := 1.0 - exp(-velocidad_zoom * delta)
 	zoom = zoom.lerp(_zoom_objetivo, peso_zoom)
@@ -68,6 +77,8 @@ func seguir(objetivo: Node2D, inmediato: bool = false) -> void:
 	_objetivo = objetivo
 	if inmediato and is_instance_valid(objetivo):
 		global_position = _encajar(objetivo.global_position)
+		# La vista ha saltado (otro piso): la luz salta con ella.
+		_zona_iluminada = _limite
 
 
 ## Encierra la camara en una zona del mundo: la sala en la que esta el jugador.
@@ -81,6 +92,13 @@ func limitar_a(zona: Rect2, inmediato: bool = false) -> void:
 	_limite = zona
 	if inmediato and is_instance_valid(_objetivo):
 		global_position = _encajar(_objetivo.global_position)
+		_zona_iluminada = _limite
+
+
+## La sala que se ve con luz ahora mismo, en el mundo. Durante un cambio de
+## sala va de camino de una a otra. Vacia si no hay limite.
+func zona_iluminada() -> Rect2:
+	return _zona_iluminada
 
 
 ## El punto al que deberia ir la camara para mirar a 'punto' sin salirse del

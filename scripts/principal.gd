@@ -66,6 +66,8 @@ func _ready() -> void:
 	# nodo ni se crea.
 	_registro = RegistroPartida.new(_jugador)
 	add_child(_registro)
+	# Lo de fuera de la sala en la que se juega, a oscuras.
+	add_child(Penumbra.new(_camara))
 
 	if Red.cooperativo():
 		_preparar_cooperativo()
