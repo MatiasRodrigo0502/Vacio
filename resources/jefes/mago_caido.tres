@@ -9,14 +9,24 @@
 
 [sub_resource type="Resource" id="Resource_comportamiento"]
 script = ExtResource("9_comportamiento")
+ritmo_fases = PackedFloat32Array(1.1, 1.3, 1.5)
+espera_habilidad = 3.5
+radio_pozo = 200.0
+dano_pozo = 20
 esquirla = ExtResource("4_esquirla")
+esquirlas_por_anillo = 14
+cada_anillo = 0.85
+carga_fuego = 1.2
+charcos_fuego = 7
+duracion_charco = 4.0
+rayos_por_fase = PackedInt32Array(1, 3, 5)
 cura = ExtResource("5_vendaje")
 
 [resource]
 script = ExtResource("1_tipo")
 nombre = "Mago caído"
 animaciones = ExtResource("2_anim")
-vida = 900
+vida = 1500
 velocidad = 110.0
 dano = 30
 alto = 144.0

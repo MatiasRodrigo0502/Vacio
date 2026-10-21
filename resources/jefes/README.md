@@ -29,7 +29,7 @@ oro.
 
 | | |
 |---|---|
-| Vida | 900 |
+| Vida | 1500 (900 hasta el 2026-10-21) |
 | Rayo (`proyectiles/rayo_caido.tres`) | quita 20, cada 1,5 s, con 0,55 s de línea de aviso |
 | Distancia | se queda a unos 380 px |
 
@@ -37,24 +37,36 @@ Cómo pelea lo decide `scripts/comportamientos/mago_caido.gd`, con todos sus
 números en el `.tres` (el `comportamiento`):
 
 - **Fase 1 (100–66 %)**: rayos y el **agujero negro** del mago oscuro al
-  revés: se abre donde estás (0,9 s de aviso mientras crece) y tira de ti;
-  en el centro quita 15. Ver `scripts/pozo_vacio.gd`.
+  revés: se abre donde estás (0,9 s de aviso mientras crece), mide 200 px y
+  tira de ti; en el centro quita 20. Ver `scripts/pozo_vacio.gd`.
 - **Fase 2 (66–33 %)**: además, el **escudo** del mago blanco: 4 s en los que
-  no se le puede dar (ni quemar) y suelta anillos de 10 esquirlas de hielo
-  que frenan y quitan 12 (`proyectiles/esquirla_hielo.tres`).
-- **Fase 3 (33–0 %)**: además, el **ataque cargado** del mago rojo: carga
-  1,4 s un rayo de fuego (la línea te sigue y se queda quieta los últimos
-  0,45 s), quita 50 y deja charcos de fuego. **Un pilar lo para, pero se
-  rompe** (`Obstaculo.romper()`, con escombros): cada pilar cubre una vez.
+  no se le puede dar (ni quemar) y suelta un anillo de 14 esquirlas de hielo
+  cada 0,85 s, que frenan y quitan 12 (`proyectiles/esquirla_hielo.tres`).
   Los rayos salen de tres en tres.
-- Cada fase va más deprisa (`ritmo_fases`: 1, 1,15 y 1,35) y entre una
-  habilidad y otra pasan 5 s.
+- **Fase 3 (33–0 %)**: además, el **ataque cargado** del mago rojo: carga
+  1,2 s un rayo de fuego (la línea te sigue y se queda quieta los últimos
+  0,45 s), quita 50 y deja 7 charcos de fuego que duran 4 s. **Un pilar lo
+  para, pero se rompe** (`Obstaculo.romper()`, con escombros): cada pilar
+  cubre una vez. Los rayos salen de cinco en cinco (`rayos_por_fase`, a
+  16° uno de otro).
+- Cada fase va más deprisa (`ritmo_fases`: 1,1, 1,3 y 1,5; también acorta
+  la línea de aviso de los rayos) y entre una habilidad y otra pasan 3,5 s.
 - **Al cambiar de fase** se va al centro, no se le puede dar 1,6 s, suelta
   una onda (quita 25) y deja un vendaje (cura 60).
 - **Al morir**: explosión grande y un segundo a cámara lenta.
 
 Hasta que se cierran las puertas y acaba su presentación (2,2 s) no se le
 puede dar: si no, desde el umbral de la puerta se le quitaba vida sin pelear.
+
+**Más difícil desde el 2026-10-21** (Matías: «que el boss final sea más
+complicado»). Antes: 900 de vida, ritmo 1 / 1,15 / 1,35, una habilidad cada
+5 s, rayos de uno en uno hasta la fase 3 (y de tres en tres en ella), pozo de
+170 px que quitaba 15, anillos de 10 esquirlas cada 1,1 s y un rayo de fuego
+que cargaba 1,4 s con 5 charcos de 3 s. Medido con un mago oscuro sin
+mejoras que se queda quieto y le dispara sin parar (sin esquivar nada): la
+pelea pasó de 55 a 95 s, y lo que le quitan, de 537 a 1124 de vida. Con
+100 de vida y los tres vendajes de por medio (antesala y dos cambios de
+fase), ahora hay que esquivar mucho más de la mitad.
 
 **Nadie lo ha jugado todavía**: estos números son un punto de partida. El
 registro de partidas apunta cada golpe suyo («Mago caído (rayo de fuego)»…)

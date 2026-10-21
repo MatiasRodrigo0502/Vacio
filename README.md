@@ -240,10 +240,12 @@ otros tres magos, más cuanto menos vida le queda:
 - **Fase 1:** el agujero negro del oscuro, al revés: se abre donde estás y
   tira de ti. Sal mientras crece.
 - **Fase 2:** el escudo del blanco: no se le puede dar y suelta anillos de
-  esquirlas de hielo que frenan.
+  esquirlas de hielo que frenan. Y los rayos salen de tres en tres.
 - **Fase 3:** el ataque cargado del rojo: un rayo de fuego enorme que deja la
   sala ardiendo. Un pilar te cubre, pero el rayo lo rompe: cada pilar sirve
-  una vez. Y los rayos salen de tres en tres.
+  una vez. Y los rayos salen de cinco en cinco.
+
+Cada fase va más deprisa que la anterior.
 
 Al cambiar de fase suelta una onda y deja un vendaje. Mientras vive, la bajada
 está tapada; al morir se abre. Sus números están en

@@ -67,7 +67,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 20/10/2026 | Lo que asoma de las salas de al lado queda a oscuras | — |
+| 21/10/2026 | El rayo del cristal vuelve a quitar 50 y el jefe final es más difícil (1500 de vida, más rápido, rayos de 3 y de 5) | — |
+| 20/10/2026 | Lo que asoma de las salas de al lado queda a oscuras | `436ea37` |
 | 18/10/2026 | Cooperativo, fase 2: la partida entera en red local (enemigos del anfitrión, peleas para todos, caer y volver, bajar juntos) | `bb08de7` |
 | 18/10/2026 | En Controles se elige moverse con WASD o con las flechas | `1e486e5` |
 | 16/10/2026 | Cooperativo en red local, fase 1: sala con código, hasta 3 magos en el piso 1, objetos para todos | `5897722` |

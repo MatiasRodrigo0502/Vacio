@@ -14,8 +14,10 @@
 ## 3. Del 33 % al final: ademas, el ATAQUE CARGADO del mago rojo: carga un
 ##    rayo de fuego enorme (su linea avisa y se queda quieta al final) que deja
 ##    fuego por donde pasa. Un pilar lo para, pero se rompe (Matias,
-##    2026-10-14): cada pilar sirve una vez. Y los rayos salen de tres en
-##    tres, mas deprisa.
+##    2026-10-14): cada pilar sirve una vez.
+##
+## Los rayos salen en abanico, mas en cada fase (rayos_por_fase: 1, 3 y 5
+## desde el 2026-10-21, cuando Matias lo quiso mas dificil; antes 1, 1 y 3).
 ##
 ## Negro y oro, con una guadana (generar_mago_caido.py): la primera version
 ## era violeta y se confundia con el mago oscuro. Sus efectos van en oro.
@@ -80,8 +82,11 @@ const COLOR_FUEGO := Color(1.0, 0.55, 0.15)
 @export var radio_charco: float = 30.0
 @export var duracion_charco: float = 3.0
 
-@export_group("Rayos de tres en tres (fase 3)")
-## Grados entre el rayo del centro y los de los lados.
+@export_group("Abanico de rayos")
+## Cuantos rayos salen a la vez en cada fase: el del centro y los demas a
+## los lados, uno a cada lado por turnos.
+@export var rayos_por_fase: PackedInt32Array = PackedInt32Array([1, 1, 3])
+## Grados entre un rayo del abanico y el de al lado.
 @export var abertura_abanico: float = 16.0
 
 @export_group("Cambio de fase")
@@ -178,13 +183,17 @@ func _pelear(enemigo: Enemigo, delta: float, hacia: Vector2) -> void:
 	var antes := enemigo.global_position
 	enemigo.pelear_a_distancia(delta * ritmo, hacia, hacia.length())
 	_mirar(enemigo, hacia, enemigo.global_position.distance_to(antes) > 0.3)
-	# En la fase 3, cada rayo sale con dos mas a los lados.
+	# Cada rayo sale con los del abanico de su fase: el que ya ha salido es
+	# el del centro, y los demas van a un lado y al otro, cada vez mas
+	# abiertos (+1, -1, +2, -2...).
 	if enemigo.disparos > int(e["vistos"]):
 		e["vistos"] = enemigo.disparos
-		if fase >= 3:
-			var centro := hacia.normalized()
-			for lado in [-1.0, 1.0]:
-				enemigo.disparar_hacia(centro.rotated(deg_to_rad(abertura_abanico) * lado))
+		var rayos := rayos_por_fase[clampi(fase - 1, 0, rayos_por_fase.size() - 1)]
+		var centro := hacia.normalized()
+		for i in range(1, rayos):
+			var lado := 1.0 if i % 2 == 1 else -1.0
+			var abierto := deg_to_rad(abertura_abanico) * ((i + 1) / 2) * lado
+			enemigo.disparar_hacia(centro.rotated(abierto))
 	e["habilidad"] = float(e["habilidad"]) - delta * ritmo
 	if float(e["habilidad"]) <= 0.0 and not enemigo.esta_apuntando():
 		e["habilidad"] = espera_habilidad

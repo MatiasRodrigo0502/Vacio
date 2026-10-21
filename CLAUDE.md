@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-20.**
+**Última actualización: 2026-10-21.**
 
 ---
 
@@ -173,7 +173,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   cuando se cierran las puertas (`Sala.pelea_empezada`), con su música
   (`DatosPiso.musica_jefe`, `jefe.wav`). Arte: el mago rojo con otra paleta
   y la guadaña dibujada encima, en casillas de 96 × 72, a ×2
-  (`herramientas/generar_mago_caido.py`). **Nadie lo ha jugado.**
+  (`herramientas/generar_mago_caido.py`). **Más difícil desde el
+  2026-10-21** (Matías): 1500 de vida en vez de 900, más ritmo, una
+  habilidad cada 3,5 s, rayos en abanico de 3 en la fase 2 y de 5 en la 3
+  (`rayos_por_fase`), pozo, anillos y fuego más fuertes; los números de
+  antes y lo medido, en `resources/jefes/README.md`. **Nadie lo ha jugado.**
 - **Sala del jefe del piso 12** (2026-10-13, pedida por Matías). Con `DatosPiso.sala_jefe`, `MapaSalas` cuelga de
   la sala más lejana (o de la siguiente, si no cabe) una **antesala** y detrás
   la sala del **jefe** (`Tipo.ANTESALA` y `Tipo.JEFE`; con jefe no hay
@@ -529,13 +533,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `BolaMagica.VARIACION`, solo hacia arriba para que lo que caía de un
   disparo siga cayendo de uno), el cargado 30 (50 el del rojo), la quemadura
   3 por tic y el agujero negro 10 por tic; los enemigos tienen de 10 (rata,
-  murciélago, crías) a 50 (gólem), y el jefe 900. Lo que quitan ellos ya no
-  es 1 para todos: de 20 (rata, murciélago, veneno) a 45 (magma del gólem),
-  30 el rayo del cristal, pinchos 25, lava 20, caer 30; el vendaje cura 60.
-  **El rayo del cristal quitaba 50 hasta el 2026-10-15**: en las cinco
-  partidas guardadas de Matías (0.27 a 0.31) mató en tres, todas en los pisos
-  5 y 6, y ninguna pasó del 7. Matías lo bajó a 30 y quiso que siguiera
-  disparando sin avisar. **Cada golpe enseña su número** (`scripts/numero_dano.gd`, del
+  murciélago, crías) a 50 (gólem), y el jefe 1500. Lo que quitan ellos ya no
+  es 1 para todos: de 20 (rata, murciélago, veneno) a 50 (rayo del cristal),
+  45 el magma del gólem, pinchos 25, lava 20, caer 30; el vendaje cura 60.
+  **El rayo del cristal ha ido y vuelto**: quitaba 50; el 2026-10-15 Matías
+  lo bajó a 30 (en sus cinco partidas guardadas, de la 0.27 a la 0.31, mató
+  en tres, todas en los pisos 5 y 6, y ninguna pasó del 7), y el 2026-10-21
+  lo volvió a dejar en 50. Sigue disparando sin avisar. **Cada golpe enseña su número** (`scripts/numero_dano.gd`, del
   tamaño de pantalla aunque cambie el zoom): blanco el normal, dorado el
   cargado, naranja la quemadura, violeta el agujero negro y rojo encima del
   jugador. El número es lo que quita de verdad (el golpe que mata enseña lo
