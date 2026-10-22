@@ -8,7 +8,7 @@ Juego 2D top-down de habilidad hecho en **Godot 4.7** (GDScript). El jugador
 desciende piso a piso por una estructura con forma de embudo: 12 niveles fijos
 basados en las capas de la Tierra, de la corteza continental al núcleo interno.
 Cada piso es un mapa de salas unidas por puertas, y cada uno tiene más salas,
-más pequeñas, y se ve menos que el anterior.
+y más pequeñas, que el anterior.
 
 Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
@@ -150,11 +150,12 @@ bajar al siguiente piso, con la vida que te quede.
 - Arriba a la derecha va un **minimapa**: las salas en las que has estado, las
   de al lado en contorno, y el objeto y la bajada marcados en cuanto las
   conoces. El resto se descubre andando.
-- Cuanto más bajas, más salas y más pequeñas, y la cámara se cierra más: en
-  los pisos hondos ya no ves la sala entera.
+- Cuanto más bajas, más salas y más pequeñas. La cámara está igual de lejos
+  en todos los pisos, así que los enemigos, las rocas y el mago se ven
+  siempre del mismo tamaño, y la sala entera cabe en pantalla.
 - **Solo se ve la sala en la que estás**: lo que asoma de las de al lado
-  (la pantalla es más ancha que la sala en casi todos los pisos) queda a
-  oscuras, y al cruzar una puerta la luz se desliza con la cámara.
+  queda a oscuras (más cuanto más hondo, porque las salas encogen), y al
+  cruzar una puerta la luz se desliza con la cámara.
 
 Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 

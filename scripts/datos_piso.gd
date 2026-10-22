@@ -28,6 +28,12 @@ extends Resource
 
 ## Radio de vision en pixeles: media altura visible de la camara.
 ## Cuanto mas pequeno, mas cerrado el zoom y menos ve el jugador.
+##
+## Desde el 2026-10-22 es 495 en todos los pisos, el del piso 2 (Matias:
+## que los enemigos y todo lo demas se vean siempre del mismo tamano). Antes
+## bajaba hasta 240 en el 12 y la camara se acercaba el doble: los pisos
+## hondos se veian con todo mas grande. Lo de «cada piso se ve menos» lo dan
+## ahora las salas, mas pequenas en cada piso, con lo de fuera a oscuras.
 @export var radio_vision: float = 500.0
 
 ## Marca el ultimo piso: al superarlo se gana la partida en vez de avanzar.
@@ -42,8 +48,9 @@ extends Resource
 ##
 ## OJO CON EL RADIO DE VISION: mientras la sala quepa en pantalla, la camara se
 ## queda quieta y se ve entera. Cuando el radio de vision es menor que media
-## sala, la camara se mueve dentro de ella y ya no se ve toda: asi es como
-## "cada piso se ve menos" sigue siendo verdad con salas.
+## sala, la camara se mueve dentro de ella y ya no se ve toda. Hasta el
+## 2026-10-22 asi era en los pisos hondos; ahora caben todas (ver
+## radio_vision).
 @export var alto_area: float = 700.0
 
 ## Cuantas salas tiene el piso, contando el inicio, la del objeto y la de la

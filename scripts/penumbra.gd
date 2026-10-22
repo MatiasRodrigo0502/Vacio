@@ -1,12 +1,12 @@
 ## Lo de fuera de la sala en la que se juega, a oscuras.
 ##
-## POR QUE: en casi todos los pisos la pantalla es mas ancha que la sala (en
-## el 1 sobran 160 px por cada lado; en el 11, 16) y en los primeros tambien
-## mas alta, asi que asomaba un trozo de las salas de al lado: sus enemigos
-## dormidos, sus rocas, su objeto. Distraia, y ensenaba lo que hay detras de
-## una puerta antes de cruzarla. Como en Isaac, solo se ve la sala en la que
-## estas. No se ha tocado el radio de vision de ningun piso: lo que se ve de
-## la sala es lo mismo que antes.
+## POR QUE: la pantalla es mas ancha y mas alta que la sala en todos los
+## pisos (con la vista del piso 2, que tienen todos desde el 2026-10-22,
+## sobran 116 px de mundo por lado en el 1 y 446 en el 12), asi que asomaba
+## un trozo de las salas de al lado: sus enemigos dormidos, sus rocas, su
+## objeto. Distraia, y ensenaba lo que hay detras de una puerta antes de
+## cruzarla. Como en Isaac, solo se ve la sala en la que estas. Dentro de la
+## sala no cambia nada.
 ##
 ## La sala con luz es la casilla entera (`Sala.rect_con_muros`, lo mismo a lo
 ## que se encaja la camara): su medio muro se ve, porque por ahi se sale, y

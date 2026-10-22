@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-21.**
+**Última actualización: 2026-10-22.**
 
 ---
 
@@ -12,7 +12,8 @@ explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidi�
 Juego 2D top-down en **Godot 4.7** (GDScript). Se desciende piso a piso por un
 embudo: **12 niveles fijos** basados en las capas de la Tierra, de la corteza al
 núcleo interno. Cada piso es un **mapa de salas unidas por puertas**, y cada uno
-tiene más salas, más pequeñas, y se ve menos.
+tiene más salas, y más pequeñas. La cámara ve lo mismo en todos (desde el
+2026-10-22; antes se acercaba al bajar).
 
 Proyecto de clase (1 DAM). Lo trabajan **3 personas en paralelo**.
 
@@ -192,7 +193,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`runas_puerta.gd`, signos en `runas.gd`), sello en el suelo del jefe
   (`sello_jefe.gd`), cuatro pilares simétricos (`Piso._pilares_jefe`) y la
   cámara abierta para verla entera (`CamaraJuego.ver_entera`, desde
-  `Principal._al_cambiar_sala`). Minimapa: de su tamaño (`Piso.casillas_de`)
+  `Principal._al_cambiar_sala`; solo abre, nunca acerca: con la vista de
+  todos los pisos ya cabe). Minimapa: de su tamaño (`Piso.casillas_de`)
   y con una estrella roja. Ni enemigos ni peligros: `admite_enemigos()` es
   false en las dos.
 
@@ -416,9 +418,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Lo de fuera de la sala, a oscuras** (2026-10-20, pedido por Matías):
   `Penumbra` (`scripts/penumbra.gd`, la crea Principal) pinta encima de todo
   lo del mundo (z 30) cuatro bandas negras al 92 % alrededor de la casilla de
-  la sala, con 48 px de degradado. La pantalla es más ancha que la sala en
-  los pisos 1 a 11 (en el 1 sobran 160 px de mundo por lado; en el 11, 16) y
-  más alta en los primeros, y asomaba lo de las salas vecinas. La zona con
+  la sala, con 48 px de degradado. La pantalla es más ancha y más alta que
+  la sala en todos los pisos (con la vista del piso 2, 1760 × 990 px de
+  mundo: sobran 116 px por lado en el 1 y 446 en el 12), y asomaba lo de
+  las salas vecinas. La zona con
   luz la da `CamaraJuego.zona_iluminada()`, que va hacia el límite con el
   mismo suavizado que la cámara y salta con ella (`seguir`/`limitar_a` con
   `inmediato`): al cruzar una puerta la luz se desliza con la vista, y vale
@@ -663,10 +666,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   jugador esté dentro con margen (`MARGEN_ENTRAR`), o nacería encima de él.
 - **Las bolas no salen de la casilla de su sala.** Si no, por una puerta
   abierta matarían enemigos de la sala de al lado que ni has visto.
-- **La cámara se encaja en la sala; los radios de visión no se han tocado.**
-  Pisos 1-4: la sala cabe entera y la cámara se queda quieta. 5-8: cabe el
-  suelo, no los muros. 9-12: ni el suelo (en el 12 se ve el 80 % del alto).
-  Medido con la ventana de 1152×648.
+- **Todo se ve del mismo tamaño en todos los pisos** (Matías, 2026-10-22:
+  «que se vean siempre con el mismo tamaño que el piso 2, y los assets lo
+  mismo»). `radio_vision` es 495 en los 12 `.tres` de piso. Antes bajaba
+  de 520 a 240 y la cámara se acercaba el doble en el 12: enemigos, rocas y
+  mago se veían más grandes, y del 9 en adelante no cabía ni el suelo. Ahora
+  la sala cabe entera en todos (zoom 0,655 medido en los pisos 2, 7 y 12 y
+  en la sala del jefe) y la cámara se queda quieta en ella; en el 12 la sala
+  ocupa la mitad del ancho de la pantalla y lo demás está a oscuras. Que
+  cada piso se vea menos lo dan las salas, que encogen. Con la ventana de
+  1152×648.
 - **La ventaja de un mago se suma a los valores de fábrica, no se aplica como
   un objeto recogido.** `restaurar_vida()` vuelve a esos valores al empezar
   otra partida: si la ventaja fuera un objeto del piso, el mago perdería lo

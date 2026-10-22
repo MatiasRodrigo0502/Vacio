@@ -10,8 +10,9 @@ extends Camera2D
 
 ## Suavizado del seguimiento. Mas alto = camara mas pegada al jugador.
 @export var velocidad_seguimiento: float = 9.0
-## Suavizado del cambio de zoom entre pisos. Bajo a proposito: el cierre de
-## vision al bajar de piso se debe notar como algo gradual, no como un corte.
+## Suavizado del cambio de zoom. Bajo a proposito: abrirse para la sala del
+## jefe (ver_entera) se tiene que notar como algo gradual, no como un corte.
+## Entre pisos ya no cambia: todos ven lo mismo (DatosPiso.radio_vision).
 @export var velocidad_zoom: float = 2.5
 
 var _objetivo: Node2D = null
@@ -83,11 +84,12 @@ func seguir(objetivo: Node2D, inmediato: bool = false) -> void:
 
 ## Encierra la camara en una zona del mundo: la sala en la que esta el jugador.
 ##
-## COMO EN ISAAC, PERO CON EL EMBUDO:
+## COMO EN ISAAC:
 ## si la sala cabe entera en pantalla, la camara se queda quieta en su centro y
-## se ve toda, que es lo que hace Isaac. Si no cabe (en los pisos hondos el
-## radio de vision es menor que la sala), la camara sigue al jugador sin
-## asomarse fuera de la sala. Asi "cada piso se ve menos" sigue siendo verdad.
+## se ve toda, que es lo que hace Isaac. Si no cabe, la camara sigue al
+## jugador sin asomarse fuera de la sala. Con la vista del piso 2 en todos los
+## pisos (desde el 2026-10-22) caben todas; no caber solo pasa con una
+## pantalla mas estrecha que 16:9, en las salas mas anchas.
 func limitar_a(zona: Rect2, inmediato: bool = false) -> void:
 	_limite = zona
 	if inmediato and is_instance_valid(_objetivo):
@@ -125,9 +127,16 @@ func _encajar(punto: Vector2) -> Vector2:
 ## Abre el zoom hasta que se vea entera esa zona del mundo, con la misma
 ## suavidad que el cambio de piso. Lo usa la sala del jefe: en una pelea asi
 ## tiene que verse todo, aunque el piso sea de los que ven poco.
+##
+## Solo abre, nunca acerca: si la zona ya se ve entera, la deja como esta.
+## Con todos los pisos viendo lo mismo (DatosPiso.radio_vision), la sala del
+## jefe ya cabe, y acercar la camara a ella haria al jefe y a todo lo de la
+## sala mas grande que en el resto del juego.
 func ver_entera(zona: Rect2) -> void:
 	var ventana := get_viewport_rect().size
-	aplicar_radio_vision(maxf(zona.size.y * 0.5, zona.size.x * 0.5 * ventana.y / ventana.x))
+	var hace_falta := maxf(zona.size.y * 0.5, zona.size.x * 0.5 * ventana.y / ventana.x)
+	var ahora := ventana.y * 0.5 / _zoom_objetivo.y
+	aplicar_radio_vision(maxf(hace_falta, ahora))
 
 
 ## Traduce el radio de vision del piso (en pixeles de mundo) a zoom de camara.

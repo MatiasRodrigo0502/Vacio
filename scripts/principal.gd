@@ -124,8 +124,9 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 		mecanica.aplicar_a_jugador(_jugador)
 
 	# La camara salta de golpe a la nueva posicion (es otro piso, no un
-	# desplazamiento) pero el zoom se interpola: el cierre de vision se nota.
-	# El zoom antes que el limite: el limite se calcula con el zoom de ahora.
+	# desplazamiento). El zoom es el mismo en todos los pisos; si se viene de
+	# la sala del jefe (reiniciar), vuelve al suyo sin corte. El zoom antes
+	# que el limite: el limite se calcula con el zoom de ahora.
 	var primer_piso := numero_piso == 1
 	_camara.aplicar_radio_vision(datos.radio_vision, primer_piso)
 	_camara.limitar_a(piso.sala_actual().rect_con_muros())

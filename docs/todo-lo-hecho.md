@@ -10,7 +10,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 - Cada piso es un mapa de salas unidas por puertas.
 - Al entrar en una sala con enemigos, las puertas se cierran hasta limpiarla.
-- Cada piso tiene más salas que el anterior, más pequeñas, y se ve menos.
+- Cada piso tiene más salas que el anterior, y más pequeñas. Todo se ve del mismo tamaño en todos los pisos: la cámara no se acerca al bajar.
 
 **Cómo se juega ahora:**
 
@@ -67,7 +67,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 21/10/2026 | El rayo del cristal vuelve a quitar 50 y el jefe final es más difícil (1500 de vida, más rápido, rayos de 3 y de 5) | — |
+| 22/10/2026 | Los enemigos y todo lo demás se ven del mismo tamaño en todos los pisos (la cámara del piso 2) | — |
+| 21/10/2026 | El rayo del cristal vuelve a quitar 50 y el jefe final es más difícil (1500 de vida, más rápido, rayos de 3 y de 5) | `491999b` |
 | 20/10/2026 | Lo que asoma de las salas de al lado queda a oscuras | `436ea37` |
 | 18/10/2026 | Cooperativo, fase 2: la partida entera en red local (enemigos del anfitrión, peleas para todos, caer y volver, bajar juntos) | `bb08de7` |
 | 18/10/2026 | En Controles se elige moverse con WASD o con las flechas | `1e486e5` |
