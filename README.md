@@ -111,12 +111,23 @@ se queda y el motivo está en `build/exportar.log`.
 
 En el panel **Controles** del menú se elige **moverse con WASD o con las
 flechas**. Con las flechas, se dispara con WASD: son las mismas dos manos al
-revés. Se acuerda para la próxima vez, y los carteles del piso 1 dicen las
+revés. Se acuerda para la próxima vez, y las ventanas del tutorial dicen las
 teclas que hayas elegido.
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
-el piso 1 hace de tutorial y los explica con carteles pintados sobre el suelo,
-cada uno donde hace falta.
+el piso 1 es un **tutorial**: cinco salas en fila, y al entrar en cada una
+sale una ventana que explica una cosa (el juego se para mientras la lees, y
+se cierra con *Entendido*, Intro o Escape):
+
+1. A qué se juega, moverse, disparar y la pausa.
+2. El ataque especial (el de tu mago), las rocas, la vida y el mapa.
+3. **La primera pelea** (un slime y dos ratas): hay que matar a todos los
+   enemigos para que se abran las puertas.
+4. Los objetos (el del piso está en el centro) y los vendajes.
+5. La bajada, y lo que espera más abajo.
+
+Cada ventana sale una vez cada vez que abres el juego: si reinicias, no
+vuelven a salir (la del ataque especial sí, si cambias de mago).
 
 ### Atajos de prueba (solo para el equipo)
 
@@ -316,7 +327,6 @@ Vacio/
 │   ├── MenuPrincipal.tscn # ESCENA PRINCIPAL: jugar, controles, salir
 │   ├── Principal.tscn     # la partida: monta pisos, jugador, cámara, HUD
 │   ├── Piso.tscn          # UNA escena genérica para los 12 pisos
-│   ├── Tutorial.tscn      # carteles de controles (solo en los pisos que lo piden)
 │   ├── Jugador.tscn
 │   ├── Obstaculo.tscn     # bloque reciclado por el pool
 │   ├── Hud.tscn
@@ -328,7 +338,8 @@ Vacio/
 │   ├── menu_principal.gd
 │   ├── principal.gd
 │   ├── piso.gd
-│   ├── tutorial.gd
+│   ├── tutorial.gd        # el tutorial del piso 1: qué ventana sale en cada sala
+│   ├── aviso_tutorial.gd  # la ventana del tutorial
 │   ├── jugador.gd
 │   ├── camara_juego.gd
 │   ├── obstaculo.gd

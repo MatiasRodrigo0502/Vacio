@@ -65,10 +65,16 @@ extends Resource
 ## personalidad a una capa sin tocar nada mas.
 @export_enum("roca", "piedra", "bloque", "grupo") var familia_obstaculos: String = "roca"
 
-## Pinta los carteles de controles sobre el suelo. Solo el piso 1 los lleva,
-## pero es un interruptor por piso y no un "if numero_piso == 1" escondido en el
-## codigo: si manana se quiere recordar algo en el piso 6, se marca su .tres.
+## El piso es un tutorial: sus salas van en fila y al entrar en cada una
+## sale una ventana que explica algo (Tutorial), con la primera pelea en
+## sala_pelea_tutorial. Solo el piso 1 lo lleva, pero es un interruptor por
+## piso y no un "if numero_piso == 1" escondido en el codigo.
 @export var mostrar_tutorial: bool = false
+## La primera pelea del tutorial: estos enemigos salen en su sala
+## (sala_pelea_tutorial, contando desde el inicio), en un piso sin la
+## mecanica de enemigos. Solo con mostrar_tutorial.
+@export var enemigos_tutorial: Array[TipoEnemigo] = []
+@export var sala_pelea_tutorial: int = 3
 
 ## Pack de arte del piso: rocas, piedras y vegetacion. Si se deja vacio se usa
 ## el de la cueva. Es lo que permite que cada piso tenga su propio aspecto sin

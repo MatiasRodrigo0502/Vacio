@@ -381,15 +381,42 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   flechas, ver «Moverse con» más abajo).
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
   aunque te estés alejando.
+- **El piso 1 es un tutorial** (2026-10-29, pedido por Matías: «que te
+  explique cómo funciona todo y en la tercera sala te explique que hay que
+  matar a los enemigos»). Con `DatosPiso.mostrar_tutorial` el mapa sale **en
+  fila** (`MapaSalas.generar(..., en_fila)`: cada sala nueva cuelga de la
+  última), así que «la tercera sala» es siempre la tercera que se cruza; la
+  salida es la última y el objeto la penúltima. Cinco salas: 1) a qué se
+  juega, moverse, disparar, pausa; 2) el especial (el texto sale del mago,
+  `Tutorial._ready`), rocas, vida y mapa; 3) la primera pelea, con
+  `DatosPiso.enemigos_tutorial` (slime verde y dos ratas) en
+  `sala_pelea_tutorial`, que coloca `Piso._colocar_enemigos_tutorial` con
+  semilla propia después de las rocas (la mecánica de enemigos sigue
+  empezando en el 2); 4) objetos y vendajes; 5) la bajada y lo que espera
+  abajo. **Cada sala lo cuenta en una ventana** (Matías, el mismo día: «que
+  en vez de texto se abriera un pop up»): `Tutorial` (`scripts/tutorial.gd`,
+  un `Node` que crea el piso) escucha `Piso.sala_cambiada` y, 0,45 s después
+  de entrar (lo que tarda la cámara en llegar), abre `AvisoTutorial`
+  (`scripts/aviso_tutorial.gd`, capa 3, montado por código): título, texto
+  con BBCode (`[k]…[/k]` resalta) y *Entendido*. **Para el juego** como la
+  pausa (en la de la pelea los enemigos ya están despiertos), salvo en
+  cooperativo; Escape la cierra y no llega a la pausa (`_input`). Los textos
+  están en `Tutorial.PASOS`, con `{mover}`, `{disparar}` y `{especial}`
+  rellenados con las teclas de Controles y el mago. **Una vez por sesión**
+  (`Tutorial._vistas`, estático): al reiniciar no se repiten, salvo la del
+  especial con otro mago. Antes eran carteles pintados en el suelo: desde
+  el 17/09, siete juntos en la sala de inicio de un piso de cuatro salas sin
+  enemigos. Las zonas que reservaban (`Piso._zonas_prohibidas`) ya no las
+  llena nadie.
 - **Moverse con WASD o con las flechas** (2026-10-18, pedido por Matías): en
   el panel Controles del menú (`MenuPrincipal._montar_eleccion_teclas`). El
   autoload `Controles` (`scripts/controles.gd`) **intercambia las teclas** de
   `mover_*` y `disparar_*` en el mapa de teclas (las acciones no cambian de
   nombre, así que el jugador no sabe nada) y lo guarda en
   `user://ajustes.cfg` (`[controles] mover`). Con las flechas para moverse,
-  se dispara con WASD. Los textos con teclas (el panel y los carteles del
-  piso 1, `Tutorial._ready`) salen de `Controles.teclas_mover()` /
-  `teclas_disparar()`.
+  se dispara con WASD. Los textos con teclas (el panel del menú, con
+  `Controles.teclas_mover()` / `teclas_disparar()`, y las ventanas del
+  tutorial, `Tutorial._rellenar`) dicen las elegidas.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
   ratón, una bola cada **0,5 s** en los tres magos (pedido por Matías el
   2026-10-09; antes 0,34, y el oscuro ×0,85). Matan enemigos; **no** rompen rocas, y las rocas los
@@ -1020,8 +1047,6 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `_al_entrar_en_salida()` comprueba la distancia real. **Y se mide contra
   `centro_colision()`**, no contra el origen del nodo: el origen del jugador
   está a los pies y su círculo 16 px más arriba.
-- **El tutorial se monta antes que los obstáculos**, para dejar apuntadas las
-  zonas de sus carteles en `_zonas_prohibidas` y que nada tape el texto.
 - **Un solo nodo `Decoracion` lo llenan tres funciones** (plataformas,
   decoración suelta y borde). El vaciado se hace **una vez** en `configurar()`.
 - **En Python, `\` al final de línea dentro de una cadena normal es continuación

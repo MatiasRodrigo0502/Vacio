@@ -51,7 +51,10 @@ const OSCURIDAD_FONDO: float = 0.42
 const CATALOGO_POR_DEFECTO := preload("res://assets/cueva/catalogo_cueva.tres")
 
 ## Carteles de controles. Solo se instancian en los pisos que lo pidan.
-const ESCENA_TUTORIAL := preload("res://scenes/Tutorial.tscn")
+const ESCENA_ENEMIGO := preload("res://scenes/Enemigo.tscn")
+## Lo lejos de las puertas que salen los enemigos del tutorial (lo mismo que
+## los de la mecanica de enemigos, MecanicaEnemigos.despeje).
+const DESPEJE_ENEMIGOS_TUTORIAL: float = 200.0
 
 var datos: DatosPiso = null
 var numero_piso: int = 1
@@ -136,8 +139,8 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	_construir_salas()
 	queue_redraw()
 	_colocar_salida()
-	# El tutorial va ANTES que las rocas a proposito: deja apuntadas las zonas
-	# que ocupan sus carteles para que nada se coloque encima.
+	# Las zonas donde no colocar nada se vacian aqui, antes de las rocas. El
+	# tutorial ya no apunta ninguna: son ventanas, no carteles en el suelo.
 	_colocar_tutorial()
 	_colocar_obstaculos()
 	# Despues de las rocas de dentro y de los carteles: las piezas grandes de
@@ -150,6 +153,8 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	# repartir enemigos y objetos por ellas. El piso no sabe que hace cada una.
 	for mecanica in _mecanicas:
 		mecanica.aplicar_a_piso(self)
+	# Despues de las rocas, como los de la mecanica: miran que no caigan en una.
+	_colocar_enemigos_tutorial()
 
 	_sala_actual = sala_de_tipo(MapaSalas.Tipo.INICIO)
 	_sala_actual.activar()
@@ -365,7 +370,10 @@ func _construir_salas() -> void:
 	var nombre := datos.nombre_capa if datos != null else ""
 	# Semilla propia del mapa, distinta de la de las rocas: asi retocar el
 	# reparto de rocas no cambia la forma del mapa, ni al reves.
-	_mapa = MapaSalas.generar(cantidad, hash(nombre) + numero_piso * 15485863, _medida_jefe())
+	# El piso del tutorial va en fila: ensena una cosa en cada sala, en orden.
+	var en_fila := datos != null and datos.mostrar_tutorial
+	_mapa = MapaSalas.generar(cantidad, hash(nombre) + numero_piso * 15485863, _medida_jefe(),
+		en_fila)
 
 	var colores := _colores_suelo()
 	for celda in _mapa.celdas:
@@ -715,26 +723,49 @@ func _levantar_paredes() -> void:
 		_orden_salas[i].levantar_pared(estilo, semilla + i * 7919, _zonas_prohibidas)
 
 
-## Pinta los carteles de controles si este piso los pide desde su .tres: los
-## de controles en la sala de inicio y el de bajar junto al agujero.
+## Arranca el tutorial si este piso lo pide desde su .tres: una ventana al
+## entrar en cada sala, en el orden del camino (el piso va en fila). Ya no
+## pinta nada en el suelo, asi que no aparta las rocas de ningun sitio.
 func _colocar_tutorial() -> void:
 	_zonas_prohibidas.clear()
 	if datos == null or not datos.mostrar_tutorial:
 		return
-	var tutorial: Tutorial = ESCENA_TUTORIAL.instantiate()
-	# add_child antes de colocar(): los @onready del tutorial tienen que estar
-	# resueltos, y los Label necesitan estar en el arbol para saber su tamano.
+	var tutorial := Tutorial.new()
+	tutorial.name = "Tutorial"
 	add_child(tutorial)
-	tutorial.colocar(sala_de_tipo(MapaSalas.Tipo.INICIO).position, _tamano_sala(),
-		sala_bajada().position)
+	tutorial.empezar(self)
 
-	# Cada cartel reserva su rectangulo, con holgura por arriba y por abajo para
-	# que nada quede pegado al texto y lo haga ilegible igualmente.
-	for etiqueta in tutorial.get_children():
-		if etiqueta is Control:
-			_zonas_prohibidas.append(Rect2(
-				etiqueta.position - Vector2(0.0, HOLGURA_CARTEL),
-				etiqueta.size + Vector2(0.0, HOLGURA_CARTEL * 2.0)))
+
+## Los enemigos de la primera pelea del tutorial (DatosPiso.enemigos_tutorial),
+## en su sala (sala_pelea_tutorial, la tercera). En el piso 1 la mecanica de
+## enemigos no esta activa: estos son los unicos, para aprender a pelear antes
+## del piso 2. Con semilla propia, como todo lo del piso: salen igual en todas
+## las partidas y en todos los ordenadores (en cooperativo, cada enemigo tiene
+## que llamarse igual en todos).
+func _colocar_enemigos_tutorial() -> void:
+	if datos == null or not datos.mostrar_tutorial or datos.enemigos_tutorial.is_empty():
+		return
+	var indice := datos.sala_pelea_tutorial - 1
+	if indice < 1 or indice >= _orden_salas.size():
+		return
+	var sala := _orden_salas[indice]
+	if not sala.admite_enemigos():
+		return
+	var generador := RandomNumberGenerator.new()
+	generador.seed = hash(datos.nombre_capa) + 104729
+	for tipo in datos.enemigos_tutorial:
+		for _intento in 40:
+			var sitio: Vector2 = sala.punto_al_azar(generador, 90.0)
+			# Lejos de las puertas: al entrar no tiene que haber uno encima.
+			if sala.cerca_de_puerta(sitio, DESPEJE_ENEMIGOS_TUTORIAL):
+				continue
+			if not lugar_libre(sala.to_global(sitio), tipo.alto * 0.5):
+				continue
+			var enemigo: Enemigo = ESCENA_ENEMIGO.instantiate()
+			sala.add_child(enemigo)
+			enemigo.preparar(tipo, sala.to_global(sitio))
+			sala.registrar_enemigo(enemigo)
+			break
 
 
 ## True si una pieza de ese tamano en ese sitio taparia un cartel del tutorial.

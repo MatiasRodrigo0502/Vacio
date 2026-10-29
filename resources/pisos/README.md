@@ -24,7 +24,9 @@ de pisos en el código.
 | `es_nivel_final` | Solo `true` en el piso 12. Al superarlo se gana la partida. |
 | `familia_obstaculos` | Qué rocas usa el piso: `roca`, `bloque`, `grupo` o `piedra`. |
 | `catalogo_arte` | Pack de arte del piso (rocas, piedras, plataformas y vegetación). Vacío = el de la cueva sin vegetación. |
-| `mostrar_tutorial` | Pinta los carteles de controles sobre el suelo. Solo el piso 1. |
+| `mostrar_tutorial` | El piso es un tutorial: sus salas van en fila y al entrar en cada una sale una ventana que explica algo (`scripts/tutorial.gd`). Solo el piso 1. |
+| `enemigos_tutorial` | Con el tutorial, los enemigos de su primera pelea (en el piso 1, un slime verde y dos ratas). |
+| `sala_pelea_tutorial` | En qué sala, contando desde el inicio, va esa pelea (la 3). |
 | `sala_jefe` | El piso acaba en la sala del jefe: antesala con altar y vendaje (`objeto_antesala`), y detrás la sala del jefe, con la bajada. No cuenta en `cantidad_salas` (son dos salas más). Solo el piso 12. |
 | `tamano_sala_jefe` | Lo que mide el suelo de la sala del jefe (1200 × 700 en el 12). La cámara la enseña entera. |
 
@@ -32,7 +34,7 @@ de pisos en el código.
 
 | # | Capa | sala (ancho × alto) | salas | rocas/sala | vel. | visión |
 |---|---|---|---|---|---|---|
-| 01 | Corteza continental | 1400 × 820 | 4 | 2 | 80 | 495 |
+| 01 | Corteza continental | 1400 × 820 | 5 | 2 | 80 | 495 |
 | 02 | Corteza oceánica | 1340 × 800 | 5 | 3 | 95 | 495 |
 | 03 | Litosfera superior | 1280 × 780 | 6 | 3 | 110 | 495 |
 | 04 | Astenosfera | 1220 × 760 | 6 | 3 | 130 | 495 |
@@ -47,8 +49,11 @@ de pisos en el código.
 
 Notas de diseño de la curva:
 
-- El piso 1 es una escuela: cuatro salas, sin enemigos, y los carteles de
-  controles en la sala de inicio.
+- El piso 1 es el tutorial (desde el 2026-10-29; antes, cuatro salas sin
+  enemigos con todos los carteles en la de inicio): cinco salas en fila, una
+  ventana que explica una cosa al entrar en cada una, y en la tercera la
+  primera pelea, un slime verde y dos ratas (`enemigos_tutorial`). La mecánica de enemigos sigue empezando en el
+  2: esos tres son los únicos del piso.
 - **Todos los pisos ven lo mismo que el 2** (`radio_vision` 495, desde el
   2026-10-22, pedido por Matías: en los últimos pisos los enemigos, las rocas
   y todo lo demás se veían el doble de grandes, y tienen que verse siempre

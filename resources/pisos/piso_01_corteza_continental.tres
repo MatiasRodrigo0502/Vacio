@@ -1,9 +1,12 @@
-[gd_resource type="Resource" script_class="DatosPiso" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="DatosPiso" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/datos_piso.gd" id="1_datos_piso"]
 [ext_resource type="Resource" path="res://assets/rocas/piso_01/catalogo.tres" id="2_catalogo"]
 [ext_resource type="Resource" path="res://assets/bordes/piso_01/estilo_borde.tres" id="9_borde"]
 [ext_resource type="AudioStream" path="res://assets/sonido/musica/superficie.wav" id="20_musica"]
+[ext_resource type="Resource" path="res://resources/enemigos/slime_verde.tres" id="30_slime"]
+[ext_resource type="Resource" path="res://resources/enemigos/rata.tres" id="31_rata"]
+[ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="32_tipo"]
 
 [resource]
 script = ExtResource("1_datos_piso")
@@ -14,9 +17,11 @@ radio_vision = 495.0
 es_nivel_final = false
 alto_area = 820.0
 mostrar_tutorial = true
+enemigos_tutorial = Array[ExtResource("32_tipo")]([ExtResource("30_slime"), ExtResource("31_rata"), ExtResource("31_rata")])
+sala_pelea_tutorial = 3
 familia_obstaculos = "roca"
 catalogo_arte = ExtResource("2_catalogo")
-cantidad_salas = 4
+cantidad_salas = 5
 cantidad_obstaculos = 2
 estilo_borde = ExtResource("9_borde")
 musica = ExtResource("20_musica")

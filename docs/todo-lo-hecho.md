@@ -9,6 +9,7 @@ Vacío se puede jugar de principio a fin. Son 12 pisos, 11 tipos de enemigo y 3 
 Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo es parecerse a *The Binding of Isaac*:
 
 - Cada piso es un mapa de salas unidas por puertas.
+- **El piso 1 es un tutorial:** cinco salas en fila, y al entrar en cada una sale una ventana (con el juego parado) que explica una cosa: moverse y disparar; el ataque especial, las rocas, la vida y el mapa; matar a todos los enemigos para que se abran las puertas, con la primera pelea; los objetos; la bajada.
 - Al entrar en una sala con enemigos, las puertas se cierran hasta limpiarla.
 - Cada piso tiene más salas que el anterior, y más pequeñas. Todo se ve del mismo tamaño en todos los pisos: la cámara no se acerca al bajar.
 
@@ -67,7 +68,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 29/10/2026 | Al acabar la partida, «Cambiar mago»: se empieza de cero con uno de los magos que no se han usado | — |
+| 29/10/2026 | El piso 1 es un tutorial: cinco salas en fila, una ventana que explica una cosa en cada una, y en la tercera la primera pelea | — |
+| 29/10/2026 | Al acabar la partida, «Cambiar mago»: se empieza de cero con uno de los magos que no se han usado | `a474c6b` |
 | 22/10/2026 | Los enemigos y todo lo demás se ven del mismo tamaño en todos los pisos (la cámara del piso 2) | `743bb0f` |
 | 21/10/2026 | El rayo del cristal vuelve a quitar 50 y el jefe final es más difícil (1500 de vida, más rápido, rayos de 3 y de 5) | `491999b` |
 | 20/10/2026 | Lo que asoma de las salas de al lado queda a oscuras | `436ea37` |
@@ -171,7 +173,7 @@ Cada uno de los 12 pisos tiene su propio arte: la pared que rodea las salas y la
 
 | Piso | Capa | Pared y rocas |
 | --- | --- | --- |
-| 1 | Corteza continental | Tierra y piedra, con hierba y raíces (hace de tutorial, con carteles en el suelo) |
+| 1 | Corteza continental | Tierra y piedra, con hierba y raíces (es el tutorial: cinco salas en fila, con una ventana en cada una) |
 | 2 | Corteza oceánica | Basalto mojado, con algas y setas que brillan |
 | 3 | Litosfera superior | Caliza, con estalactitas y estalagmitas |
 | 4 | Astenosfera | Roca que se empieza a fundir, con grietas de magma |

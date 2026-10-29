@@ -44,10 +44,16 @@ var direccion_jefe: Vector2i = Vector2i.ZERO
 ##
 ## 'jefe' es lo que mide la sala del jefe, con sus muros, contado en casillas
 ## (1,5 = casilla y media). Vector2.ZERO = el piso no tiene jefe.
-static func generar(cantidad: int, semilla: int, jefe: Vector2 = Vector2.ZERO) -> MapaSalas:
+##
+## 'en_fila': las salas salen una detras de otra, sin ramas. Lo pide el piso
+## del tutorial, que ensena una cosa en cada sala y en orden: asi «la tercera
+## sala» es siempre la tercera que se cruza. En fila, la salida es la ultima y
+## el objeto la penultima (no hay callejones; ver _repartir_tipos).
+static func generar(cantidad: int, semilla: int, jefe: Vector2 = Vector2.ZERO,
+		en_fila: bool = false) -> MapaSalas:
 	var mapa := MapaSalas.new()
 	# Menos de tres no da para inicio, objeto y salida.
-	mapa._crecer(maxi(cantidad, 3), semilla)
+	mapa._crecer(maxi(cantidad, 3), semilla, en_fila)
 	mapa._medir_distancias()
 	if jefe != Vector2.ZERO and mapa._anadir_jefe(jefe):
 		mapa._medir_distancias()
@@ -107,7 +113,7 @@ func puertas_de(celda: Vector2i) -> Array[Vector2i]:
 ##
 ## Consecuencia buscada: el mapa es un arbol. Entre dos salas hay un solo camino
 ## y cada sala vecina es una puerta, sin atajos ni vueltas.
-func _crecer(cantidad: int, semilla: int) -> void:
+func _crecer(cantidad: int, semilla: int, en_fila: bool = false) -> void:
 	var generador := RandomNumberGenerator.new()
 	generador.seed = semilla
 	celdas = [Vector2i.ZERO]
@@ -118,7 +124,8 @@ func _crecer(cantidad: int, semilla: int) -> void:
 	var intentos := 0
 	while celdas.size() < cantidad and intentos < cantidad * 400:
 		intentos += 1
-		var base := celdas[generador.randi() % celdas.size()]
+		# En fila, siempre de la ultima: cada sala nueva sigue el camino.
+		var base := celdas[-1] if en_fila else celdas[generador.randi() % celdas.size()]
 		var nueva := base + DIRECCIONES[generador.randi() % DIRECCIONES.size()]
 		if _ocupadas.has(nueva):
 			continue
