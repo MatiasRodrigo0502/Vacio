@@ -406,8 +406,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`Tutorial._vistas`, estático): al reiniciar no se repiten, salvo la del
   especial con otro mago. Antes eran carteles pintados en el suelo: desde
   el 17/09, siete juntos en la sala de inicio de un piso de cuatro salas sin
-  enemigos. Las zonas que reservaban (`Piso._zonas_prohibidas`) ya no las
-  llena nadie.
+  enemigos.
 - **Moverse con WASD o con las flechas** (2026-10-18, pedido por Matías): en
   el panel Controles del menú (`MenuPrincipal._montar_eleccion_teclas`). El
   autoload `Controles` (`scripts/controles.gd`) **intercambia las teclas** de

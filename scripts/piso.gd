@@ -26,8 +26,6 @@ signal sala_cambiada(sala: Sala)
 const DESPEJE_PUERTA: float = 190.0
 ## Espacio libre alrededor del agujero de bajada.
 const DESPEJE_SALIDA: float = 150.0
-## Margen que se deja libre por encima y por debajo de cada cartel del tutorial.
-const HOLGURA_CARTEL: float = 34.0
 ## Cuanto tiene que haber entrado el jugador en una sala para que se cierren
 ## las puertas: su radio (15) y un poco mas. Con menos, el cierre podria nacer
 ## rozandole el cuerpo en el umbral.
@@ -63,9 +61,6 @@ var _pool: PoolObstaculos = null
 var _obstaculos: Array[Obstaculo] = []
 var _mecanicas: Array[Mecanica] = []
 var _salida_usada: bool = false
-## Rectangulos donde no se puede colocar nada: ahora mismo, los carteles del
-## tutorial. En coordenadas locales del piso.
-var _zonas_prohibidas: Array[Rect2] = []
 
 var _mapa: MapaSalas = null
 ## Las salas por casilla, para encontrar en cual esta un punto sin recorrerlas.
@@ -139,12 +134,10 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	_construir_salas()
 	queue_redraw()
 	_colocar_salida()
-	# Las zonas donde no colocar nada se vacian aqui, antes de las rocas. El
-	# tutorial ya no apunta ninguna: son ventanas, no carteles en el suelo.
 	_colocar_tutorial()
 	_colocar_obstaculos()
-	# Despues de las rocas de dentro y de los carteles: las piezas grandes de
-	# la pared los esquivan.
+	# Despues de las rocas de dentro: los bultos y los adornos de la pared las
+	# esquivan.
 	_levantar_paredes()
 	# Despues de la pared: las runas de la puerta se pintan encima.
 	_preparar_jefe()
@@ -513,8 +506,6 @@ func _rocas_en_sala(sala: Sala, generador: RandomNumberGenerator,
 			if sala.tiene_bajada() and local.length() < DESPEJE_SALIDA:
 				continue
 			var en_piso := sala.position + local
-			if _pisa_un_cartel(en_piso, Vector2(lado, lado)):
-				continue
 
 			# La separacion depende del tamano de las dos rocas implicadas, no
 			# de un valor fijo: si no, las grandes se solapan y las pequenas
@@ -586,10 +577,6 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 					and local.length() < DESPEJE_SALIDA + ancho_losa * 0.5:
 				continue
 			var en_piso := sala.position + local
-			# El alto de la losa no se sabe hasta elegir textura, asi que se
-			# reserva un cuadrado de su ancho: es conservador y sale gratis.
-			if _pisa_un_cartel(en_piso, Vector2(ancho_losa, ancho_losa)):
-				continue
 
 			var textura: Texture2D = losas[generador.randi() % losas.size()]
 			var losa := _pool.obtener()
@@ -658,8 +645,6 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 		for _i in por_sala:
 			var lado := generador.randf_range(16.0, 34.0)
 			var sitio := sala.position + sala.punto_al_azar(generador, 24.0)
-			if _pisa_un_cartel(sitio, Vector2(lado, lado)):
-				continue
 
 			var textura: Texture2D = piedras[generador.randi() % piedras.size()]
 			var adorno := Sprite2D.new()
@@ -720,14 +705,13 @@ func _levantar_paredes() -> void:
 	var estilo: EstiloBorde = datos.estilo_borde if datos != null else null
 	var semilla := hash(datos.nombre_capa if datos != null else "") + numero_piso * 104729
 	for i in _orden_salas.size():
-		_orden_salas[i].levantar_pared(estilo, semilla + i * 7919, _zonas_prohibidas)
+		_orden_salas[i].levantar_pared(estilo, semilla + i * 7919)
 
 
 ## Arranca el tutorial si este piso lo pide desde su .tres: una ventana al
 ## entrar en cada sala, en el orden del camino (el piso va en fila). Ya no
 ## pinta nada en el suelo, asi que no aparta las rocas de ningun sitio.
 func _colocar_tutorial() -> void:
-	_zonas_prohibidas.clear()
 	if datos == null or not datos.mostrar_tutorial:
 		return
 	var tutorial := Tutorial.new()
@@ -766,17 +750,6 @@ func _colocar_enemigos_tutorial() -> void:
 			enemigo.preparar(tipo, sala.to_global(sitio))
 			sala.registrar_enemigo(enemigo)
 			break
-
-
-## True si una pieza de ese tamano en ese sitio taparia un cartel del tutorial.
-func _pisa_un_cartel(centro: Vector2, tamano: Vector2) -> bool:
-	if _zonas_prohibidas.is_empty():
-		return false
-	var caja := Rect2(centro - tamano * 0.5, tamano)
-	for zona in _zonas_prohibidas:
-		if caja.intersects(zona):
-			return true
-	return false
 
 
 ## Al limpiar la sala de salida se destapa el agujero. set_deferred porque el

@@ -80,9 +80,9 @@ var _colgantes: Array = []
 ## Traza la pared y coloca sus piezas. Las colisiones se las pide a la sala
 ## (Sala.anadir_roca_filo), que es quien las guarda y las consulta.
 ##
-## 'evitar' son zonas de la sala (en local) donde no debe ir nada grande: los
-## carteles del tutorial y las rocas de dentro.
-func levantar(sala: Sala, estilo_pared: EstiloBorde, semilla: int, evitar: Array[Rect2]) -> void:
+## 'rocas' son las cajas de las rocas y plataformas de dentro (en local de la
+## sala): ni los bultos ni los adornos van encima.
+func levantar(sala: Sala, estilo_pared: EstiloBorde, semilla: int, rocas: Array[Rect2]) -> void:
 	estilo = estilo_pared
 	tamano = sala.tamano
 	puertas = sala.puertas
@@ -92,10 +92,10 @@ func levantar(sala: Sala, estilo_pared: EstiloBorde, semilla: int, evitar: Array
 	generador.seed = semilla
 
 	for direccion in MapaSalas.DIRECCIONES:
-		_trazar_perfil(direccion, generador, evitar)
+		_trazar_perfil(direccion, generador, rocas)
 	_trazar_cara(generador)
 	_poner_choques(sala)
-	_poner_adornos(generador, evitar)
+	_poner_adornos(generador, rocas)
 	_poner_colgantes(generador)
 	_poner_salientes(sala, generador)
 	# Los adornos son pequenos y no se tapan entre ellos: se pintan agrupados
@@ -122,7 +122,7 @@ func _largo(direccion: Vector2i) -> float:
 ##
 ## Va un muro mas alla de cada esquina: asi la pared de un lado tapa el final
 ## de la cara de la de arriba, y la esquina queda maciza.
-func _trazar_perfil(direccion: Vector2i, generador: RandomNumberGenerator, evitar: Array[Rect2]) -> void:
+func _trazar_perfil(direccion: Vector2i, generador: RandomNumberGenerator, rocas: Array[Rect2]) -> void:
 	var largo := _largo(direccion)
 	var desde := -largo * 0.5 - Sala.GROSOR_MURO
 	var cuantos := int(ceil((largo + Sala.GROSOR_MURO * 2.0) / PASO)) + 1
@@ -134,7 +134,7 @@ func _trazar_perfil(direccion: Vector2i, generador: RandomNumberGenerator, evita
 		Vector2(TAU / generador.randf_range(28.0, 40.0), generador.randf() * TAU),
 	]
 	var pesos := [0.6, 0.3, 0.1]
-	var bultos := _elegir_bultos(direccion, generador, evitar)
+	var bultos := _elegir_bultos(direccion, generador, rocas)
 	var valores := PackedFloat32Array()
 	valores.resize(cuantos)
 	for i in cuantos:
@@ -155,10 +155,10 @@ func _trazar_perfil(direccion: Vector2i, generador: RandomNumberGenerator, evita
 
 
 ## Los bultos de un lado: (donde, cuanto se meten, ancho). Lejos de las
-## puertas, de las esquinas, unos de otros y de lo que hay que evitar (las
-## rocas de dentro, los carteles): un bulto encima de una roca la enterraria.
+## puertas, de las esquinas, unos de otros y de las rocas de dentro: un bulto
+## encima de una roca la enterraria.
 func _elegir_bultos(direccion: Vector2i, generador: RandomNumberGenerator,
-		evitar: Array[Rect2]) -> Array[Vector3]:
+		rocas: Array[Rect2]) -> Array[Vector3]:
 	var largo := _largo(direccion)
 	var bultos: Array[Vector3] = []
 	var cuantos := int(round(largo / LADO_POR_BULTO * generador.randf_range(0.5, 1.3)))
@@ -174,7 +174,7 @@ func _elegir_bultos(direccion: Vector2i, generador: RandomNumberGenerator,
 				if absf(otro.x - s) < (otro.z + ancho) * 2.5:
 					lejos = false
 			var punta := punto(direccion, s, estilo.entrada * escala + entra)
-			if not lejos or _choca_con(Rect2(punta, Vector2.ZERO).grow(entra + 30.0), evitar):
+			if not lejos or _choca_con(Rect2(punta, Vector2.ZERO).grow(entra + 30.0), rocas):
 				continue
 			bultos.append(Vector3(s, entra, ancho))
 			_bultos.append([direccion, s])
@@ -282,9 +282,9 @@ func _poner_choques(sala: Sala) -> void:
 
 # --- Piezas -------------------------------------------------------------------
 
-func _choca_con(rect: Rect2, evitar: Array[Rect2]) -> bool:
-	for zona in evitar:
-		if zona.intersects(rect):
+func _choca_con(rect: Rect2, rocas: Array[Rect2]) -> bool:
+	for roca in rocas:
+		if roca.intersects(rect):
 			return true
 	return false
 
@@ -297,7 +297,7 @@ func _medida(textura: Texture2D, generador: RandomNumberGenerator, variacion: fl
 
 ## Lo que crece encima de la pared, junto al canto. En la de arriba, sobre el
 ## labio de la cara; en las demas, un poco por fuera del canto, sobre la roca.
-func _poner_adornos(generador: RandomNumberGenerator, evitar: Array[Rect2]) -> void:
+func _poner_adornos(generador: RandomNumberGenerator, rocas: Array[Rect2]) -> void:
 	if estilo.adornos.is_empty():
 		return
 	for direccion in MapaSalas.DIRECCIONES:
@@ -313,7 +313,7 @@ func _poner_adornos(generador: RandomNumberGenerator, evitar: Array[Rect2]) -> v
 				else:
 					pie = punto(direccion, s, entrada_en(direccion, s) - generador.randf_range(4.0, 14.0))
 				var rect := Rect2(pie - Vector2(medida.x * 0.5, medida.y), medida)
-				if not _choca_con(rect, evitar) and not _dentro_de_otra(pie, direccion):
+				if not _choca_con(rect, rocas) and not _dentro_de_otra(pie, direccion):
 					_anadir_pieza(textura, rect, generador, false)
 			s += estilo.adornos_cada * generador.randf_range(0.5, 1.5)
 

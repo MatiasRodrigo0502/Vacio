@@ -147,19 +147,13 @@ func construir(celda_sala: Vector2i, tipo_sala: MapaSalas.Tipo, tamano_sala: Vec
 
 
 ## Levanta la pared de roca que rodea la sala, con el estilo de su piso (ver
-## ParedSala). La llama el piso despues de colocar las rocas de dentro y los
-## carteles del tutorial: las piezas grandes de la pared los esquivan.
-##
-## 'evitar' son zonas del piso (no de la sala) donde no debe ir nada grande.
-func levantar_pared(estilo: EstiloBorde, semilla: int, evitar: Array[Rect2]) -> void:
+## ParedSala). La llama el piso despues de colocar las rocas de dentro: los
+## bultos y los adornos de la pared las esquivan.
+func levantar_pared(estilo: EstiloBorde, semilla: int) -> void:
 	if estilo != null:
 		_estilo = estilo
-	var zonas: Array[Rect2] = []
-	for zona in evitar:
-		zonas.append(Rect2(zona.position - position, zona.size))
-	zonas.append_array(_rocas)
 	_pared = ParedSala.new()
-	_pared.levantar(self, _estilo, semilla, zonas)
+	_pared.levantar(self, _estilo, semilla, _rocas)
 	queue_redraw()
 
 
