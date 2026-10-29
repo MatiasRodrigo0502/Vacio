@@ -70,6 +70,11 @@ var tipo: MapaSalas.Tipo = MapaSalas.Tipo.NORMAL
 var tamano: Vector2 = Vector2(1200.0, 700.0)
 ## Direcciones con puerta (Vector2i.UP, RIGHT...).
 var puertas: Array[Vector2i] = []
+## La puerta de esta sala que lleva a la sala secreta, mientras no se ha roto
+## la pared que la tapa (ver esconder_puerta). ZERO si no tiene.
+var puerta_secreta: Vector2i = Vector2i.ZERO
+## La sala secreta, hasta que se descubre: ni se ve ni sale en el minimapa.
+var oculta: bool = false
 ## Si el jugador ya ha estado dentro. Lo usa el minimapa.
 var visitada: bool = false
 
@@ -102,6 +107,13 @@ var _cuerpo_filo: StaticBody2D = null
 ## Las cajas de colision de las rocas y plataformas de dentro, en local. Las
 ## apunta el piso al colocarlas. Ver sacar_de_las_rocas().
 var _rocas: Array[Rect2] = []
+## Con que se levanto la pared: al romper la de la puerta secreta se vuelve a
+## levantar igual, ya con la puerta (ver abrir_secreta).
+var _semilla_pared: int = 0
+## Golpes que lleva la pared de la puerta secreta, y sus grietas: listas de
+## puntos, las primeras ya estan al empezar (la pista) y cada golpe ensena mas.
+var _golpes_secreta: int = 0
+var _grietas: Array[PackedVector2Array] = []
 
 
 ## Monta la sala. La llama Piso justo despues de add_child().
@@ -152,6 +164,7 @@ func construir(celda_sala: Vector2i, tipo_sala: MapaSalas.Tipo, tamano_sala: Vec
 func levantar_pared(estilo: EstiloBorde, semilla: int) -> void:
 	if estilo != null:
 		_estilo = estilo
+	_semilla_pared = semilla
 	_pared = ParedSala.new()
 	_pared.levantar(self, _estilo, semilla, _rocas)
 	queue_redraw()
@@ -437,6 +450,10 @@ func cerrar_puertas(cerrar: bool) -> void:
 		Sonido.tocar(&"puertas_cierran" if cerrar else &"puertas_abren")
 	_cerrada = cerrar
 	for direccion in _cierres:
+		# La escondida esta siempre cerrada: abrirla al limpiar la sala dejaria
+		# un paso invisible por la pared.
+		if direccion == puerta_secreta:
+			continue
 		_cierres[direccion].set_deferred("disabled", not cerrar)
 	# El cierre choca ya; el rastrillo baja (o sube) en un momento. Verlo
 	# moverse es lo que dice "te han encerrado" y "ya puedes salir".
@@ -461,6 +478,159 @@ func _al_morir_enemigo(enemigo: Enemigo) -> void:
 	if _enemigos.is_empty():
 		cerrar_puertas(false)
 		despejada.emit(self)
+
+
+# --- Puerta secreta ----------------------------------------------------------
+
+## Golpes que aguanta la pared de la puerta secreta antes de romperse.
+const GOLPES_SECRETA: int = 3
+## Grietas que tiene esa pared antes de darle (la pista: se ven si se mira
+## bien) y las que salen con cada golpe.
+const GRIETAS_PISTA: int = 3
+const GRIETAS_POR_GOLPE: int = 3
+## Hasta donde cuenta un disparo como dado a esa pared: lo que se mete la
+## pared en la sala y un poco mas (hacia dentro), y algo mas que el hueco
+## (a lo largo).
+const ZONA_SECRETA_DENTRO: float = 110.0
+const ZONA_SECRETA_LADO: float = 30.0
+
+
+## Esconde la puerta de esta sala que da a la sala secreta. La puerta existe
+## (el mapa la tiene, y nada se pone delante de ella), pero hasta que se rompa
+## la pared: su cierre esta puesto, no se pinta, y la pared pasa por encima
+## (ParedSala la trata como pared, salvo para lo que se reparte al azar).
+## La llama Piso justo despues de construir, antes de levantar la pared.
+func esconder_puerta(direccion: Vector2i) -> void:
+	puerta_secreta = direccion
+	_cierres[direccion].disabled = false
+	queue_redraw()
+
+
+## Las puertas que se ven: todas menos la secreta mientras no se descubra.
+func puertas_visibles() -> Array[Vector2i]:
+	if puerta_secreta == Vector2i.ZERO:
+		return puertas
+	var visibles: Array[Vector2i] = puertas.duplicate()
+	visibles.erase(puerta_secreta)
+	return visibles
+
+
+func tiene_puerta_secreta() -> bool:
+	return puerta_secreta != Vector2i.ZERO
+
+
+## Un disparo del jugador se ha apagado en 'punto_global' (BolaMagica.apagada,
+## via Piso). Si ha sido contra la pared de la puerta secreta, cuenta: mas
+## grietas, y al GOLPES_SECRETA se rompe. Devuelve true si se acaba de romper.
+func golpear_secreta(punto_global: Vector2) -> bool:
+	if puerta_secreta == Vector2i.ZERO or not _zona_secreta().has_point(to_local(punto_global)):
+		return false
+	_golpes_secreta += 1
+	queue_redraw()
+	_soltar_polvo(puerta_secreta, 0.35)
+	if _golpes_secreta < GOLPES_SECRETA:
+		Sonido.tocar(&"golpe_enemigo")
+		return false
+	abrir_secreta()
+	return true
+
+
+## Rompe la pared de la puerta secreta: se quita su cierre (salvo que la sala
+## este en plena pelea: entonces se abre con las demas) y la pared se vuelve a
+## levantar, con la misma semilla y ya con la puerta. Lo que ParedSala reparte
+## al azar contaba ya con esa puerta, asi que todo sale igual menos el trozo
+## de delante de ella, que ahora se abre.
+func abrir_secreta() -> void:
+	if puerta_secreta == Vector2i.ZERO:
+		return
+	var direccion := puerta_secreta
+	# El polvo, antes de olvidar donde estaba la puerta: sale de su canto.
+	_soltar_polvo(direccion, 1.0)
+	puerta_secreta = Vector2i.ZERO
+	_grietas.clear()
+	_cierres[direccion].set_deferred("disabled", not _cerrada)
+	Sonido.tocar(&"pisoton")
+	# Diferido: esto llega desde el paso de fisica (la bola se acaba de
+	# apagar), y quitar y poner formas de colision ahi hace quejarse al motor.
+	_rehacer_pared.call_deferred()
+
+
+func _rehacer_pared() -> void:
+	if _cuerpo_filo != null:
+		_cuerpo_filo.queue_free()
+		_cuerpo_filo = null
+	_rocas_filo.clear()
+	if _pared != null:
+		_pared = ParedSala.new()
+		_pared.levantar(self, _estilo, _semilla_pared, _rocas)
+	queue_redraw()
+
+
+## La zona de la pared escondida, en local: el hueco de la puerta en el muro y
+## lo que hay delante, que es donde se apaga un disparo que le da.
+func _zona_secreta() -> Rect2:
+	var d := puerta_secreta
+	var lado := ZONA_SECRETA_LADO
+	var dentro := ZONA_SECRETA_DENTRO
+	return _hueco(d).grow_individual(
+		dentro if d == Vector2i.RIGHT else (lado if d.y != 0 else 0.0),
+		dentro if d == Vector2i.DOWN else (lado if d.x != 0 else 0.0),
+		dentro if d == Vector2i.LEFT else (lado if d.y != 0 else 0.0),
+		dentro if d == Vector2i.UP else (lado if d.x != 0 else 0.0))
+
+
+## Donde esta, en local, el canto de la pared delante de la puerta escondida:
+## de ahi salen las grietas y el polvo.
+func _canto_secreta(d: Vector2i) -> Vector2:
+	if _pared == null:
+		return punto_puerta(d)
+	return _pared.punto(d, 0.0, _pared.entrada_en(d, 0.0))
+
+
+func _soltar_polvo(direccion: Vector2i, fuerza: float) -> void:
+	var polvo := Escombros.new()
+	polvo.ancho = lerpf(30.0, Sala.ANCHO_PUERTA, fuerza)
+	polvo.color = _estilo.color_luz
+	add_child(polvo)
+	polvo.position = _canto_secreta(direccion)
+
+
+## Las grietas de la pared escondida: unas pocas finas desde el principio (si
+## se mira, hay algo raro en esa pared) y mas, y mas marcadas, con cada golpe.
+## Se sacan una vez, con semilla de la casilla: siempre las mismas.
+func _pintar_grietas() -> void:
+	if _grietas.is_empty():
+		_trazar_grietas()
+	var cuantas := mini(_grietas.size(), GRIETAS_PISTA + _golpes_secreta * GRIETAS_POR_GOLPE)
+	var fuerza := clampf(0.6 + _golpes_secreta * 0.15, 0.0, 1.0)
+	for i in cuantas:
+		var grieta := _grietas[i]
+		draw_polyline(grieta, Color(0.05, 0.03, 0.02, fuerza), 2.5 if i < GRIETAS_PISTA else 3.0, true)
+		# Un filo claro al lado: la grieta se lee como un corte, no como una raya.
+		var luz := PackedVector2Array()
+		for punto_grieta in grieta:
+			luz.append(punto_grieta + Vector2(1.5, 1.5))
+		draw_polyline(luz, Color(1.0, 0.95, 0.85, fuerza * 0.35), 1.0, true)
+
+
+func _trazar_grietas() -> void:
+	var generador := RandomNumberGenerator.new()
+	generador.seed = hash(celda) + 5381
+	var d := Vector2(puerta_secreta)
+	# Hacia fuera (hacia la roca) y a lo largo de la pared.
+	var a_lo_largo := Vector2(-d.y, d.x)
+	var origen := _canto_secreta(puerta_secreta)
+	for i in GRIETAS_PISTA + GOLPES_SECRETA * GRIETAS_POR_GOLPE:
+		var abierta := 1.0 + i * 0.25
+		var punto_grieta := origen + a_lo_largo * generador.randf_range(-40.0, 40.0) * abierta \
+			- d * generador.randf_range(-4.0, 8.0)
+		var grieta := PackedVector2Array([punto_grieta])
+		for _tramo in generador.randi_range(3, 5):
+			var paso := d * generador.randf_range(5.0, 11.0) \
+				+ a_lo_largo * generador.randf_range(-9.0, 9.0)
+			punto_grieta += paso
+			grieta.append(punto_grieta)
+		_grietas.append(grieta)
 
 
 # --- Geometria de los muros ------------------------------------------------
@@ -529,7 +699,10 @@ func _draw() -> void:
 	else:
 		_pintar_sombra_filo()
 
-	for direccion in puertas:
+	if puerta_secreta != Vector2i.ZERO:
+		_pintar_grietas()
+
+	for direccion in puertas_visibles():
 		# El suelo del pasillo, en la mitad que es de esta sala, algo mas oscuro
 		# (ya esta dentro de la roca). Se alarga unos pixeles hacia dentro para
 		# que no quede una rendija entre el suelo de la sala y el del pasillo.
@@ -569,6 +742,7 @@ func _pintar_muro() -> void:
 	var f := FUNDIDO_MURO
 	var a := zona.position
 	var b := zona.end
+	var puertas := puertas_visibles()
 	# Un fundido por cada lado sin puerta, y en las esquinas un cuarto que
 	# se apaga hacia fuera, para que no quede un escalon.
 	if not Vector2i.UP in puertas:
@@ -609,6 +783,7 @@ func _poligono_muro(puntos: Array, colores: Array) -> void:
 ## Sombra por dentro del filo del suelo, de oscura junto a la pared a nada.
 ## Delante de las puertas no hay: por ahi el suelo sigue.
 func _pintar_sombra_filo() -> void:
+	var puertas := puertas_visibles()
 	var medio := tamano * 0.5
 	for direccion in MapaSalas.DIRECCIONES:
 		var horizontal := direccion == Vector2i.UP or direccion == Vector2i.DOWN

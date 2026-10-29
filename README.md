@@ -158,6 +158,10 @@ bajar al siguiente piso, con la vida que te quede.
   lejana del inicio.
 - En cada piso hay una **sala con un objeto** en algún callejón: cogerlo es
   desviarte del camino.
+- Y una **sala secreta**, que no sale en el mapa: está detrás de una pared
+  con unas grietas finas. Tres disparos a esa pared la rompen y se abre el
+  paso. Dentro hay un **cofre**: al pasar por encima sale una **ruleta** con
+  las ventajas y te toca una al azar, para toda la partida.
 - Arriba a la derecha va un **minimapa**: las salas en las que has estado, las
   de al lado en contorno, y el objeto y la bajada marcados en cuanto las
   conoces. El resto se descubre andando.
@@ -340,6 +344,8 @@ Vacio/
 │   ├── piso.gd
 │   ├── tutorial.gd        # el tutorial del piso 1: qué ventana sale en cada sala
 │   ├── aviso_tutorial.gd  # la ventana del tutorial
+│   ├── cofre.gd           # el cofre de la sala secreta
+│   ├── ruleta.gd          # la ruleta de ventajas que sale al abrir el cofre
 │   ├── jugador.gd
 │   ├── camara_juego.gd
 │   ├── obstaculo.gd

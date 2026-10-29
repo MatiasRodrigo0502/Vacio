@@ -381,6 +381,38 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   flechas, ver «Moverse con» más abajo).
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
   aunque te estés alejando.
+- **Una sala secreta en cada piso** (2026-10-29, pedido por Matías: «una
+  sala secreta por piso que no se sepa dónde están, con un cofre, y que al
+  pasar por encima salga una ruleta con las ventajas y te toque una al
+  azar»). `MapaSalas._anadir_secreta` (después de repartir los tipos, con
+  su semilla) cuelga `Tipo.SECRETA` de una sala que no sea la antesala ni la
+  del jefe, en una casilla que solo toca a esa y **nunca por encima** (la
+  pared de arriba tiene cara, y una puerta escondida ahí no se tapa bien).
+  `Piso._preparar_secreta`: la sala de la que cuelga **esconde esa puerta**
+  (`Sala.esconder_puerta`: la puerta está en `puertas`, así que nada se
+  pone delante, pero su cierre está puesto, no se pinta, y
+  `puertas_visibles()` la deja fuera para la pared, el pintado, los pinchos
+  de puerta y `cerrar_puertas`), y la secreta queda `oculta` e invisible
+  (ni se ve a través de lo oscuro ni sale en el minimapa). **Se descubre a
+  disparos**: Principal engancha `BolaMagica.apagada` de las bolas de este
+  jugador a `Piso.golpe_de_bola`, y tres que se apagan contra esa pared
+  (`Sala.golpear_secreta`, `GOLPES_SECRETA`) la rompen: más grietas con
+  cada golpe y polvo (`Escombros`), y al tercero `abrir_secreta` quita el
+  cierre y **vuelve a levantar la pared con la misma semilla**. Para que
+  salga igual, `ParedSala` distingue `puertas` (las que se ven: perfil,
+  choques, cara, sombra y cantos) de `_puertas_todas` (lo que se reparte al
+  azar, bultos y adornos): el generador da los mismos números antes y
+  después (medido: 36 piezas iguales en el piso 3), y lo único que delata
+  la pared escondida son tres grietas finas y que ahí no crece nada. Dentro,
+  el **`Cofre`** (`scripts/cofre.gd`, dibujado por código): al pisarlo, la
+  **`Ruleta`** (`scripts/ruleta.gd`, capa 3, para el juego salvo en
+  cooperativo) gira entre las ventajas que duran y ya pueden salir en el
+  piso (`ObjetoMejora.cargar_todos`) y se para en una sacada con `randi()`
+  (la suerte, como lo que sueltan los enemigos); *Coger* la aplica con
+  `Jugador.aplicar_mejora` (HUD y registro, como un objeto). En cooperativo
+  la pared y el cofre se abren en todos y la ventaja es para todos
+  (`Cooperativo.secreta_descubierta`/`cofre_abierto`); no se ha probado con
+  dos juegos. El tutorial lo cuenta en la ventana de la bajada.
 - **El piso 1 es un tutorial** (2026-10-29, pedido por Matías: «que te
   explique cómo funciona todo y en la tercera sala te explique que hay que
   matar a los enemigos»). Con `DatosPiso.mostrar_tutorial` el mapa sale **en
@@ -950,10 +982,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **En el juego exportado, `DirAccess` ve `nombre.tres.remap`, no
   `nombre.tres`.** Godot pasa los `.tres` a binario al exportar. Las tres
   funciones que leen carpetas (`_listar_recursos` en `gestor_progreso.gd`,
-  `_cargar_tipos` en `mecanicas/enemigos.gd` y `_cargar` en
-  `mecanicas/objetos.gd`) ya quitan el `.remap`; una
-  cuarta que se escriba tiene que hacer lo mismo, o en el `.exe` no cargará
-  nada aunque en el editor funcione.
+  `_cargar_tipos` en `mecanicas/enemigos.gd` y
+  `ObjetoMejora.cargar_todos`, que usan la mecánica de objetos y el cofre de
+  la sala secreta) ya quitan el `.remap`; una cuarta que se escriba tiene
+  que hacer lo mismo, o en el `.exe` no cargará nada aunque en el editor
+  funcione.
 - **El servidor de las releases de GitHub no acepta `Range: bytes=-N`** (los
   últimos N bytes): responde 501. `instalar_plantillas.py` pide primero
   el tamaño con un HEAD y luego el rango exacto.

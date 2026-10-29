@@ -7,7 +7,6 @@ class_name MecanicaObjetos
 extends Mecanica
 
 const ESCENA_OBJETO := preload("res://scenes/Objeto.tscn")
-const RUTA_OBJETOS := "res://resources/objetos"
 
 ## Cuantos objetos deja por piso. El primero va en la sala del objeto; los
 ## demas, si los hay, en salas normales al azar.
@@ -99,18 +98,4 @@ func _dejar(sala: Sala, sitio: Vector2, disponibles: Array[ObjetoMejora],
 
 
 func _cargar() -> Array[ObjetoMejora]:
-	var resultado: Array[ObjetoMejora] = []
-	var carpeta := DirAccess.open(RUTA_OBJETOS)
-	if carpeta == null:
-		push_warning("No se puede abrir %s" % RUTA_OBJETOS)
-		return resultado
-	var nombres := carpeta.get_files()
-	nombres.sort()
-	for nombre in nombres:
-		var limpio := nombre.trim_suffix(".remap")
-		if limpio.get_extension().to_lower() != "tres":
-			continue
-		var recurso := load(RUTA_OBJETOS.path_join(limpio))
-		if recurso is ObjetoMejora:
-			resultado.append(recurso)
-	return resultado
+	return ObjetoMejora.cargar_todos()

@@ -197,6 +197,22 @@ func objeto_recogido(objeto: Objeto) -> void:
 		_objeto.rpc_id(id, objeto.global_position, objeto.mejora.resource_path)
 
 
+## El mago de este ordenador ha roto la pared de la sala secreta
+## (Piso.golpe_de_bola): que se abra en todos. Va con el numero de piso: si
+## llegara tarde, ya en otro, no abriria nada.
+func secreta_descubierta() -> void:
+	for id: int in Red.listos():
+		_secreta.rpc_id(id, GestorProgreso.piso_actual)
+
+
+## El mago de este ordenador ha abierto el cofre de la sala secreta (Cofre):
+## el cofre se abre en todos y la ventaja que ha tocado es para todos, como
+## los objetos.
+func cofre_abierto(mejora: ObjetoMejora) -> void:
+	for id: int in Red.listos():
+		_cofre.rpc_id(id, GestorProgreso.piso_actual, mejora.resource_path)
+
+
 # --- Peleas --------------------------------------------------------------------
 
 ## El jugador de este ordenador ha entrado del todo en una sala con enemigos:
@@ -315,6 +331,34 @@ func _objeto(posicion: Vector2, ruta: String) -> void:
 	if quien > 0:
 		_hud.avisar("El jugador %d ha cogido %s: también es tuyo" % [quien, mejora.nombre.to_lower()],
 			mejora.color)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _secreta(numero_piso: int) -> void:
+	var piso: Piso = _principal._piso_actual
+	if piso != null and piso.numero_piso == numero_piso:
+		piso.descubrir_secreta()
+
+
+## Otro ha abierto el cofre: aqui se queda abierto (sin ruleta) y, si este
+## mago esta vivo, se le aplica lo que ha tocado.
+@rpc("any_peer", "call_remote", "reliable")
+func _cofre(numero_piso: int, ruta: String) -> void:
+	var piso: Piso = _principal._piso_actual
+	if piso == null or piso.numero_piso != numero_piso:
+		return
+	var secreta := piso.sala_secreta()
+	var cofre := secreta.get_node_or_null("Cofre") as Cofre if secreta != null else null
+	if cofre != null:
+		cofre.marcar_abierto()
+	var mejora := load(ruta) as ObjetoMejora
+	if mejora == null or _caido or not _jugador.sigue_vivo():
+		return
+	_jugador.aplicar_mejora(mejora)
+	var quien := int(Red.jugadores.get(multiplayer.get_remote_sender_id(), {}).get("numero", 0))
+	if quien > 0:
+		_hud.avisar("El jugador %d ha abierto el cofre secreto: %s también es tuyo" % [
+			quien, mejora.nombre.to_lower()], mejora.color)
 
 
 # --- Ayudas ------------------------------------------------------------------

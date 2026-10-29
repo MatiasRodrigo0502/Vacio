@@ -55,7 +55,14 @@ const BULTO_ANCHO := Vector2(30.0, 55.0)
 
 var estilo: EstiloBorde
 var tamano: Vector2
+## Las puertas que se ven: delante de ellas la pared se aparta y no choca.
 var puertas: Array[Vector2i] = []
+## Todas, tambien la de la sala secreta mientras esta escondida
+## (Sala.puerta_secreta). Lo que se reparte al azar (bultos, adornos) cuenta
+## con ellas: asi, al romperse esa pared y levantarse otra vez, el generador
+## da los mismos numeros y la pared sale igual salvo delante de esa puerta.
+## Que no haya adornos ni bultos justo ahi es lo unico que la delata.
+var _puertas_todas: Array[Vector2i] = []
 ## Donde esta la sala en el piso: la roca se pinta alineada con el mundo.
 var origen: Vector2
 ## Piezas mas pequenas en las salas pequenas del fondo.
@@ -85,7 +92,8 @@ var _colgantes: Array = []
 func levantar(sala: Sala, estilo_pared: EstiloBorde, semilla: int, rocas: Array[Rect2]) -> void:
 	estilo = estilo_pared
 	tamano = sala.tamano
-	puertas = sala.puertas
+	puertas = sala.puertas_visibles()
+	_puertas_todas = sala.puertas
 	origen = sala.position
 	escala = clampf(tamano.x / 1400.0, 0.75, 1.0)
 	var generador := RandomNumberGenerator.new()
@@ -256,7 +264,15 @@ func _dentro_de_otra(p: Vector2, salvo: Vector2i) -> bool:
 	return false
 
 
+## Para lo que se reparte al azar: cuenta tambien la puerta escondida.
 func _es_puerta(direccion: Vector2i, s: float, margen: float = 0.0) -> bool:
+	return direccion in _puertas_todas and absf(s) < Sala.ANCHO_PUERTA * 0.5 + margen
+
+
+## Para lo que choca y lo que se pinta (la cara, la sombra, los cantos): solo
+## las puertas que se ven. La escondida es pared, con su sombra y su canto: si
+## no, el hueco en la sombra la delataria mas que las grietas.
+func _es_hueco(direccion: Vector2i, s: float, margen: float = 0.0) -> bool:
 	return direccion in puertas and absf(s) < Sala.ANCHO_PUERTA * 0.5 + margen
 
 
@@ -271,7 +287,7 @@ func _poner_choques(sala: Sala) -> void:
 		var largo := _largo(direccion)
 		var s := -largo * 0.5 + radio * 0.5
 		while s < largo * 0.5:
-			if not _es_puerta(direccion, s, radio + 4.0):
+			if not _es_hueco(direccion, s, radio + 4.0):
 				var dentro := entrada_en(direccion, s)
 				if direccion == Vector2i.UP:
 					dentro -= SUBE_CARA
@@ -452,7 +468,7 @@ func _pintar_cara(lienzo: CanvasItem, color: Color) -> void:
 			continue
 		# El hueco de la puerta se salta entero, aunque el trozo lo pise solo
 		# en parte: la cara no puede tapar el pasillo.
-		if _es_puerta(Vector2i.UP, s0) or _es_puerta(Vector2i.UP, s1):
+		if _es_hueco(Vector2i.UP, s0) or _es_hueco(Vector2i.UP, s1):
 			continue
 		var b0 := punto(Vector2i.UP, s0, valores[i])
 		var b1 := punto(Vector2i.UP, s1, valores[j])
@@ -490,7 +506,7 @@ func _pintar_sombras(lienzo: CanvasItem) -> void:
 		var s := -largo * 0.5
 		while s < largo * 0.5:
 			var s1 := minf(s + PASO * SALTO_SOMBRA, largo * 0.5)
-			if not _es_puerta(direccion, s) and not _es_puerta(direccion, s1):
+			if not _es_hueco(direccion, s) and not _es_hueco(direccion, s1):
 				var d0 := entrada_en(direccion, s)
 				var d1 := entrada_en(direccion, s1)
 				lienzo.draw_primitive(PackedVector2Array([punto(direccion, s, d0), punto(direccion, s1, d1),
@@ -516,7 +532,7 @@ func _pintar_cantos(lienzo: CanvasItem) -> void:
 		for i in range(0, valores.size(), 2):
 			var s := desde + i * PASO
 			var d := valores[i]
-			var visible := d > 0.5 or not _es_puerta(direccion, s, 2.0)
+			var visible := d > 0.5 or not _es_hueco(direccion, s, 2.0)
 			var p_pie := punto(direccion, s, d)
 			var p_luz := p_pie
 			if direccion == Vector2i.UP:

@@ -56,6 +56,10 @@ func _draw() -> void:
 
 	var conocidas: Array[Sala] = []
 	for sala in _piso.salas():
+		# La sala secreta no sale hasta que se rompe la pared que la tapa: ni
+		# en contorno, que es justo lo que la delataria.
+		if sala.oculta:
+			continue
 		if visitadas.has(sala.celda):
 			conocidas.append(sala)
 			continue
@@ -110,6 +114,12 @@ func _pintar_marca(sala: Sala, rect: Rect2) -> void:
 			draw_colored_polygon(puntos, COLOR_OBJETO)
 		MapaSalas.Tipo.SALIDA:
 			_pintar_bajada(sala, centro, radio)
+		MapaSalas.Tipo.SECRETA:
+			# El cofre, mientras no se ha abierto: un rectangulo dorado.
+			var cofre := sala.get_node_or_null("Cofre") as Cofre
+			if cofre != null and not cofre.abierto:
+				draw_rect(Rect2(centro - Vector2(radio, radio * 0.7), Vector2(radio * 2.0, radio * 1.4)),
+					COLOR_OBJETO)
 		MapaSalas.Tipo.JEFE:
 			# Una estrella de ocho puntas roja, que se ve desde que se conoce
 			# la sala (al pisar la antesala): ahi esta la pelea final. Con la

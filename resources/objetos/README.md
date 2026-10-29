@@ -4,7 +4,10 @@ Un `.tres` por objeto recogible. Cada uno es un `ObjetoMejora`
 (`scripts/objeto_mejora.gd`).
 
 La mecánica `objetos.tres` deja **uno por piso**, elegido entre los que ya
-pueden salir a esa profundidad. Las mejoras **se acumulan durante toda la
+pueden salir a esa profundidad. El **cofre de la sala secreta** de cada piso
+(`scripts/cofre.gd`) sortea con una ruleta entre los que duran (todos menos
+el vendaje) que ya pueden salir en ese piso: un objeto nuevo entra solo en
+la ruleta. Las mejoras **se acumulan durante toda la
 partida** y se pierden al empezar una nueva.
 
 ## Los que hay

@@ -112,6 +112,8 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	piso.configurar(datos, numero_piso, _pool, GestorProgreso.obtener_mecanicas_activas(numero_piso))
 	piso.salida_alcanzada.connect(_al_alcanzar_salida)
 	piso.sala_cambiada.connect(_al_cambiar_sala)
+	piso.secreta_descubierta.connect(func(_sala: Sala) -> void:
+		_hud.avisar("¡Has encontrado una sala secreta!", Cofre.COLOR_ORO))
 	_piso_actual = piso
 
 	_jugador.reubicar(piso.punto_entrada())
@@ -150,6 +152,8 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 		return
 	var bola := _bola_del_jugador(direccion, cargada)
 	_soltar_bola(bola, desde, cargada)
+	# Donde se apaga puede ser la pared de la puerta secreta.
+	bola.apagada.connect(_piso_actual.golpe_de_bola)
 	# A los demas, la bola ya hecha: lleva lo que haya mejorado este mago.
 	if _cooperativo != null:
 		_cooperativo.mandar_disparo(bola, desde, _jugador.mago)

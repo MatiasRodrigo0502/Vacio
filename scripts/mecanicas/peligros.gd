@@ -111,7 +111,8 @@ func _pinchos_en_puertas(piso: Node) -> void:
 	for sala in piso.salas():
 		if not sala.admite_enemigos():
 			continue
-		for puerta in sala.puertas:
+		# La escondida no: unos pinchos delante de una pared la delatarian.
+		for puerta in sala.puertas_visibles():
 			var clave := [sala.celda, sala.celda + puerta]
 			clave.sort()
 			if decididas.has(str(clave)):

@@ -57,3 +57,30 @@ func es_permanente() -> bool:
 	return vida_maxima_extra != 0 or velocidad_extra != 0.0 \
 		or not is_equal_approx(cadencia_multiplicador, 1.0) \
 		or velocidad_bola_extra != 0.0 or radio_bola_extra != 0.0
+
+
+const RUTA_OBJETOS := "res://resources/objetos"
+
+
+## Todos los objetos de resources/objetos/, por orden de nombre de archivo.
+## Lo usan la mecanica de objetos y el cofre de la sala secreta.
+##
+## En el juego exportado la carpeta tiene "nombre.tres.remap", no
+## "nombre.tres": Godot pasa los .tres a binario. Sin quitar el .remap, en el
+## .exe no cargaria nada aunque en el editor funcione.
+static func cargar_todos() -> Array[ObjetoMejora]:
+	var resultado: Array[ObjetoMejora] = []
+	var carpeta := DirAccess.open(RUTA_OBJETOS)
+	if carpeta == null:
+		push_warning("No se puede abrir %s" % RUTA_OBJETOS)
+		return resultado
+	var nombres := carpeta.get_files()
+	nombres.sort()
+	for nombre_archivo in nombres:
+		var limpio := nombre_archivo.trim_suffix(".remap")
+		if limpio.get_extension().to_lower() != "tres":
+			continue
+		var recurso := load(RUTA_OBJETOS.path_join(limpio))
+		if recurso is ObjetoMejora:
+			resultado.append(recurso)
+	return resultado

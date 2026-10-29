@@ -21,6 +21,8 @@ signal salida_alcanzada
 ## Se emite cuando el jugador pasa de una sala a otra. Principal la usa para
 ## encajar la camara en la sala nueva.
 signal sala_cambiada(sala: Sala)
+## Se ha roto la pared de la puerta secreta: la sala secreta ya se ve.
+signal secreta_descubierta(sala: Sala)
 
 ## Espacio libre delante de cada puerta: nada que la tape por dentro.
 const DESPEJE_PUERTA: float = 190.0
@@ -132,6 +134,9 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 		hijo.queue_free()
 
 	_construir_salas()
+	# Antes que nada que mire las puertas: la secreta tiene que estar ya
+	# escondida cuando se levante la pared, y apartadas de ella las rocas.
+	_preparar_secreta()
 	queue_redraw()
 	_colocar_salida()
 	_colocar_tutorial()
@@ -387,6 +392,59 @@ func _construir_salas() -> void:
 	var jefe := sala_de_tipo(MapaSalas.Tipo.JEFE)
 	for celda in _mapa.casillas_del_jefe():
 		_salas[celda] = jefe
+
+
+## La sala secreta del piso (MapaSalas._anadir_secreta): la puerta que lleva a
+## ella se esconde tras la pared de la sala de la que cuelga (Sala.esconder_puerta),
+## la sala no se ve ni sale en el minimapa hasta descubrirla, y en su centro
+## va el cofre (Cofre).
+func _preparar_secreta() -> void:
+	var secreta := sala_secreta()
+	if secreta == null:
+		return
+	var padre: Sala = _salas[_mapa.padre_secreta]
+	padre.esconder_puerta(_mapa.direccion_secreta)
+	secreta.oculta = true
+	secreta.visible = false
+	secreta.add_child(Cofre.new(numero_piso))
+
+
+## La sala secreta del piso, o null si no tiene.
+func sala_secreta() -> Sala:
+	if _mapa == null or not _mapa.tiene_secreta():
+		return null
+	return _salas.get(_mapa.padre_secreta + _mapa.direccion_secreta, null)
+
+
+## Un disparo del jugador de este ordenador se ha apagado (lo engancha
+## Principal a BolaMagica.apagada). Si ha sido contra la pared de la puerta
+## secreta, cuenta (Sala.golpear_secreta); al romperla, aparece la sala.
+##
+## Solo los de este jugador: en cooperativo, cada ordenador mira los suyos y
+## el que la rompe avisa a los demas (Cooperativo.secreta_descubierta). Si
+## cada uno contara tambien los disparos de los otros, que en cada ordenador
+## van un poco distintos, la pared podria romperse en uno y en otro no.
+func golpe_de_bola(punto: Vector2) -> void:
+	if _sala_actual == null or not _sala_actual.tiene_puerta_secreta():
+		return
+	if _sala_actual.golpear_secreta(punto):
+		descubrir_secreta()
+		get_tree().call_group("cooperativo", "secreta_descubierta")
+
+
+## Abre la sala secreta: se rompe la pared (si no estaba rota ya) y la sala
+## se ve y sale en el minimapa. Tambien la llama el cooperativo cuando la ha
+## roto otro jugador.
+func descubrir_secreta() -> void:
+	var secreta := sala_secreta()
+	if secreta == null or not secreta.oculta:
+		return
+	var padre: Sala = _salas[_mapa.padre_secreta]
+	if padre.tiene_puerta_secreta():
+		padre.abrir_secreta()
+	secreta.oculta = false
+	secreta.visible = true
+	secreta_descubierta.emit(secreta)
 
 
 ## Lo que mide la sala del jefe, con sus muros, en casillas. ZERO si el piso

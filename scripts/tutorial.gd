@@ -64,6 +64,7 @@ const PASOS: Array[Dictionary] = [
 		"color": Color(1.0, 0.85, 0.55),
 		"texto": "Entra en el [k]círculo[/k] para bajar al piso 2.\n"
 			+ "Más abajo: más salas, más enemigos, pinchos, lava y agujeros.\n"
+			+ "Cada piso esconde una [k]sala secreta[/k] con un cofre: si ves una pared agrietada, dispárale.\n"
 			+ "Y en el piso 12 te espera el [k]Mago Caído[/k]. Suerte.",
 	},
 ]

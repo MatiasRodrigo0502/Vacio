@@ -9,6 +9,7 @@ Vacío se puede jugar de principio a fin. Son 12 pisos, 11 tipos de enemigo y 3 
 Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo es parecerse a *The Binding of Isaac*:
 
 - Cada piso es un mapa de salas unidas por puertas.
+- **Una sala secreta por piso:** escondida tras una pared con unas grietas finas, que se rompe con tres disparos. Dentro, un cofre: al pisarlo sale una ruleta con las ventajas y te toca una al azar.
 - **El piso 1 es un tutorial:** cinco salas en fila, y al entrar en cada una sale una ventana (con el juego parado) que explica una cosa: moverse y disparar; el ataque especial, las rocas, la vida y el mapa; matar a todos los enemigos para que se abran las puertas, con la primera pelea; los objetos; la bajada.
 - Al entrar en una sala con enemigos, las puertas se cierran hasta limpiarla.
 - Cada piso tiene más salas que el anterior, y más pequeñas. Todo se ve del mismo tamaño en todos los pisos: la cámara no se acerca al bajar.
@@ -68,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 29/10/2026 | El piso 1 es un tutorial: cinco salas en fila, una ventana que explica una cosa en cada una, y en la tercera la primera pelea | — |
+| 29/10/2026 | Una sala secreta en cada piso, tras una pared agrietada que se rompe a disparos, con un cofre y una ruleta de ventajas | — |
+| 29/10/2026 | El piso 1 es un tutorial: cinco salas en fila, una ventana que explica una cosa en cada una, y en la tercera la primera pelea | `33fc16a` |
 | 29/10/2026 | Al acabar la partida, «Cambiar mago»: se empieza de cero con uno de los magos que no se han usado | `a474c6b` |
 | 22/10/2026 | Los enemigos y todo lo demás se ven del mismo tamaño en todos los pisos (la cámara del piso 2) | `743bb0f` |
 | 21/10/2026 | El rayo del cristal vuelve a quitar 50 y el jefe final es más difícil (1500 de vida, más rápido, rayos de 3 y de 5) | `491999b` |
@@ -204,7 +206,8 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 - **Menú de pausa** con Escape, con el volumen de la música y de los efectos.
 - **Sonido y música**, todo generado por síntesis con nuestros scripts: una música para la portada, otra para los pisos 1-6 y otra más grave para los 7-12, más la de ganar y la de perder; y 23 efectos (disparos, golpes, muertes, explosiones, puertas, objetos, escudo, agujero negro, caídas, botones...).
 - **HUD:** piso y capa, la vida en una barra con su número («70 / 100») y, debajo, el icono de cada ventaja recogida («x2» si se repite). Al dar a un enemigo salta el número de vida que le quitas, y al recibir un golpe, el que te quitan.
-- **Minimapa** arriba a la derecha, con las salas visitadas, el objeto y la bajada.
+- **Minimapa** arriba a la derecha, con las salas visitadas, el objeto y la bajada. La sala secreta no sale hasta que se descubre.
+- **Ruleta del cofre secreto:** una cinta con las ventajas que frena hasta pararse en la que toca.
 - **Solo se ve la sala en la que estás:** lo que asoma de las de al lado queda a oscuras, y al cruzar una puerta la luz se desliza con la cámara.
 - **Pantalla final** de victoria o derrota: volver a empezar (también con la R), **cambiar de mago** (salen los que no se han usado en esa partida y se empieza de cero con el elegido) o volver al menú.
 

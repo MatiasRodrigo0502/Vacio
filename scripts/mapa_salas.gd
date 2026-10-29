@@ -16,7 +16,9 @@ extends RefCounted
 
 ## ANTESALA y JEFE solo los tiene un piso con jefe (DatosPiso.sala_jefe): la
 ## sala del jefe hace de salida (la bajada esta en ella) y no hay SALIDA.
-enum Tipo { INICIO, NORMAL, OBJETO, SALIDA, ANTESALA, JEFE }
+## SECRETA, una en cada piso (ver _anadir_secreta). Va la ultima para no
+## cambiar el numero de las demas.
+enum Tipo { INICIO, NORMAL, OBJETO, SALIDA, ANTESALA, JEFE, SECRETA }
 
 ## Las cuatro direcciones en que puede haber puerta.
 const DIRECCIONES: Array[Vector2i] = [
@@ -34,6 +36,10 @@ var _distancias: Dictionary = {}
 var _reservadas: Array[Vector2i] = []
 ## Hacia donde se va de la antesala a la sala del jefe. ZERO si no hay jefe.
 var direccion_jefe: Vector2i = Vector2i.ZERO
+## La sala de la que cuelga la secreta (por su puerta escondida) y hacia
+## donde queda la secreta desde ella. ZERO si el piso se ha quedado sin.
+var padre_secreta: Vector2i = Vector2i.ZERO
+var direccion_secreta: Vector2i = Vector2i.ZERO
 
 
 ## Genera el plano de un piso.
@@ -58,7 +64,15 @@ static func generar(cantidad: int, semilla: int, jefe: Vector2 = Vector2.ZERO,
 	if jefe != Vector2.ZERO and mapa._anadir_jefe(jefe):
 		mapa._medir_distancias()
 	mapa._repartir_tipos()
+	# Despues de repartir los tipos: si no, siendo la mas lejana, la secreta
+	# podria quedarse con la salida o con el objeto.
+	mapa._anadir_secreta(semilla)
 	return mapa
+
+
+## True si este piso tiene sala secreta (todos, salvo que no quepa).
+func tiene_secreta() -> bool:
+	return direccion_secreta != Vector2i.ZERO
 
 
 func tiene(celda: Vector2i) -> bool:
@@ -251,6 +265,54 @@ func _cabe_jefe(desde: Vector2i, direccion: Vector2i, bloque: Array[Vector2i]) -
 ##
 ## En empate gana la sala que se creo antes: recorrer celdas en su orden hace
 ## que el resultado no dependa de como el diccionario guarde las claves.
+## Cuelga la sala secreta de una sala del piso (pedida por Matias el
+## 2026-10-29: «una sala secreta por piso que no se sepa donde esta, con un
+## cofre dentro»). Una casilla libre al lado de una sala que no toque a
+## ninguna otra: asi su unica puerta es la escondida, y el mapa sigue siendo
+## un arbol.
+##
+## No cuelga de la antesala ni de la sala del jefe, ni toca lo que tapa la
+## sala del jefe. Y nunca queda por encima de la sala de la que cuelga: la
+## pared de arriba es la que tiene cara (vista 3/4), y una puerta escondida
+## ahi no hay forma de taparla bien. Con su semilla, la del mapa y una mas:
+## sale siempre en el mismo sitio de cada piso.
+func _anadir_secreta(semilla: int) -> void:
+	var tapadas := {}
+	for reservada in _reservadas:
+		tapadas[reservada] = true
+	var opciones: Array[Vector2i] = []
+	for celda in celdas:
+		if _tipos[celda] == Tipo.ANTESALA or _tipos[celda] == Tipo.JEFE:
+			continue
+		for direccion in DIRECCIONES:
+			if direccion == Vector2i.UP:
+				continue
+			var nueva := celda + direccion
+			if _ocupadas.has(nueva) or tapadas.has(nueva) or _vecinas_ocupadas(nueva) != 1:
+				continue
+			var junto_al_jefe := false
+			for otra in DIRECCIONES:
+				if tapadas.has(nueva + otra):
+					junto_al_jefe = true
+			if not junto_al_jefe:
+				# De dos en dos: la sala de la que cuelga y hacia donde.
+				opciones.append(celda)
+				opciones.append(direccion)
+	if opciones.is_empty():
+		push_warning("No cabe la sala secreta en el mapa: el piso se queda sin ella.")
+		return
+	var generador := RandomNumberGenerator.new()
+	generador.seed = semilla + 7907
+	var cual := generador.randi() % (opciones.size() / 2)
+	padre_secreta = opciones[cual * 2]
+	direccion_secreta = opciones[cual * 2 + 1]
+	var secreta := padre_secreta + direccion_secreta
+	celdas.append(secreta)
+	_ocupadas[secreta] = true
+	_tipos[secreta] = Tipo.SECRETA
+	_distancias[secreta] = _distancias[padre_secreta] + 1
+
+
 func _repartir_tipos() -> void:
 	var inicio := celdas[0]
 	for celda in celdas:
