@@ -46,6 +46,13 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 18
 text = "Jugar otra vez  (R)"
 
+[node name="BotonCambiarMago" type="Button" parent="Centro/Caja"]
+custom_minimum_size = Vector2(240, 42)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 16
+text = "Cambiar mago"
+
 [node name="BotonMenu" type="Button" parent="Centro/Caja"]
 custom_minimum_size = Vector2(240, 42)
 layout_mode = 2
@@ -60,3 +67,27 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 14
 text = "Abrir la carpeta de partidas"
 flat = true
+
+[node name="Eleccion" type="VBoxContainer" parent="Centro"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Titulo" type="Label" parent="Centro/Eleccion"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "ELIGE OTRO MAGO"
+horizontal_alignment = 1
+
+[node name="Fichas" type="HBoxContainer" parent="Centro/Eleccion"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="BotonVolver" type="Button" parent="Centro/Eleccion"]
+custom_minimum_size = Vector2(240, 42)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 16
+text = "Volver"

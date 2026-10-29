@@ -67,7 +67,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 22/10/2026 | Los enemigos y todo lo demás se ven del mismo tamaño en todos los pisos (la cámara del piso 2) | — |
+| 29/10/2026 | Al acabar la partida, «Cambiar mago»: se empieza de cero con uno de los magos que no se han usado | — |
+| 22/10/2026 | Los enemigos y todo lo demás se ven del mismo tamaño en todos los pisos (la cámara del piso 2) | `743bb0f` |
 | 21/10/2026 | El rayo del cristal vuelve a quitar 50 y el jefe final es más difícil (1500 de vida, más rápido, rayos de 3 y de 5) | `491999b` |
 | 20/10/2026 | Lo que asoma de las salas de al lado queda a oscuras | `436ea37` |
 | 18/10/2026 | Cooperativo, fase 2: la partida entera en red local (enemigos del anfitrión, peleas para todos, caer y volver, bajar juntos) | `bb08de7` |
@@ -203,7 +204,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 - **HUD:** piso y capa, la vida en una barra con su número («70 / 100») y, debajo, el icono de cada ventaja recogida («x2» si se repite). Al dar a un enemigo salta el número de vida que le quitas, y al recibir un golpe, el que te quitan.
 - **Minimapa** arriba a la derecha, con las salas visitadas, el objeto y la bajada.
 - **Solo se ve la sala en la que estás:** lo que asoma de las de al lado queda a oscuras, y al cruzar una puerta la luz se desliza con la cámara.
-- **Pantalla final** de victoria o derrota.
+- **Pantalla final** de victoria o derrota: volver a empezar (también con la R), **cambiar de mago** (salen los que no se han usado en esa partida y se empieza de cero con el elegido) o volver al menú.
 
 ## Ejecutable, release y herramientas
 

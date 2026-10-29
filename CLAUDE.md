@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-22.**
+**Última actualización: 2026-10-29.**
 
 ---
 
@@ -338,7 +338,21 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Elección de mago**: al pulsar Jugar se elige entre los magos de
   `resources/personajes/`. Cada uno trae su arte y su ventaja, y la ventaja va
   a los valores **de fábrica** del jugador, así que sobrevive a reiniciar. El
-  menú monta una ficha por `.tres`, así que un mago nuevo no toca código.
+  menú monta una ficha por `.tres` (`FichaMago`, `scripts/ficha_mago.gd`), así
+  que un mago nuevo no toca código.
+- **Cambiar mago al acabar la partida** (2026-10-29, pedido por Matías): la
+  pantalla final (`PantallaFinal`, al ganar o al perder) tiene un botón
+  *Cambiar mago* que enseña las fichas (`FichaMago`, las mismas del menú) de
+  los magos que no se han usado en esa partida: todos menos
+  `GestorProgreso.personaje_elegido`. Al elegir uno se guarda ahí y se
+  reinicia: `Principal._reiniciar` ya lee el mago de `GestorProgreso`, así
+  que empieza de cero en el piso 1 con su vida, su ventaja y su especial, y
+  el registro lo apunta como otra partida. Escape vuelve atrás. No sale en
+  cooperativo ni si solo hay un mago. Ese día empezó a funcionar también la
+  tecla R de *Reintentar*: el botón la anunciaba desde el principio, pero
+  nada la leía. Y la pausa ya no se queda con Escape cuando la partida ha
+  acabado (`MenuPausa._unhandled_input`): se lo quitaba a la pantalla
+  final.
   Cada mago trae también **el color de sus disparos** (centro y resplandor del
   normal y del cargado): el oscuro lila (el normal, del color de la llama de
   su bastón, desde el 2026-10-14; antes azul) y morado el cargado, el rojo en

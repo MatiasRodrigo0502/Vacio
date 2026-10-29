@@ -37,9 +37,12 @@ func _unhandled_input(evento: InputEvent) -> void:
 	if visible:
 		continuar()
 	elif not GestorProgreso.partida_terminada:
-		# Con la partida acabada ya esta la pantalla final, que tiene sus
-		# propios botones: una pausa encima no pintaria nada.
 		pausar()
+	else:
+		# Con la partida acabada ya esta la pantalla final, que tiene sus
+		# propios botones: una pausa encima no pintaria nada. Y Escape se deja
+		# pasar: alli vuelve atras desde la eleccion de mago.
+		return
 	get_viewport().set_input_as_handled()
 
 

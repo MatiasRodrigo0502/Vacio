@@ -20,11 +20,6 @@ const ESCENA_JUEGO := "res://scenes/Principal.tscn"
 ## La musica de la portada. La del juego la pone cada piso (DatosPiso.musica).
 const MUSICA := preload("res://assets/sonido/musica/portada.wav")
 
-## Ancho de cada ficha de mago. Fijo para que los textos de ventaja partan
-## linea por el mismo sitio y las fichas queden del mismo tamano aunque uno
-## tenga la ventaja mas larga.
-const ANCHO_FICHA: float = 300.0
-
 @onready var _panel_controles: Control = $PanelControles
 @onready var _panel_personajes: Control = $PanelPersonajes
 @onready var _fichas: HBoxContainer = $PanelPersonajes/Centro/Caja/Fichas
@@ -166,7 +161,7 @@ func _poner_version() -> void:
 	add_child(etiqueta)
 
 
-## Crea una ficha por cada mago que haya en disco.
+## Crea una ficha por cada mago que haya en disco (FichaMago).
 ##
 ## POR QUE SE MONTA POR CODIGO Y NO EN LA ESCENA:
 ## asi anadir un mago es dejar su .tres en resources/personajes/ y ya sale en el
@@ -178,50 +173,11 @@ func _montar_fichas() -> void:
 	_primer_boton = null
 
 	for personaje in GestorProgreso.personajes:
-		var ficha := VBoxContainer.new()
-		ficha.custom_minimum_size = Vector2(ANCHO_FICHA, 0.0)
-		ficha.add_theme_constant_override("separation", 10)
-
-		var retrato := TextureRect.new()
-		retrato.texture = personaje.retrato
-		retrato.custom_minimum_size = Vector2(0.0, 170.0)
-		retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		ficha.add_child(retrato)
-
-		ficha.add_child(_etiqueta(personaje.nombre, 26, personaje.color))
-		ficha.add_child(_etiqueta(personaje.ventaja, 17, Color(0.85, 0.82, 0.78)))
-		ficha.add_child(_etiqueta(personaje.pega, 15, Color(0.62, 0.58, 0.55)))
-
-		# Relleno elastico: las ventajas no miden lo mismo, y sin esto el boton
-		# de cada ficha quedaria a una altura distinta.
-		ficha.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		var hueco := Control.new()
-		hueco.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		ficha.add_child(hueco)
-
-		var boton := Button.new()
-		boton.text = "Jugar con %s" % personaje.nombre.to_lower()
-		boton.custom_minimum_size = Vector2(0.0, 44.0)
-		boton.add_theme_font_size_override("font_size", 18)
-		boton.pressed.connect(_al_elegir.bind(personaje))
-		ficha.add_child(boton)
-
+		var ficha := FichaMago.new(personaje, "Jugar con %s" % personaje.nombre.to_lower())
+		ficha.elegido.connect(_al_elegir)
 		_fichas.add_child(ficha)
 		if _primer_boton == null:
-			_primer_boton = boton
-
-
-func _etiqueta(texto: String, tamano: int, color: Color) -> Label:
-	var etiqueta := Label.new()
-	etiqueta.text = texto
-	etiqueta.add_theme_font_size_override("font_size", tamano)
-	etiqueta.add_theme_color_override("font_color", color)
-	etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	# Las ventajas son frases, no titulos: sin esto se salen de la ficha.
-	etiqueta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	etiqueta.custom_minimum_size = Vector2(ANCHO_FICHA, 0.0)
-	return etiqueta
+			_primer_boton = ficha.boton
 
 
 func _al_elegir(personaje: PersonajeJugable) -> void:

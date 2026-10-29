@@ -168,6 +168,11 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese
 mago, no un objeto que se recoge.
 
+Al acabar una partida (ganes o pierdas), además de volver a empezar con el
+mismo mago (botón o tecla R), puedes darle a **Cambiar mago**: salen los
+magos que no has usado en esa partida y empiezas de cero, en el piso 1, con
+el que elijas.
+
 Sea cual sea, el mago se gira a **ocho direcciones**, diagonales incluidas, y
 mira hacia donde disparas antes que hacia donde andas: si estás peleando de
 espaldas, te ve a ti y no a la salida.
