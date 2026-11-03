@@ -30,13 +30,18 @@ uno más; se quitó, y está en el historial de git. El campo
 
 ## Los iconos
 
-Cada objeto es un orbe de su color con un símbolo blanco dentro (bota con
-rayas de prisa, rayo, bola de fuego, bola con flechas hacia fuera, tirita).
-Los dibuja `herramientas/generar_iconos_objetos.py` desde el 2026-11-03
-(Matías: «me gusta la sencillez del color, pero no me convencen todos los
-dibujos»): se quedó el color de cada uno y cambió el dibujo. Antes eran
-formas sueltas de color (bota, rayo, llama, bola, cruz); están en el
-historial de git. Un objeto nuevo: una función más en el script.
+Cada objeto es un aro de su color con el símbolo dentro, pintado del mismo
+color, con el borde y los detalles en un tono más oscuro de ese color; entre
+el aro y el símbolo, transparente (bota con rayas de prisa, rayo, bola de
+fuego, bola con flechas hacia fuera, cruz de tiritas). Los dibuja
+`herramientas/generar_iconos_objetos.py` desde el 2026-11-03. Matías pidió
+primero otros dibujos («me gusta la sencillez del color, pero no me
+convencen todos los dibujos»); salió un orbe relleno con el símbolo en
+blanco, y lo quiso más sencillo: «uno o dos tonos de un solo color». Como el
+aro ya va en el icono, el objeto del suelo (`Objeto`) y la fila del HUD
+(`MejorasRecogidas`) ya no pintan el suyo. Antes eran formas sueltas de
+color (bota, rayo, llama, bola, cruz); están en el historial de git. Un
+objeto nuevo: una función más en el script.
 
 ## El código de color
 

@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 03/11/2026 | Estadísticas con F3 (FPS, rendimiento, partida y ping en cooperativo) e iconos nuevos de los objetos: un orbe de su color con un símbolo | — |
+| 03/11/2026 | Iconos de los objetos más sencillos: un aro de su color y el símbolo dentro, en dos tonos de ese color | — |
+| 03/11/2026 | Estadísticas con F3 (FPS, rendimiento, partida y ping en cooperativo) e iconos nuevos de los objetos | `f75cef9` |
 | 03/11/2026 | Mago verde: rocío de veneno 9 veces más rápido y 8 proyectiles que persiguen y envenenan (los venenos se suman); los slimes se parten en 4 crías que heredan el frío, el fuego y el veneno | `c3afeec` |
 | 03/11/2026 | Actualizar desde el juego también en Linux y en Mac, sin pasar por GitHub | `af44cd3` |
 | 03/11/2026 | El jefe escupe fuego: un chorro que gira 90° hacia ti y te deja quemándote | `777b129` |

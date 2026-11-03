@@ -73,10 +73,12 @@ func _draw() -> void:
 		var salto := 1.0 + sin(avance * PI) * 0.35
 		var radio := LADO * 0.5 * salto
 
+		# Un fondo oscuro para que se lea encima del suelo. El aro de su color
+		# lo trae el icono (desde el 2026-11-03): el icono va del tamano del
+		# fondo, para que su aro sea el borde.
 		draw_circle(centro, radio, Color(0.0, 0.0, 0.0, 0.5))
-		draw_arc(centro, radio, 0.0, TAU, 28, Color(mejora.color, 0.9), 2.0, true)
 		var icono := mejora.icono
-		var escala := LADO * 0.7 * salto / maxf(icono.get_width(), icono.get_height())
+		var escala := LADO * 1.05 * salto / maxf(icono.get_width(), icono.get_height())
 		var tam := icono.get_size() * escala
 		draw_texture_rect(icono, Rect2(centro - tam * 0.5, tam), false)
 
