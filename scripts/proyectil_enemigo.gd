@@ -151,9 +151,11 @@ func _physics_process(delta: float) -> void:
 				global_position = centro + hacia_fuera * fuera
 	if _rebotado and _golpear_enemigos(antes, global_position, tipo.radio):
 		_acabar()
+	# Sin distancia maxima: vuela hasta dar con algo (Matias, 2026-11-03: el
+	# veneno, a 800 px, se apagaba en mitad de una sala de 1340 sin llegar a
+	# nada). Lo ultimo que puede tocar es el muro, y por si acaso, el borde de
+	# su sala.
 	elif Terreno.choque(get_world_2d(), antes, global_position, tipo.radio, MASCARA_TERRENO) != null:
-		_acabar()
-	elif _recorrido >= tipo.alcance:
 		_acabar()
 	elif limite.has_area() and not limite.has_point(global_position):
 		_acabar()
@@ -265,6 +267,8 @@ func _acabar() -> void:
 		charco.origen = "Charco de %s" % tipo.nombre.to_lower()
 		if autor != "":
 			charco.origen += " (%s)" % autor
+		# Si reboto en el escudo, el charco es del mago: quema a los enemigos.
+		charco.quema_enemigos = _rebotado
 		charco.position = get_parent().to_local(global_position)
 		# Diferido: esto puede venir de body_entered, en mitad del paso de
 		# fisica, y meter un Area2D nueva ahi hace quejarse al motor.

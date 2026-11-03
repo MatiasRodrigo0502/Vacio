@@ -371,7 +371,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   durante 5 s: los disparos rebotan (`Jugador.escudo_rebota`; el magma bota y
   cae fuera) y, rebotados, **quitan a los enemigos que toquen lo mismo que
   quitaban al mago** (desde el 2026-10-15, `ProyectilEnemigo._golpear_enemigos`;
-  también a quien lo tiró y al jefe), los enemigos que la tocan salen despedidos (`Enemigo.empujar`)
+  también a quien lo tiró y al jefe). Hasta el 2026-11-03 casi nunca
+  llegaban: el proyectil se apagaba al recorrer su `alcance` (800 el
+  veneno) contando lo que había hecho hasta el escudo; ahora **ningún
+  proyectil enemigo tiene distancia máxima**, vuelan hasta dar con algo.
+  Rebotan como una pelota en una esfera: si dan por debajo del centro de la
+  burbuja salen torcidos, no siempre hacia quien los tiró. El charco del
+  magma rebotado **quema también a los enemigos** (`Lava.quema_enemigos`,
+  10 cada 0,5 s, no a los que `vuelan`). Los enemigos que la tocan salen despedidos (`Enemigo.empujar`)
   y mientras está nada de los enemigos le quita vida (lo comprueba quien hace
   el daño con `Jugador.escudo_activo`); lo del suelo sí. Se saca con el clic
   derecho o el espacio (`PersonajeJugable.ataque_especial`,

@@ -11,7 +11,6 @@ color_halo = Color(0.22, 0.68, 0.1, 1)
 velocidad = 300.0
 radio = 9.0
 dano = 20
-alcance = 800.0
 ralentiza = 3.0
 veneno_vida = 2
 charco_radio = 0.0

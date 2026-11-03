@@ -16,6 +16,7 @@ velocidad = 115.0
 dano = 25
 alto = 54.0
 piso_minimo = 6
+vuela = true
 color_efectos = Color(0.85, 0.9, 1.0, 1)
 ataque = 0
 cadencia = 2.00

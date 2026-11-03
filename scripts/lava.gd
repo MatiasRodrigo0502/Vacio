@@ -15,6 +15,11 @@ const DANO: int = 20
 const ENFRIADO: float = 0.8
 ## Lo que tarda en crecer al aparecer. Los charcos del magma se ven caer.
 const CRECER: float = 0.18
+## Lo que quita a un enemigo que lo pisa, y cada cuanto (los enemigos no
+## parpadean tras un golpe, como el jugador: sin esto les quitaria vida en
+## cada paso de fisica).
+const DANO_ENEMIGOS: float = 10.0
+const CADA_ENEMIGOS: float = 0.5
 
 ## Radio del charco dentro de su textura: lo de fuera es el resplandor sobre
 ## el suelo. Tiene que cuadrar con RADIO_CHARCO del generador.
@@ -38,6 +43,14 @@ var duracion: float = 0.0
 ## Como sale en el registro de partidas: la lava del suelo o el charco que ha
 ## dejado un enemigo.
 var origen: String = "Lava"
+## El charco del magma que ha rebotado en el escudo del mago blanco: quema
+## tambien a los enemigos (Matias, 2026-11-03: lo rebotado ya es del mago).
+## Al jugador le sigue quemando, que es lava. Los fijos y los demas charcos,
+## solo al jugador.
+var quema_enemigos: bool = false
+## Cuando le toca a cada enemigo: enemigo -> segundo (de _fase) del siguiente
+## golpe.
+var _siguiente_golpe: Dictionary = {}
 
 var _variante: int = 0
 ## Un material por charco: cada uno late a su ritmo y se enfria por su cuenta.
@@ -56,6 +69,8 @@ func _ready() -> void:
 	_material.set_shader_parameter("semilla", fmod(semilla, 10.0))
 	material = _material
 	super()
+	if quema_enemigos:
+		collision_mask |= ProyectilEnemigo.CAPA_ENEMIGOS
 
 
 func _crear_forma() -> Shape2D:
@@ -69,6 +84,20 @@ func _physics_process(delta: float) -> void:
 	super(delta)
 	if duracion > 0.0 and _fase >= duracion:
 		queue_free()
+		return
+	if quema_enemigos and not _enfriandose():
+		_quemar_enemigos()
+
+
+func _quemar_enemigos() -> void:
+	for area in get_overlapping_areas():
+		var enemigo := area as Enemigo
+		if enemigo == null or enemigo.tipo == null or enemigo.tipo.vuela or not enemigo.es_tangible():
+			continue
+		if _fase < float(_siguiente_golpe.get(enemigo, 0.0)):
+			continue
+		_siguiente_golpe[enemigo] = _fase + CADA_ENEMIGOS
+		enemigo.herir(DANO_ENEMIGOS, 0.0, NumeroDano.Estilo.FUEGO)
 
 
 func _al_pisar(cuerpo: Node2D) -> void:

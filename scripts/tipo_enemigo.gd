@@ -36,6 +36,9 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## Primer piso en el que puede aparecer. Sirve para que los enemigos duros no
 ## salgan en los pisos de arriba.
 @export_range(1, 12) var piso_minimo: int = 1
+## Va por el aire (el murcielago) o flota (el fantasma): los agujeros del
+## suelo no le estorban ni se cae en ellos, y la lava no le quema.
+@export var vuela: bool = false
 
 ## Color de sus efectos: el destello al apuntar y la explosion al morir.
 @export var color_efectos: Color = Color(1.0, 0.9, 0.6)

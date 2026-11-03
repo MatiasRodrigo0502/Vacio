@@ -121,6 +121,9 @@ var estado: Dictionary = {}
 ## Escala del dibujo al tamano de su tipo. Los comportamientos la estiran y la
 ## aplastan (saltos) a partir de esta.
 var _escala_base: Vector2 = Vector2.ONE
+## Hasta donde se mira si hay algo delante al apuntar: mas que la diagonal de
+## la sala mas grande (la del jefe, 1600 x 860). Siempre topa antes con el muro.
+const LARGO_MIRA: float = 2500.0
 
 @onready var _sprite: AnimatedSprite2D = $Sprite
 @onready var _forma: CollisionShape2D = $Forma
@@ -489,16 +492,15 @@ func pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void:
 			_apuntando = tipo.tiempo_apuntar
 
 
-## Distancia hasta la primera roca o muro en esa direccion, o el alcance del
-## proyectil si no hay nada. Las rocas no se mueven, asi que basta con
-## mirarlo al empezar a apuntar.
+## Distancia hasta la primera roca o muro en esa direccion: hasta ahi llega el
+## disparo, que ya no tiene distancia maxima. Las rocas no se mueven, asi que
+## basta con mirarlo al empezar a apuntar.
 func _alcance_libre(direccion: Vector2) -> float:
-	var alcance := tipo.proyectil.alcance
 	var rayo := PhysicsRayQueryParameters2D.create(global_position,
-		global_position + direccion * alcance, Terreno.CAPA_MUROS | Terreno.CAPA_ROCAS)
+		global_position + direccion * LARGO_MIRA, Terreno.CAPA_MUROS | Terreno.CAPA_ROCAS)
 	var golpe := get_world_2d().direct_space_state.intersect_ray(rayo)
 	if golpe.is_empty():
-		return alcance
+		return LARGO_MIRA
 	return global_position.distance_to(golpe["position"])
 
 

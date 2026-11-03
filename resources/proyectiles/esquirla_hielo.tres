@@ -11,7 +11,6 @@ color_halo = Color(0.42, 0.76, 1, 1)
 velocidad = 220.0
 radio = 8.0
 dano = 12
-alcance = 1100.0
 sonido = &"disparo_enemigo"
 ralentiza = 2.0
 charco_radio = 0.0

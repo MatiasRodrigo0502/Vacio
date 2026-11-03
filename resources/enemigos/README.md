@@ -33,12 +33,12 @@ quitan al tocarte (tú tienes 100).
 | Rata | cuerpo a cuerpo | 10 | 20 | 160 | 2 | **en zigzag**: corre hacia ti haciendo eses; de cerca, recta |
 | Serpiente | distancia: **veneno** | 20 | 25 | 55 | 2 | **en abanico**: te rodea de lado y dispara 3 bolas abiertas. El veneno quita 20, te frena 3 s y en ese rato te quita 2 más |
 | Planta venenosa | distancia: **veneno** | 30 | 25 | 28 | 3 | **en anillo**: no se mueve; se hincha y suelta 8 esporas en todas direcciones, cada anillo girado |
-| Murciélago | cuerpo a cuerpo | 10 | 20 | **195** | 3 | **en picado**: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo |
+| Murciélago | cuerpo a cuerpo | 10 | 20 | **195** | 3 | **en picado**: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo. **Vuela** (`vuela`): ni los agujeros ni la lava le afectan |
 | Gólem de roca | distancia: **magma** | 50 | 35 | 38 | 4 | **pisotón**: de lejos tira magma (quita 45 y deja lava 3,5 s); si te acercas, avisa con un aro y suelta una onda (quita 30) que hay que esquivar alejándose |
 | Slime naranja | cuerpo a cuerpo | 30 | 25 | 132 | 5 | **rebota**: no te persigue; cruza la sala en diagonal y rebota en muros y rocas. Explota (75) y se parte en 2 |
 | Slime de magma | cuerpo a cuerpo | 30 | 30 | 118 | 5 | **a saltos, dejando lava** donde cae (2,5 s). Explota (85) y se parte en 2 |
 | Cristal vivo | distancia: **rayo** (quita 50) | 30 | 25 | **0** | 5 | **teletransporte**: dispara en cuanto sale su línea y, poco después, desaparece y sale en otro sitio de la sala, lejos de ti |
-| Fantasma | cuerpo a cuerpo | 20 | 25 | 115 | 6 | **se desvanece**: atraviesa las rocas y, a ratos, se vuelve casi invisible; entonces ni le das ni te da |
+| Fantasma | cuerpo a cuerpo | 20 | 25 | 115 | 6 | **se desvanece**: atraviesa las rocas y, a ratos, se vuelve casi invisible; entonces ni le das ni te da. **Flota** (`vuela`): ni los agujeros ni la lava le afectan |
 | Planta azul | cuerpo a cuerpo | 20 | 30 | 150 | 7 | **excava**: se entierra, el montículo avanza bajo el suelo y sale debajo de ti tras avisar con un aro; bajo tierra no se le puede dar |
 
 El más lento de cuerpo a cuerpo (100) es casi el doble de rápido que el más

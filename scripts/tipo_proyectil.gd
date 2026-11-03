@@ -29,8 +29,6 @@ enum Estilo { BOLA, RAYO, PARABOLA }
 @export var radio: float = 9.0
 ## Vida que quita al acertar (el jugador tiene 100).
 @export var dano: int = 20
-## Distancia maxima. La parabola no la usa: cae donde apunto.
-@export var alcance: float = 900.0
 ## El efecto que suena al dispararlo: el nombre de un archivo de
 ## assets/sonido/efectos/, sin el .wav. Cada proyectil el suyo, para saber de
 ## oido que te viene sin mirarlo.
