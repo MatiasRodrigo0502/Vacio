@@ -56,6 +56,11 @@ dividen: si no, matar un slime desataría una cadena imposible de esquivar. La
 sala no se abre hasta matar también a las crías. Matarlos de lejos sale a
 cuenta.
 
+**Los agujeros del suelo** se esquivan: andando, ningún enemigo se mete en
+uno (lo rodea). Si lo empujan (la burbuja del mago blanco, el agujero negro
+del oscuro) sí, y entonces cae y muere, sin explotar ni soltar crías. Los
+que tienen `vuela` (murciélago y fantasma) pasan por encima y no caen.
+
 Los proyectiles (veneno, magma, rayo) son su propio `.tres`, en
 `resources/proyectiles/`: dos enemigos pueden tirar lo mismo.
 

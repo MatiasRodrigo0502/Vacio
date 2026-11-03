@@ -77,6 +77,9 @@ func _sitio_nuevo(enemigo: Enemigo) -> Vector2:
 		# Si la sala lo tiene que sacar de una roca, ese sitio no esta libre.
 		if not sala.sacar_de_las_rocas(punto, radio).is_equal_approx(punto):
 			continue
+		# Ni encima de un agujero: aparecer ahi seria caerse.
+		if sala.pozo_en(punto, radio) != null:
+			continue
 		var distancia := punto.distance_to(jugador)
 		if distancia >= distancia_minima:
 			return punto

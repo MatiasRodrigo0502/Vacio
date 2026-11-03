@@ -297,6 +297,17 @@ func punto_puerta(direccion: Vector2i) -> Vector2:
 	return Vector2(direccion) * tamano * 0.5
 
 
+## El agujero del suelo (Vacio) que tiene ese punto dentro, o null. 'margen'
+## agranda (o, en negativo, encoge) cada agujero: los enemigos se apartan un
+## poco mas alla del borde al andar, y solo caen si se meten de verdad.
+func pozo_en(punto_global: Vector2, margen: float) -> Vacio:
+	for hijo in get_children():
+		var pozo := hijo as Vacio
+		if pozo != null and pozo.rect_global().grow(margen).has_point(punto_global):
+			return pozo
+	return null
+
+
 ## True si ese punto (local) esta pegado a alguna puerta. Para que ni rocas ni
 ## enemigos aparezcan tapando la entrada a la sala.
 func cerca_de_puerta(punto: Vector2, distancia: float) -> bool:

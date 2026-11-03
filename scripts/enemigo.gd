@@ -121,6 +121,11 @@ var estado: Dictionary = {}
 ## Escala del dibujo al tamano de su tipo. Los comportamientos la estiran y la
 ## aplastan (saltos) a partir de esta.
 var _escala_base: Vector2 = Vector2.ONE
+## Lo que tarda en hundirse en un agujero al caer.
+const CAIDA_POZO: float = 0.45
+## Lo que se aparta del borde de un agujero al andar, ademas de su cuerpo.
+const MARGEN_POZO: float = 14.0
+
 ## Hasta donde se mira si hay algo delante al apuntar: mas que la diagonal de
 ## la sala mas grande (la del jefe, 1600 x 860). Siempre topa antes con el muro.
 const LARGO_MIRA: float = 2500.0
@@ -184,6 +189,10 @@ func _physics_process(delta: float) -> void:
 	_golpear_lo_que_toca()
 	_arder(delta)
 	if _muriendo:
+		return
+	# Andando nunca se mete en un agujero (andar los esquiva): si esta en uno
+	# es que le han empujado (la burbuja del mago blanco, el agujero negro).
+	if _caer_si_pisa_pozo():
 		return
 	if _empuje != Vector2.ZERO:
 		global_position += _empuje * delta
@@ -568,22 +577,111 @@ func es_invulnerable() -> bool:
 ## Con 'atravesar_rocas' (el fantasma, lo que va bajo tierra) las rocas no le
 ## paran.
 func andar(direccion: Vector2, delta: float, factor: float = 1.0, atravesar_rocas: bool = false) -> void:
+	var antes := global_position
 	global_position += direccion * tipo.velocidad * factor * delta
 	mantener_en_la_sala(not atravesar_rocas)
+	_no_pisar_pozos(antes)
 
 
 ## Anda en linea recta y, si choca con un muro o una roca, rebota como una
 ## pelota. Devuelve la direccion despues del rebote.
 func andar_rebotando(direccion: Vector2, delta: float, factor: float = 1.0) -> Vector2:
+	var antes := global_position
 	var intento := global_position + direccion * tipo.velocidad * factor * delta
 	global_position = intento
 	mantener_en_la_sala()
+	# Un agujero es como un muro: rebota en el.
+	_no_pisar_pozos(antes)
 	# Lo que la sala le ha empujado para dejarlo dentro es la normal de lo que
 	# ha tocado: se refleja contra ella.
 	var empuje := global_position - intento
 	if empuje.length() > 0.01:
 		direccion = direccion.bounce(empuje.normalized())
 	return direccion
+
+
+## Andando, los agujeros del suelo se esquivan (Matias, 2026-11-03: «los
+## monstruos deben esquivar los pozos, no caminar por encima»): si el paso le
+## mete en uno (o en su borde), lo rodea, de lado respecto al agujero y hacia
+## donde iba; si tampoco puede, prueba solo de frente o solo de lado; y si
+## no, no se mueve. Parandose sin mas en el borde se quedaba ahi para siempre
+## si lo que buscaba estaba al otro lado. Lo que le aleja del agujero si se
+## deja, o uno empujado hasta el borde no podria volver a salir. Los que
+## vuelan (vuela: el murcielago, el fantasma) pasan por encima.
+func _no_pisar_pozos(antes: Vector2) -> void:
+	if tipo.vuela:
+		return
+	var sala_propia := sala()
+	if sala_propia == null:
+		return
+	var radio := tipo.alto * 0.3 + MARGEN_POZO
+	var pozo := sala_propia.pozo_en(global_position, radio)
+	if pozo == null or not _se_mete_en_pozo(sala_propia, antes, global_position, radio):
+		return
+	var paso := global_position - antes
+	var largo := paso.length()
+	var desde_pozo := antes - pozo.global_position
+	var rodear := Vector2(-desde_pozo.y, desde_pozo.x).normalized()
+	if rodear.dot(paso) < 0.0:
+		rodear = -rodear
+	var intentos: Array[Vector2] = [antes + rodear * largo,
+		antes + Vector2(paso.x, 0.0), antes + Vector2(0.0, paso.y)]
+	for intento in intentos:
+		if intento.distance_to(antes) > largo * 0.1 				and not _se_mete_en_pozo(sala_propia, antes, intento, radio):
+			global_position = intento
+			mantener_en_la_sala(false)
+			return
+	global_position = antes
+
+
+## True si pasar de 'antes' a 'despues' le acerca a un agujero estando ya en
+## su borde, o le deja a punto de caer (eso nunca, aunque se aleje: rodeando
+## una esquina el centro queda igual de lejos y se metia dentro).
+func _se_mete_en_pozo(sala_propia: Sala, antes: Vector2, despues: Vector2, radio: float) -> bool:
+	if sala_propia.pozo_en(despues, -Vacio.MARGEN_CAIDA * 0.5) != null:
+		return true
+	var pozo := sala_propia.pozo_en(despues, radio)
+	if pozo == null:
+		return false
+	return despues.distance_to(pozo.global_position) < antes.distance_to(pozo.global_position)
+
+
+## Si esta dentro de un agujero, cae. Solo se mete en uno empujado: andando
+## los esquiva. Los que vuelan no caen, ni el jefe (a el no lo mueve nada).
+func _caer_si_pisa_pozo() -> bool:
+	if tipo == null or tipo.vuela or tipo.jefe:
+		return false
+	var sala_propia := sala()
+	if sala_propia == null:
+		return false
+	var pozo := sala_propia.pozo_en(global_position, -Vacio.MARGEN_CAIDA)
+	if pozo == null:
+		return false
+	_caer_al_pozo(pozo)
+	return true
+
+
+## Se hunde en el agujero: se encoge y se apaga camino del centro, y muere.
+## Cuenta como matado, pero sin explosion ni crias, que caen con el.
+func _caer_al_pozo(pozo: Vacio) -> void:
+	_muriendo = true
+	_vida = 0
+	_empuje = Vector2.ZERO
+	set_deferred("monitorable", false)
+	Sonido.tocar(&"caida")
+	var hundirse := create_tween().set_parallel(true)
+	hundirse.tween_property(self, "global_position",
+		global_position.lerp(pozo.global_position, 0.35), CAIDA_POZO)
+	hundirse.tween_property(_sprite, "scale", _escala_base * 0.1, CAIDA_POZO) \
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	hundirse.tween_property(_sprite, "modulate", Color(0.2, 0.2, 0.2, 0.0), CAIDA_POZO)
+	hundirse.chain().tween_callback(_morir_en_pozo)
+
+
+func _morir_en_pozo() -> void:
+	MundoRed.anunciar_muerte(self)
+	muerto.emit(self)
+	queue_free()
 
 
 ## Del enemigo al cuerpo del jugador.
@@ -816,7 +914,13 @@ func _soltar_cria(numero: int) -> void:
 	get_parent().add_child(cria)
 	# Repartidas en circulo alrededor de donde murio la madre.
 	var angulo := TAU * numero / tipo.division + _fase
-	cria.preparar(tipo.cria(), global_position + Vector2.RIGHT.rotated(angulo) * tipo.alto * 0.5)
+	var sitio := global_position + Vector2.RIGHT.rotated(angulo) * tipo.alto * 0.5
+	# Nunca encima de un agujero: caeria nada mas nacer. Donde murio la madre,
+	# que andando no se mete en ellos.
+	var sala_propia := get_parent() as Sala
+	if sala_propia != null and sala_propia.pozo_en(sitio, tipo.alto * 0.2) != null:
+		sitio = global_position
+	cria.preparar(tipo.cria(), sitio)
 	cria.mantener_en_la_sala()
 	var sala := get_parent() as Sala
 	if sala != null:

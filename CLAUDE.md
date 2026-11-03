@@ -580,6 +580,19 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de pelea: **pinchos** que salen a ratos (desde el piso 2), **agujeros** que
   cuestan 30 de vida y te devuelven a la entrada de la sala (desde el 3) y
   **lava** (desde el 4). Nunca pisan el paso de una puerta al centro.
+  **Los enemigos esquivan los agujeros y caen si los empujan** (Matías,
+  2026-11-03): `Enemigo.andar` (y `andar_rebotando`, que rebota en ellos
+  como en un muro) no deja que un paso los meta en uno (`Sala.pozo_en`, con
+  `MARGEN_POZO` más su cuerpo): lo rodea, de lado respecto al agujero y
+  hacia donde iba; parándose sin más se quedaba en el borde para siempre.
+  Empujados (la burbuja del mago blanco, el agujero negro) sí pueden
+  meterse, y entonces caen (`_caer_si_pisa_pozo`, en cada paso): se hunden
+  y mueren, cuentan como matados y no explotan ni sueltan crías. No caen ni
+  esquivan los que vuelan (`TipoEnemigo.vuela`: murciélago y fantasma), ni
+  el jefe. El cristal no se teletransporta encima de uno, y las crías no
+  nacen encima. Probado en el piso 4: una rata rodea el agujero para llegar
+  al mago sin pisarlo; empujados, el slime y la rata caen y el murciélago
+  no.
 - **Pinchos en las puertas** (pedido por Matías el 2026-10-08): desde el
   piso 3, un 40 % de las puertas de las salas de pelea tienen una placa de
   pinchos justo al cruzarlas, de lado a lado del hueco (26 en una partida).
