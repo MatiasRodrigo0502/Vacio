@@ -69,7 +69,12 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 03/11/2026 | Todas las salas miden lo mismo en todos los pisos (1340 × 800); la del jefe, 1600 × 860 | — |
+| 03/11/2026 | Disparo automático con autoapuntado, en Controles y en la pausa | — |
+| 03/11/2026 | La planta venenosa te persigue cada vez más rápido al cerrarse las puertas | `2e4f346` |
+| 03/11/2026 | Las serpientes buscan tenerte a tiro y van algo más rápido | `57b2c9b` |
+| 03/11/2026 | Los enemigos rodean los agujeros del suelo y, si los empujan dentro, caen | `4f28888` |
+| 03/11/2026 | Los proyectiles enemigos vuelan hasta chocar; el charco del magma rebotado quema a los enemigos | `1301610` |
+| 03/11/2026 | Todas las salas miden lo mismo en todos los pisos (1340 × 800); la del jefe, 1600 × 860 | `329b97b` |
 | 29/10/2026 | Una sala secreta en cada piso, tras una pared agrietada que se rompe a disparos, con un cofre y una ruleta de ventajas | `ab38953` |
 | 29/10/2026 | El piso 1 es un tutorial: cinco salas en fila, una ventana que explica una cosa en cada una, y en la tercera la primera pelea | `33fc16a` |
 | 29/10/2026 | Al acabar la partida, «Cambiar mago»: se empieza de cero con uno de los magos que no se han usado | `a474c6b` |

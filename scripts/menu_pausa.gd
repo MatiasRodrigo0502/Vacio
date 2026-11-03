@@ -29,6 +29,11 @@ func _ready() -> void:
 	$Centro/Caja/BotonReiniciar.pressed.connect(_al_reiniciar)
 	$Centro/Caja/BotonMenu.pressed.connect(_al_ir_al_menu)
 	$Centro/Caja/BotonPartidas.pressed.connect(func() -> void: RegistroPartida.abrir_carpeta())
+	# El disparo automatico tambien aqui, para cambiarlo sin salir de la
+	# partida. Encima del volumen.
+	var automatico := Controles.boton_disparo_automatico()
+	$Centro/Caja.add_child(automatico)
+	$Centro/Caja.move_child(automatico, $Centro/Caja/HuecoVolumen.get_index())
 
 
 func _unhandled_input(evento: InputEvent) -> void:

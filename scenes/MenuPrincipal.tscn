@@ -186,7 +186,7 @@ El mago blanco, en vez de cargar, saca con ese botón un escudo. El ataque espec
 Las rocas son sólidas: no se pueden cruzar ni romper, pero te sirven de parapeto.
 Te quitan vida los enemigos, sus disparos, los pinchos, la lava y caer al vacío.
 Hay un objeto por piso y a veces un enemigo suelta otro. Al limpiar una sala puede caer un vendaje.
-Doce pisos: cada uno con más salas, más pequeñas, y cada vez se ve menos."
+Doce pisos: cada uno con más salas y más enemigos. En cada uno hay una sala secreta."
 horizontal_alignment = 1
 
 [node name="BotonVolver" type="Button" parent="PanelControles/Centro/Caja"]

@@ -114,6 +114,10 @@ flechas**. Con las flechas, se dispara con WASD: son las mismas dos manos al
 revés. Se acuerda para la próxima vez, y las ventanas del tutorial dicen las
 teclas que hayas elegido.
 
+Al lado está el **disparo automático** (también en la pausa): encendido, el
+mago dispara sin parar al enemigo más cercano de la sala, antes a los que
+tiene a tiro, mientras no apuntes tú con el ratón o las teclas.
+
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
 el piso 1 es un **tutorial**: cinco salas en fila, y al entrar en cada una
 sale una ventana que explica una cosa (el juego se para mientras la lees, y

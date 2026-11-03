@@ -82,6 +82,12 @@ func _montar_eleccion_teclas() -> void:
 	_boton_flechas = _boton_teclas("Flechas", true, grupo)
 	fila.add_child(_boton_wasd)
 	fila.add_child(_boton_flechas)
+	# El disparo automatico, en la misma fila: en una aparte el panel ya no
+	# cabia en 648 de alto (se salia 3 px por arriba y por abajo).
+	var hueco := Control.new()
+	hueco.custom_minimum_size = Vector2(24.0, 0.0)
+	fila.add_child(hueco)
+	fila.add_child(Controles.boton_disparo_automatico())
 	caja.add_child(fila)
 	# Justo debajo del titulo: es lo primero que se mira al abrir el panel.
 	caja.move_child(fila, 1)

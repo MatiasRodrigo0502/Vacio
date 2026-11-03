@@ -132,6 +132,7 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 	var primer_piso := numero_piso == 1
 	_camara.aplicar_radio_vision(datos.radio_vision, primer_piso)
 	_camara.limitar_a(piso.sala_actual().rect_con_muros())
+	_jugador.sala_actual = piso.sala_actual()
 	_camara.seguir(_jugador, true)
 
 	_hud.actualizar_piso(numero_piso, GestorProgreso.total_pisos(), datos.nombre_capa)
@@ -263,6 +264,7 @@ func _al_cambiar_especial(disponible: bool) -> void:
 ## Al pasar a otra sala, la camara se encaja en ella. No salta: se desliza,
 ## porque sigue al jugador con suavizado.
 func _al_cambiar_sala(sala: Sala) -> void:
+	_jugador.sala_actual = sala
 	_camara.limitar_a(sala.rect_con_muros())
 	# La sala del jefe se ve entera; al salir de ella, lo de siempre del piso.
 	if sala.tipo == MapaSalas.Tipo.JEFE:

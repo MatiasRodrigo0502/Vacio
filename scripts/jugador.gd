@@ -124,6 +124,9 @@ var vida_actual: int = 0
 ## F1 (AtajosPrueba), que no existe en el .exe: sirve para ver los pisos de
 ## abajo sin morir por el camino.
 var invencible: bool = false
+## La sala en la que esta: la pone Principal al cambiar de sala. La usa el
+## disparo automatico para buscar a quien apuntar.
+var sala_actual: Sala = null
 
 ## Valores de fabrica, para poder devolver al jugador a como empezo cuando se
 ## empieza una partida nueva. Las mejoras se acumulan durante toda la partida,
@@ -306,7 +309,40 @@ func _direccion_apuntada() -> Vector2:
 	if Input.is_action_pressed("disparar_raton"):
 		return _direccion_raton()
 
-	return _direccion_flechas()
+	var flechas := _direccion_flechas()
+	if flechas != Vector2.ZERO or not Controles.disparo_automatico:
+		return flechas
+	return _direccion_automatica()
+
+
+## El disparo automatico (Controles.disparo_automatico): hacia el enemigo mas
+## cercano de la sala en la que esta el mago, antes los que tiene a tiro (sin
+## roca ni muro en medio). ZERO si no queda ninguno: entonces no dispara.
+## Apuntar tu (raton o teclas) manda sobre esto.
+func _direccion_automatica() -> Vector2:
+	if not is_instance_valid(sala_actual):
+		return Vector2.ZERO
+	var desde := centro_colision()
+	var espacio := get_world_2d().direct_space_state
+	var mejor := Vector2.ZERO
+	var mejor_distancia := INF
+	var mejor_a_tiro := false
+	for enemigo in sala_actual.enemigos():
+		if not is_instance_valid(enemigo) or enemigo.is_queued_for_deletion() \
+				or not enemigo.visible or not enemigo.es_tangible() or enemigo.fraccion_vida() <= 0.0:
+			continue
+		var punto := enemigo.global_position
+		var distancia := desde.distance_to(punto)
+		var rayo := PhysicsRayQueryParameters2D.create(desde, punto,
+			Terreno.CAPA_MUROS | Terreno.CAPA_ROCAS)
+		var a_tiro := espacio.intersect_ray(rayo).is_empty()
+		if (a_tiro and not mejor_a_tiro) or (a_tiro == mejor_a_tiro and distancia < mejor_distancia):
+			mejor = punto
+			mejor_distancia = distancia
+			mejor_a_tiro = a_tiro
+	if mejor_distancia == INF or mejor_distancia < 1.0:
+		return Vector2.ZERO
+	return (mejor - desde).normalized()
 
 
 ## Hacia donde apuntan las flechas, en cuatro direcciones; ZERO si no se pulsa

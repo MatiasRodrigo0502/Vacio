@@ -458,6 +458,17 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   se dispara con WASD. Los textos con teclas (el panel del menú, con
   `Controles.teclas_mover()` / `teclas_disparar()`, y las ventanas del
   tutorial, `Tutorial._rellenar`) dicen las elegidas.
+- **Disparo automático** (2026-11-03, pedido por Matías: «disparando sin
+  parar mientras tenga a un enemigo a tiro, en la misma sala»): un
+  interruptor en el panel Controles del menú (en la fila de «Moverse con»;
+  en otra fila el panel ya no cabía) y en la pausa, los dos creados por
+  `Controles.boton_disparo_automatico()` y guardado en `user://ajustes.cfg`
+  (`[controles] disparo_automatico`). Encendido, si no apuntas tú (ratón o
+  teclas, que mandan), `Jugador._direccion_automatica` apunta al enemigo más
+  cercano de la sala en la que está el mago (`Jugador.sala_actual`, que pone
+  Principal al cambiar de sala), antes los que tiene a tiro (sin roca ni muro
+  en medio); sin enemigos, no dispara. Probado: 4 enemigos del piso 3 en
+  5,9 s con 12 disparos, y ninguno con la sala vacía.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
   ratón, una bola cada **0,5 s** en los tres magos (pedido por Matías el
   2026-10-09; antes 0,34, y el oscuro ×0,85). Matan enemigos; **no** rompen rocas, y las rocas los
