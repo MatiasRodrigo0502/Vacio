@@ -240,10 +240,29 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`Vacio.exe.descarga`), comprueba tamaño y que empiece por `MZ`, renombra el
   abierto a `Vacio.viejo.<hora>.exe` y pone el nuevo en su sitio; *Abrirla
   ahora* lo lanza (`OS.create_process`) y cierra por `Sonido.salir()`. El
-  siguiente arranque borra los viejos. En Linux manda a la página de
-  descarga. Probado de punta a punta con un `.exe` exportado que decía ser la
+  siguiente arranque borra los viejos. Probado de punta a punta con un `.exe` exportado que decía ser la
   0.16: encontró la 0.17, la bajó (48 s, lo mismo que `curl` con esta
-  conexión), se cambió y se abrió.
+  conexión), se cambió y se abrió. **Desde el 2026-11-03 también en Linux y
+  en Mac** (Matías: «que le pudiese dar a Actualizar en vez de un botón que
+  me lleva a GitHub»): cada sistema baja su archivo de la release
+  (`Actualizacion.archivo_de_aqui`, comprueba que empiece por `1F 8B` o `PK`)
+  y lo saca en otro hilo (estado `INSTALANDO`, unos 2,5 s) con
+  `Desempaquetar` (`scripts/desempaquetar.gd`): en Linux, `Vacio.x86_64`
+  del `.tar.gz` (gzip con `decompress_dynamic`; el tar, que Godot no lee, a
+  mano) con permiso 755; en Mac, la `Vacio.app` entera del `.zip` con
+  `ZIPReader`, dando permiso de ejecutarse a `Contents/MacOS/`. Luego lo
+  mismo que en Windows (`poner_en_su_sitio`: renombrar lo abierto a
+  `.viejo.<hora>` y lo nuevo a su sitio); en Mac lo que se cambia es la
+  carpeta `.app` y se abre con `open -n`. **En Mac, abierta sin moverla de
+  donde se descomprimió**, macOS la abre desde una copia de solo lectura
+  (ruta con `/AppTranslocation/`): ahí no se puede, y el aviso dice que se
+  mueva a Aplicaciones (`por_que_no`). Probado aquí lo que se puede sin
+  esos sistemas: sacar del `.tar.gz` el ejecutable de Linux de verdad
+  (idéntico byte a byte, en formato GNU y PAX), sacar una `.app` de prueba
+  del `.zip`, los cambios de nombre con archivo y con carpeta, la limpieza,
+  los paquetes rotos y que en Windows sigue igual. **Nadie lo ha probado
+  todavía en un Linux ni en un Mac.** Ojo: GDScript no tiene números en
+  octal (`0o755` no compila): el permiso va en binario.
 
 - **Portada del menú** (2026-10-14, la trajo Matías): la ilustración
   «Los tres Magos de Vacío: El Bosque Ancestral»

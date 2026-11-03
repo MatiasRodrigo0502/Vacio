@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 03/11/2026 | El jefe escupe fuego: un chorro que gira 90° hacia ti y te deja quemándote | — |
+| 03/11/2026 | Actualizar desde el juego también en Linux y en Mac, sin pasar por GitHub | — |
+| 03/11/2026 | El jefe escupe fuego: un chorro que gira 90° hacia ti y te deja quemándote | `777b129` |
 | 03/11/2026 | Trampas de hielo: 5 trampas de pinchos de los pisos 9 a 12 frenan y quitan solo 1 | `8a86187`, `30e3699` |
 | 03/11/2026 | Disparo automático con autoapuntado, en Controles y en la pausa | `d9ed97f` |
 | 03/11/2026 | La planta venenosa te persigue cada vez más rápido al cerrarse las puertas | `2e4f346` |
@@ -229,7 +230,7 @@ El juego se exporta solo a un único archivo por sistema que se abre sin tener G
 | Pública | [Una release por versión en GitHub: 0.1, 0.2...](https://github.com/MatiasRodrigo0502/Vacio/releases) | Tras cada push a `main` que no toque solo archivos `.md`, con su número y la lista de cambios | El workflow `.github/workflows/publicar.yml`, con los mismos scripts |
 
 - **Se puede actualizar con el juego abierto:** la partida abierta sigue y la próxima vez arranca el nuevo.
-- **El juego avisa de las versiones nuevas (desde la 0.18):** al abrirlo pregunta a GitHub y, si hay una más nueva, la portada lo dice con la lista de lo que cambia. En Windows, un botón la baja y la pone en lugar de la de ahora; en Linux, lleva a la página de descarga. Se probó con un `.exe` que decía ser la 0.16: encontró la 0.17, la bajó, se cambió por ella y se abrió.
+- **El juego avisa de las versiones nuevas (desde la 0.18):** al abrirlo pregunta a GitHub y, si hay una más nueva, la portada lo dice con la lista de lo que cambia. En Windows, un botón la baja y la pone en lugar de la de ahora; desde la 0.50, también en Linux y en Mac (en Mac, con `Vacio.app` movida antes de donde se descomprimió). Se probó con un `.exe` que decía ser la 0.16: encontró la 0.17, la bajó, se cambió por ella y se abrió.
 - **Si una exportación falla,** se queda la versión anterior y el motivo está en `build/exportar.log`, o en la pestaña Actions de GitHub.
 - **Windows puede avisar** de que el `.exe` es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*.
 - **En Linux** se descarga `Vacio-linux.tar.gz`, se extrae y se abre `Vacio.x86_64` con doble clic. Va comprimido porque, suelto, el navegador le quita el permiso de ejecutarse y Ubuntu no lo abre.

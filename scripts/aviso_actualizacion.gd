@@ -1,5 +1,5 @@
 ## El aviso de la portada de que hay una version mas nueva del juego, con el
-## boton para bajarla. Lo de verdad (buscar, bajar, cambiar el .exe) lo hace el
+## boton para bajarla. Lo de verdad (buscar, bajar, cambiar el juego) lo hace el
 ## autoload Actualizacion; esto solo lo ensena y le pasa los clics.
 ##
 ## POR QUE ABAJO A LA DERECHA Y NO UNA VENTANA EN MEDIO: es un aviso, no algo
@@ -44,7 +44,7 @@ func _process(_delta: float) -> void:
 func _mostrar() -> void:
 	var estado: int = Actualizacion.estado
 	var hay_algo := estado in [Actualizacion.Estado.HAY_NUEVA, Actualizacion.Estado.DESCARGANDO,
-		Actualizacion.Estado.LISTA, Actualizacion.Estado.FALLO]
+		Actualizacion.Estado.INSTALANDO, Actualizacion.Estado.LISTA, Actualizacion.Estado.FALLO]
 	visible = hay_algo and not Actualizacion.aviso_cerrado
 	set_process(visible and estado == Actualizacion.Estado.DESCARGANDO)
 	if not visible:
@@ -52,11 +52,14 @@ func _mostrar() -> void:
 	var version := String(Actualizacion.nueva.get("version", ""))
 	_cambios.visible = false
 	_barra.visible = false
+	_principal.visible = true
 	_secundario.visible = true
 	match estado:
 		Actualizacion.Estado.HAY_NUEVA:
 			_titulo.text = "¡Hay una versión nueva!"
 			_texto.text = "Ya está la %s (tú tienes la %s)." % [version, Actualizacion.version_local]
+			if Actualizacion.por_que_no != "":
+				_texto.text += "\n" + Actualizacion.por_que_no
 			_poner_cambios()
 			_principal.text = "Actualizar ahora" if Actualizacion.se_puede_instalar() else "Bajarla de la web"
 			_secundario.text = "Ahora no"
@@ -66,6 +69,12 @@ func _mostrar() -> void:
 			_principal.text = "Cancelar"
 			_secundario.visible = false
 			_process(0.0)
+		Actualizacion.Estado.INSTALANDO:
+			# Sacandola del .tar.gz o del .zip: unos segundos, sin botones.
+			_titulo.text = "Instalando la %s..." % version
+			_texto.text = "Sacándola de lo que se ha bajado. Son unos segundos."
+			_principal.visible = false
+			_secundario.visible = false
 		Actualizacion.Estado.LISTA:
 			_titulo.text = "¡Versión %s lista!" % version
 			_texto.text = "Ya está instalada: la próxima vez que abras el juego será esta. También puedes abrirla ya."

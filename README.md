@@ -63,8 +63,11 @@ ninguna versión publicada, y desde Godot dice «en desarrollo».
 abrirlo pregunta a GitHub y, si la hay, sale un aviso encima del número de
 versión con lo que trae. En Windows, *Actualizar ahora* baja el `.exe` nuevo
 (unos 115 MB), lo pone en lugar del de ahora y, con *Abrirla ahora*, se abre
-ya la versión nueva. Si no, será la que se abra la próxima vez. En Linux, el
-botón lleva a la página de descarga. Sin internet no sale nada y se juega
+ya la versión nueva. Si no, será la que se abra la próxima vez. **Desde la
+0.50, igual en Linux y en Mac**: baja el `.tar.gz` o el `.zip` y saca de ahí
+el juego nuevo. En Mac solo si `Vacio.app` se ha movido antes de donde se
+descomprimió (por ejemplo, a *Aplicaciones*): si no, macOS la abre desde una
+copia que no se puede cambiar, y el aviso lo dice. Sin internet no sale nada y se juega
 igual. Las versiones de antes de la 0.18 no saben avisar: quien tenga una de
 esas tiene que bajar la última a mano una vez.
 
