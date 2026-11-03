@@ -272,7 +272,10 @@ otros tres magos, más cuanto menos vida le queda:
   sala ardiendo. Un pilar te cubre, pero el rayo lo rompe: cada pilar sirve
   una vez. Y los rayos salen de cinco en cinco.
 
-Cada fase va más deprisa que la anterior.
+Cada fase va más deprisa que la anterior. Y de vez en cuando **escupe
+fuego**: avisa con una línea y una flecha, y luego un chorro que empieza a
+un lado de donde estabas y gira hacia ti hasta la pared. Si te toca, te
+quemas unos segundos.
 
 Al cambiar de fase suelta una onda y deja un vendaje. Mientras vive, la bajada
 está tapada; al morir se abre. Sus números están en

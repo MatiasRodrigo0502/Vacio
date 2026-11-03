@@ -398,25 +398,7 @@ func _pintar_escarcha() -> void:
 ## pinta encima de esto, asi que en el cuerpo quedarian tapadas. Suben y
 ## bajan cada una a su ritmo, para que se vea que arden.
 func _pintar_llamas() -> void:
-	var radio := tipo.alto * 0.62
-	var pies := Vector2(0.0, tipo.alto * 0.42)
-	# Un resplandor naranja en el suelo, achatado como la escarcha: se ve
-	# aunque el cuerpo tape las llamas de detras.
-	draw_set_transform(pies, 0.0, Vector2(1.0, 0.4))
-	draw_circle(Vector2.ZERO, radio * 1.1, Color(1.0, 0.4, 0.05, 0.25 + 0.08 * sin(_fase * 9.0)))
-	draw_set_transform(Vector2.ZERO)
-	for k in 7:
-		var angulo := k * TAU / 7.0 + 0.4
-		var base := pies + Vector2(cos(angulo) * radio, sin(angulo) * radio * 0.4)
-		var alto := tipo.alto * (0.38 + 0.14 * sin(_fase * 11.0 + k * 1.7))
-		var ancho := 6.0
-		var llama := PackedVector2Array([
-			base + Vector2(-ancho, 0.0), base + Vector2(0.0, -alto), base + Vector2(ancho, 0.0)])
-		draw_colored_polygon(llama, Color(1.0, 0.45, 0.1, 0.9))
-		var dentro := PackedVector2Array([
-			base + Vector2(-ancho * 0.5, 0.0), base + Vector2(0.0, -alto * 0.55),
-			base + Vector2(ancho * 0.5, 0.0)])
-		draw_colored_polygon(dentro, Color(1.0, 0.9, 0.35, 0.95))
+	Llamas.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.62, tipo.alto, _fase)
 
 
 # --- Movimiento y ataque ----------------------------------------------------

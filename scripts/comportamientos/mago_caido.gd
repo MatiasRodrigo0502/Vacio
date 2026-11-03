@@ -82,6 +82,22 @@ const COLOR_FUEGO := Color(1.0, 0.55, 0.15)
 @export var radio_charco: float = 30.0
 @export var duracion_charco: float = 3.0
 
+@export_group("Aliento de fuego")
+## Escupe fuego de vez en cuando, en las tres fases (Matias, 2026-11-03; ver
+## AlientoFuego): empieza 'desvio_aliento' grados a un lado de donde estas al
+## empezar y gira 'giro_aliento' grados hacia ti en 'duracion_aliento'
+## segundos, hasta el limite de la sala. Antes avisa 'aviso_aliento'.
+@export var aviso_aliento: float = 0.6
+@export var duracion_aliento: float = 2.0
+@export var desvio_aliento: float = 10.0
+@export var giro_aliento: float = 90.0
+@export var ancho_aliento: float = 44.0
+## Lo que quita al tocarte, y la quemadura que te deja: segundos y lo que
+## quita cada medio segundo.
+@export var dano_aliento: int = 15
+@export var quemadura_aliento: float = 3.0
+@export var dano_quemadura_aliento: int = 3
+
 @export_group("Abanico de rayos")
 ## Cuantos rayos salen a la vez en cada fase: el del centro y los demas a
 ## los lados, uno a cada lado por turnos.
@@ -165,6 +181,11 @@ func procesar(enemigo: Enemigo, delta: float) -> void:
 		&"fuego":
 			if t >= DURACION_FUEGO:
 				_pasar(enemigo, &"pelea")
+		&"aliento":
+			# Quieto mientras escupe, mirando a donde estabas al empezar.
+			_mirar(enemigo, e.get("dir_aliento", Vector2.DOWN), false)
+			if t >= aviso_aliento + duracion_aliento:
+				_pasar(enemigo, &"pelea")
 		&"cambio":
 			_cambiar_de_fase(enemigo, t)
 
@@ -204,12 +225,12 @@ func _pelear(enemigo: Enemigo, delta: float, hacia: Vector2) -> void:
 ## una de cada dos veces.
 func _usar_habilidad(enemigo: Enemigo) -> void:
 	var e := enemigo.estado
-	var turnos: Array[StringName] = [&"pozo"]
+	var turnos: Array[StringName] = [&"pozo", &"aliento"]
 	match int(e["fase"]):
 		2:
-			turnos = [&"escudo", &"pozo"]
+			turnos = [&"escudo", &"pozo", &"aliento"]
 		3:
-			turnos = [&"cargando", &"pozo", &"cargando", &"escudo"]
+			turnos = [&"cargando", &"pozo", &"aliento", &"cargando", &"escudo"]
 	var cual: StringName = turnos[int(e["siguiente"]) % turnos.size()]
 	e["siguiente"] = int(e["siguiente"]) + 1
 	_pasar(enemigo, cual)
@@ -222,6 +243,26 @@ func _usar_habilidad(enemigo: Enemigo) -> void:
 		&"cargando":
 			e["dir"] = enemigo.hacia_objetivo().normalized()
 			enemigo.sonar(&"carga_lista")
+		&"aliento":
+			_escupir_fuego(enemigo)
+
+
+## El aliento de fuego: la referencia es donde esta el jugador ahora, al
+## empezar. Sale 'desvio_aliento' grados a un lado (al azar cual) y gira
+## 'giro_aliento' hacia el otro, pasando por encima de el.
+func _escupir_fuego(enemigo: Enemigo) -> void:
+	var sala := enemigo.sala()
+	if sala == null:
+		return
+	var hacia := enemigo.hacia_objetivo()
+	var referencia := hacia.angle() if hacia.length() > 1.0 else PI * 0.5
+	var lado := 1.0 if randf() < 0.5 else -1.0
+	enemigo.estado["dir_aliento"] = Vector2.RIGHT.rotated(referencia)
+	MundoRed.crear_aliento(sala, enemigo.global_position,
+		referencia + deg_to_rad(desvio_aliento) * lado, -deg_to_rad(giro_aliento) * lado,
+		aviso_aliento, duracion_aliento, ancho_aliento, dano_aliento,
+		quemadura_aliento, dano_quemadura_aliento)
+	enemigo.sonar(&"carga_lista")
 
 
 ## Se abre donde esta a quien persigue (en cooperativo, el mas cercano). Por

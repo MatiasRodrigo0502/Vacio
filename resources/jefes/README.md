@@ -49,6 +49,18 @@ números en el `.tres` (el `comportamiento`):
   para, pero se rompe** (`Obstaculo.romper()`, con escombros): cada pilar
   cubre una vez. Los rayos salen de cinco en cinco (`rayos_por_fase`, a
   16° uno de otro).
+- **En las tres fases, el aliento de fuego** (desde el 2026-11-03, pedido
+  por Matías; `scripts/aliento_fuego.gd`): toma como referencia dónde estás
+  al empezar, avisa 0,6 s (una línea por donde va a salir y una flecha hacia
+  donde va a girar) y escupe un chorro que sale 10° a un lado de ti (al azar
+  cuál) y gira 90° en 2 s hacia el otro, pasando por encima de ti, hasta el
+  borde de la sala (no lo paran las rocas ni los pilares). Si te toca, quita
+  15 y te deja quemándote 3 s (3 cada medio segundo, con llamas a los pies;
+  como el veneno, no mata). El escudo del mago blanco lo para. Mientras
+  escupe, el jefe no se mueve. Va en la rueda de habilidades: fase 1 pozo y
+  aliento; fase 2 escudo, pozo y aliento; fase 3 rayo de fuego, pozo,
+  aliento, rayo de fuego y escudo. Medido con el mago quieto: 6 alientos en
+  una pelea de 85 s, 30 de golpes y 90 de quemaduras.
 - Cada fase va más deprisa (`ritmo_fases`: 1,1, 1,3 y 1,5; también acorta
   la línea de aviso de los rayos) y entre una habilidad y otra pasan 3,5 s.
 - **Al cambiar de fase** se va al centro, no se le puede dar 1,6 s, suelta

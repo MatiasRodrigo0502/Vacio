@@ -178,7 +178,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`herramientas/generar_mago_caido.py`). **Más difícil desde el
   2026-10-21** (Matías): 1500 de vida en vez de 900, más ritmo, una
   habilidad cada 3,5 s, rayos en abanico de 3 en la fase 2 y de 5 en la 3
-  (`rayos_por_fase`), pozo, anillos y fuego más fuertes; los números de
+  (`rayos_por_fase`), pozo, anillos y fuego más fuertes. **Aliento de
+  fuego** desde el 2026-11-03 (Matías): acción `aliento` en la rueda de las
+  tres fases; `_escupir_fuego` toma la referencia (donde está a quien
+  persigue al empezar) y crea por `MundoRed.crear_aliento` un
+  `AlientoFuego` (`scripts/aliento_fuego.gd`) en todos los ordenadores:
+  aviso de 0,6 s (línea de salida y flecha de giro), sale a ±10° (al azar)
+  y gira 90° hacia el otro lado en 2 s, hasta el borde del suelo de la sala
+  sin pararse en rocas ni pilares; al jugador de cada ordenador que toca le
+  quita 15 y lo quema (`Jugador.quemar`: 3 s, 3 cada 0,5, no mata, llamas a
+  los pies con `Llamas.pintar`, las mismas de los enemigos quemados; señal
+  `quemadura_quita`, en naranja y apuntada en el registro); el escudo lo
+  para. Los números de
   antes y lo medido, en `resources/jefes/README.md`. **Nadie lo ha jugado.**
 - **Sala del jefe del piso 12** (2026-10-13, pedida por Matías). Con `DatosPiso.sala_jefe`, `MapaSalas` cuelga de
   la sala más lejana (o de la siguiente, si no cabe) una **antesala** y detrás

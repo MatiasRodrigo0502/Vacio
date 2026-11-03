@@ -43,6 +43,10 @@ func _ready() -> void:
 		NumeroDano.soltar(self, _jugador.centro_colision() + Vector2(0.0, -40.0), cantidad,
 			NumeroDano.Estilo.JUGADOR))
 	# Y lo que quita el veneno poco a poco, en verde y mas pequeno.
+	# Y lo que quita la quemadura, en naranja, como la que hace el mago rojo.
+	_jugador.quemadura_quita.connect(func(cantidad: int, _origen: String) -> void:
+		NumeroDano.soltar(self, _jugador.centro_colision() + Vector2(0.0, -40.0), cantidad,
+			NumeroDano.Estilo.FUEGO))
 	_jugador.veneno_quita.connect(func(cantidad: int, _origen: String) -> void:
 		NumeroDano.soltar(self, _jugador.centro_colision() + Vector2(0.0, -40.0), cantidad,
 			NumeroDano.Estilo.VENENO))

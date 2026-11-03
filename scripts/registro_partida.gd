@@ -65,6 +65,7 @@ func _ready() -> void:
 	_de_prueba = get_parent().get_parent() != get_tree().root
 	_jugador.golpeado.connect(_al_recibir_golpe)
 	_jugador.veneno_quita.connect(_al_quitar_veneno)
+	_jugador.quemadura_quita.connect(_al_quemar)
 	_jugador.vida_cambiada.connect(_al_cambiar_vida)
 	_jugador.bola_lanzada.connect(_al_disparar)
 	_jugador.especial_cambiado.connect(_al_cambiar_especial)
@@ -249,6 +250,22 @@ func _al_quitar_veneno(cantidad: int, origen: String) -> void:
 	if not _pelea.is_empty():
 		_pelea.vida_perdida += cantidad
 	# _ultimo_golpe no se toca: el veneno no mata, asi que nunca es la muerte.
+
+
+## La quemadura del aliento del jefe, como el veneno: poco a poco, sin matar.
+func _al_quemar(cantidad: int, origen: String) -> void:
+	if _piso.is_empty():
+		return
+	_piso.golpes.append({
+		"segundo": _piso.segundos,
+		"sala": _nombre_sala(_piso_nodo.sala_actual() if is_instance_valid(_piso_nodo) else null),
+		"por": (origen if origen != "" else "fuego") + ", quemadura",
+		"vida": cantidad,
+		"queda": _jugador.vida_actual,
+		"quemadura": true,
+	})
+	if not _pelea.is_empty():
+		_pelea.vida_perdida += cantidad
 
 
 func _al_cambiar_vida(vida: int, _maxima: int) -> void:

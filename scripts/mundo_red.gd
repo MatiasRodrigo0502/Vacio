@@ -233,6 +233,32 @@ static func _crear_pozo(sala: Sala, posicion: Vector2, duracion: float, radio: f
 	Sonido.tocar(&"agujero_negro")
 
 
+## El aliento de fuego del jefe (AlientoFuego): sale en todos los ordenadores
+## y cada uno mira si le da a su jugador. 'posicion' es la del jefe, global.
+static func crear_aliento(sala: Sala, posicion: Vector2, inicio: float, giro: float, aviso: float,
+		duracion: float, ancho: float, dano: int, quema_segundos: float, quema_dano: int) -> void:
+	_crear_aliento(sala, posicion, inicio, giro, aviso, duracion, ancho, dano, quema_segundos, quema_dano)
+	_mandar_efecto(&"aliento", {"celda": sala.celda, "posicion": posicion, "inicio": inicio,
+		"giro": giro, "aviso": aviso, "duracion": duracion, "ancho": ancho, "dano": dano,
+		"quema_segundos": quema_segundos, "quema_dano": quema_dano})
+
+
+static func _crear_aliento(sala: Sala, posicion: Vector2, inicio: float, giro: float, aviso: float,
+		duracion: float, ancho: float, dano: int, quema_segundos: float, quema_dano: int) -> void:
+	var aliento := AlientoFuego.new()
+	aliento.angulo_inicio = inicio
+	aliento.giro = giro
+	aliento.aviso = aviso
+	aliento.duracion = duracion
+	aliento.ancho = ancho
+	aliento.dano = dano
+	aliento.quema_segundos = quema_segundos
+	aliento.quema_dano = quema_dano
+	aliento.limite = sala.rect_suelo_global()
+	aliento.position = sala.to_local(posicion)
+	sala.add_child(aliento)
+
+
 ## El rayo de fuego del jefe: quita vida al jugador de cada ordenador que
 ## este en la linea (de 'desde' a 'hasta', globales), salvo con el escudo.
 static func fuego(desde: Vector2, hasta: Vector2, ancho: float, dano: int, origen: String) -> void:
@@ -389,6 +415,10 @@ func _efecto(que: StringName, datos: Dictionary) -> void:
 					datos.color, datos.halo, datos.aviso)
 		&"fuego":
 			_fuego(datos.desde, datos.hasta, datos.ancho, datos.dano, datos.origen)
+		&"aliento":
+			if sala != null:
+				_crear_aliento(sala, datos.posicion, datos.inicio, datos.giro, datos.aviso,
+					datos.duracion, datos.ancho, datos.dano, datos.quema_segundos, datos.quema_dano)
 		&"pilar":
 			var pilar := _pilar_en(datos.posicion)
 			if sala != null and pilar != null:

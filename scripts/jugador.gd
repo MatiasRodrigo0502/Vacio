@@ -18,6 +18,9 @@ signal golpeado(cantidad: int, origen: String)
 ## no es un golpe: ni tiembla la camara, ni parpadea, ni suena, y el registro
 ## no lo cuenta como un golpe mas de la pelea.
 signal veneno_quita(cantidad: int, origen: String)
+## Cada golpe de la quemadura (el aliento de fuego del jefe). Como el veneno,
+## aparte de golpeado: no es un golpe, va poco a poco.
+signal quemadura_quita(cantidad: int, origen: String)
 signal sin_vida
 ## Se emite en cada disparo, con el punto de salida, hacia donde va y si es el
 ## ataque cargado. Va en la misma senal y no en otra aparte porque quien la
@@ -182,6 +185,15 @@ var _tiempo_veneno: float = 0.0
 ## esa velocidad, se tiñe de Escarcha.COLOR y lleva la escarcha a los pies.
 var _tiempo_frio: float = 0.0
 var _escarcha: Node2D = null
+## La quemadura (Jugador.quemar): lo que le queda, cada cuanto quita, lo que
+## quita y de donde viene, y las llamas a los pies.
+var _quemadura: float = 0.0
+var _quemadura_reloj: float = 0.0
+var _quemadura_dano: int = 0
+var _quemadura_origen: String = ""
+var _llamas: Node2D = null
+## Cada cuanto quita la quemadura: como la del mago rojo a los enemigos.
+const TIC_QUEMADURA: float = 0.5
 ## Los puntos de vida que le quedan por quitar al veneno, cada cuanto quita
 ## uno, lo que falta para el siguiente y quien lo tiro (para el registro).
 var _veneno_quedan: int = 0
@@ -545,6 +557,7 @@ func _actualizar_estados(delta: float) -> void:
 	_tiempo_veneno = maxf(_tiempo_veneno - delta, 0.0)
 	_actualizar_veneno(delta)
 	_actualizar_frio(delta)
+	_actualizar_quemadura(delta)
 	if _tiempo_invulnerable <= 0.0:
 		_sprite.modulate = _color_normal()
 		return
@@ -726,6 +739,65 @@ func _quitar_frio() -> void:
 		_escarcha.visible = false
 
 
+## Lo deja quemandose 'segundos': le quita 'dano' cada TIC_QUEMADURA, con
+## llamas a los pies (Llamas, las de los enemigos que quema el mago rojo). Lo
+## llama el aliento de fuego del jefe mientras le toca: no se suma, se
+## rellena, y el tic no se reinicia (si no, tocandole sin parar no quemaria).
+## Como el veneno, no mata: el ultimo punto lo deja.
+func quemar(segundos: float, dano: int, origen: String = "") -> void:
+	if vida_actual <= 0:
+		return
+	if _quemadura <= 0.0:
+		_quemadura_reloj = TIC_QUEMADURA
+	_quemadura = maxf(_quemadura, segundos)
+	_quemadura_dano = dano
+	_quemadura_origen = origen
+	if _llamas == null:
+		_llamas = LlamasMago.new()
+		add_child(_llamas)
+		move_child(_llamas, 0)
+	_llamas.visible = true
+
+
+func esta_quemandose() -> bool:
+	return _quemadura > 0.0
+
+
+func _actualizar_quemadura(delta: float) -> void:
+	if _quemadura <= 0.0:
+		return
+	_quemadura = maxf(_quemadura - delta, 0.0)
+	_quemadura_reloj -= delta
+	if _quemadura_reloj <= 0.0:
+		_quemadura_reloj += TIC_QUEMADURA
+		if not invencible and vida_actual > 1 and _control_activo:
+			var cuanto := mini(_quemadura_dano, vida_actual - 1)
+			vida_actual -= cuanto
+			vida_cambiada.emit(vida_actual, vida_maxima)
+			quemadura_quita.emit(cuanto, _quemadura_origen)
+	if _quemadura <= 0.0:
+		_quitar_quemadura()
+
+
+func _quitar_quemadura() -> void:
+	_quemadura = 0.0
+	if _llamas != null:
+		_llamas.visible = false
+
+
+## Las llamas a los pies del mago, como la escarcha: un nodo aparte que pinta
+## las de Llamas.
+class LlamasMago extends Node2D:
+	var _fase: float = 0.0
+
+	func _process(delta: float) -> void:
+		_fase += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		Llamas.pintar(self, Vector2(0.0, -4.0), 22.0, 50.0, _fase)
+
+
 ## La escarcha a los pies del mago: un nodo aparte (el jugador no se pinta a
 ## si mismo) que pinta la de Escarcha, la misma de los enemigos.
 class EscarchaMago extends Node2D:
@@ -827,6 +899,7 @@ func reubicar(posicion: Vector2) -> void:
 	_parar_caida()
 	_parar_veneno()
 	_quitar_frio()
+	_quitar_quemadura()
 	# Cada piso trae su ataque especial, y empieza con el escudo bajado.
 	if _escudo != null:
 		_escudo.bajar()
@@ -869,6 +942,7 @@ func restaurar_vida() -> void:
 	_parar_caida()
 	_parar_veneno()
 	_quitar_frio()
+	_quitar_quemadura()
 	_espera_disparo = 0.0
 	_cancelar_carga()
 	if _escudo != null:
