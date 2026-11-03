@@ -553,7 +553,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     saltos; slime de magma a saltos dejando lava; slime naranja rebota por la
     sala sin perseguir; rata en zigzag; murciélago en órbita y picado;
     fantasma que atraviesa rocas y se desvanece; planta azul que excava y sale
-    debajo; serpiente que rodea y dispara en abanico; planta venenosa quieta
+    debajo; serpiente que rodea y dispara en abanico, **buscando tenerte a
+    tiro** (desde el 2026-11-03: si una roca o un muro tapa la línea, va al
+    sitio más cercano desde el que no, y no dispara hasta tenerte; de lado
+    no se mete otra vez tras la roca; velocidad 55 → 68); planta venenosa quieta
     con anillos de esporas; gólem con magma de lejos y pisotón con onda
     (`OndaChoque`) de cerca; cristal que se teletransporta tras cada rayo.
     Todos avisan antes de lo que pega de golpe. Lo de cada enemigo va en

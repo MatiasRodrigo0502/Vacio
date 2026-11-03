@@ -211,7 +211,8 @@ la vida llena no se coge: se queda en el suelo para luego. Del piso 2 en adelant
 más según bajas. **Cada uno pelea a su manera**: los slimes saltan (el de
 magma dejando lava) o rebotan por la sala, la rata corre en zigzag, el
 murciélago se lanza en picado, el fantasma atraviesa rocas y se desvanece, la
-planta azul se entierra y sale debajo de ti, la serpiente dispara en abanico,
+planta azul se entierra y sale debajo de ti, la serpiente dispara en abanico
+(y si te escondes tras una roca, se mueve hasta tenerte a tiro),
 la planta venenosa suelta anillos de esporas, el gólem da pisotones con onda y
 el cristal se teletransporta. Todos avisan antes de lo que pega de golpe. Lo
 que hace cada uno está en [`resources/enemigos/`](resources/enemigos/README.md).
