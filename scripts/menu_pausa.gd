@@ -34,6 +34,10 @@ func _ready() -> void:
 	var automatico := Controles.boton_disparo_automatico()
 	$Centro/Caja.add_child(automatico)
 	$Centro/Caja.move_child(automatico, $Centro/Caja/HuecoVolumen.get_index())
+	# Y las estadisticas (F3), debajo.
+	var estadisticas := Estadisticas.boton()
+	$Centro/Caja.add_child(estadisticas)
+	$Centro/Caja.move_child(estadisticas, $Centro/Caja/HuecoVolumen.get_index())
 
 
 func _unhandled_input(evento: InputEvent) -> void:

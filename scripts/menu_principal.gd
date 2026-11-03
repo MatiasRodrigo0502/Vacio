@@ -88,6 +88,13 @@ func _montar_eleccion_teclas() -> void:
 	hueco.custom_minimum_size = Vector2(24.0, 0.0)
 	fila.add_child(hueco)
 	fila.add_child(Controles.boton_disparo_automatico())
+	# Y las estadisticas (F3), tambien aqui por lo mismo: en una fila aparte
+	# «Volver» se salia 40 px por abajo. F3 va con F11 en la lista de teclas,
+	# en la misma linea, por la misma razon.
+	var otro_hueco := Control.new()
+	otro_hueco.custom_minimum_size = Vector2(18.0, 0.0)
+	fila.add_child(otro_hueco)
+	fila.add_child(Estadisticas.boton())
 	caja.add_child(fila)
 	# Justo debajo del titulo: es lo primero que se mira al abrir el panel.
 	caja.move_child(fila, 1)
@@ -113,7 +120,7 @@ func _boton_teclas(texto: String, con_flechas: bool, grupo: ButtonGroup) -> Butt
 func _poner_teclas() -> void:
 	_boton_wasd.set_pressed_no_signal(not Controles.flechas_para_mover)
 	_boton_flechas.set_pressed_no_signal(Controles.flechas_para_mover)
-	_teclas.text = "%s\n%s o clic izq.\nclic der. o espacio\nEsc\nF11" % [
+	_teclas.text = "%s\n%s o clic izq.\nclic der. o espacio\nEsc\nF11  ·  F3" % [
 		Controles.teclas_mover(), Controles.teclas_disparar()]
 	_reglas.text = _reglas_base
 	if Controles.flechas_para_mover:

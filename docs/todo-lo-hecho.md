@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 03/11/2026 | Mago verde: rocío de veneno 9 veces más rápido y 8 proyectiles que persiguen y envenenan (los venenos se suman); los slimes se parten en 4 crías que heredan el frío, el fuego y el veneno | — |
+| 03/11/2026 | Estadísticas con F3 (FPS, rendimiento, partida y ping en cooperativo) e iconos nuevos de los objetos: un orbe de su color con un símbolo | — |
+| 03/11/2026 | Mago verde: rocío de veneno 9 veces más rápido y 8 proyectiles que persiguen y envenenan (los venenos se suman); los slimes se parten en 4 crías que heredan el frío, el fuego y el veneno | `c3afeec` |
 | 03/11/2026 | Actualizar desde el juego también en Linux y en Mac, sin pasar por GitHub | `af44cd3` |
 | 03/11/2026 | El jefe escupe fuego: un chorro que gira 90° hacia ti y te deja quemándote | `777b129` |
 | 03/11/2026 | Trampas de hielo: 5 trampas de pinchos de los pisos 9 a 12 frenan y quitan solo 1 | `8a86187`, `30e3699` |

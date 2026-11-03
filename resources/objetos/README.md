@@ -28,6 +28,16 @@ llena no se coge (`ObjetoMejora.solo_cura`). Había un «Corazón de roca» que 
 uno más; se quitó, y está en el historial de git. El campo
 `vida_maxima_extra` sigue en `ObjetoMejora` por si algún día vuelve.
 
+## Los iconos
+
+Cada objeto es un orbe de su color con un símbolo blanco dentro (bota con
+rayas de prisa, rayo, bola de fuego, bola con flechas hacia fuera, tirita).
+Los dibuja `herramientas/generar_iconos_objetos.py` desde el 2026-11-03
+(Matías: «me gusta la sencillez del color, pero no me convencen todos los
+dibujos»): se quedó el color de cada uno y cambió el dibujo. Antes eran
+formas sueltas de color (bota, rayo, llama, bola, cruz); están en el
+historial de git. Un objeto nuevo: una función más en el script.
+
 ## El código de color
 
 El color del `.tres` es la única pista visual de lo que hace, así que conviene

@@ -358,6 +358,27 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     (`Red.factor_vida_enemigos`: ×1,5 con dos, ×2 con tres). La vida de los
     compañeros, abajo a la izquierda (`VidasCompaneros`).
 
+- **Estadísticas** (2026-11-03, pedido por Matías: «ver los FPS y
+  estadísticas, así como el ping en el modo multijugador, como el F3 de
+  Minecraft o el HUD de Fortnite»): el autoload `Estadisticas`
+  (`scripts/estadisticas.gd`, capa 50, sigue en la pausa). Tres modos que
+  **F3** va pasando (en `_input`, como F11) y que también se eligen en
+  Controles (en la fila de «Moverse con»; en otra, «Volver» se salía 40 px
+  por abajo) y en la pausa (`Estadisticas.boton()`), guardados en
+  `user://ajustes.cfg` (`[pantalla] estadisticas`): *No*, *FPS y ping* (una
+  línea arriba a la derecha, encima del minimapa) y *Todas* (columna a la
+  derecha, debajo del minimapa, cada línea con su fondo: FPS, fotograma y
+  el peor del último segundo, física, llamadas de dibujo, nodos, memoria,
+  ventana y VSync; y en la partida, mago y vida, piso, sala, enemigos,
+  posición y disparos en el aire; y en red, el **ping** y la pérdida de
+  paquetes). El ping es el de ENet (`ENetPacketPeer.PEER_ROUND_TRIP_TIME`):
+  el anfitrión ve el de cada uno; los demás, el suyo con el anfitrión
+  (solo hablan con él). Probado con dos juegos en este ordenador: 10-17 ms.
+  **Por F3, los atajos de prueba de piso pasaron de F2/F3 a F7/F8.** Las
+  listas y el interruptor del disparo automático se conectan al método del
+  botón (`cambiado(modo)`, `Controles.disparo_automatico_cambiado`) y no a
+  una función anónima: esa quedaba viva al liberarse la pausa y daba error
+  al volver al menú.
 - **Pantalla completa** (2026-10-14, pedido por Matías): el autoload
   `Pantalla` (`scripts/pantalla.gd`) pone el juego exportado a pantalla
   completa sin bordes (`WINDOW_MODE_FULLSCREEN`, no la exclusiva: no cambia la
@@ -749,8 +770,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   adornos de la pared del piso. Los packs de antes (musgo y cueva de maaot,
   manto de Matías, núcleo generado) siguen en `assets/` sin usar: volver a
   uno es apuntar `catalogo_arte` del `.tres` del piso a su catálogo.
-- **Atajos de prueba** (`scripts/atajos_prueba.gd`): F1 invencible, F2/F3
-  piso anterior/siguiente, F4 matar a los de la sala, F5 recuperar el
+- **Atajos de prueba** (`scripts/atajos_prueba.gd`): F1 invencible, F7/F8
+  piso anterior/siguiente (F2/F3 hasta el 2026-11-03: F3 es ahora la de
+  las estadísticas, también en el `.exe`), F4 matar a los de la sala, F5 recuperar el
   ataque especial. Solo con
   `OS.is_debug_build()` (editor y `jugar.bat`); en el `.exe` el nodo ni se
   crea. Usan `Jugador.invencible`, `GestorProgreso.ir_a_piso()`,

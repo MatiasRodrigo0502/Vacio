@@ -111,6 +111,7 @@ se queda y el motivo está en `build/exportar.log`.
 | Ataque especial | Clic derecho o espacio, **una vez por piso**. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o, sin ninguna, hacia donde mira el mago (para jugar sin ratón). Mago blanco: saca el escudo |
 | Pausa (continuar, reiniciar o volver al menú) | Esc |
 | Pantalla completa o ventana | F11 (o Alt+Intro). El juego empieza a pantalla completa y se acuerda de lo último que elegiste |
+| Estadísticas | F3, que va pasando entre *No*, *FPS y ping* (una línea arriba a la derecha) y *Todas* (rendimiento, partida y red, como el F3 de Minecraft). También se elige en Controles y en la pausa, y se recuerda |
 
 En el panel **Controles** del menú se elige **moverse con WASD o con las
 flechas**. Con las flechas, se dispara con WASD: son las mismas dos manos al
@@ -145,8 +146,8 @@ abajo a la izquierda de la pantalla, en rojo mientras eres invencible.
 | Tecla | Qué hace |
 |---|---|
 | F1 | Invencible sí / no: ni los golpes ni las caídas quitan vida |
-| F2 | Piso anterior |
-| F3 | Piso siguiente |
+| F7 | Piso anterior (hasta el 3 de noviembre de 2026, F2) |
+| F8 | Piso siguiente (era F3, que ahora enseña las estadísticas) |
 | F4 | Mata a los enemigos de la sala en la que estás (con explosiones y crías) |
 | F5 | Recupera el ataque especial, que si no es uno por piso |
 

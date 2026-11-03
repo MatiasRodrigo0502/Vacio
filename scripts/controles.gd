@@ -19,6 +19,12 @@ extends Node
 ## Cambia la eleccion. La escuchan los textos que nombran las teclas (el
 ## panel de controles del menu y los carteles del piso 1).
 signal cambiado
+## Ha cambiado el disparo automatico. Aparte de cambiado y con el valor, para
+## conectarle tal cual el metodo del interruptor (boton_disparo_automatico):
+## esa conexion se quita sola al liberarse el interruptor. La de antes era una
+## funcion anonima que lo guardaba, y al volver de la partida al menu y tocar
+## el del menu daba error por el de la pausa, ya liberado.
+signal disparo_automatico_cambiado(activo: bool)
 
 const ARCHIVO_AJUSTES := "user://ajustes.cfg"
 const LADOS: Array[String] = ["izquierda", "derecha", "arriba", "abajo"]
@@ -60,6 +66,7 @@ func elegir_disparo_automatico(activo: bool) -> void:
 	ajustes.load(ARCHIVO_AJUSTES)
 	ajustes.set_value("controles", "disparo_automatico", activo)
 	ajustes.save(ARCHIVO_AJUSTES)
+	disparo_automatico_cambiado.emit(activo)
 	cambiado.emit()
 
 
@@ -74,9 +81,7 @@ func boton_disparo_automatico() -> CheckButton:
 	boton.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	boton.button_pressed = disparo_automatico
 	boton.toggled.connect(elegir_disparo_automatico)
-	cambiado.connect(func() -> void:
-		if is_instance_valid(boton):
-			boton.set_pressed_no_signal(disparo_automatico))
+	disparo_automatico_cambiado.connect(boton.set_pressed_no_signal)
 	return boton
 
 

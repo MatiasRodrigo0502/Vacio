@@ -158,7 +158,7 @@ text = "moverte
 disparar
 ataque especial
 pausa y reiniciar  ·  cerrar esto
-pantalla completa o ventana"
+pantalla completa  ·  estadísticas"
 horizontal_alignment = 2
 
 [node name="Botones" type="Label" parent="PanelControles/Centro/Caja/Teclas"]
@@ -169,7 +169,7 @@ text = "W A S D
 flechas o clic izq.
 clic der. o espacio
 Esc
-F11"
+F11  ·  F3"
 
 [node name="Reglas" type="Label" parent="PanelControles/Centro/Caja"]
 modulate = Color(0.85098, 0.803922, 0.760784, 1)

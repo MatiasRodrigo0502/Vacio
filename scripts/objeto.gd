@@ -102,5 +102,7 @@ func _draw() -> void:
 	var pulso := 1.0 + sin(_fase * 3.0) * 0.12
 	var base := Color(mejora.color.r, mejora.color.g, mejora.color.b, 0.16)
 	draw_circle(Vector2.ZERO, alto_objetivo * 0.62 * pulso, base)
-	draw_arc(Vector2.ZERO, alto_objetivo * 0.42 * pulso, 0.0, TAU, 28,
+	# Por fuera del orbe del icono (que mide el 90 % del alto): dentro, el
+	# icono lo tapaba entero.
+	draw_arc(Vector2.ZERO, alto_objetivo * 0.56 * pulso, 0.0, TAU, 28,
 		Color(mejora.color.r, mejora.color.g, mejora.color.b, 0.55), 2.5, true)

@@ -1,14 +1,18 @@
 ## Atajos de teclado para probar y equilibrar el juego sin jugarlo entero:
 ##
 ##   F1  invencible (si / no)
-##   F2  piso anterior
-##   F3  piso siguiente
+##   F7  piso anterior
+##   F8  piso siguiente
 ##   F4  matar a los enemigos de la sala en la que estas
 ##   F5  recuperar el ataque especial (es uno por piso)
 ##
 ## SOLO EXISTEN AL JUGAR DESDE GODOT (el editor o jugar.bat). Principal crea
 ## este nodo solo si OS.is_debug_build(), que en el .exe exportado es false:
 ## quien juegue la version entregada no puede saltarse nada por accidente.
+##
+## Los pisos iban con F2 y F3 hasta el 2026-11-03: F3 paso a ser la de las
+## estadisticas (Estadisticas), como en Minecraft, y esa existe tambien en el
+## juego exportado.
 ##
 ## POR QUE TECLAS SUELTAS Y NO ACCIONES DEL MAPA DE TECLAS:
 ## no son controles del juego, sino una herramienta del equipo. En el mapa de
@@ -60,9 +64,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 		KEY_F1:
 			_jugador.invencible = not _jugador.invencible
 			_actualizar_texto()
-		KEY_F2:
+		KEY_F7:
 			GestorProgreso.ir_a_piso(GestorProgreso.piso_actual - 1)
-		KEY_F3:
+		KEY_F8:
 			GestorProgreso.ir_a_piso(GestorProgreso.piso_actual + 1)
 		KEY_F4:
 			_limpiar_sala()
@@ -94,7 +98,7 @@ func _limpiar_sala() -> void:
 
 func _actualizar_texto() -> void:
 	var estado := "SÍ" if _jugador.invencible else "no"
-	_etiqueta.text = "PRUEBA  F1 invencible: %s   F2/F3 piso anterior/siguiente   F4 limpiar sala   F5 especial" % estado
+	_etiqueta.text = "PRUEBA  F1 invencible: %s   F7/F8 piso anterior/siguiente   F4 limpiar sala   F5 especial" % estado
 	# En rojo mientras se es invencible: probando el equilibrio, olvidarse de
 	# que esta puesto da conclusiones falsas («este piso es facil»).
 	_etiqueta.modulate = Color(1.0, 0.45, 0.4) if _jugador.invencible else Color(1.0, 1.0, 1.0, 0.55)
