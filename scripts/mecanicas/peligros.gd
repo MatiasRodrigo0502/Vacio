@@ -50,6 +50,14 @@ extends Mecanica
 ## De cada puerta que da a una sala de pelea, la probabilidad de que tenga.
 @export_range(0.0, 1.0) var probabilidad_puerta: float = 0.4
 
+@export_group("Trampas de hielo")
+## Cuantas trampas de pinchos pasan a ser de hielo (TrampaHielo: frenan en
+## vez de pinchar), repartidas al azar entre los pisos de 'pisos_hielo'.
+## Pedido por Matias el 2026-11-03: «sustituye 5 trampas de pinchos al azar a
+## repartir entre los pisos 9, 10, 11 y 12».
+@export var trampas_hielo: int = 5
+@export var pisos_hielo: Vector2i = Vector2i(9, 12)
+
 ## Lado de la placa de una puerta: casi el ancho del hueco, para que no se
 ## pueda pasar por un lado. Con el jugador midiendo 30 px, los 5 de cada lado
 ## no le dejan colarse.
@@ -58,7 +66,67 @@ const LADO_PUERTA: float = Sala.ANCHO_PUERTA - 10.0
 
 func aplicar_a_piso(piso: Node) -> void:
 	_pinchos_en_puertas(piso)
+	_repartir(piso)
+	# Al final, con todos los pinchos ya puestos (los de las puertas tambien).
+	_poner_hielo(piso)
 
+
+## Cuantas trampas de hielo le tocan a ese piso: las 'trampas_hielo'
+## repartidas entre los pisos de 'pisos_hielo', a partes iguales y las que
+## sobran a pisos al azar (con 5 en 4 pisos: una en cada uno y otra mas en
+## uno). Al azar del todo, con la primera semilla salian 1, 0, 0 y 4: dos
+## pisos sin ninguna no es repartirlas. La semilla es fija: el reparto sale
+## siempre igual, como todo lo de los pisos.
+func hielo_en_piso(numero: int) -> int:
+	if numero < pisos_hielo.x or numero > pisos_hielo.y:
+		return 0
+	var pisos := pisos_hielo.y - pisos_hielo.x + 1
+	var cuantas := trampas_hielo / pisos
+	var generador := RandomNumberGenerator.new()
+	generador.seed = hash(nombre_mecanica + " reparto del hielo")
+	var con_una_mas: Array[int] = []
+	for piso in range(pisos_hielo.x, pisos_hielo.y + 1):
+		con_una_mas.append(piso)
+	for _i in trampas_hielo % pisos:
+		if con_una_mas.pop_at(generador.randi() % con_una_mas.size()) == numero:
+			cuantas += 1
+	return cuantas
+
+
+## Cambia por trampas de hielo las pinchos que le toquen a este piso, elegidos
+## al azar (con la semilla del piso) entre todos los suyos, los de las puertas
+## tambien. La trampa nueva va en el mismo sitio, del mismo tamano y con el
+## mismo ritmo: solo cambia lo que sale del suelo.
+func _poner_hielo(piso: Node) -> void:
+	var cuantas := hielo_en_piso(piso.numero_piso)
+	if cuantas <= 0:
+		return
+	var pinchos: Array[Pinchos] = []
+	for sala in piso.salas():
+		for hijo in sala.get_children():
+			if hijo is Pinchos and not hijo is TrampaHielo:
+				pinchos.append(hijo)
+	var generador := RandomNumberGenerator.new()
+	generador.seed = hash(nombre_mecanica + " hielo") + piso.numero_piso * 7727
+	for _i in mini(cuantas, pinchos.size()):
+		var cual: Pinchos = pinchos.pop_at(generador.randi() % pinchos.size())
+		var hielo := TrampaHielo.new()
+		hielo.desfase = cual.desfase
+		hielo.tinte = cual.tinte
+		hielo.tamano = cual.tamano
+		hielo.color_suelo = cual.color_suelo
+		hielo.color_borde = cual.color_borde
+		hielo.position = cual.position
+		var sala: Node = cual.get_parent()
+		var sitio := cual.get_index()
+		sala.remove_child(cual)
+		cual.queue_free()
+		sala.add_child(hielo)
+		sala.move_child(hielo, sitio)
+
+
+## Los peligros al azar de cada sala de pelea.
+func _repartir(piso: Node) -> void:
 	var clases: Array[String] = []
 	if piso.numero_piso >= piso_pinchos:
 		clases.append("pinchos")

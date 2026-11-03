@@ -105,6 +105,9 @@ const VELOCIDAD_MINIMA_ANDAR: float = 12.0
 ## pesa del veneno: te deja a tiro del siguiente. Desde el 2026-10-14 (Matias)
 ## ademas quita un poco de vida mientras dura (TipoProyectil.veneno_vida).
 const FACTOR_VENENO: float = 0.6
+## Lo que va con frio (la trampa de hielo): a la mitad, como los enemigos que
+## frena el disparo del mago blanco (Enemigo.RITMO_FRENADO).
+const FACTOR_FRIO: float = 0.5
 const COLOR_VENENO := Color(0.6, 1.0, 0.55)
 ## Lo que tarda la animacion de caer por un agujero.
 const DURACION_CAIDA: float = 0.4
@@ -175,6 +178,10 @@ var _mirando: StringName = &"abajo"
 
 ## Segundos que le quedan envenenado (frenado). 0 = sano.
 var _tiempo_veneno: float = 0.0
+## Lo que le queda de frio (TrampaHielo). Con frio va a FACTOR_FRIO, anima a
+## esa velocidad, se tiñe de Escarcha.COLOR y lleva la escarcha a los pies.
+var _tiempo_frio: float = 0.0
+var _escarcha: Node2D = null
 ## Los puntos de vida que le quedan por quitar al veneno, cada cuanto quita
 ## uno, lo que falta para el siguiente y quien lo tiro (para el registro).
 var _veneno_quedan: int = 0
@@ -276,7 +283,8 @@ func _physics_process(delta: float) -> void:
 			"mover_izquierda", "mover_derecha", "mover_arriba", "mover_abajo")
 
 	if direccion != Vector2.ZERO:
-		var punta := velocidad_maxima * (FACTOR_VENENO if esta_envenenado() else 1.0)
+		var punta := velocidad_maxima * (FACTOR_VENENO if esta_envenenado() else 1.0) \
+			* (FACTOR_FRIO if tiene_frio() else 1.0)
 		velocity = velocity.move_toward(direccion * punta, aceleracion * delta)
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, friccion * delta)
@@ -536,6 +544,7 @@ func _lado(v: Vector2) -> StringName:
 func _actualizar_estados(delta: float) -> void:
 	_tiempo_veneno = maxf(_tiempo_veneno - delta, 0.0)
 	_actualizar_veneno(delta)
+	_actualizar_frio(delta)
 	if _tiempo_invulnerable <= 0.0:
 		_sprite.modulate = _color_normal()
 		return
@@ -680,6 +689,56 @@ func envenenar(segundos: float, vida: int = 0, origen: String = "") -> void:
 	_veneno_origen = origen
 
 
+## Lo frena 'segundos' (la trampa de hielo): no se suma, se rellena. Como los
+## enemigos que frena el disparo del mago blanco: a la mitad, azulado y con
+## escarcha a los pies (Escarcha). No quita vida.
+func congelar(segundos: float) -> void:
+	if vida_actual <= 0:
+		return
+	_tiempo_frio = maxf(_tiempo_frio, segundos)
+	if _escarcha == null:
+		_escarcha = EscarchaMago.new()
+		add_child(_escarcha)
+		# La primera: debajo del sprite, como la de los enemigos.
+		move_child(_escarcha, 0)
+	_escarcha.visible = true
+	_sprite.self_modulate = Escarcha.COLOR
+	_sprite.speed_scale = FACTOR_FRIO
+
+
+func tiene_frio() -> bool:
+	return _tiempo_frio > 0.0
+
+
+func _actualizar_frio(delta: float) -> void:
+	if _tiempo_frio <= 0.0:
+		return
+	_tiempo_frio = maxf(_tiempo_frio - delta, 0.0)
+	if _tiempo_frio <= 0.0:
+		_quitar_frio()
+
+
+func _quitar_frio() -> void:
+	_tiempo_frio = 0.0
+	_sprite.self_modulate = Color.WHITE
+	_sprite.speed_scale = 1.0
+	if _escarcha != null:
+		_escarcha.visible = false
+
+
+## La escarcha a los pies del mago: un nodo aparte (el jugador no se pinta a
+## si mismo) que pinta la de Escarcha, la misma de los enemigos.
+class EscarchaMago extends Node2D:
+	var _fase: float = 0.0
+
+	func _process(delta: float) -> void:
+		_fase += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		Escarcha.pintar(self, Vector2(0.0, -4.0), 24.0, _fase)
+
+
 ## Quita un punto cada _veneno_cada segundos hasta que no le quede. Sin
 ## invulnerabilidad de por medio: viene del golpe de antes, que ya la dio. Se
 ## para sin control (cayendo por un agujero, al acabar la partida).
@@ -767,6 +826,7 @@ func reubicar(posicion: Vector2) -> void:
 	_cancelar_carga()
 	_parar_caida()
 	_parar_veneno()
+	_quitar_frio()
 	# Cada piso trae su ataque especial, y empieza con el escudo bajado.
 	if _escudo != null:
 		_escudo.bajar()
@@ -808,6 +868,7 @@ func restaurar_vida() -> void:
 	_sprite.modulate = Color.WHITE
 	_parar_caida()
 	_parar_veneno()
+	_quitar_frio()
 	_espera_disparo = 0.0
 	_cancelar_carga()
 	if _escudo != null:

@@ -598,6 +598,20 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de pelea: **pinchos** que salen a ratos (desde el piso 2), **agujeros** que
   cuestan 30 de vida y te devuelven a la entrada de la sala (desde el 3) y
   **lava** (desde el 4). Nunca pisan el paso de una puerta al centro.
+  **Trampas de hielo** (`TrampaHielo`, `scripts/trampa_hielo.gd`; Matías,
+  2026-11-03: «el mismo funcionamiento que los pinchos, pero en vez de hacer
+  daño te da efecto de ralentización»): hereda de `Pinchos` (el mismo ciclo
+  y los mismos agujeros; `Pinchos._draw` se partió en `_pintar_placa`,
+  `_pintar_pincho` y `_pintar_encima` para que pinte lo suyo): placa teñida
+  de frío, cristales de hielo en vez de pinchos, los agujeros brillan al
+  avisar y una neblina con destellos fuera. Pisada fuera, `Jugador.congelar`
+  2 s: va a la mitad (`FACTOR_FRIO`), anima a la mitad, su sprite se tiñe de
+  `Escarcha.COLOR` y lleva la escarcha a los pies, la misma de los enemigos
+  frenados por el mago blanco (`Escarcha.pintar`, que ahora usan los dos).
+  No quita vida. `MecanicaPeligros._poner_hielo` cambia por ellas
+  `trampas_hielo` (5) de los pinchos de `pisos_hielo` (9 a 12), al final del
+  piso y con los de las puertas incluidos: una por piso y la que sobra en
+  uno al azar (`hielo_en_piso`; al azar del todo salían 1, 0, 0 y 4).
   **Los enemigos esquivan los agujeros y caen si los empujan** (Matías,
   2026-11-03): `Enemigo.andar` (y `andar_rebotando`, que rebota en ellos
   como en un muro) no deja que un paso los meta en uno (`Sala.pozo_en`, con

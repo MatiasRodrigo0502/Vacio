@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 03/11/2026 | Disparo automático con autoapuntado, en Controles y en la pausa | — |
+| 03/11/2026 | Trampas de hielo: 5 trampas de pinchos de los pisos 9 a 12 frenan en vez de pinchar | — |
+| 03/11/2026 | Disparo automático con autoapuntado, en Controles y en la pausa | `d9ed97f` |
 | 03/11/2026 | La planta venenosa te persigue cada vez más rápido al cerrarse las puertas | `2e4f346` |
 | 03/11/2026 | Las serpientes buscan tenerte a tiro y van algo más rápido | `57b2c9b` |
 | 03/11/2026 | Los enemigos rodean los agujeros del suelo y, si los empujan dentro, caen | `4f28888` |

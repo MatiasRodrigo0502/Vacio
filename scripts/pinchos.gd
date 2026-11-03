@@ -78,7 +78,7 @@ func _salida() -> float:
 
 func _draw() -> void:
 	var caja := Rect2(-tamano * 0.5, tamano)
-	draw_texture_rect(PLACA, caja, false, tinte)
+	_pintar_placa(caja)
 
 	var salida := _salida()
 	var metal := Color.WHITE.lerp(tinte, 0.4)
@@ -98,13 +98,29 @@ func _draw() -> void:
 			for columna in FILAS:
 				var x := caja.position.x + margen.x + (columna + 0.5) * celda.x
 				var pie := y + semieje * AGUJERO_ALTO * 0.3
-				var visible_alto := alto * salida
-				# Solo la parte de arriba del pincho: es la que ha salido.
-				draw_texture_rect_region(PINCHO,
-					Rect2(x - ancho * 0.5, pie - visible_alto, ancho, visible_alto),
-					Rect2(0.0, 0.0, PINCHO.get_width(), PINCHO.get_height() * salida), metal)
+				_pintar_pincho(x, pie, ancho, alto * salida, salida, metal)
 		var banda_desde := MARGEN + fila * celda.y / tamano.y
 		var banda := Rect2(0.0, banda_desde * tam_labio.y, tam_labio.x, celda.y / tamano.y * tam_labio.y)
 		draw_texture_rect_region(LABIO,
 			Rect2(caja.position.x, caja.position.y + banda_desde * tamano.y, tamano.x, celda.y),
 			banda, tinte)
+	_pintar_encima(caja, salida)
+
+
+## La placa de abajo. La trampa de hielo la tiñe de frio.
+func _pintar_placa(caja: Rect2) -> void:
+	draw_texture_rect(PLACA, caja, false, tinte)
+
+
+## Un pincho saliendo de su agujero: solo la parte de arriba, la que ha
+## salido. La trampa de hielo pinta un cristal.
+func _pintar_pincho(x: float, pie: float, ancho: float, alto_visible: float, salida: float,
+		metal: Color) -> void:
+	draw_texture_rect_region(PINCHO,
+		Rect2(x - ancho * 0.5, pie - alto_visible, ancho, alto_visible),
+		Rect2(0.0, 0.0, PINCHO.get_width(), PINCHO.get_height() * salida), metal)
+
+
+## Lo que va encima de todo. Los pinchos, nada.
+func _pintar_encima(_caja: Rect2, _salida: float) -> void:
+	pass

@@ -34,7 +34,7 @@ const RADIO_JUGADOR: float = 15.0
 ## Frenado (por el disparo del mago blanco): todo a este ritmo, y de este
 ## color, para que se vea por que va lento.
 const RITMO_FRENADO: float = 0.5
-const COLOR_FRENADO := Color(0.62, 0.84, 1.25)
+const COLOR_FRENADO := Escarcha.COLOR
 ## Quemadura (por los disparos del mago rojo): quita vida a golpes de un
 ## segundo, no un poco cada fotograma, porque cada golpe hace parpadear al
 ## enemigo y eso es lo que dice que le esta quemando.
@@ -391,19 +391,7 @@ func _dejar_de_frenar() -> void:
 ## notaba. Va en el suelo y mas ancho que el cuerpo porque el sprite se pinta
 ## encima de esto: en el cuerpo quedaria tapado.
 func _pintar_escarcha() -> void:
-	var radio := tipo.alto * 0.62
-	var pies := Vector2(0.0, tipo.alto * 0.42)
-	var color := Color(0.78, 0.94, 1.0, 0.85)
-	# Achatado: es un circulo en el suelo visto en 3/4.
-	draw_set_transform(pies, 0.0, Vector2(1.0, 0.4))
-	draw_circle(Vector2.ZERO, radio, Color(0.6, 0.85, 1.0, 0.22))
-	draw_arc(Vector2.ZERO, radio, 0.0, TAU, 32, color, 2.5, true)
-	draw_set_transform(Vector2.ZERO)
-	for k in 5:
-		var angulo := _fase * 1.2 + k * TAU / 5.0
-		var copo := pies + Vector2(cos(angulo) * radio, sin(angulo) * radio * 0.4)
-		draw_line(copo - Vector2(3.5, 0.0), copo + Vector2(3.5, 0.0), Color.WHITE, 1.4)
-		draw_line(copo - Vector2(0.0, 3.5), copo + Vector2(0.0, 3.5), Color.WHITE, 1.4)
+	Escarcha.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.62, _fase)
 
 
 ## Unas llamas a los pies, por el mismo motivo que la escarcha: el sprite se
