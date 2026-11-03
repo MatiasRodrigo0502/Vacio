@@ -11,11 +11,11 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Núcleo interno"
-ancho_area = 740.0
+ancho_area = 1340.0
 velocidad_obstaculos = 390.0
 radio_vision = 495.0
 es_nivel_final = true
-alto_area = 600.0
+alto_area = 800.0
 familia_obstaculos = "bloque"
 catalogo_arte = ExtResource("2_catalogo")
 cantidad_salas = 10
@@ -23,7 +23,7 @@ cantidad_obstaculos = 6
 estilo_borde = ExtResource("9_borde")
 musica = ExtResource("20_musica")
 sala_jefe = true
-tamano_sala_jefe = Vector2(1200, 700)
+tamano_sala_jefe = Vector2(1600, 860)
 objeto_antesala = ExtResource("23_vendaje")
 jefe = ExtResource("21_jefe")
 musica_jefe = ExtResource("22_musica_jefe")

@@ -8,11 +8,11 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Litosfera superior"
-ancho_area = 1280.0
+ancho_area = 1340.0
 velocidad_obstaculos = 110.0
 radio_vision = 495.0
 es_nivel_final = false
-alto_area = 780.0
+alto_area = 800.0
 familia_obstaculos = "roca"
 cantidad_salas = 6
 cantidad_obstaculos = 3

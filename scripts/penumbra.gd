@@ -1,8 +1,8 @@
 ## Lo de fuera de la sala en la que se juega, a oscuras.
 ##
 ## POR QUE: la pantalla es mas ancha y mas alta que la sala en todos los
-## pisos (con la vista del piso 2, que tienen todos desde el 2026-10-22,
-## sobran 116 px de mundo por lado en el 1 y 446 en el 12), asi que asomaba
+## pisos (con la vista del piso 2, que tienen todos desde el 2026-10-22, y
+## salas de 1340 x 800, sobran 146 px de mundo por lado), asi que asomaba
 ## un trozo de las salas de al lado: sus enemigos dormidos, sus rocas, su
 ## objeto. Distraia, y ensenaba lo que hay detras de una puerta antes de
 ## cruzarla. Como en Isaac, solo se ve la sala en la que estas. Dentro de la

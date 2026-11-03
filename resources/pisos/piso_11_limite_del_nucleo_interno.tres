@@ -8,11 +8,11 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Límite del núcleo interno"
-ancho_area = 800.0
+ancho_area = 1340.0
 velocidad_obstaculos = 340.0
 radio_vision = 495.0
 es_nivel_final = false
-alto_area = 620.0
+alto_area = 800.0
 familia_obstaculos = "bloque"
 catalogo_arte = ExtResource("2_catalogo")
 cantidad_salas = 10

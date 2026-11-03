@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-10-29.**
+**Última actualización: 2026-11-03.**
 
 ---
 
@@ -12,8 +12,9 @@ explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidi�
 Juego 2D top-down en **Godot 4.7** (GDScript). Se desciende piso a piso por un
 embudo: **12 niveles fijos** basados en las capas de la Tierra, de la corteza al
 núcleo interno. Cada piso es un **mapa de salas unidas por puertas**, y cada uno
-tiene más salas, y más pequeñas. La cámara ve lo mismo en todos (desde el
-2026-10-22; antes se acercaba al bajar).
+tiene más salas, y más llenas. Todas las salas miden lo mismo en todos los
+pisos (desde el 2026-11-03; antes encogían) y la cámara ve lo mismo en todos
+(desde el 2026-10-22; antes se acercaba al bajar).
 
 Proyecto de clase (1 DAM). Lo trabajan **3 personas en paralelo**.
 
@@ -182,7 +183,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Sala del jefe del piso 12** (2026-10-13, pedida por Matías). Con `DatosPiso.sala_jefe`, `MapaSalas` cuelga de
   la sala más lejana (o de la siguiente, si no cabe) una **antesala** y detrás
   la sala del **jefe** (`Tipo.ANTESALA` y `Tipo.JEFE`; con jefe no hay
-  `SALIDA`). La del jefe mide `tamano_sala_jefe` (1200 × 700) y tapa varias
+  `SALIDA`). La del jefe mide `tamano_sala_jefe` (1600 × 860 desde el
+  2026-11-03, lo justo para caber en pantalla sin alejar la cámara; antes
+  1200 × 700) y tapa varias
   casillas: las demás quedan reservadas (`casillas_del_jefe`) y todas apuntan
   a ella en `Piso.sala_en`. Va centrada en el eje de la antesala, con el muro
   pegado al suyo (`Piso._posicion_jefe`), para que las dos puertas queden
@@ -492,7 +495,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   lo del mundo (z 30) cuatro bandas negras al 92 % alrededor de la casilla de
   la sala, con 48 px de degradado. La pantalla es más ancha y más alta que
   la sala en todos los pisos (con la vista del piso 2, 1760 × 990 px de
-  mundo: sobran 116 px por lado en el 1 y 446 en el 12), y asomaba lo de
+  mundo, y salas de 1340 × 800: sobran 146 px por lado), y asomaba lo de
   las salas vecinas. La zona con
   luz la da `CamaraJuego.zona_iluminada()`, que va hacia el límite con el
   mismo suavizado que la cámara y salta con ella (`seguir`/`limitar_a` con
@@ -728,8 +731,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   camino. Los callejones son los que dan sitio a la sala del objeto.
 - **La salida es la sala más lejana y el objeto va en un callejón.** Así hay
   que cruzar el piso para bajar, y coger el objeto es desviarse a propósito.
-- **Todas las salas de un piso miden lo mismo** (`ancho_area` × `alto_area`).
-  Es lo que las deja encajar en la cuadrícula muro con muro, sin huecos.
+- **Todas las salas miden lo mismo** (`ancho_area` × `alto_area`, 1340 × 800
+  en los 12 pisos), salvo la del jefe. Dentro de un piso es lo que las deja
+  encajar en la cuadrícula muro con muro, sin huecos; entre pisos, lo pidió
+  Matías el 2026-11-03.
 - **Los enemigos duermen hasta que entras en su sala.** Son `Area2D` que van
   directos al jugador sin chocar con nada; despiertos, los de la sala de al
   lado cruzaban el muro para perseguirte.
@@ -744,10 +749,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   de 520 a 240 y la cámara se acercaba el doble en el 12: enemigos, rocas y
   mago se veían más grandes, y del 9 en adelante no cabía ni el suelo. Ahora
   la sala cabe entera en todos (zoom 0,655 medido en los pisos 2, 7 y 12 y
-  en la sala del jefe) y la cámara se queda quieta en ella; en el 12 la sala
-  ocupa la mitad del ancho de la pantalla y lo demás está a oscuras. Que
-  cada piso se vea menos lo dan las salas, que encogen. Con la ventana de
-  1152×648.
+  en la sala del jefe) y la cámara se queda quieta en ella. Con la ventana
+  de 1152×648. **Y desde el 2026-11-03 las salas también miden lo mismo
+  en todos los pisos** (Matías: «no en todas las salas tienen el mismo
+  tamaño»): 1340 × 800, las del piso 2. Antes encogían de 1400 × 820 a
+  740 × 600, y con ellas lo que sale de su ancho: las rocas
+  (`Piso._colocar_obstaculos`, lado = 7,5 % del ancho, hasta 96), los
+  peligros y las piezas de la pared. La del jefe, 1600 × 860. Lo que sube
+  al bajar es lo de dentro: salas, enemigos y rocas.
 - **La ventaja de un mago se suma a los valores de fábrica, no se aplica como
   un objeto recogido.** `restaurar_vida()` vuelve a esos valores al empezar
   otra partida: si la ventaja fuera un objeto del piso, el mago perdería lo

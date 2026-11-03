@@ -32,8 +32,9 @@ extends Resource
 ## Desde el 2026-10-22 es 495 en todos los pisos, el del piso 2 (Matias:
 ## que los enemigos y todo lo demas se vean siempre del mismo tamano). Antes
 ## bajaba hasta 240 en el 12 y la camara se acercaba el doble: los pisos
-## hondos se veian con todo mas grande. Lo de «cada piso se ve menos» lo dan
-## ahora las salas, mas pequenas en cada piso, con lo de fuera a oscuras.
+## hondos se veian con todo mas grande. Y desde el 2026-11-03 las salas miden
+## tambien lo mismo en todos (ancho_area, alto_area): ya nada se ve mas
+## grande ni mas pequeno de un piso a otro.
 @export var radio_vision: float = 500.0
 
 ## Marca el ultimo piso: al superarlo se gana la partida en vez de avanzar.
@@ -97,8 +98,10 @@ extends Resource
 ## bajada en el centro. Pedido por Matias el 2026-10-13 para el piso 12.
 @export var sala_jefe: bool = false
 ## Lo que mide el suelo de la sala del jefe, en px. Mas ancha que alta, como
-## la pantalla: la camara la ensena entera (CamaraJuego.ver_entera).
-@export var tamano_sala_jefe: Vector2 = Vector2(1200.0, 700.0)
+## la pantalla. La del piso 12 (1600 x 860) es lo mas grande que cabe con sus
+## muros en lo que ve la camara (1760 x 990): mas, y ver_entera la alejaria,
+## y todo se veria mas pequeno que en las demas salas.
+@export var tamano_sala_jefe: Vector2 = Vector2(1600.0, 860.0)
 ## Lo que espera en la antesala, junto al altar (el vendaje). Vacio = nada.
 @export var objeto_antesala: ObjetoMejora = null
 ## El jefe que espera en su sala (resources/jefes/). Vacio = sala sin jefe,

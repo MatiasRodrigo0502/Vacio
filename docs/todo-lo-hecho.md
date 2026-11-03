@@ -12,7 +12,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 - **Una sala secreta por piso:** escondida tras una pared con unas grietas finas, que se rompe con tres disparos. Dentro, un cofre: al pisarlo sale una ruleta con las ventajas y te toca una al azar.
 - **El piso 1 es un tutorial:** cinco salas en fila, y al entrar en cada una sale una ventana (con el juego parado) que explica una cosa: moverse y disparar; el ataque especial, las rocas, la vida y el mapa; matar a todos los enemigos para que se abran las puertas, con la primera pelea; los objetos; la bajada.
 - Al entrar en una sala con enemigos, las puertas se cierran hasta limpiarla.
-- Cada piso tiene más salas que el anterior, y más pequeñas. Todo se ve del mismo tamaño en todos los pisos: la cámara no se acerca al bajar.
+- Cada piso tiene más salas que el anterior, y con más enemigos y rocas. Todas las salas miden lo mismo en todos los pisos (la del jefe, más grande) y la cámara no se acerca al bajar: todo se ve siempre del mismo tamaño.
 
 **Cómo se juega ahora:**
 
@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 29/10/2026 | Una sala secreta en cada piso, tras una pared agrietada que se rompe a disparos, con un cofre y una ruleta de ventajas | — |
+| 03/11/2026 | Todas las salas miden lo mismo en todos los pisos (1340 × 800); la del jefe, 1600 × 860 | — |
+| 29/10/2026 | Una sala secreta en cada piso, tras una pared agrietada que se rompe a disparos, con un cofre y una ruleta de ventajas | `ab38953` |
 | 29/10/2026 | El piso 1 es un tutorial: cinco salas en fila, una ventana que explica una cosa en cada una, y en la tercera la primera pelea | `33fc16a` |
 | 29/10/2026 | Al acabar la partida, «Cambiar mago»: se empieza de cero con uno de los magos que no se han usado | `a474c6b` |
 | 22/10/2026 | Los enemigos y todo lo demás se ven del mismo tamaño en todos los pisos (la cámara del piso 2) | `743bb0f` |

@@ -11,11 +11,11 @@
 [resource]
 script = ExtResource("1_datos_piso")
 nombre_capa = "Corteza continental"
-ancho_area = 1400.0
+ancho_area = 1340.0
 velocidad_obstaculos = 80.0
 radio_vision = 495.0
 es_nivel_final = false
-alto_area = 820.0
+alto_area = 800.0
 mostrar_tutorial = true
 enemigos_tutorial = Array[ExtResource("32_tipo")]([ExtResource("30_slime"), ExtResource("31_rata"), ExtResource("31_rata")])
 sala_pelea_tutorial = 3

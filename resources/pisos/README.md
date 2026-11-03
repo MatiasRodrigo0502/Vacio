@@ -28,24 +28,24 @@ de pisos en el código.
 | `enemigos_tutorial` | Con el tutorial, los enemigos de su primera pelea (en el piso 1, un slime verde y dos ratas). |
 | `sala_pelea_tutorial` | En qué sala, contando desde el inicio, va esa pelea (la 3). |
 | `sala_jefe` | El piso acaba en la sala del jefe: antesala con altar y vendaje (`objeto_antesala`), y detrás la sala del jefe, con la bajada. No cuenta en `cantidad_salas` (son dos salas más). Solo el piso 12. |
-| `tamano_sala_jefe` | Lo que mide el suelo de la sala del jefe (1200 × 700 en el 12). La cámara la enseña entera. |
+| `tamano_sala_jefe` | Lo que mide el suelo de la sala del jefe (1600 × 860 en el 12, desde el 2026-11-03; antes 1200 × 700). Más grande que las demás, y lo justo para que quepa en pantalla con sus muros sin alejar la cámara. |
 
 ## Valores de partida (sin jugar todavía, pendientes de ajuste)
 
 | # | Capa | sala (ancho × alto) | salas | rocas/sala | vel. | visión |
 |---|---|---|---|---|---|---|
-| 01 | Corteza continental | 1400 × 820 | 5 | 2 | 80 | 495 |
+| 01 | Corteza continental | 1340 × 800 | 5 | 2 | 80 | 495 |
 | 02 | Corteza oceánica | 1340 × 800 | 5 | 3 | 95 | 495 |
-| 03 | Litosfera superior | 1280 × 780 | 6 | 3 | 110 | 495 |
-| 04 | Astenosfera | 1220 × 760 | 6 | 3 | 130 | 495 |
-| 05 | Manto superior | 1160 × 740 | 7 | 4 | 150 | 495 |
-| 06 | Zona de transición | 1100 × 720 | 7 | 4 | 175 | 495 |
-| 07 | Manto inferior | 1040 × 700 | 8 | 4 | 200 | 495 |
-| 08 | Capa D'' | 980 × 680 | 8 | 5 | 230 | 495 |
-| 09 | Núcleo externo exterior | 920 × 660 | 9 | 5 | 265 | 495 |
-| 10 | Núcleo externo interior | 860 × 640 | 9 | 5 | 300 | 495 |
-| 11 | Límite del núcleo interno | 800 × 620 | 10 | 6 | 340 | 495 |
-| 12 | Núcleo interno | 740 × 600 | 10 | 6 | 390 | 495 |
+| 03 | Litosfera superior | 1340 × 800 | 6 | 3 | 110 | 495 |
+| 04 | Astenosfera | 1340 × 800 | 6 | 3 | 130 | 495 |
+| 05 | Manto superior | 1340 × 800 | 7 | 4 | 150 | 495 |
+| 06 | Zona de transición | 1340 × 800 | 7 | 4 | 175 | 495 |
+| 07 | Manto inferior | 1340 × 800 | 8 | 4 | 200 | 495 |
+| 08 | Capa D'' | 1340 × 800 | 8 | 5 | 230 | 495 |
+| 09 | Núcleo externo exterior | 1340 × 800 | 9 | 5 | 265 | 495 |
+| 10 | Núcleo externo interior | 1340 × 800 | 9 | 5 | 300 | 495 |
+| 11 | Límite del núcleo interno | 1340 × 800 | 10 | 6 | 340 | 495 |
+| 12 | Núcleo interno | 1340 × 800 | 10 | 6 | 390 | 495 |
 
 Notas de diseño de la curva:
 
@@ -60,11 +60,17 @@ Notas de diseño de la curva:
   igual). Antes bajaba de 520 en el 1 a 240 en el 12, y la cámara se iba
   acercando: del 9 en adelante no cabía ni el suelo de la sala. Ahora la
   sala cabe entera en todos los pisos, con sus muros, y la cámara se queda
-  quieta. Lo de «cada piso se ve menos» lo dan las salas, que encogen: en el
-  12 la sala ocupa la mitad del ancho de la pantalla, y lo de fuera está a
-  oscuras (`Penumbra`). La sala del jefe también cabe, y la cámara no se
-  acerca a ella (`CamaraJuego.ver_entera` solo abre).
-- Las salas se encogen y las rocas por sala suben: cada sala es más densa.
+  quieta. La sala del jefe también cabe, y la cámara no se acerca a ella
+  (`CamaraJuego.ver_entera` solo abre).
+- **Todas las salas miden lo mismo en todos los pisos: 1340 × 800**, las
+  del piso 2 (desde el 2026-11-03, pedido por Matías: «no en todas las
+  salas tienen el mismo tamaño»). Antes encogían de 1400 × 820 en el 1 a
+  740 × 600 en el 12, y con ellas las rocas (su lado sale del ancho de la
+  sala: en el 12 medían algo más de la mitad), los peligros del suelo y las
+  piezas de la pared. Ahora miden igual en todos. Lo que sube al bajar es lo
+  que hay dentro: más salas, más enemigos por sala (de 3 a 8) y más rocas
+  (de 2 a 6), así que cada sala es más densa.
+- Las rocas por sala suben: cada sala es más densa.
 - **Arte por capa**: 1 musgo, 2-3 cueva, 4-8 manto (con cristales hasta el 6),
   9-12 núcleo (con cristales de hierro en el 11 y el 12). Se cambia con
   `catalogo_arte`.
