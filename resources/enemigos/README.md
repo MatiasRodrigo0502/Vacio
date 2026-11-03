@@ -32,7 +32,7 @@ quitan al tocarte (tú tienes 100).
 | Slime verde | cuerpo a cuerpo | 20 | 25 | 100 | 1 | **a saltos**: se aplasta (el aviso), salta hacia ti y descansa. Al morir explota (radio 70) y se parte en 2 crías |
 | Rata | cuerpo a cuerpo | 10 | 20 | 160 | 2 | **en zigzag**: corre hacia ti haciendo eses; de cerca, recta |
 | Serpiente | distancia: **veneno** | 20 | 25 | 68 | 2 | **en abanico**: te rodea de lado y dispara 3 bolas abiertas. **Busca tenerte a tiro**: si hay una roca en medio, va al sitio más cercano desde el que no la haya, y no dispara hasta tenerte. El veneno quita 20, te frena 3 s y en ese rato te quita 2 más |
-| Planta venenosa | distancia: **veneno** | 30 | 25 | 28 | 3 | **en anillo**: no se mueve; se hincha y suelta 8 esporas en todas direcciones, cada anillo girado |
+| Planta venenosa («el pulpo») | distancia: **veneno** | 30 | 25 | 12 → 300 | 3 | **en anillo**: se hincha y suelta 8 esporas en todas direcciones, cada anillo girado. Quieta hasta que se cierran las puertas; entonces **te persigue**, a 12 px/s y +45 cada 2 s (lo de las Botas ligeras), hasta 300. Hay que matarla pronto |
 | Murciélago | cuerpo a cuerpo | 10 | 20 | **195** | 3 | **en picado**: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo. **Vuela** (`vuela`): ni los agujeros ni la lava le afectan |
 | Gólem de roca | distancia: **magma** | 50 | 35 | 38 | 4 | **pisotón**: de lejos tira magma (quita 45 y deja lava 3,5 s); si te acercas, avisa con un aro y suelta una onda (quita 30) que hay que esquivar alejándose |
 | Slime naranja | cuerpo a cuerpo | 30 | 25 | 132 | 5 | **rebota**: no te persigue; cruza la sala en diagonal y rebota en muros y rocas. Explota (75) y se parte en 2 |
@@ -83,7 +83,7 @@ de antes: ir directo a por ti, o quedarse lejos y disparar.
 | `fantasma.gd` | fantasma | atraviesa rocas y se desvanece a ratos |
 | `excavar.gd` | planta azul | se entierra y sale debajo de ti |
 | `abanico.gd` | serpiente | se mueve de lado y dispara en abanico; sin tiro (una roca o un muro en medio), busca alrededor un sitio con tiro y va alli (`cada_busqueda`, `radio_busqueda`) |
-| `anillo.gd` | planta venenosa | quieta, anillos de esporas |
+| `anillo.gd` | planta venenosa | anillos de esporas; con las puertas cerradas, persigue cada vez más rápido (`velocidad_inicial`, `aumento`, `cada_aumento`, `velocidad_maxima`) |
 | `pisoton.gd` | gólem | magma de lejos, onda de cerca (`OndaChoque`) |
 | `teletransporte.gd` | cristal vivo | dispara y salta a otro sitio |
 

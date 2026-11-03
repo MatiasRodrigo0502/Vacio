@@ -556,8 +556,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     debajo; serpiente que rodea y dispara en abanico, **buscando tenerte a
     tiro** (desde el 2026-11-03: si una roca o un muro tapa la línea, va al
     sitio más cercano desde el que no, y no dispara hasta tenerte; de lado
-    no se mete otra vez tras la roca; velocidad 55 → 68); planta venenosa quieta
-    con anillos de esporas; gólem con magma de lejos y pisotón con onda
+    no se mete otra vez tras la roca; velocidad 55 → 68); planta venenosa
+    («el pulpo» para Matías) con anillos de esporas, quieta hasta que se
+    cierran las puertas y desde entonces **persiguiéndote cada vez más
+    rápido** (2026-11-03: 12 px/s y +45 cada 2 s, lo de las Botas ligeras,
+    con tope en 300, la velocidad del mago; sin tope, a los 20 s iría a
+    460); gólem con magma de lejos y pisotón con onda
     (`OndaChoque`) de cerca; cristal que se teletransporta tras cada rayo.
     Todos avisan antes de lo que pega de golpe. Lo de cada enemigo va en
     `enemigo.estado`: el recurso es uno para todo el tipo.
