@@ -608,7 +608,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   2 s: va a la mitad (`FACTOR_FRIO`), anima a la mitad, su sprite se tiñe de
   `Escarcha.COLOR` y lleva la escarcha a los pies, la misma de los enemigos
   frenados por el mago blanco (`Escarcha.pintar`, que ahora usan los dos).
-  No quita vida. `MecanicaPeligros._poner_hielo` cambia por ellas
+  Quita 1 de vida (`DANO_HIELO`; Matías la quiso así al verla; los pinchos
+  quitan 25). `MecanicaPeligros._poner_hielo` cambia por ellas
   `trampas_hielo` (5) de los pinchos de `pisos_hielo` (9 a 12), al final del
   piso y con los de las puertas incluidos: una por piso y la que sobra en
   uno al azar (`hielo_en_piso`; al azar del todo salían 1, 0, 0 y 4).

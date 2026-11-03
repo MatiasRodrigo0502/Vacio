@@ -1,7 +1,8 @@
 ## Trampa de hielo: como los pinchos (el mismo ciclo: dentro, aviso temblando,
-## fuera), pero lo que sale son cristales de hielo y no hacen dano: te frenan.
-## Pedida por Matias el 2026-11-03: «tendra el mismo funcionamiento que los
-## pinchos, pero en vez de hacer dano te da efecto de ralentizacion».
+## fuera), pero lo que sale son cristales de hielo, que te frenan y apenas
+## quitan vida. Pedida por Matias el 2026-11-03: «tendra el mismo
+## funcionamiento que los pinchos, pero en vez de hacer dano te da efecto de
+## ralentizacion»; al verla, quiso que quitara 1 (de 100; los pinchos, 25).
 ##
 ## Hereda de Pinchos para no repetir el ciclo ni donde van los agujeros: aqui
 ## solo cambia lo que hace al pisarla y como se pinta. La placa es la de los
@@ -17,14 +18,21 @@ extends Pinchos
 ## disparo del mago blanco a los enemigos (1,5), un poco mas: el mago tiene
 ## que notarlo al salir de la placa.
 const FRIO: float = 2.0
+## Lo que quita al pisarla fuera. Como con los pinchos, el parpadeo tras el
+## golpe hace que no quite en cada paso de fisica.
+const DANO_HIELO: int = 1
 const COLOR_PLACA := Color(0.72, 0.86, 1.08)
 const HIELO := Color(0.78, 0.94, 1.0, 0.93)
 const HIELO_SOMBRA := Color(0.5, 0.76, 1.0, 0.95)
 
 
 func _al_pisar(cuerpo: Node2D) -> void:
-	if estan_fuera() and cuerpo.has_method("congelar"):
+	if not estan_fuera():
+		return
+	if cuerpo.has_method("congelar"):
 		cuerpo.congelar(FRIO)
+	if cuerpo.has_method("recibir_dano"):
+		cuerpo.recibir_dano(DANO_HIELO, false, "Trampa de hielo")
 
 
 func _pintar_placa(caja: Rect2) -> void:
