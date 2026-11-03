@@ -292,6 +292,20 @@ func _ready() -> void:
 
 	vida_actual = vida_maxima
 	vida_cambiada.emit(vida_actual, vida_maxima)
+	Vista.cambiada.connect(_poner_de_pie.unbind(1))
+	_poner_de_pie()
+
+
+## Con la vista girada (el movil en vertical, ver Vista), el dibujo del mago
+## y lo que lleva a los pies (llamas, escarcha) se giran al reves para seguir
+## de pie en la pantalla. Alrededor del circulo con el que choca, no de los
+## pies: asi donde le dan sigue estando donde se le ve. El mago en si no gira:
+## su circulo esta 16 px por encima de los pies, y girandolo se moveria.
+func _poner_de_pie() -> void:
+	var centro: Vector2 = $Forma.position
+	for nodo in [_sprite, _llamas, _escarcha]:
+		if nodo != null:
+			Vista.poner_de_pie(nodo, Vector2.ZERO, centro)
 
 
 func _physics_process(delta: float) -> void:
@@ -302,6 +316,12 @@ func _physics_process(delta: float) -> void:
 		# Input.get_vector ya normaliza: nada de ir mas rapido en diagonal.
 		direccion = Input.get_vector(
 			"mover_izquierda", "mover_derecha", "mover_arriba", "mover_abajo")
+		# En el movil, el joystick de la izquierda: con lo que se aparta del
+		# centro, se anda mas o menos deprisa.
+		if ControlesTactiles.movimiento != Vector2.ZERO:
+			direccion = ControlesTactiles.movimiento
+		# Arriba en la pantalla es arriba aunque la vista este girada (Vista).
+		direccion = Vista.en_mundo(direccion)
 
 	if direccion != Vector2.ZERO:
 		var punta := velocidad_maxima * (FACTOR_VENENO if esta_envenenado() else 1.0) \
@@ -332,10 +352,16 @@ func _direccion_apuntada() -> Vector2:
 	if _cargando:
 		return _direccion_especial()
 
+	# En el movil, el joystick de la derecha: apunta libre, como el raton.
+	if ControlesTactiles.apuntado != Vector2.ZERO:
+		return Vista.en_mundo(ControlesTactiles.apuntado).normalized()
+
 	# El raton manda sobre las flechas: si estas apuntando, es lo que quieres.
 	# Con el raton se apunta libre, en cualquier angulo; con las flechas solo a
-	# las cuatro direcciones, que es el esquema clasico de teclado.
-	if Input.is_action_pressed("disparar_raton"):
+	# las cuatro direcciones, que es el esquema clasico de teclado. Con los
+	# mandos del movil, no: cada dedo que toca la pantalla hace tambien de
+	# clic izquierdo, y el mago dispararia hacia el pulgar con el que anda.
+	if Input.is_action_pressed("disparar_raton") and not ControlesTactiles.activos:
 		return _direccion_raton()
 
 	var flechas := _direccion_flechas()
@@ -384,8 +410,8 @@ func _direccion_flechas() -> Vector2:
 	# Con dos flechas a la vez manda la mas marcada: las diagonales harian el
 	# disparo de teclado mas facil de lo que toca.
 	if absf(flechas.x) > absf(flechas.y):
-		return Vector2(signf(flechas.x), 0.0)
-	return Vector2(0.0, signf(flechas.y))
+		return Vista.en_mundo(Vector2(signf(flechas.x), 0.0))
+	return Vista.en_mundo(Vector2(0.0, signf(flechas.y)))
 
 
 ## Hacia donde sale el ataque especial (y hacia donde mira el mago mientras
@@ -396,9 +422,14 @@ func _direccion_flechas() -> Vector2:
 ## para quien juega sin raton, con las flechas, y el raton no puede mandar.
 ## Con la flecha de abajo sale hacia abajo aunque el cursor este encima del
 ## mago (Matias, 2026-10-09).
+##
+## En el movil, el boton del especial es tambien un joystick: hacia donde se
+## arrastra (ControlesTactiles.especial).
 func _direccion_especial() -> Vector2:
 	if not _especial_por_teclado:
 		return _direccion_raton()
+	if ControlesTactiles.especial != Vector2.ZERO:
+		return Vista.en_mundo(ControlesTactiles.especial).normalized()
 	var flechas := _direccion_flechas()
 	return flechas if flechas != Vector2.ZERO else _vector_de(_mirando)
 
@@ -563,11 +594,15 @@ func _actualizar_animacion() -> void:
 ## Lo contrario de _lado(): del nombre de la direccion al vector que la
 ## representa. Si el nombre no existe, se mira hacia abajo, que es como empieza
 ## cada piso.
+##
+## Los nombres son de la pantalla (el dibujo que se ve), y el vector, del
+## mundo: con la vista girada (movil en vertical), "abajo" es hacia donde se
+## ve abajo, no el abajo de la sala.
 func _vector_de(lado: StringName) -> Vector2:
 	var sector := LADOS.find(lado)
 	if sector < 0:
-		return Vector2.DOWN
-	return Vector2.RIGHT.rotated(sector * TAU / 8.0)
+		return Vista.en_mundo(Vector2.DOWN)
+	return Vista.en_mundo(Vector2.RIGHT.rotated(sector * TAU / 8.0))
 
 
 ## Traduce un vector a una de las ocho direcciones del mago.
@@ -577,6 +612,7 @@ func _vector_de(lado: StringName) -> Vector2:
 ## una escalera de comparaciones que no se lee ni se comprueba. Redondear el
 ## angulo al sector de 45 grados mas cercano es la misma regla escrita una vez.
 func _lado(v: Vector2) -> StringName:
+	v = Vista.en_pantalla(v)
 	return LADOS[posmod(int(roundf(v.angle() / (TAU / 8.0))), 8)]
 
 
@@ -742,6 +778,7 @@ func congelar(segundos: float) -> void:
 		add_child(_escarcha)
 		# La primera: debajo del sprite, como la de los enemigos.
 		move_child(_escarcha, 0)
+		_poner_de_pie()
 	_escarcha.visible = true
 	_sprite.self_modulate = Escarcha.COLOR
 	_sprite.speed_scale = FACTOR_FRIO
@@ -784,6 +821,7 @@ func quemar(segundos: float, dano: int, origen: String = "") -> void:
 		_llamas = LlamasMago.new()
 		add_child(_llamas)
 		move_child(_llamas, 0)
+		_poner_de_pie()
 	_llamas.visible = true
 
 

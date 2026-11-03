@@ -76,6 +76,9 @@ func _ready() -> void:
 	add_child(_registro)
 	# Lo de fuera de la sala en la que se juega, a oscuras.
 	add_child(Penumbra.new(_camara))
+	# En el movil, los dos joysticks y los botones del especial y la pausa.
+	if ControlesTactiles.hace_falta():
+		add_child(ControlesTactiles.new(_jugador))
 
 	if Red.cooperativo():
 		_preparar_cooperativo()

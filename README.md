@@ -40,6 +40,16 @@ La última versión, lista para jugar sin instalar nada ni tener Godot:
   cuesta 99 € al año): *Ajustes del Sistema → Privacidad y seguridad → Abrir
   igualmente*. Solo una vez. En versiones de macOS anteriores a la 15 basta
   con clic derecho sobre la app → *Abrir*.
+- **Android:** [Vacio-android.apk](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-android.apk)
+  (desde la 0.54). Se baja desde el móvil y se abre: la primera vez Android
+  pide permiso para instalar apps del navegador. Para que las versiones
+  siguientes se instalen encima, todas tienen que ir firmadas con la misma
+  clave, que GitHub guarda como secreto (ver
+  `herramientas/exportar_android.sh`); sin ella, cada versión lleva una clave
+  nueva y para actualizar hay que desinstalar antes la anterior. **Nadie lo
+  ha probado todavía en un móvil.** iPhone no hay:
+  para instalar algo en un iPhone sin pasar por la App Store hace falta una
+  cuenta de desarrollador de Apple (99 € al año).
 
 Página de la release:
 [releases/latest](https://github.com/MatiasRodrigo0502/Vacio/releases/latest).
@@ -112,6 +122,19 @@ se queda y el motivo está en `build/exportar.log`.
 | Pausa (continuar, reiniciar o volver al menú) | Esc |
 | Pantalla completa o ventana | F11 (o Alt+Intro). El juego empieza a pantalla completa y se acuerda de lo último que elegiste |
 | Estadísticas | F3, que va pasando entre *No*, *FPS y ping* (una línea arriba a la derecha) y *Todas* (rendimiento, partida y red, como el F3 de Minecraft). También se elige en Controles y en la pausa, y se recuerda |
+
+**En el móvil** (desde la 0.54), como en Brawl Stars: el dedo en la mitad
+izquierda de la pantalla saca un **joystick azul** que mueve al mago, y en la
+mitad derecha uno **rojo** que apunta y dispara mientras lo apartas del
+centro. Cada uno sale donde pones el dedo y se va al levantarlo. El **ataque
+especial** es el botón de la estrella, abajo a la derecha (del color de tu
+mago): se mantiene y se arrastra hacia donde quieres que salga, y se suelta.
+La **pausa**, el botón de arriba en el centro. Si pones el móvil **en
+vertical**, la vista gira 90 grados: la sala queda a lo largo de la pantalla
+y las paredes se ven de lado, pero el mago, los enemigos y los objetos
+siguen de pie, nada cambia de sitio y arriba en la pantalla sigue siendo
+arriba. En el ordenador se pueden probar los joysticks arrancando el juego
+con `-- --tactil` (el ratón hace de dedo).
 
 En el panel **Controles** del menú se elige **moverse con WASD o con las
 flechas**. Con las flechas, se dispara con WASD: son las mismas dos manos al

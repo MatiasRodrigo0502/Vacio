@@ -26,6 +26,10 @@ var _destello: float = 0.0
 
 func _ready() -> void:
 	name = "AltarEspecial"
+	# De pie con la vista girada (Vista), con lo que lleva escrito: su
+	# circulo esta en su centro.
+	add_to_group("de_pie")
+	rotation = Vista.giro
 	# Solo vigila al jugador.
 	collision_layer = 0
 	collision_mask = 1

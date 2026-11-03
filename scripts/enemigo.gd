@@ -154,6 +154,12 @@ func _ready() -> void:
 	# El enemigo busca al jugador por grupo en vez de que se lo pasen: asi la
 	# mecanica que los coloca no necesita conocer la escena del juego.
 	_objetivo = _buscar_objetivo()
+	# Con la vista girada (movil en vertical, Vista) se gira al reves para
+	# seguir de pie en la pantalla. Se puede girar entero: su circulo esta en
+	# su centro y no se mueve. Lo que pinta hacia un sitio del mundo (la mira
+	# del cristal, el picado) se pinta deshaciendo el giro.
+	add_to_group("de_pie")
+	rotation = Vista.giro
 
 
 ## Lo llama la mecanica que los reparte por el piso.
@@ -232,7 +238,7 @@ func _physics_process(delta: float) -> void:
 	if tipo.comportamiento != null:
 		tipo.comportamiento.procesar(self, delta)
 		if tipo.comportamiento.voltear(self):
-			_sprite.flip_h = _objetivo.global_position.x < global_position.x
+			_sprite.flip_h = Vista.en_pantalla(_objetivo.global_position - global_position).x < 0.0
 		queue_redraw()
 		return
 
@@ -249,8 +255,9 @@ func _physics_process(delta: float) -> void:
 	elif distancia > 0.0:
 		_mover(hacia / distancia, delta)
 	# Mira hacia donde esta el jugador: el volteo da sensacion de intencion y
-	# sale gratis.
-	_sprite.flip_h = hacia.x < 0.0
+	# sale gratis. A su izquierda en la pantalla, que con la vista girada no
+	# es la del mundo.
+	_sprite.flip_h = Vista.en_pantalla(hacia).x < 0.0
 
 
 func dormir() -> void:
@@ -1033,14 +1040,16 @@ func _draw() -> void:
 	if tipo.proyectil.estilo != TipoProyectil.Estilo.RAYO:
 		return
 	var color := tipo.proyectil.color
+	# La mira va hacia un sitio del mundo: sin el giro del enemigo.
+	var mira := _mira.rotated(-rotation)
 	if _linea_disparo > 0.0:
 		# Sale entera y gruesa, y se apaga.
 		var queda := _linea_disparo / DURACION_LINEA_DISPARO
-		draw_line(Vector2.ZERO, _mira * _largo_mira,
+		draw_line(Vector2.ZERO, mira * _largo_mira,
 			Color(color.r, color.g, color.b, 0.75 * queda), 1.0 + 3.0 * queda)
 		return
 	if _apuntando <= 0.0:
 		return
 	var avance := 1.0 - _apuntando / tipo.tiempo_apuntar
-	draw_line(Vector2.ZERO, _mira * _largo_mira,
+	draw_line(Vector2.ZERO, mira * _largo_mira,
 		Color(color.r, color.g, color.b, 0.2 + 0.5 * avance), 1.0 + 2.5 * avance)

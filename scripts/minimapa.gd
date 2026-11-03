@@ -83,12 +83,17 @@ func _draw() -> void:
 
 	var paso := CELDA + Vector2(HUECO, HUECO)
 	var ocupado := todo.size * paso - Vector2(HUECO, HUECO)
-	var disponible := size - Vector2(MARGEN, MARGEN) * 2.0
+	# Con la vista girada (movil en vertical, Vista), el mapa gira igual: lo
+	# que se ve arriba en la pantalla esta arriba en el mapa. Se coloca en la
+	# caja girada y se pinta girado alrededor de su centro.
+	var lienzo := Vector2(size.y, size.x) if Vista.vertical() else size
+	var disponible := lienzo - Vector2(MARGEN, MARGEN) * 2.0
 	# Si el mapa conocido no cabe, se encoge entero en vez de recortarse.
 	var escala := minf(1.0, minf(disponible.x / ocupado.x, disponible.y / ocupado.y))
-	var origen := (size - ocupado * escala) * 0.5
+	var origen := (lienzo - ocupado * escala) * 0.5 - lienzo * 0.5
 
 	draw_rect(Rect2(Vector2.ZERO, size), COLOR_FONDO)
+	draw_set_transform(size * 0.5, -Vista.giro)
 	for sala in conocidas:
 		var caja: Rect2 = cajas[sala]
 		var rect := Rect2(origen + (caja.position - todo.position) * paso * escala,

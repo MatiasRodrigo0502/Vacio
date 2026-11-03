@@ -36,6 +36,9 @@ static func soltar(sala: Node, mejora_objeto: ObjetoMejora, posicion: Vector2) -
 func _ready() -> void:
 	# Para que el cooperativo los encuentre al cogerlos otro jugador.
 	add_to_group("objetos")
+	# De pie con la vista girada (Vista): su circulo esta en su centro.
+	add_to_group("de_pie")
+	rotation = Vista.giro
 
 
 ## Lo llama la mecanica que los reparte.

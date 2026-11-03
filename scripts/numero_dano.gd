@@ -68,6 +68,9 @@ func _ready() -> void:
 	# Por encima de todo lo del mundo: enemigos, disparos, el jugador.
 	z_index = 20
 	z_as_relative = false
+	# Derecho con la vista girada (Vista). Dura menos de un segundo: no hace
+	# falta que siga si se gira el movil mientras.
+	rotation = Vista.giro
 	_colocar()
 
 

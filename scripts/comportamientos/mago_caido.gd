@@ -363,7 +363,11 @@ func _soltar_onda(enemigo: Enemigo) -> void:
 
 
 ## Mira al jugador: anda o se queda quieto en la direccion que toca.
+##
+## El dibujo es de la pantalla: con la vista girada (Vista) se mira hacia
+## donde se ve al jugador, no hacia donde esta en el mundo.
 func _mirar(enemigo: Enemigo, hacia: Vector2, andando: bool) -> void:
+	hacia = Vista.en_pantalla(hacia)
 	var lado := LADOS[posmod(int(roundf(hacia.angle() / (TAU / 8.0))), 8)]
 	enemigo.animar(StringName(("caminar_" if andando else "quieto_") + lado))
 

@@ -358,6 +358,52 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     (`Red.factor_vida_enemigos`: ×1,5 con dos, ×2 con tres). La vida de los
     compañeros, abajo a la izquierda (`VidasCompaneros`).
 
+- **Versión para móvil** (2026-11-03, pedido por Matías: «un joystick a
+  cada lado, como en Brawl Stars; si pone el móvil en vertical, que todas
+  las entes giren 90º, que no cambie nada de posición, pero que cambie el
+  POV»). **Android** solo: un `.apk` que saca GitHub en el trabajo `android`
+  de `publicar.yml` (`herramientas/exportar_android.sh`: plantillas con
+  `instalar_plantillas.py --android`, el SDK de la máquina de GitHub, Java
+  17, el *version code* = la N de 0.N, puesto en el preset solo allí). Si
+  falla, la versión sale igual sin el `.apk`. **La clave de firma no va en
+  el repositorio** (`*.keystore` en `.gitignore`: con ella cualquiera
+  firmaría como nosotros): la toma de los secretos del repositorio
+  `ANDROID_CLAVE_BASE64`, `ANDROID_CLAVE_ALIAS` y `ANDROID_CLAVE_CONTRASENA`,
+  que tiene que poner Matías. Sin ellos firma con una clave nueva en cada
+  versión, y para actualizar hay que desinstalar antes. iPhone no: sin cuenta de
+  desarrollador de Apple no se puede instalar. En Android el aviso de versión
+  nueva lleva a la web (`Actualizacion.por_que_no`). **Nadie lo ha probado en
+  un móvil.** Piezas:
+  - **`ControlesTactiles`** (`scripts/controles_tactiles.gd`, capa 2, lo crea
+    Principal si `hace_falta()`: en el móvil, o con `-- --tactil` en el
+    ordenador, donde el ratón hace de dedo): joystick azul en la mitad
+    izquierda (mueve) y rojo en la derecha (apunta y dispara), cada uno donde
+    se pone el dedo; bola opaca, círculo translúcido (0,22) y circunferencia
+    a medias (0,6). Botón del especial abajo a la derecha (del color del
+    mago, gris si ya se usó; se arrastra para apuntarlo, y pulsa la acción
+    del espacio, `cargar_ataque_teclado`) y de pausa arriba en el centro
+    (manda la acción `pausar`). Llega al jugador por tres vectores estáticos
+    de pantalla (`movimiento`, `apuntado`, `especial`). Con ellos puestos
+    (`activos`) el jugador no hace caso al clic izquierdo: cada dedo es
+    también un clic. Al pausar se sueltan todos.
+  - **`Vista`** (autoload, `scripts/vista.gd`): con la pantalla más alta que
+    ancha, `giro` = 90°. `CamaraJuego` gira (`ignore_rotation = false`) y
+    calcula el zoom y el encaje con la pantalla girada
+    (`_pantalla_en_mundo`): el mundo se ve al mismo tamaño en las dos
+    posiciones. Paredes, rocas y suelo giran con la vista; lo que está en
+    el grupo `de_pie` gira al revés y sigue derecho: enemigos, objetos,
+    cofre, altar, magos de los demás (y los números de daño al nacer). Se
+    pueden girar enteros porque chocan con un círculo en su centro; lo que
+    pintan hacia un sitio del mundo (la mira del cristal, el picado) deshace
+    el giro. **El mago no gira**: su círculo está 16 px por encima de los
+    pies; giran su dibujo y lo de sus pies alrededor de ese círculo
+    (`Jugador._poner_de_pie`, `Vista.poner_de_pie`). Los mandos son de la
+    pantalla: el jugador pasa lo que pide al mundo (`Vista.en_mundo`) y lo
+    que mira, a la pantalla para elegir el dibujo (`_lado`, `_vector_de`),
+    igual que el jefe (`MagoCaido._mirar`) y el volteo de los enemigos. El
+    minimapa y el arco del magma también giran. Probado en una ventana
+    estrecha: la cámara y los entes giran, y arrastrar el joystick hacia
+    arriba lleva al mago hacia arriba en la pantalla.
 - **Estadísticas** (2026-11-03, pedido por Matías: «ver los FPS y
   estadísticas, así como el ping en el modo multijugador, como el F3 de
   Minecraft o el HUD de Fortnite»): el autoload `Estadisticas`

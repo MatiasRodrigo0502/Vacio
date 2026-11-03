@@ -25,6 +25,10 @@ var _limite: Rect2 = Rect2()
 ## vista, en vez de saltar de una sala a otra mientras la vista aun se mueve.
 var _zona_iluminada: Rect2 = Rect2()
 
+## El ultimo radio de vision pedido, para volver a calcular el zoom al girar
+## el movil (la ventana cambia de forma).
+var _radio_vision: float = 0.0
+
 ## Cuanto tiembla ahora, en pixeles de pantalla. Baja solo hasta 0.
 var _sacudida: float = 0.0
 ## Lo que tarda en calmarse una sacudida, en pixeles por segundo.
@@ -36,6 +40,19 @@ func _ready() -> void:
 	# asi controlamos posicion y zoom con la misma curva y el mismo delta.
 	position_smoothing_enabled = false
 	make_current()
+	# Con el movil en vertical la vista gira 90 grados (Vista). Camera2D no
+	# gira si no se le dice.
+	ignore_rotation = false
+	rotation = Vista.giro
+	Vista.cambiada.connect(_al_girar)
+
+
+func _al_girar(giro: float) -> void:
+	rotation = giro
+	if _radio_vision > 0.0:
+		aplicar_radio_vision(_radio_vision, true)
+	if is_instance_valid(_objetivo):
+		global_position = _encajar(_objetivo.global_position)
 
 
 func _process(delta: float) -> void:
@@ -112,7 +129,7 @@ func _encajar(punto: Vector2) -> Vector2:
 	# Media pantalla, en pixeles de mundo. Con el zoom de ahora y no con el de
 	# destino: durante el cambio de piso el zoom se interpola, y con el de
 	# destino la camara se encajaria antes de tiempo y daria un tiron.
-	var medio := get_viewport_rect().size * 0.5 / zoom
+	var medio := _pantalla_en_mundo() * 0.5 / zoom
 	var resultado := punto
 	for eje in 2:
 		var desde := _limite.position[eje] + medio[eje]
@@ -133,7 +150,7 @@ func _encajar(punto: Vector2) -> Vector2:
 ## jefe ya cabe, y acercar la camara a ella haria al jefe y a todo lo de la
 ## sala mas grande que en el resto del juego.
 func ver_entera(zona: Rect2) -> void:
-	var ventana := get_viewport_rect().size
+	var ventana := _pantalla_en_mundo()
 	var hace_falta := maxf(zona.size.y * 0.5, zona.size.x * 0.5 * ventana.y / ventana.x)
 	var ahora := ventana.y * 0.5 / _zoom_objetivo.y
 	aplicar_radio_vision(maxf(hace_falta, ahora))
@@ -141,11 +158,23 @@ func ver_entera(zona: Rect2) -> void:
 
 ## Traduce el radio de vision del piso (en pixeles de mundo) a zoom de camara.
 ## radio_vision = media altura visible, asi que zoom = (alto_ventana/2) / radio.
+##
+## La altura del mundo que se ve es el lado corto de la pantalla, este como
+## este el movil: en vertical la vista esta girada y el alto del mundo va a lo
+## ancho. Asi todo mide lo mismo en las dos posiciones.
 func aplicar_radio_vision(radio_vision: float, inmediato: bool = false) -> void:
 	if radio_vision <= 0.0:
 		return
-	var alto_ventana := float(get_viewport_rect().size.y)
+	_radio_vision = radio_vision
+	var alto_ventana := _pantalla_en_mundo().y
 	var factor := (alto_ventana * 0.5) / radio_vision
 	_zoom_objetivo = Vector2(factor, factor)
 	if inmediato:
 		zoom = _zoom_objetivo
+
+
+## El tamano de la pantalla puesto como se ve el mundo: con la vista girada
+## (movil en vertical), el ancho de la pantalla es el alto del mundo.
+func _pantalla_en_mundo() -> Vector2:
+	var tamano := get_viewport_rect().size
+	return Vector2(tamano.y, tamano.x) if Vista.vertical() else tamano

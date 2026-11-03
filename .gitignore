@@ -61,3 +61,9 @@ desktop.ini
 # Cache de Python: generar_rocas.py importa generar_bordes.py, y al hacerlo
 # Python puede dejar aqui su version compilada. Se regenera sola.
 __pycache__/
+
+# Claves para firmar el .apk de Android: nunca en el repositorio (con una,
+# cualquiera podria firmar como si fuera nuestro). GitHub la guarda como
+# secreto; ver herramientas/exportar_android.sh.
+*.keystore
+*.jks

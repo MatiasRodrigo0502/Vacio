@@ -58,6 +58,7 @@ const PAGINA_DESCARGA := "https://github.com/MatiasRodrigo0502/Vacio/releases/la
 const ARCHIVO_WINDOWS := "Vacio.exe"
 const ARCHIVO_LINUX := "Vacio-linux.tar.gz"
 const ARCHIVO_MAC := "Vacio-mac.zip"
+const ARCHIVO_ANDROID := "Vacio-android.apk"
 const EJECUTABLE_LINUX := "Vacio.x86_64"
 ## Lo que se espera a la lista de versiones. Sin internet, mejor rendirse
 ## pronto: es un aviso, no algo que haga falta para jugar.
@@ -126,6 +127,10 @@ func _ready() -> void:
 			ruta_exe = OS.get_executable_path()
 		"macOS":
 			ruta_exe = _app_de_mac(OS.get_executable_path())
+		"Android":
+			# Un .apk no se puede cambiar desde dentro sin pedir permiso para
+			# instalar apps: se baja de la web y lo instala Android.
+			por_que_no = "En el móvil se baja desde la web: descarga Vacio-android.apk y ábrelo para instalarla."
 	if ruta_exe != "":
 		_limpiar()
 		get_tree().create_timer(ESPERA_LIMPIAR, true, false, true).timeout.connect(_limpiar)
@@ -227,6 +232,8 @@ static func archivo_de_aqui() -> String:
 			return ARCHIVO_LINUX
 		"macOS":
 			return ARCHIVO_MAC
+		"Android":
+			return ARCHIVO_ANDROID
 	return ARCHIVO_WINDOWS
 
 

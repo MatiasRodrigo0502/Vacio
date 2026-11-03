@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 03/11/2026 | Iconos de los objetos más sencillos: un aro de su color y el símbolo dentro, en dos tonos de ese color | — |
+| 03/11/2026 | Versión para Android (`.apk` en cada release) con dos joysticks como Brawl Stars, botones de especial y pausa, y la vista girada 90° con el móvil en vertical | — |
+| 03/11/2026 | Iconos de los objetos más sencillos: un aro de su color y el símbolo dentro, en dos tonos de ese color | `9c8e7d9` |
 | 03/11/2026 | Estadísticas con F3 (FPS, rendimiento, partida y ping en cooperativo) e iconos nuevos de los objetos | `f75cef9` |
 | 03/11/2026 | Mago verde: rocío de veneno 9 veces más rápido y 8 proyectiles que persiguen y envenenan (los venenos se suman); los slimes se parten en 4 crías que heredan el frío, el fuego y el veneno | `c3afeec` |
 | 03/11/2026 | Actualizar desde el juego también en Linux y en Mac, sin pasar por GitHub | `af44cd3` |

@@ -73,5 +73,6 @@ func dibujar(enemigo: Enemigo) -> void:
 		return
 	var avance: float = clampf(enemigo.estado["t"] / aviso, 0.0, 1.0)
 	var color := enemigo.tipo.color_efectos
-	var hasta: Vector2 = enemigo.estado["dir"] * largo_picado
+	# Hacia un sitio del mundo: sin el giro del murcielago (Vista).
+	var hasta: Vector2 = (enemigo.estado["dir"] * largo_picado).rotated(-enemigo.rotation)
 	enemigo.draw_line(Vector2.ZERO, hasta, Color(color, 0.15 + 0.45 * avance), 1.5 + 2.5 * avance, true)

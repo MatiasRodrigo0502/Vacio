@@ -36,6 +36,12 @@ func _init(numero_piso: int = 1) -> void:
 	z_index = 4
 
 
+func _ready() -> void:
+	# De pie con la vista girada (Vista): se abre por distancia, no choca.
+	add_to_group("de_pie")
+	rotation = Vista.giro
+
+
 func _process(delta: float) -> void:
 	_tiempo += delta
 	queue_redraw()

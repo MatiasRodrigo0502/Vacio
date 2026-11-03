@@ -46,6 +46,9 @@ func _ready() -> void:
 	# (Enemigo._buscar_objetivo): no esta en el grupo "jugador", que es el
 	# del mago de este ordenador, al que se le hace dano.
 	add_to_group("jugadores_remotos")
+	# De pie con la vista girada (Vista). Aqui no choca nada: se gira entero.
+	add_to_group("de_pie")
+	rotation = Vista.giro
 	# Como el del jugador: por encima del suelo y de los enemigos.
 	z_index = 10
 	visible = false

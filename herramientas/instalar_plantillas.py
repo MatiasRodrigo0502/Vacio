@@ -14,10 +14,12 @@ descarga llega mal, no se instala.
 
     python herramientas/instalar_plantillas.py
     python herramientas/instalar_plantillas.py --mac
+    python herramientas/instalar_plantillas.py --android
 
-Con --mac instala tambien la de Mac (macos.zip). La usa GitHub, que es quien
-saca la version de Mac (.github/workflows/publicar.yml); en los ordenadores
-del equipo no hace falta.
+Con --mac instala tambien la de Mac (macos.zip), y con --android las de
+Android (android_release.apk y android_debug.apk). Las usa GitHub, que es
+quien saca esas versiones (.github/workflows/publicar.yml); en los
+ordenadores del equipo no hacen falta.
 
 Solo hace falta una vez por ordenador y por version de Godot. Lo que ya esta
 instalado y entero no se vuelve a bajar. Si se cambia
@@ -41,6 +43,10 @@ QUEREMOS = [
 ]
 # La de Mac, solo con --mac: es grande y solo la necesita GitHub.
 PLANTILLA_MAC = "templates/macos.zip"
+# Las de Android, solo con --android, por lo mismo. Se exporta con la de
+# release; la de debug se instala tambien porque Godot da el preset por malo
+# si le falta alguna de las dos.
+PLANTILLAS_ANDROID = ["templates/android_release.apk", "templates/android_debug.apk"]
 
 def carpeta_godot():
     """Donde guarda Godot sus datos en cada sistema. Ademas de Windows, Linux:
@@ -141,7 +147,7 @@ def main():
     os.makedirs(DESTINO, exist_ok=True)
     print("Leyendo el indice de", URL)
     entradas = leer_indice()
-    queremos = QUEREMOS + ([PLANTILLA_MAC] if "--mac" in sys.argv[1:] else [])
+    queremos = QUEREMOS + ([PLANTILLA_MAC] if "--mac" in sys.argv[1:] else [])         + (PLANTILLAS_ANDROID if "--android" in sys.argv[1:] else [])
     for nombre in queremos:
         if nombre not in entradas:
             sys.exit("El .tpz no trae %s." % nombre)

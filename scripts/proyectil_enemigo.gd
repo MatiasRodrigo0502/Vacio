@@ -371,4 +371,5 @@ func _pintar_parabola() -> void:
 		Color(tipo.color_halo.r, tipo.color_halo.g, tipo.color_halo.b, 0.18))
 
 	draw_circle(Vector2.ZERO, tipo.radio * (0.6 + 0.4 * avance), Color(0.0, 0.0, 0.0, 0.35))
-	_pintar_bola(Vector2(0.0, -altura))
+	# Hacia arriba en la pantalla, aunque la vista este girada (Vista).
+	_pintar_bola(Vista.en_mundo(Vector2(0.0, -altura)))
