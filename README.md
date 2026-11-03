@@ -13,7 +13,7 @@ y más llenas, que el anterior.
 Estado: **jugable de principio a fin**, y en pleno giro hacia algo parecido a
 *The Binding of Isaac*. Menú principal, los 12 pisos, disparo, enemigos que te
 persiguen o te disparan de lejos, pinchos (y en los últimos pisos, algunas trampas de hielo que te frenan y quitan solo 1), lava y agujeros en el suelo, objetos
-que te mejoran, pausa, victoria y derrota. Se elige entre **tres magos**, cada uno con
+que te mejoran, pausa, victoria y derrota. Se elige entre **cuatro magos**, cada uno con
 sus ventajas, y miran a los ocho lados; el piso 1 hace de tutorial. Cada uno de los 12 pisos
 tiene su propia pared y sus propias rocas, de la roca de su capa: de la tierra con hierba del
 piso 1 al cristal de hierro al rojo blanco del 12.
@@ -186,6 +186,7 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 | **Mago oscuro** | Anda un 13 % más rápido, y su bola cargada abre un **agujero negro** donde se acaba, que atrae a los enemigos y quita vida a los del centro | Su bola cargada llega menos lejos que la del rojo |
 | **Mago rojo** | 30 de vida más, y el ataque cargado sale en medio tiempo y quita 50: mata de un golpe a cualquier enemigo. Sus disparos **queman**: 3 de vida por segundo durante 3 s | Anda un 9 % más lento |
 | **Mago blanco** | Su ataque especial es una burbuja que lo cubre entero durante 5 s: los disparos rebotan en ella (y los rebotados dañan a los enemigos) y los enemigos que la tocan salen despedidos. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | No tiene bola cargada: su ataque especial protege, pero no hace daño |
+| **Mago verde** | **Rocía veneno**: dispara 9 veces más rápido. Su ataque especial son 8 proyectiles lentos que salen a su alrededor y luego persiguen al enemigo más cercano; el que da lo **envenena** (5 por segundo durante 5 s), y si le dan varios, los venenos se suman | Cada gota quita 1, diez veces menos. Los proyectiles giran tan poco que muchos se estrellan contra rocas y paredes |
 
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese
 mago, no un objeto que se recoge.
@@ -215,7 +216,8 @@ golpe de un enemigo te quita de 20 (una rata) a 45 (el magma del gólem), y
 el **vendaje** cura 60. Es lo único que cura: sale como objeto, a veces lo
 suelta un enemigo y, al limpiar una sala, cae uno de cada cuatro veces. Con
 la vida llena no se coge: se queda en el suelo para luego. Del piso 2 en adelante los hay, y van a
-más según bajas. **Cada uno pelea a su manera**: los slimes saltan (el de
+más según bajas. Los slimes, al morir, se parten en cuatro crías, que siguen
+heladas, quemándose o envenenadas si la madre lo estaba. **Cada uno pelea a su manera**: los slimes saltan (el de
 magma dejando lava) o rebotan por la sala, la rata corre en zigzag, el
 murciélago se lanza en picado, el fantasma atraviesa rocas y se desvanece, la
 planta azul se entierra y sale debajo de ti, la serpiente dispara en abanico
@@ -246,6 +248,11 @@ disparos enemigos rebotan en ella (el magma del gólem bota y cae fuera) y, si
 el rebote da a un enemigo, le quita lo mismo que te habría quitado a ti. Los
 enemigos que la tocan salen despedidos. Mientras está, nada de lo que lanzan
 los enemigos le quita vida; lo del suelo (lava, pinchos, caer) sí.
+
+El mago verde tampoco carga: al pulsar salen sus **8 proyectiles de veneno**,
+en círculo a su alrededor. Medio segundo después cada uno va a por el enemigo
+que tenga más cerca, pero gira muy poco: de cerca aciertan, de lejos muchos
+acaban en una roca o en la pared, y ahí se deshacen.
 
 **El ataque especial, sea cual sea, es uno por piso.** Arriba a la izquierda,
 debajo de la vida, pone si te queda («ESPECIAL · AGUJERO NEGRO») o si ya lo

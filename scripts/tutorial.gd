@@ -129,5 +129,7 @@ func _linea_especial() -> String:
 	var mago := GestorProgreso.personaje_elegido
 	if mago != null and mago.ataque_especial == PersonajeJugable.ESPECIAL_ESCUDO:
 		return "Pulsa [k]clic derecho[/k] o [k]espacio[/k]: sale tu [k]escudo burbuja[/k], que te cubre unos segundos."
+	if mago != null and mago.ataque_especial == PersonajeJugable.ESPECIAL_VENENO:
+		return "Pulsa [k]clic derecho[/k] o [k]espacio[/k]: salen tus [k]proyectiles de veneno[/k], que persiguen a los enemigos y los envenenan. Giran poco: mejor de cerca."
 	var nombre := mago.nombre_especial() if mago != null else "bola cargada"
 	return "Mantén [k]clic derecho[/k] o [k]espacio[/k] y suéltalo: sale tu [k]%s[/k]." % nombre

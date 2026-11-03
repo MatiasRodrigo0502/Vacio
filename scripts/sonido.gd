@@ -124,8 +124,10 @@ func _notification(que: int) -> void:
 		salir()
 
 
-## Toca un efecto por su nombre (el del archivo, sin .wav).
-func tocar(nombre: StringName) -> void:
+## Toca un efecto por su nombre (el del archivo, sin .wav). Con
+## 'separacion_ms', ese efecto no se repite antes de ese tiempo: lo usa el
+## rocio del mago verde, que dispara 18 veces por segundo.
+func tocar(nombre: StringName, separacion_ms: int = SEPARACION_MINIMA_MS) -> void:
 	# Saliendo, ya no suena nada: un efecto que empezara en la espera de
 	# salir() seguiria sonando al cerrar, y es justo lo que esa espera evita.
 	if _saliendo:
@@ -139,7 +141,7 @@ func tocar(nombre: StringName) -> void:
 			push_warning("No hay ningun efecto llamado '%s' en %s." % [nombre, RUTA_EFECTOS])
 		return
 	var ahora := Time.get_ticks_msec()
-	if ahora - int(_ultima_vez.get(nombre, -100000)) < SEPARACION_MINIMA_MS:
+	if ahora - int(_ultima_vez.get(nombre, -100000)) < separacion_ms:
 		return
 	_ultima_vez[nombre] = ahora
 	var voz := _voz_libre()

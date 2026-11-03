@@ -52,6 +52,11 @@ const VARIACION: float = 1.3
 ## Marca el disparo cargado. Ya no decide el color (eso lo hace `color`), pero
 ## sirve para saber que bola es cual sin mirar su tamano.
 @export var cargada: bool = false
+## Una gota del rocio del mago verde (PersonajeJugable.rocio): se pinta como
+## una nubecilla de veneno y no como una bola de luz, y al dar no suena ni
+## saca su numero: lo junta el enemigo (Enemigo.TIC_ROCIO). Salen 18 por
+## segundo.
+@export var rocio: bool = false
 
 ## Color del centro de la bola y de su resplandor. Los pone Principal con los
 ## del mago que dispara, asi que cada mago tiene sus bolas sin que la bola sepa
@@ -160,8 +165,11 @@ func _al_tocar(area: Area2D) -> void:
 		# que lo que caia de un disparo siga cayendo de uno.
 		var golpe := float(roundi(dano * randf_range(1.0, VARIACION)))
 		var estilo := NumeroDano.Estilo.FUERTE if cargada else NumeroDano.Estilo.NORMAL
+		if rocio:
+			estilo = NumeroDano.Estilo.ROCIO
 		area.herir(golpe, frena, estilo)
-		Sonido.tocar(&"golpe_enemigo")
+		if not rocio:
+			Sonido.tocar(&"golpe_enemigo")
 		if quema > 0.0 and area.has_method("quemar"):
 			area.quemar(quema, dano_quema)
 	elif area.has_method("romper"):
@@ -180,6 +188,9 @@ func _al_tocar(area: Area2D) -> void:
 ## Dibujada por codigo, como los corazones: no hay arte de proyectil en los
 ## packs y una bola de luz se resuelve con unos circulos y un rastro.
 func _draw() -> void:
+	if rocio:
+		_pintar_rocio()
+		return
 	var pulso := 1.0 + sin(_fase * 22.0) * 0.12
 	# El rastro va siempre detras, sea cual sea la direccion del disparo.
 	var atras := -direccion
@@ -196,3 +207,18 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, radio * pulso, Color(nucleo.r, nucleo.g, nucleo.b, 0.95))
 	draw_circle(Vector2(-radio * 0.22, -radio * 0.22), radio * 0.42 * pulso,
 		Color(1.0, 1.0, 1.0, 0.95))
+
+
+## Una nubecilla de veneno: unas bolitas de vapor que se abren al alejarse
+## del mago, sin nucleo blanco. Como salen tan seguidas, juntas se ven como
+## un chorro que se va ensanchando, que es lo que es un spray.
+func _pintar_rocio() -> void:
+	# Nace pequena y crece en los primeros 150 px, como la boca de un spray.
+	var abierto := 0.55 + 0.6 * clampf(_recorrido / 150.0, 0.0, 1.0)
+	var lado := direccion.orthogonal()
+	for i in 4:
+		var giro := _fase * 6.0 + i * 1.7
+		var sitio := lado * sin(giro) * radio * 0.45 * abierto - direccion * i * radio * 0.35
+		draw_circle(sitio, radio * (0.75 - i * 0.12) * abierto,
+			Color(color_halo.r, color_halo.g, color_halo.b, 0.32 - i * 0.05))
+	draw_circle(Vector2.ZERO, radio * 0.5 * abierto, Color(color.r, color.g, color.b, 0.7))

@@ -9,6 +9,9 @@ extends Node2D
 
 const ESCENA_PISO := preload("res://scenes/Piso.tscn")
 const ESCENA_BOLA := preload("res://scenes/BolaMagica.tscn")
+## Cada cuanto suena el soplo del rocio del mago verde, como mucho. Dura un
+## poco mas que esto, asi que seguidos no dejan hueco.
+const SEPARACION_ROCIO_MS: int = 130
 
 @onready var _contenedor_piso: Node2D = $ContenedorPiso
 @onready var _pool: PoolObstaculos = $PoolObstaculos
@@ -33,6 +36,7 @@ func _ready() -> void:
 
 	_jugador.vida_cambiada.connect(_hud.actualizar_vida)
 	_jugador.bola_lanzada.connect(_al_lanzar_bola)
+	_jugador.veneno_lanzado.connect(_al_lanzar_veneno)
 	_jugador.mejora_recogida.connect(_hud.anunciar_mejora)
 	_jugador.especial_cambiado.connect(_al_cambiar_especial)
 	_jugador.caido.connect(_al_caer)
@@ -181,6 +185,7 @@ func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 	bola.quema = datos.get("quema", 0.0)
 	bola.dano_quema = datos.get("dano_quema", 0.0)
 	bola.cargada = datos.cargada
+	bola.rocio = datos.get("rocio", false)
 	bola.atraviesa = datos.atraviesa
 	bola.alcance = datos.alcance
 	bola.solo_ver = Red.es_espejo()
@@ -195,7 +200,12 @@ func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 func _soltar_bola(bola: BolaMagica, desde: Vector2, cargada: bool) -> void:
 	_piso_actual.add_child(bola)
 	bola.global_position = desde
-	Sonido.tocar(&"disparo_cargado" if cargada else &"disparo")
+	if bola.rocio:
+		# Un soplo largo cada poco, no uno por gota: 18 "fiu" por segundo
+		# serian una sirena. Seguidos, suenan a un chorro.
+		Sonido.tocar(&"rocio", SEPARACION_ROCIO_MS)
+	else:
+		Sonido.tocar(&"disparo_cargado" if cargada else &"disparo")
 
 
 ## La bola de un disparo de este jugador, con lo suyo y lo que ha mejorado.
@@ -219,6 +229,14 @@ func _bola_del_jugador(direccion: Vector2, cargada: bool) -> BolaMagica:
 	if _jugador.mago != null:
 		bola.quema = _jugador.mago.quemadura_duracion
 		bola.dano_quema = _jugador.mago.quemadura_dano
+		# El rocio del mago verde: cada gota un poco torcida y a su
+		# velocidad, para que el chorro se abra como un spray y no sea una
+		# fila de bolas.
+		if _jugador.mago.rocio and not cargada:
+			bola.rocio = true
+			var abre := deg_to_rad(_jugador.mago.dispersion_disparo)
+			bola.direccion = direccion.rotated(randf_range(-abre, abre))
+			bola.velocidad *= randf_range(0.92, 1.08)
 	if cargada:
 		# El ataque cargado parte de los numeros ya mejorados y los multiplica,
 		# para que los objetos recogidos tambien se noten en el.
@@ -244,6 +262,43 @@ func _ajustar_al_mago(bola: BolaMagica) -> void:
 		bola.alcance = mago.alcance_cargado
 	if mago.agujero_negro:
 		bola.apagada.connect(_abrir_agujero.bind(_piso_actual.sala_actual(), mago))
+
+
+## El ataque especial del mago verde: sus proyectiles de veneno, repartidos
+## en circulo alrededor de el, el primero hacia donde apunta. Cuelgan del
+## piso, como las bolas.
+func _al_lanzar_veneno(desde: Vector2, direccion: Vector2) -> void:
+	if _piso_actual == null or _jugador.mago == null:
+		return
+	_soltar_veneno(desde, direccion, _jugador.mago, _piso_actual.sala_actual(), Red.es_espejo())
+	if _cooperativo != null:
+		_cooperativo.mandar_veneno(desde, direccion)
+
+
+## Los proyectiles de veneno de otro jugador. En el anfitrion envenenan; en
+## los demas solo se ven, como sus bolas.
+func lanzar_veneno_remoto(desde: Vector2, direccion: Vector2, mago: PersonajeJugable) -> void:
+	if _piso_actual == null:
+		return
+	_soltar_veneno(desde, direccion, mago, _piso_actual.sala_en(desde), Red.es_espejo())
+
+
+func _soltar_veneno(desde: Vector2, direccion: Vector2, mago: PersonajeJugable, sala: Sala,
+		solo_ver: bool) -> void:
+	var cuantos := maxi(mago.proyectiles_veneno, 1)
+	for i in cuantos:
+		var bola := BolaVenenosa.new()
+		bola.direccion = direccion.rotated(TAU * i / cuantos)
+		bola.velocidad = mago.velocidad_veneno
+		bola.salida = mago.salida_veneno
+		bola.giro = deg_to_rad(mago.giro_veneno)
+		bola.veneno_duracion = mago.veneno_duracion
+		bola.veneno_dano = mago.veneno_dano
+		bola.sala = sala
+		bola.solo_ver = solo_ver
+		_piso_actual.add_child(bola)
+		bola.global_position = desde
+	Sonido.tocar(&"veneno_lanzado")
 
 
 func _abrir_agujero(punto: Vector2, sala: Sala, mago: PersonajeJugable) -> void:

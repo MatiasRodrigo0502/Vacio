@@ -12,8 +12,9 @@ signal elegido(personaje: PersonajeJugable)
 
 ## Ancho de la ficha. Fijo para que los textos de ventaja partan linea por el
 ## mismo sitio y las fichas queden del mismo tamano aunque uno tenga la
-## ventaja mas larga.
-const ANCHO: float = 300.0
+## ventaja mas larga. 250 desde que hay cuatro magos (2026-11-03): con 300,
+## cuatro fichas y sus huecos median 1320 y la ventana 1152.
+const ANCHO: float = 250.0
 
 var personaje: PersonajeJugable
 ## Para dejarle el foco a la primera ficha al abrir el panel.

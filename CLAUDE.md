@@ -415,6 +415,36 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `duracion_escudo`). No tiene bola cargada. Antes fue un arco pequeño
   delante, primero como pasiva siempre puesta y luego como especial: lo
   cambió Matías las dos veces.
+- **Mago verde** (2026-11-03, pedido por Matías, con su arte: hoja de 4
+  direcciones × 4 pasos de 128 px, que `herramientas/generar_mago_verde.py`
+  pasa a 72 px con filtro bueno y a las 8 direcciones, las diagonales con la
+  vista de lado; originales en `assets/mago_verde/fuente/`, con
+  `.gdignore`). **Disparo en rocío**: `cadencia_multiplicador` 1/9 (18 por
+  segundo) y `dano_disparo` 1. El tope de cadencia baja con él
+  (`Jugador._cadencia_minima`) y la espera entre disparos guarda lo que
+  sobra del paso de física (sin eso salían 15 por segundo). Cada gota es una
+  `BolaMagica` con `rocio` (nubecilla verde, un poco torcida al azar,
+  `dispersion_disparo` 5°), que no suena al dar: el enemigo junta lo que le
+  quitan y lo enseña en un número cada 0,25 s (`Enemigo.TIC_ROCIO`, estilo
+  `ROCIO`), con un parpadeo y un golpe; el escudo del jefe también bloquea
+  al mismo ritmo. Al disparar suena un soplo (`rocio.wav`) como mucho cada
+  0,13 s (`Sonido.tocar(nombre, separacion_ms)`). **Especial «Veneno»**
+  (`ESPECIAL_VENENO`): al pulsar (no se carga) salen 8 `BolaVenenosa`
+  (`scripts/bola_venenosa.gd`) a 45° una de otra, la primera hacia donde
+  apunta: 0,5 s rectas a 210 px/s y luego hacia el enemigo más cercano a
+  cada una, girando como mucho 80°/s. Se acaban al chocar con roca o muro,
+  al salir del suelo de la sala o a los 8 s. La que da envenena
+  (`Enemigo.envenenar`): 5 cada segundo durante 5 s, y **los venenos se
+  suman** (`_venenos`, cada uno con su reloj), con burbujas verdes a los
+  pies (`Burbujas.pintar`) y números `TOXICO`. Todo en el `.tres`
+  (`proyectiles_veneno`, `velocidad_veneno`, `salida_veneno`,
+  `giro_veneno`, `veneno_duracion`, `veneno_dano`). En cooperativo,
+  `Cooperativo.mandar_veneno` y `Principal.lanzar_veneno_remoto`; el
+  envenenado va en `estado_red` (posición 18). Probado sin ventana: 37
+  disparos en 2 s, dos venenos quitan 10 por segundo, las cuatro crías
+  heredan, y de 8 proyectiles 5 dieron a un gólem quieto. **Nadie lo ha
+  jugado.** Con cuatro magos, las fichas del menú miden 250 de ancho
+  (`FichaMago.ANCHO`; con 300 no cabían).
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve (o las
@@ -500,8 +530,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   en medio); sin enemigos, no dispara. Probado: 4 enemigos del piso 3 en
   5,9 s con 12 disparos, y ninguno con la sala vacía.
 - **Disparo**: flechas (cuatro direcciones) o clic izquierdo apuntando con el
-  ratón, una bola cada **0,5 s** en los tres magos (pedido por Matías el
-  2026-10-09; antes 0,34, y el oscuro ×0,85). Matan enemigos; **no** rompen rocas, y las rocas los
+  ratón, una bola cada **0,5 s** en el oscuro, el rojo y el blanco (pedido
+  por Matías el 2026-10-09; antes 0,34, y el oscuro ×0,85); el verde rocía
+  9 veces más rápido. Matan enemigos; **no** rompen rocas, y las rocas los
   paran (ver la trampa del `Area2D` más abajo).
 - **Ataque cargado**: clic derecho o espacio, mantenido. Con el clic derecho
   apunta al ratón; con el espacio (acción aparte, `cargar_ataque_teclado`),
@@ -611,7 +642,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   - **A distancia** (serpiente y planta venenosa con veneno, gólem con magma,
     cristal con rayos): lentos, de 0 a 55, y pegan más. Como mucho la mitad
     de cada sala.
-  - **Los slimes** explotan al morir (radio 70-85) y sueltan dos crías. Los
+  - **Los slimes** explotan al morir (radio 70-85) y sueltan **cuatro
+    crías** (dos hasta el 2026-11-03, Matías), que **heredan lo que le
+    quedaba a la madre** de frío, quemadura y veneno, tal cual
+    (`Enemigo.heredar_estados`, desde `_soltar_cria`). Los
     demás dejan un destello pequeño de su color, sin daño.
   - La **línea de mira del cristal** acaba en la primera roca o muro: el rayo
     se para ahí, y pintada entera avisaba de un peligro que no existe.

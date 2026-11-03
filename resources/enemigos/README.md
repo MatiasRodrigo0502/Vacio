@@ -29,14 +29,14 @@ quitan al tocarte (tú tienes 100).
 
 | Tipo | Ataque | Vida | Contacto | Velocidad | Desde el piso | Qué hace (`comportamiento`) |
 |---|---|---|---|---|---|---|
-| Slime verde | cuerpo a cuerpo | 20 | 25 | 100 | 1 | **a saltos**: se aplasta (el aviso), salta hacia ti y descansa. Al morir explota (radio 70) y se parte en 2 crías |
+| Slime verde | cuerpo a cuerpo | 20 | 25 | 100 | 1 | **a saltos**: se aplasta (el aviso), salta hacia ti y descansa. Al morir explota (radio 70) y se parte en 4 crías |
 | Rata | cuerpo a cuerpo | 10 | 20 | 160 | 2 | **en zigzag**: corre hacia ti haciendo eses; de cerca, recta |
 | Serpiente | distancia: **veneno** | 20 | 25 | 68 | 2 | **en abanico**: te rodea de lado y dispara 3 bolas abiertas. **Busca tenerte a tiro**: si hay una roca en medio, va al sitio más cercano desde el que no la haya, y no dispara hasta tenerte. El veneno quita 20, te frena 3 s y en ese rato te quita 2 más |
 | Planta venenosa («el pulpo») | distancia: **veneno** | 30 | 25 | 12 → 300 | 3 | **en anillo**: se hincha y suelta 8 esporas en todas direcciones, cada anillo girado. Quieta hasta que se cierran las puertas; entonces **te persigue**, a 12 px/s y +45 cada 2 s (lo de las Botas ligeras), hasta 300. Hay que matarla pronto |
 | Murciélago | cuerpo a cuerpo | 10 | 20 | **195** | 3 | **en picado**: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo. **Vuela** (`vuela`): ni los agujeros ni la lava le afectan |
 | Gólem de roca | distancia: **magma** | 50 | 35 | 38 | 4 | **pisotón**: de lejos tira magma (quita 45 y deja lava 3,5 s); si te acercas, avisa con un aro y suelta una onda (quita 30) que hay que esquivar alejándose |
-| Slime naranja | cuerpo a cuerpo | 30 | 25 | 132 | 5 | **rebota**: no te persigue; cruza la sala en diagonal y rebota en muros y rocas. Explota (75) y se parte en 2 |
-| Slime de magma | cuerpo a cuerpo | 30 | 30 | 118 | 5 | **a saltos, dejando lava** donde cae (2,5 s). Explota (85) y se parte en 2 |
+| Slime naranja | cuerpo a cuerpo | 30 | 25 | 132 | 5 | **rebota**: no te persigue; cruza la sala en diagonal y rebota en muros y rocas. Explota (75) y se parte en 4 |
+| Slime de magma | cuerpo a cuerpo | 30 | 30 | 118 | 5 | **a saltos, dejando lava** donde cae (2,5 s). Explota (85) y se parte en 4 |
 | Cristal vivo | distancia: **rayo** (quita 50) | 30 | 25 | **0** | 5 | **teletransporte**: dispara en cuanto sale su línea y, poco después, desaparece y sale en otro sitio de la sala, lejos de ti |
 | Fantasma | cuerpo a cuerpo | 20 | 25 | 115 | 6 | **se desvanece**: atraviesa las rocas y, a ratos, se vuelve casi invisible; entonces ni le das ni te da. **Flota** (`vuela`): ni los agujeros ni la lava le afectan |
 | Planta azul | cuerpo a cuerpo | 20 | 30 | 150 | 7 | **excava**: se entierra, el montículo avanza bajo el suelo y sale debajo de ti tras avisar con un aro; bajo tierra no se le puede dar |
@@ -50,7 +50,9 @@ se ha alcanzado. Como mucho **la mitad** de una sala son de distancia
 de tiradores sería una lluvia de disparos desde todas partes.
 
 **Los slimes** (`division`, `radio_explosion`): al morir explotan en un radio
-pequeño, que te quita 25 si estás dentro, y sueltan dos crías. Las crías son el
+pequeño, que te quita 25 si estás dentro, y sueltan cuatro crías (dos hasta el
+2026-11-03), que heredan lo que le quedaba a la madre de frío, quemadura y
+veneno. Las crías son el
 mismo slime en pequeño, más rápidas y con 10 de vida, y ni explotan ni se
 dividen: si no, matar un slime desataría una cadena imposible de esquivar. La
 sala no se abre hasta matar también a las crías. Matarlos de lejos sale a

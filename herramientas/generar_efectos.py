@@ -45,6 +45,28 @@ def disparo(azar):
     return paso_bajo(_mezcla((tono, 1.0), (soplo, 0.35)), SR, 4200)
 
 
+def rocio(azar):
+    """El rocio del mago verde: un soplo de spray. Suena como mucho cada
+    0,13 s mientras se dispara y dura un poco mas, asi que seguidos se oyen
+    como un chorro. Suave y sin golpe: suena sin parar."""
+    n = int(0.17 * SR)
+    soplo = golpe(banda(ruido(n, azar), SR, lambda t: 2600 - 600 * t, 1.5), SR, 0.03, 8.0)
+    return paso_bajo(soplo, SR, 5000)
+
+
+def veneno_lanzado(azar):
+    """El especial del mago verde, al salir sus proyectiles: un soplo que se
+    abre y unos "blup" de burbuja, viscosos, como el veneno de la serpiente
+    pero mas grande."""
+    n = int(0.5 * SR)
+    soplo = golpe(banda(ruido(n, azar), SR, lambda t: 900 + 1800 * t, 2.0), SR, 0.01, 6.0)
+    burbujas = vacio(n)
+    for i, (f0, f1) in enumerate([(220, 480), (300, 620), (180, 420), (260, 560)]):
+        blup = golpe(barrido(f0, f1, 0.1, SR, curva=0.7), SR, 0.003, 20.0)
+        sumar(burbujas, blup, int((0.02 + i * 0.07) * SR), 0.6)
+    return paso_bajo(_mezcla((soplo, 0.7), (burbujas, 1.0)), SR, 3000)
+
+
 def disparo_cargado(azar):
     """La bola cargada: un zumbido grave que se lanza, con soplido."""
     n = int(0.55 * SR)
@@ -263,6 +285,8 @@ EFECTOS = {
     "pisoton": (pisoton, -3.0),
     "teletransporte": (teletransporte, -8.0),
     "emerger": (emerger, -6.0),
+    "rocio": (rocio, -15.0),
+    "veneno_lanzado": (veneno_lanzado, -5.0),
 }
 
 # La semilla de cada efecto. Los 20 primeros la sacaban de su puesto en orden

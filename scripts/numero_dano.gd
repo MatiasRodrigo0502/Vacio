@@ -13,7 +13,10 @@ class_name NumeroDano
 extends Node2D
 
 ## De donde viene, para el color y el tamano.
-enum Estilo { NORMAL, FUERTE, FUEGO, VACIO, JUGADOR, VENENO }
+## ROCIO es el disparo del mago verde (lo de varias gotas, sumado) y TOXICO
+## lo que quita a los enemigos el veneno de sus proyectiles. VENENO es el que
+## le quitan al jugador: ese lleva el signo menos.
+enum Estilo { NORMAL, FUERTE, FUEGO, VACIO, JUGADOR, VENENO, ROCIO, TOXICO }
 
 const DURACION: float = 0.8
 ## Lo que sube, en px de pantalla.
@@ -23,7 +26,7 @@ const SALTO: float = 0.12
 
 const TAMANOS := {
 	Estilo.NORMAL: 17, Estilo.FUERTE: 24, Estilo.FUEGO: 14, Estilo.VACIO: 15, Estilo.JUGADOR: 19,
-	Estilo.VENENO: 15,
+	Estilo.VENENO: 15, Estilo.ROCIO: 16, Estilo.TOXICO: 15,
 }
 const COLORES := {
 	Estilo.NORMAL: Color(1.0, 1.0, 1.0),
@@ -33,6 +36,10 @@ const COLORES := {
 	Estilo.JUGADOR: Color(1.0, 0.32, 0.3),
 	# Lo que quita el veneno al jugador, del verde del veneno.
 	Estilo.VENENO: Color(0.6, 1.0, 0.4),
+	# Los del mago verde: el rocio, claro; su veneno, del verde de sus
+	# proyectiles.
+	Estilo.ROCIO: Color(0.82, 1.0, 0.7),
+	Estilo.TOXICO: Color(0.55, 0.95, 0.25),
 }
 
 var _texto: String = ""

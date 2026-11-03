@@ -26,6 +26,10 @@ signal sin_vida
 ## ataque cargado. Va en la misma senal y no en otra aparte porque quien la
 ## escucha hace lo mismo en los dos casos: crear una bola, con otros numeros.
 signal bola_lanzada(desde: Vector2, direccion: Vector2, cargada: bool)
+## El ataque especial del mago verde: los proyectiles de veneno, que salen
+## todos a la vez alrededor del mago. Aparte de bola_lanzada porque no es una
+## bola con otros numeros: son varias, y cada una se mueve sola.
+signal veneno_lanzado(desde: Vector2, direccion: Vector2)
 ## Se emite al recoger un objeto, para que el HUD lo anuncie.
 signal mejora_recogida(mejora: ObjetoMejora)
 ## Se emite al gastar el ataque especial y al recuperarlo en el piso
@@ -97,8 +101,12 @@ var mago: PersonajeJugable = null
 var especial_disponible: bool = true
 
 ## Tope de cadencia: por debajo de esto el disparo se vuelve una manguera y el
-## juego deja de tener tension.
+## juego deja de tener tension. Es el de un mago que dispara cada medio
+## segundo; el que dispara mas seguido (el rocio del mago verde, 9 veces mas)
+## tiene el tope igual de mas bajo (_cadencia_minima): si no, el suyo ya
+## empezaria por debajo y ningun objeto de cadencia le serviria de nada.
 const CADENCIA_MINIMA: float = 0.09
+var _cadencia_minima: float = CADENCIA_MINIMA
 
 ## Por debajo de esta velocidad se considera que el personaje esta parado y se
 ## pasa a la animacion de reposo. No es 0 porque la friccion deja residuos.
@@ -238,8 +246,9 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 	# llamarla dos veces con el mismo mago deja al jugador igual.
 	_base_vida_maxima = _escena_vida_maxima + personaje.vida_maxima_extra
 	_base_velocidad = _escena_velocidad + personaje.velocidad_extra
+	_cadencia_minima = CADENCIA_MINIMA * minf(personaje.cadencia_multiplicador, 1.0)
 	_base_cadencia = maxf(_escena_cadencia * personaje.cadencia_multiplicador,
-		CADENCIA_MINIMA)
+		_cadencia_minima)
 	_base_velocidad_bola = _escena_velocidad_bola + personaje.velocidad_bola_extra
 	_base_radio_bola = _escena_radio_bola + personaje.radio_bola_extra
 
@@ -433,6 +442,16 @@ func _actualizar_carga(delta: float) -> void:
 		_cancelar_carga()
 		return
 
+	# El mago verde tampoco carga: al pulsar salen sus proyectiles de veneno,
+	# alrededor de el, empezando por hacia donde apunta.
+	if mago != null and mago.ataque_especial == PersonajeJugable.ESPECIAL_VENENO:
+		var teclado := Input.is_action_just_pressed("cargar_ataque_teclado")
+		if Input.is_action_just_pressed("cargar_ataque") or teclado:
+			_especial_por_teclado = teclado
+			veneno_lanzado.emit(centro_colision(), _direccion_especial())
+			_gastar_especial()
+		return
+
 	# El mago del escudo no carga nada: el mismo boton lo saca. Al pulsar y
 	# no al mantener, para que sacarlo sea siempre algo que se decide.
 	if _escudo != null:
@@ -483,18 +502,27 @@ func _cancelar_carga() -> void:
 
 
 ## Dispara mientras se mantenga pulsado, con una cadencia fija.
+##
+## Lo que se pasa de la espera en el paso en que toca disparar se le descuenta
+## a la siguiente. Con el rocio del mago verde (un disparo cada 0,056 s) hace
+## falta: cada disparo esperaba al paso de fisica siguiente entero y salian 15
+## por segundo en vez de 18. Sin disparar, la espera se queda en 0: no se
+## guardan disparos para luego.
 func _actualizar_disparo(delta: float) -> void:
-	_espera_disparo = maxf(_espera_disparo - delta, 0.0)
+	_espera_disparo -= delta
+	if _espera_disparo > 0.0:
+		return
+
 	# Mientras cargas no sale el disparo normal: estas canalizando, y si salieran
 	# los dos a la vez no se sabria cual ha matado a que.
-	if not _control_activo or _cargando or _espera_disparo > 0.0:
-		return
-
-	var direccion := _direccion_apuntada()
+	var direccion := Vector2.ZERO
+	if _control_activo and not _cargando:
+		direccion = _direccion_apuntada()
 	if direccion == Vector2.ZERO:
+		_espera_disparo = 0.0
 		return
 
-	_espera_disparo = cadencia_disparo
+	_espera_disparo += cadencia_disparo
 	# Sale del centro del cuerpo y no de los pies, para que se vea nacer del
 	# personaje y no del suelo.
 	bola_lanzada.emit(centro_colision(), direccion, false)
@@ -673,7 +701,7 @@ func aplicar_mejora(mejora: ObjetoMejora) -> void:
 
 	velocidad_maxima += mejora.velocidad_extra
 	cadencia_disparo = maxf(cadencia_disparo * mejora.cadencia_multiplicador,
-		CADENCIA_MINIMA)
+		_cadencia_minima)
 	velocidad_bola += mejora.velocidad_bola_extra
 	radio_bola += mejora.radio_bola_extra
 

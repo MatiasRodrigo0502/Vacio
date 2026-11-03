@@ -18,6 +18,7 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 | Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
 | Mago rojo | +30 de vida, tiempo de carga ×0,5, +20 de daño cargado (50); sus disparos queman 3 por segundo durante 3 s | −25 px/s de velocidad |
 | Mago blanco | ataque especial: escudo burbuja (5 s, con un aro que va marcando lo que le queda); su disparo frena 1,5 s | no tiene bola cargada |
+| Mago verde | rocía 9 veces más rápido; ataque especial: 8 proyectiles de veneno que persiguen al enemigo más cercano (5 por segundo durante 5 s, y se suman) | cada gota quita 1; los proyectiles giran tan poco que muchos se estrellan |
 
 ## Cómo añadir uno
 
@@ -37,10 +38,19 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
   quita 30 (`Jugador.dano_bola_cargada`) más `dano_cargado_extra`.
 - `frena_disparo`: segundos que deja frenado al enemigo que toca. Frenado,
   anda, apunta y recarga a la mitad, y lleva un aro de escarcha a los pies.
-- Los tres disparan una bola cada 0,5 s (`cadencia_disparo` del jugador;
-  `cadencia_multiplicador` a 1 en los tres). Los objetos la siguen bajando.
+- El oscuro, el rojo y el blanco disparan una bola cada 0,5 s
+  (`cadencia_disparo` del jugador; `cadencia_multiplicador` a 1). El verde
+  va a 1/9 y quita 1 (`dano_disparo`): rocía. Los objetos la siguen
+  bajando, y su tope baja en la misma proporción que la del mago.
+- `rocio` y `dispersion_disparo`: el disparo se ve como una nubecilla de
+  veneno y no como una bola, cada una torcida al azar hasta esos grados, y
+  lo que quita se junta en el enemigo en un número cada 0,25 s
+  (`Enemigo.TIC_ROCIO`).
 - `ataque_especial`: lo que sale con el clic derecho o el espacio. **Bola
-  cargada** (oscuro y rojo) o **Escudo** (blanco). Sea cual sea, **se usa
+  cargada** (oscuro y rojo), **Escudo** (blanco) o **Veneno** (verde: al
+  pulsar salen `proyectiles_veneno` `BolaVenenosa`, ver
+  `scripts/bola_venenosa.gd`; los campos de su grupo dicen lo rápidas que
+  van, cuánto van rectas, lo que giran y lo que envenenan). Sea cual sea, **se usa
   una vez por piso** (lo cuenta `Jugador.especial_disponible`; el HUD dice si
   queda). El escudo se saca al pulsar y dura `duracion_escudo` (5 s en el
   blanco). Es una burbuja que cubre al mago entero (radio 42): los disparos

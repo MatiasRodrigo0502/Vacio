@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 03/11/2026 | Actualizar desde el juego también en Linux y en Mac, sin pasar por GitHub | — |
+| 03/11/2026 | Mago verde: rocío de veneno 9 veces más rápido y 8 proyectiles que persiguen y envenenan (los venenos se suman); los slimes se parten en 4 crías que heredan el frío, el fuego y el veneno | — |
+| 03/11/2026 | Actualizar desde el juego también en Linux y en Mac, sin pasar por GitHub | `af44cd3` |
 | 03/11/2026 | El jefe escupe fuego: un chorro que gira 90° hacia ti y te deja quemándote | `777b129` |
 | 03/11/2026 | Trampas de hielo: 5 trampas de pinchos de los pisos 9 a 12 frenan y quitan solo 1 | `8a86187`, `30e3699` |
 | 03/11/2026 | Disparo automático con autoapuntado, en Controles y en la pausa | `d9ed97f` |
@@ -151,7 +152,7 @@ Los enemigos se reparten en dos tipos de ataque. Los de cuerpo a cuerpo son ráp
 
 | Enemigo | Ataque | Qué hace |
 | --- | --- | --- |
-| Slimes (3 tipos) | Cuerpo a cuerpo | Al morir explotan en un área pequeña (radio 70-85) y sueltan dos crías. Las crías no explotan ni se dividen |
+| Slimes (3 tipos) | Cuerpo a cuerpo | Al morir explotan en un área pequeña (radio 70-85) y sueltan cuatro crías, que heredan el frío, el fuego y el veneno que le quedaban a la madre. Las crías no explotan ni se dividen |
 | Rata | Cuerpo a cuerpo | Persigue al jugador |
 | Murciélago | Cuerpo a cuerpo | De los más rápidos |
 | Fantasma | Cuerpo a cuerpo | Persigue al jugador |

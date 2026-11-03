@@ -35,6 +35,17 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Procesado**: `herramientas/generar_mago_blanco.py`, color a color.
 - **Licencia**: la misma duda que el mago rojo, del que sale.
 
+### Mago verde — personaje jugable
+
+- **Origen**: lo trajo Matías el 2026-11-03 (`mago_envenenador.zip`): una
+  ilustración vectorial hecha con un script (SVG por pose, 4 direcciones × 4
+  pasos de 128 px) y el mago suelto en 512 px.
+- **Archivos**: los originales en `assets/mago_verde/fuente/` (Godot no los
+  importa); lo que usa el juego, `atlas_4dir.png`, `retrato.png` y
+  `animaciones_mago_verde.tres`.
+- **Procesado**: `herramientas/generar_mago_verde.py` (reducir a 72 px y
+  montar las 8 direcciones).
+
 ### Portada — «Los tres Magos de Vacío: El Bosque Ancestral»
 
 - **Archivo**: `assets/portada/portada.jpg` (1416 × 752), el fondo del menú

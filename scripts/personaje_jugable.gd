@@ -15,6 +15,7 @@ extends Resource
 ## Los valores de 'ataque_especial', en el orden de su lista.
 const ESPECIAL_BOLA := 0
 const ESPECIAL_ESCUDO := 1
+const ESPECIAL_VENENO := 2
 
 @export var nombre: String = "Mago"
 ## Una linea, la que se lee al elegir. Conviene que diga numeros, no adjetivos.
@@ -50,9 +51,11 @@ const ESPECIAL_ESCUDO := 1
 @export var vida_maxima_extra: int = 0
 ## Velocidad punta de mas, en px/s.
 @export var velocidad_extra: float = 0.0
-## Multiplica la cadencia de disparo. Por debajo de 1 dispara mas rapido. Hoy
-## los tres magos van a 1: Matias quiso medio segundo entre bola y bola para
-## todos (2026-10-09).
+## Multiplica la cadencia de disparo. Por debajo de 1 dispara mas rapido.
+## Matias quiso medio segundo entre bola y bola para todos (2026-10-09); el
+## mago verde, que llego despues, rocia 9 veces mas rapido (1/9) y quita 10
+## veces menos. El tope de cadencia del jugador baja con esto en la misma
+## proporcion (Jugador.CADENCIA_MINIMA).
 @export var cadencia_multiplicador: float = 1.0
 @export var velocidad_bola_extra: float = 0.0
 @export var radio_bola_extra: float = 0.0
@@ -84,6 +87,15 @@ const ESPECIAL_ESCUDO := 1
 ## Segundos que deja frenado a un enemigo cada bola normal (anda y dispara a
 ## la mitad). 0 = no frena.
 @export var frena_disparo: float = 0.0
+## El disparo es un rocio (el mago verde): cada bola se ve como una nube de
+## veneno y no como una bola de luz, no suena al dar, y lo que quita se suma
+## en el enemigo y sale en un solo numero cada poco (Enemigo.TIC_ROCIO). Va
+## con una cadencia muy baja: sin esto serian 18 numeros y 18 golpes por
+## segundo encima del enemigo.
+@export var rocio: bool = false
+## Cuanto se tuerce cada disparo, al azar, a un lado o a otro, en grados. 0 =
+## recto. El rocio se abre un poco, como un spray.
+@export var dispersion_disparo: float = 0.0
 
 @export_group("Quemadura")
 ## Segundos que deja quemandose a un enemigo cada bola que le da, la normal y
@@ -100,7 +112,8 @@ const ESPECIAL_ESCUDO := 1
 ## "del ataque cargado" de arriba). Escudo: se pulsa y sale un escudo
 ## (EscudoBurbuja): una burbuja que cubre al mago entero durante
 ## 'duracion_escudo'; los disparos rebotan en ella y los enemigos que la tocan
-## salen despedidos.
+## salen despedidos. Veneno: se pulsa y salen los proyectiles de veneno (los
+## campos de abajo).
 ##
 ## Sea cual sea, se puede usar UNA VEZ POR PISO (pedido por Matias el
 ## 2026-10-09): lo cuenta el jugador (Jugador.especial_disponible) y el HUD
@@ -108,15 +121,33 @@ const ESPECIAL_ESCUDO := 1
 ##
 ## POR QUE UNO U OTRO Y NO LOS DOS: es el mismo boton. Con los dos, pulsarlo
 ## haria dos cosas y no se sabria cual ha servido.
-@export_enum("Bola cargada", "Escudo") var ataque_especial: int = ESPECIAL_BOLA
+@export_enum("Bola cargada", "Escudo", "Veneno") var ataque_especial: int = ESPECIAL_BOLA
 ## Segundos que dura el escudo levantado.
 @export var duracion_escudo: float = 3.0
+
+@export_group("Proyectiles de veneno")
+## El ataque especial "Veneno" (el mago verde, 2026-11-03): al pulsar salen
+## 'proyectiles_veneno' bolas lentas, repartidas en circulo alrededor del mago.
+## Van rectas 'salida_veneno' segundos y luego persiguen al enemigo mas cercano,
+## girando como mucho 'giro_veneno' grados por segundo: giran tan poco que
+## muchas se estrellan contra una roca o el muro, y ahi se acaban. La que da a
+## un enemigo lo envenena (ver Enemigo.envenenar). Ver BolaVenenosa.
+@export var proyectiles_veneno: int = 8
+@export var velocidad_veneno: float = 210.0
+@export var salida_veneno: float = 0.5
+@export var giro_veneno: float = 80.0
+## Lo que deja cada una al dar: 'veneno_dano' cada segundo durante
+## 'veneno_duracion'. Dos que dan al mismo enemigo quitan las dos a la vez.
+@export var veneno_duracion: float = 5.0
+@export var veneno_dano: float = 5.0
 
 
 ## Como se llama su ataque especial, para el HUD.
 func nombre_especial() -> String:
 	if ataque_especial == ESPECIAL_ESCUDO:
 		return "escudo"
+	if ataque_especial == ESPECIAL_VENENO:
+		return "proyectiles de veneno"
 	if agujero_negro:
 		return "agujero negro"
 	return "bola cargada"

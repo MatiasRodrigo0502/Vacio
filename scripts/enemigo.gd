@@ -39,6 +39,12 @@ const COLOR_FRENADO := Escarcha.COLOR
 ## segundo, no un poco cada fotograma, porque cada golpe hace parpadear al
 ## enemigo y eso es lo que dice que le esta quemando.
 const TIC_QUEMADURA: float = 1.0
+## El veneno del mago verde, igual: un golpe cada segundo.
+const TIC_VENENO: float = 1.0
+## El rocio del mago verde le da 18 gotas de 1 por segundo. Lo que quitan se
+## suma y sale en un numero (y un parpadeo) cada esto: uno por gota taparia al
+## enemigo, y con el parpadeo de cada una se quedaba blanco sin parar.
+const TIC_ROCIO: float = 0.25
 ## Lo que dura la linea del rayo que sale con el disparo, sin apuntar antes.
 const DURACION_LINEA_DISPARO: float = 0.3
 ## Espejo: lo rapido que alcanza el sitio que le mandan, y a mas distancia
@@ -78,6 +84,16 @@ var _frenado: float = 0.0
 var _quemaduras: int = 0
 var _dano_quemadura: float = 0.0
 var _tic_quemadura: float = 0.0
+## Los venenos que lleva (los proyectiles del mago verde). Cada uno va por su
+## cuenta, con sus golpes, su reloj y lo que quita: dos que le dan quitan los
+## dos a la vez (Matias, 2026-11-03: «los efectos de veneno se solapan»).
+var _venenos: Array[Dictionary] = []
+## En el espejo no hay venenos, solo si se le ven las burbujas (aplicar_red).
+var _envenenado_red: bool = false
+## Lo que le ha quitado el rocio y aun no ha salido en un numero, y lo que
+## falta para que salga.
+var _rocio_suma: float = 0.0
+var _rocio_reloj: float = 0.0
 var _objetivo: Node2D = null
 ## Dormido no se mueve ni dispara. La sala lo duerme al registrarlo y lo
 ## despierta cuando el jugador entra.
@@ -187,7 +203,9 @@ func _physics_process(delta: float) -> void:
 	if Red.cooperativo():
 		_objetivo = _buscar_objetivo()
 	_golpear_lo_que_toca()
+	_contar_rocio(delta)
 	_arder(delta)
+	_sufrir_veneno(delta)
 	if _muriendo:
 		return
 	# Andando nunca se mete en un agujero (andar los esquiva): si esta en uno
@@ -293,6 +311,12 @@ func herir(cantidad: float, frena: float = 0.0, estilo: NumeroDano.Estilo = Nume
 	if _espejo or not es_tangible():
 		return
 	if es_invulnerable():
+		# Del rocio, un bloqueo cada TIC_ROCIO, como sus numeros: con cada
+		# gota, el escudo del jefe sonaria 18 veces por segundo.
+		if estilo == NumeroDano.Estilo.ROCIO:
+			if _rocio_reloj > 0.0:
+				return
+			_rocio_reloj = TIC_ROCIO
 		tipo.comportamiento.bloqueado(self)
 		return
 	_quitar_vida(cantidad, frena, estilo)
@@ -307,27 +331,66 @@ func _quitar_vida(cantidad: float, frena: float, estilo: NumeroDano.Estilo = Num
 	if _vida <= 0:
 		return
 	# Lo que le ha quitado, encima de la cabeza. Con lo que de verdad quita:
-	# al ultimo golpe no le sobra vida que quitar.
-	NumeroDano.soltar(get_parent(), global_position + Vector2(0.0, -tipo.alto * 0.55),
-		minf(cantidad, _vida), estilo)
-	MundoRed.anunciar_herido(self, minf(cantidad, _vida), estilo)
+	# al ultimo golpe no le sobra vida que quitar. El rocio se guarda y sale
+	# todo junto (_contar_rocio).
+	var quitado := minf(cantidad, _vida)
+	if estilo == NumeroDano.Estilo.ROCIO:
+		_rocio_suma += quitado
+		if _rocio_reloj <= 0.0:
+			_rocio_reloj = TIC_ROCIO
+	else:
+		_ensenar_golpe(quitado, estilo)
 	_vida -= cantidad
 	if frena > 0.0 and _vida > 0:
 		frenar(frena)
 	if _vida > 0:
-		# Parpadeo blanco para que se vea que ha entrado el disparo.
-		_sprite.modulate = Color(2.0, 2.0, 2.0)
-		await get_tree().create_timer(0.08).timeout
-		if is_instance_valid(self):
-			_sprite.modulate = Color.WHITE
+		if estilo != NumeroDano.Estilo.ROCIO:
+			_parpadear()
 		return
 
+	# Lo que quedaba del rocio, con la gota que lo mata.
+	_soltar_rocio()
 	_muriendo = true
 	visible = false
 	# Diferido: romper() llega desde el area_entered de la bola, en mitad del
 	# paso de fisica, y al morir se crean nodos con colision (las crias). El
 	# motor no deja meterlos ahi.
 	_morir.call_deferred()
+
+
+## El numero que salta con lo que le han quitado, aqui y en los demas
+## ordenadores.
+func _ensenar_golpe(cantidad: float, estilo: NumeroDano.Estilo) -> void:
+	NumeroDano.soltar(get_parent(), global_position + Vector2(0.0, -tipo.alto * 0.55),
+		cantidad, estilo)
+	MundoRed.anunciar_herido(self, cantidad, estilo)
+
+
+## Parpadeo blanco para que se vea que ha entrado el disparo.
+func _parpadear() -> void:
+	_sprite.modulate = Color(2.0, 2.0, 2.0)
+	await get_tree().create_timer(0.08).timeout
+	if is_instance_valid(self):
+		_sprite.modulate = Color.WHITE
+
+
+## Saca en un numero lo que lleva quitado el rocio desde el ultimo, con su
+## parpadeo y su golpe: como un disparo normal, pero cada TIC_ROCIO.
+func _contar_rocio(delta: float) -> void:
+	if _rocio_reloj <= 0.0:
+		return
+	_rocio_reloj -= delta
+	if _rocio_reloj <= 0.0 and _rocio_suma > 0.0:
+		_soltar_rocio()
+		_parpadear()
+		Sonido.tocar(&"golpe_enemigo")
+
+
+func _soltar_rocio() -> void:
+	_rocio_reloj = 0.0
+	if _rocio_suma > 0.0:
+		_ensenar_golpe(_rocio_suma, NumeroDano.Estilo.ROCIO)
+	_rocio_suma = 0.0
 
 
 ## Lo deja quemandose 'segundos': le quita 'dano' cada segundo. Lo llama la
@@ -362,6 +425,55 @@ func _arder(delta: float) -> void:
 	_tic_quemadura += TIC_QUEMADURA
 	_quemaduras -= 1
 	herir(_dano_quemadura, 0.0, NumeroDano.Estilo.FUEGO)
+
+
+## Lo envenena 'segundos': le quita 'dano' cada segundo (TIC_VENENO). Lo
+## llaman los proyectiles del mago verde al darle.
+##
+## Al reves que la quemadura, otro veneno no rellena el que lleva: se anade,
+## y los dos quitan a la vez (Matias, 2026-11-03). Cada uno lleva su cuenta
+## desde que llega: su primer golpe, un segundo despues.
+func envenenar(segundos: float, dano: float) -> void:
+	if _espejo or _vida <= 0 or segundos <= 0.0 or es_invulnerable():
+		return
+	_venenos.append({"golpes": ceili(segundos / TIC_VENENO), "reloj": TIC_VENENO, "dano": dano})
+
+
+func esta_envenenado() -> bool:
+	return _envenenado_red if _espejo else not _venenos.is_empty()
+
+
+## Cuenta los venenos, cada uno con su reloj. A tiempo real, como el fuego.
+func _sufrir_veneno(delta: float) -> void:
+	if _venenos.is_empty():
+		return
+	queue_redraw()
+	# De atras adelante, para poder quitar los que se acaban sobre la marcha.
+	for i in range(_venenos.size() - 1, -1, -1):
+		var veneno := _venenos[i]
+		veneno["reloj"] -= delta
+		if veneno["reloj"] > 0.0:
+			continue
+		veneno["reloj"] += TIC_VENENO
+		veneno["golpes"] -= 1
+		if veneno["golpes"] <= 0:
+			_venenos.remove_at(i)
+		herir(veneno["dano"], 0.0, NumeroDano.Estilo.TOXICO)
+
+
+## Lo que le quedaba a la madre de frio, fuego y veneno, en una cria recien
+## nacida (Matias, 2026-11-03: las crias «heredan el tiempo restante de los
+## efectos que el slime padre tenga activo»). Tal cual: los golpes que le
+## faltaban y lo que faltaba para el siguiente.
+func heredar_estados(madre: Enemigo) -> void:
+	if madre._frenado > 0.0:
+		frenar(madre._frenado)
+	if madre._quemaduras > 0:
+		_quemaduras = madre._quemaduras
+		_dano_quemadura = madre._dano_quemadura
+		_tic_quemadura = madre._tic_quemadura
+	for veneno in madre._venenos:
+		_venenos.append(veneno.duplicate())
 
 
 ## Lo deja frenado 'segundos' (si ya lo estaba, se queda con lo que dure mas).
@@ -399,6 +511,11 @@ func _pintar_escarcha() -> void:
 ## bajan cada una a su ritmo, para que se vea que arden.
 func _pintar_llamas() -> void:
 	Llamas.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.62, tipo.alto, _fase)
+
+
+## Envenenado: un charco y burbujas verdes, por los lados (Burbujas).
+func _pintar_burbujas() -> void:
+	Burbujas.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.58, tipo.alto, _fase)
 
 
 # --- Movimiento y ataque ----------------------------------------------------
@@ -768,13 +885,13 @@ func estado_red() -> Array:
 	return [id_red, global_position, _sprite.position, _sprite.scale / _escala_base,
 		_sprite.self_modulate.a, _sprite.modulate, modulate, _sprite.flip_h, _sprite.animation,
 		_frenado > 0.0, _quemaduras > 0, apuntando, _linea_disparo, _mira, _largo_mira,
-		limpio, fraccion_vida(), visible]
+		limpio, fraccion_vida(), visible, esta_envenenado()]
 
 
 ## Lo contrario, en el espejo: se pone como esta en el anfitrion. El sitio
 ## no de golpe (llega unas 20 veces por segundo): lo alcanza en _seguir_red.
 func aplicar_red(datos: Array) -> void:
-	if _muriendo or datos.size() < 18:
+	if _muriendo or datos.size() < 19:
 		return
 	_destino_red = datos[1]
 	if not _recibido_red or global_position.distance_to(_destino_red) > SALTO_RED:
@@ -799,6 +916,7 @@ func aplicar_red(datos: Array) -> void:
 	estado = datos[15]
 	_fraccion_red = datos[16]
 	visible = datos[17]
+	_envenenado_red = datos[18]
 	queue_redraw()
 
 
@@ -891,6 +1009,7 @@ func _soltar_cria(numero: int) -> void:
 	if sala_propia != null and sala_propia.pozo_en(sitio, tipo.alto * 0.2) != null:
 		sitio = global_position
 	cria.preparar(tipo.cria(), sitio)
+	cria.heredar_estados(self)
 	cria.mantener_en_la_sala()
 	var sala := get_parent() as Sala
 	if sala != null:
@@ -905,6 +1024,8 @@ func _draw() -> void:
 		_pintar_escarcha()
 	if _quemaduras > 0 and tipo != null:
 		_pintar_llamas()
+	if esta_envenenado() and tipo != null:
+		_pintar_burbujas()
 	if tipo != null and tipo.comportamiento != null:
 		tipo.comportamiento.dibujar(self)
 	if tipo == null or not tipo.es_a_distancia():

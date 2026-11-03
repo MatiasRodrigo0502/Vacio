@@ -181,12 +181,21 @@ func mandar_disparo(bola: BolaMagica, desde: Vector2, mago: PersonajeJugable) ->
 		"quema": bola.quema,
 		"dano_quema": bola.dano_quema,
 		"cargada": bola.cargada,
+		"rocio": bola.rocio,
 		"atraviesa": bola.atraviesa,
 		"alcance": bola.alcance,
 		"agujero": bola.cargada and mago != null and mago.agujero_negro,
 	}
 	for id: int in Red.listos():
 		_disparo.rpc_id(id, datos)
+
+
+## El ataque especial del mago verde de este ordenador, a los demas: desde
+## donde y hacia donde. Lo demas (cuantos, lo rapidos, lo que envenenan) es
+## de su mago, que alli tambien saben cual es.
+func mandar_veneno(desde: Vector2, direccion: Vector2) -> void:
+	for id: int in Red.listos():
+		_veneno.rpc_id(id, desde, direccion)
 
 
 ## Lo llama un Objeto al recogerlo el mago de este ordenador.
@@ -312,6 +321,13 @@ func _disparo(datos: Dictionary) -> void:
 	var mago := Red.mago_de(id)
 	if mago != null and _principal.has_method("lanzar_bola_remota"):
 		_principal.lanzar_bola_remota(datos, mago)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _veneno(desde: Vector2, direccion: Vector2) -> void:
+	var mago := Red.mago_de(multiplayer.get_remote_sender_id())
+	if mago != null and _principal.has_method("lanzar_veneno_remoto"):
+		_principal.lanzar_veneno_remoto(desde, direccion, mago)
 
 
 ## Otro ha cogido un objeto: aqui se quita del suelo y, si este mago esta
