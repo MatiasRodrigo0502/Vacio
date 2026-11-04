@@ -1,4 +1,5 @@
-## Proyectil de un enemigo: veneno, magma o rayo, segun su TipoProyectil.
+## Proyectil de un enemigo: esquirla, bola, veneno, magma o rayo, segun su
+## TipoProyectil.
 ##
 ## Se crea por codigo (ProyectilEnemigo.new()) y no desde una escena: todo lo
 ## que lo distingue sale del .tres, y una escena solo tendria una forma de
@@ -60,6 +61,8 @@ var _origen: Vector2 = Vector2.ZERO
 var _destino: Vector2 = Vector2.ZERO
 var _duracion: float = 1.0
 var _tiempo: float = 0.0
+## El dibujo, si su tipo trae arte (TipoProyectil.arte).
+var _dibujo: AnimatedSprite2D = null
 
 
 ## Lo prepara antes de meterlo en el arbol. 'destino' solo lo usa la parabola.
@@ -90,6 +93,10 @@ func _ready() -> void:
 	body_entered.connect(_al_tocar)
 	global_position = _origen
 	_jugador = get_tree().get_first_node_in_group("jugador")
+	if tipo.arte != null and tipo.arte.tiene(&"vuelo"):
+		_dibujo = AnimatedSprite2D.new()
+		add_child(_dibujo)
+		tipo.arte.poner(_dibujo, &"vuelo")
 
 
 func _physics_process(delta: float) -> void:
@@ -97,6 +104,9 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 	if _acabado:
 		return
+	# En cada paso: al rebotar en la burbuja cambia de rumbo.
+	if _dibujo != null:
+		_dibujo.rotation = direccion.angle()
 
 	if tipo.estilo == TipoProyectil.Estilo.PARABOLA:
 		_tiempo += delta
@@ -256,6 +266,7 @@ func _acabar() -> void:
 	if _acabado:
 		return
 	_acabado = true
+	EfectoHechizo.soltar(get_parent(), tipo.arte, &"impacto", global_position)
 	# La parabola no: cae en el mismo sitio en todos, y cada uno tiene que
 	# dejar su charco aunque otro haya caido antes.
 	if not _acabado_por_red and tipo.estilo != TipoProyectil.Estilo.PARABOLA:
@@ -311,6 +322,7 @@ func terminar_red() -> void:
 		return
 	_acabado_por_red = true
 	_acabado = true
+	EfectoHechizo.soltar(get_parent(), tipo.arte, &"impacto", global_position)
 	queue_free()
 
 
@@ -323,7 +335,8 @@ func _draw() -> void:
 		TipoProyectil.Estilo.PARABOLA:
 			_pintar_parabola()
 		_:
-			_pintar_bola(Vector2.ZERO)
+			if _dibujo == null:
+				_pintar_bola(Vector2.ZERO)
 
 
 func _pintar_bola(centro: Vector2) -> void:

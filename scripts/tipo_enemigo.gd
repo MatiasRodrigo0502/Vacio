@@ -18,7 +18,9 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## Nombre legible, para depuracion.
 @export var nombre: String = "Enemigo"
 
-## Las animaciones. Ahora mismo todas tienen una sola: "moverse".
+## Las animaciones: una por direccion (caminar_abajo, atacar_abajo, dano_abajo,
+## muerte_abajo...), de herramientas/generar_enemigos.py. Las de los enemigos de
+## antes (resources/enemigos_antiguos/) tienen una sola, "moverse", y se voltean.
 @export var animaciones: SpriteFrames = null
 
 ## Cuanta vida tiene. Un disparo normal quita 10 (de 10 a 13).
@@ -30,12 +32,28 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## Vida que quita al tocar al jugador.
 @export var dano: int = 25
 
-## Alto que ocupa en el mundo. El sprite se escala a esto.
+## Alto del cuerpo en el mundo: de esto salen el circulo que choca y donde tiene
+## los pies.
 @export var alto: float = 54.0
+
+## El dibujo, si no llena su casilla (las hojas de ocho direcciones traen margen
+## para los brazos del golpe y la sombra): a que escala se pinta, y cuanto se
+## mueve para que el centro del cuerpo caiga en el del circulo que choca. Escala
+## 0 = que la casilla entera mida 'alto'.
+@export var escala_dibujo: float = 0.0
+@export var desfase_dibujo: Vector2 = Vector2.ZERO
 
 ## Primer piso en el que puede aparecer. Sirve para que los enemigos duros no
 ## salgan en los pisos de arriba.
 @export_range(1, 12) var piso_minimo: int = 1
+## Ultimo piso en el que puede aparecer. Cada enemigo tiene una variante por capa
+## de la Tierra (corteza, manto, nucleo): sin esto, las de arriba seguirian
+## saliendo abajo.
+@export_range(1, 12) var piso_maximo: int = 12
+## Cuantos salen juntos por cada sitio que le toca en una sala: el enjambre de
+## murcielagos. Cuentan como uno al repartir, porque entre todos tienen la vida
+## de un enemigo normal.
+@export var grupo: int = 1
 ## Va por el aire (el murcielago) o flota (el fantasma): los agujeros del
 ## suelo no le estorban ni se cae en ellos, y la lava no le quema.
 @export var vuela: bool = false

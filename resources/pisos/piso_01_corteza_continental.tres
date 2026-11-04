@@ -4,8 +4,8 @@
 [ext_resource type="Resource" path="res://assets/rocas/piso_01/catalogo.tres" id="2_catalogo"]
 [ext_resource type="Resource" path="res://assets/bordes/piso_01/estilo_borde.tres" id="9_borde"]
 [ext_resource type="AudioStream" path="res://assets/sonido/musica/superficie.wav" id="20_musica"]
-[ext_resource type="Resource" path="res://resources/enemigos/slime_verde.tres" id="30_slime"]
-[ext_resource type="Resource" path="res://resources/enemigos/rata.tres" id="31_rata"]
+[ext_resource type="Resource" path="res://resources/enemigos/golem_corteza.tres" id="30_golem"]
+[ext_resource type="Resource" path="res://resources/enemigos/murcielago_corteza.tres" id="31_murcielago"]
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="32_tipo"]
 
 [resource]
@@ -17,7 +17,7 @@ radio_vision = 495.0
 es_nivel_final = false
 alto_area = 800.0
 mostrar_tutorial = true
-enemigos_tutorial = Array[ExtResource("32_tipo")]([ExtResource("30_slime"), ExtResource("31_rata"), ExtResource("31_rata")])
+enemigos_tutorial = Array[ExtResource("32_tipo")]([ExtResource("30_golem"), ExtResource("31_murcielago"), ExtResource("31_murcielago")])
 sala_pelea_tutorial = 3
 familia_obstaculos = "roca"
 catalogo_arte = ExtResource("2_catalogo")

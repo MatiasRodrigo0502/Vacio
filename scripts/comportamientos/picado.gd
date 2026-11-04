@@ -48,6 +48,7 @@ func procesar(enemigo: Enemigo, delta: float) -> void:
 				enemigo.estado["fase"] = &"aviso"
 				enemigo.estado["t"] = 0.0
 				enemigo.estado["dir"] = radial
+				enemigo.mirar_a(radial)
 		&"aviso":
 			enemigo.brillo(t / aviso)
 			if t >= aviso:
@@ -55,6 +56,7 @@ func procesar(enemigo: Enemigo, delta: float) -> void:
 				enemigo.estado["fase"] = &"picado"
 				enemigo.estado["t"] = 0.0
 				enemigo.estado["recorrido"] = 0.0
+				enemigo.gesto(&"atacar")
 		&"picado":
 			var antes := enemigo.global_position
 			enemigo.andar(enemigo.estado["dir"], delta, factor_picado)
@@ -66,6 +68,11 @@ func procesar(enemigo: Enemigo, delta: float) -> void:
 				enemigo.estado["fase"] = &"orbita"
 				enemigo.estado["t"] = 0.0
 				enemigo.estado["giro"] = -enemigo.estado["giro"]
+
+
+## Avisando y en picado mira a donde se lanza, no a donde estas ahora.
+func voltear(enemigo: Enemigo) -> bool:
+	return enemigo.estado.get("fase", &"orbita") == &"orbita"
 
 
 func dibujar(enemigo: Enemigo) -> void:

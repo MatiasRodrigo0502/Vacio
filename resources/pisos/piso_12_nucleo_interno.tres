@@ -4,7 +4,7 @@
 [ext_resource type="Resource" path="res://assets/rocas/piso_12/catalogo.tres" id="2_catalogo"]
 [ext_resource type="Resource" path="res://assets/bordes/piso_12/estilo_borde.tres" id="9_borde"]
 [ext_resource type="AudioStream" path="res://assets/sonido/musica/profundo.wav" id="20_musica"]
-[ext_resource type="Resource" path="res://resources/jefes/mago_caido.tres" id="21_jefe"]
+[ext_resource type="Resource" path="res://resources/jefes/corazon_nucleo.tres" id="21_jefe"]
 [ext_resource type="AudioStream" path="res://assets/sonido/musica/jefe.wav" id="22_musica_jefe"]
 [ext_resource type="Resource" path="res://resources/objetos/vendaje.tres" id="23_vendaje"]
 

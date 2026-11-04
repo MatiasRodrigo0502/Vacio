@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="SpriteFrames" path="res://assets/criaturas/jefe/animaciones.tres" id="2_anim"]
+[ext_resource type="Resource" path="res://resources/proyectiles/bola_nucleo.tres" id="3_bola"]
+[ext_resource type="Resource" path="res://resources/proyectiles/esquirla_hielo.tres" id="4_esquirla"]
+[ext_resource type="Resource" path="res://resources/objetos/vendaje.tres" id="5_vendaje"]
+[ext_resource type="Script" path="res://scripts/comportamientos/corazon_nucleo.gd" id="9_comportamiento"]
+
+[sub_resource type="Resource" id="Resource_comportamiento"]
+script = ExtResource("9_comportamiento")
+ritmo_fases = PackedFloat32Array(1.1, 1.3, 1.5)
+espera_habilidad = 3.5
+radio_pozo = 200.0
+dano_pozo = 20
+esquirla = ExtResource("4_esquirla")
+esquirlas_por_anillo = 14
+cada_anillo = 0.85
+carga_fuego = 1.2
+charcos_fuego = 7
+duracion_charco = 4.0
+bolas_por_fase = PackedInt32Array(1, 3, 5)
+cura = ExtResource("5_vendaje")
+
+[resource]
+script = ExtResource("1_tipo")
+nombre = "Corazón del Núcleo"
+animaciones = ExtResource("2_anim")
+vida = 1500
+monedas = 200
+diamantes = 10
+velocidad = 110.0
+dano = 30
+alto = 120.0
+escala_dibujo = 1.0
+desfase_dibujo = Vector2(0, 12.38)
+piso_minimo = 12
+vuela = true
+color_efectos = Color(1, 0.8, 0.3, 1)
+ataque = 1
+proyectil = ExtResource("3_bola")
+cadencia = 1.5
+tiempo_apuntar = 0.55
+distancia_preferida = 380.0
+comportamiento = SubResource("Resource_comportamiento")
+jefe = true
+titulo = "Lo que late debajo de todo."

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="SpriteFrames" path="res://assets/criaturas/vigia_nucleo/animaciones.tres" id="2_anim"]
+[ext_resource type="Resource" path="res://resources/proyectiles/esquirla_nucleo.tres" id="3_proyectil"]
+[ext_resource type="Script" path="res://scripts/comportamientos/abanico.gd" id="9_comportamiento"]
+
+[sub_resource type="Resource" id="Resource_comportamiento"]
+script = ExtResource("9_comportamiento")
+disparos = 3
+
+[resource]
+script = ExtResource("1_tipo")
+nombre = "Vigía del núcleo"
+animaciones = ExtResource("2_anim")
+vida = 50
+monedas = 5
+velocidad = 70.0
+dano = 30
+alto = 53.0
+escala_dibujo = 1.0
+desfase_dibujo = Vector2(0, 3.21)
+piso_minimo = 9
+piso_maximo = 12
+color_efectos = Color(1, 0.9, 0.55, 1)
+vuela = true
+ataque = 1
+proyectil = ExtResource("3_proyectil")
+cadencia = 1.80
+tiempo_apuntar = 0.50
+distancia_preferida = 300.0
+comportamiento = SubResource("Resource_comportamiento")

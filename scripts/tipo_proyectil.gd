@@ -1,9 +1,7 @@
-## Datos de un proyectil enemigo: el veneno de la serpiente, el magma del golem,
-## el rayo del cristal.
+## Datos de un proyectil enemigo: la esquirla del vigia, la bola del jefe.
 ##
 ## POR QUE UN RESOURCE APARTE Y NO CAMPOS EN TipoEnemigo:
-## dos enemigos pueden tirar lo mismo (la serpiente y la planta venenosa
-## escupen el mismo veneno), y un proyectil nuevo no deberia obligar a tocar
+## dos enemigos pueden tirar lo mismo, y un proyectil nuevo no deberia obligar a tocar
 ## ningun enemigo. Un .tres en resources/proyectiles/ y se apunta desde el
 ## enemigo que lo use. Todos se mueven y se dibujan con el mismo script
 ## (proyectil_enemigo.gd); lo que cambia son estos numeros.
@@ -19,6 +17,10 @@ enum Estilo { BOLA, RAYO, PARABOLA }
 
 @export var nombre: String = "Proyectil"
 @export var estilo: Estilo = Estilo.BOLA
+
+## Su dibujo: "vuelo" (dibujado mirando a la derecha) e "impacto". Sin arte, se
+## pinta por codigo con los colores de abajo, como el veneno de antes.
+@export var arte: ArteHechizo = null
 
 ## Color del centro y del resplandor.
 @export var color: Color = Color(0.5, 1.0, 0.4)

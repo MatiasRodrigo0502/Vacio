@@ -4,7 +4,7 @@ Actualizado el 8 de octubre de 2026 · Matías
 
 ## Resumen
 
-Vacío se puede jugar de principio a fin. Son 12 pisos, 11 tipos de enemigo y 3 magos para elegir, y desde el 6 de octubre de 2026 hay un `.exe` descargable que se actualiza solo. Es un juego 2D top-down hecho en Godot 4.7 (GDScript) como proyecto de clase de 1.º de DAM, entre 3 personas. Lo empezamos el 17 de septiembre de 2026 y lleva 53 commits en GitHub.
+Vacío se puede jugar de principio a fin. Son 12 pisos, 3 criaturas enemigas con una variante por capa y 4 magos para elegir, y desde el 6 de octubre de 2026 hay un `.exe` descargable que se actualiza solo. Es un juego 2D top-down hecho en Godot 4.7 (GDScript) como proyecto de clase de 1.º de DAM, entre 3 personas. Lo empezamos el 17 de septiembre de 2026 y lleva 53 commits en GitHub.
 
 Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo es parecerse a *The Binding of Isaac*:
 
@@ -22,7 +22,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 - **Pausa:** Escape (continuar, reiniciar o volver al menú).
 - **Pantalla completa:** el juego empieza a pantalla completa; F11 (o Alt+Intro) pasa a ventana y vuelve, y se acuerda.
 - **Cooperativo:** en Jugar → Cooperativo en red local, hasta 3 jugadores en la misma red, con un código de sala. La partida entera: peleas para todos, se baja juntos y el que cae vuelve en el piso siguiente con media vida.
-- **Enemigos:** salen desde el piso 2, y cada uno pelea a su manera: slimes que saltan (el de magma dejando lava) o rebotan, rata en zigzag, murciélago en picado, fantasma que se desvanece, planta que excava, serpiente en abanico, planta con anillos de esporas, gólem con pisotón y cristal que se teletransporta. Todos avisan antes de lo que pega de golpe.
+- **Enemigos:** salen desde el piso 2: tres criaturas, con una variante por capa (corteza, manto y núcleo), y cada una pelea a su manera: gólem que golpea el suelo a dos manos, vigía que flota y dispara esquirlas buscando tenerte a tiro, y murciélagos que van de tres en tres y se lanzan en picado. Todos avisan antes de lo que pega de golpe.
 - **Peligros del suelo:** pinchos, agujeros al vacío y lava.
 - **Recompensas:** un objeto de mejora por piso. Además, los enemigos sueltan ventajas a veces y, al limpiar una sala, a veces cae un vendaje que cura 60 (es lo único que cura).
 
@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 04/11/2026 | Monedas y diamantes que dan los enemigos y el jefe, y dos gachas en el menú: 16 skins (B, A, S y S+) y 13 armas (raro, épico, legendario y mítico), con formas de disparar, animaciones al matar y modos con la rueda del ratón | — |
+| 04/11/2026 | Enemigos nuevos: gólem, vigía y murciélago, en ocho direcciones y con una variante por capa, con animaciones de atacar, daño y muerte; el Corazón del Núcleo sustituye al Mago Caído como jefe, con su pelea más una nova con anillo de bolas | — |
+| 04/11/2026 | Monedas y diamantes que dan los enemigos y el jefe, y dos gachas en el menú: 16 skins (B, A, S y S+) y 13 armas (raro, épico, legendario y mítico), con formas de disparar, animaciones al matar y modos con la rueda del ratón | `04364db` |
 | 04/11/2026 | Arte nuevo de los cuatro magos y sus hechizos: figuras en ocho direcciones, bola de fuego y meteoro, bola morada y agujero negro, lanza de hielo y burbuja, dardos y los estados de los enemigos | `509d733` |
 | 03/11/2026 | Versión para Android (`.apk` en cada release) con dos joysticks como Brawl Stars, botones de especial y pausa, y la vista girada 90° con el móvil en vertical | `691454a` |
 | 03/11/2026 | Iconos de los objetos más sencillos: un aro de su color y el símbolo dentro, en dos tonos de ese color | `9c8e7d9` |
@@ -213,7 +214,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 **Personajes:**
 
 - **Magos:** los cuatro (oscuro, rojo, blanco y verde) son el arte vectorial que trajo Matías el 04/11/2026, en ocho direcciones y con sus hechizos, preparado por `generar_magos.py`. Antes hubo un mago oscuro y uno rojo en pixel art, el blanco como el rojo con otra paleta, y se probaron el BlueWizard, el nigromante y un mago morado de cuatro direcciones; ya no están en el proyecto.
-- **Enemigos:** los siete últimos (rata, serpiente, murciélago, gólem, slime de magma, cristal vivo y fantasma) los dibujó Matías.
+- **Enemigos:** gólem, vigía, murciélago y el Corazón del Núcleo son el arte vectorial que trajo Matías el 04/11/2026 (`vacio_completo.zip`), preparado por `generar_enemigos.py`. Los once de antes, siete de ellos dibujados por Matías, siguen guardados sin usar en `resources/enemigos_antiguos/` y `assets/enemigos/`.
 
 **Interfaz:**
 
@@ -305,7 +306,7 @@ Lo más urgente es jugar una partida entera para equilibrar la dificultad, porqu
 
 **En marcha:**
 
-- [ ] **Probar y ajustar el jefe del piso 12, el Mago Caído.** Está hecho entero (antesala con altar y vendaje, sala grande con puerta de runas, y el jefe: rayos, agujero negro, escudo con hielo y rayo de fuego, en tres fases, con barra de vida y música propia), pero nadie lo ha jugado. Sus números están en `resources/jefes/mago_caido.tres`.
+- [ ] **Probar y ajustar el jefe del piso 12, el Corazón del Núcleo.** Está hecho entero (antesala con altar y vendaje, sala grande con puerta de runas, y el jefe: bolas de magma, nova, agujero negro, escudo con hielo, rayo de fuego y aliento, en tres fases, con barra de vida y música propia), pero nadie lo ha jugado. Sus números están en `resources/jefes/corazon_nucleo.tres`.
 
 **Ideas no pedidas todavía:**
 

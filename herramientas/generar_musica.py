@@ -4,7 +4,7 @@
 - portada.wav: el menu. Lenta y misteriosa, en re menor.
 - superficie.wav: pisos 1 a 6. Ritmo de aventura, en la menor.
 - profundo.wav: pisos 7 a 12. Mas grave y con tambores, en mi menor.
-- jefe.wav: la pelea con el Mago Caido. Rapida y tensa, en mi frigio.
+- jefe.wav: la pelea con el jefe. Rapida y tensa, en mi frigio.
 - victoria.wav y derrota.wav: lo que suena al ganar o perder (no se repiten).
 
 Las tres primeras se repiten sin corte: las notas que suenan al acabar caen
@@ -285,7 +285,7 @@ def profundo():
 
 
 def jefe():
-    """La pelea con el Mago Caido: mi frigio a 132. Bajo en corcheas sin
+    """La pelea con el jefe: mi frigio a 132. Bajo en corcheas sin
     parar, bombo a negras, caja en el 2 y el 4, timbales cada cuatro compases
     y un dron con el fa encima del mi: esa segunda menor es la que no deja
     respirar. Em - F - Em - Dm - C - B - Em - F, dos compases cada uno, y la

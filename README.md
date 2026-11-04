@@ -114,8 +114,8 @@ se queda y el motivo está en `build/exportar.log`.
 
 ## Monedas, diamantes y gacha
 
-Al matar enemigos ganas **monedas** (de 1 los más débiles a 5 los más fuertes, 200
-el jefe). Los **diamantes** solo los dan los jefes (10 el Mago Caído). Se guardan
+Al matar enemigos ganas **monedas** (de 1 los más débiles a 10 los más fuertes, 200
+el jefe). Los **diamantes** solo los dan los jefes (10 el Corazón del Núcleo). Se guardan
 entre partidas, y se gastan en el botón **Gacha** de la portada:
 
 | Gacha | Una tirada | Tiers y probabilidad |
@@ -171,7 +171,7 @@ se cierra con *Entendido*, Intro o Escape):
 
 1. A qué se juega, moverse, disparar y la pausa.
 2. El ataque especial (el de tu mago), las rocas, la vida y el mapa.
-3. **La primera pelea** (un slime y dos ratas): hay que matar a todos los
+3. **La primera pelea** (un gólem y dos murciélagos): hay que matar a todos los
    enemigos para que se abran las puertas.
 4. Los objetos (el del piso está en el centro) y los vendajes.
 5. La bajada, y lo que espera más abajo.
@@ -190,7 +190,7 @@ abajo a la izquierda de la pantalla, en rojo mientras eres invencible.
 | F1 | Invencible sí / no: ni los golpes ni las caídas quitan vida |
 | F7 | Piso anterior (hasta el 3 de noviembre de 2026, F2) |
 | F8 | Piso siguiente (era F3, que ahora enseña las estadísticas) |
-| F4 | Mata a los enemigos de la sala en la que estás (con explosiones y crías) |
+| F4 | Mata a los enemigos de la sala en la que estás (con su animación de muerte) |
 | F5 | Recupera el ataque especial, que si no es uno por piso |
 
 Al equilibrar, ojo con dejar puesta la invencibilidad: un piso parece fácil
@@ -258,21 +258,19 @@ mago lo que te ha quitado, en rojo. A los enemigos les pasa lo mismo: al
 darles salta **el número de vida que les quitas** (blanco el disparo normal,
 dorado y grande el cargado, naranja la quemadura y violeta el agujero negro).
 Un disparo normal quita **10** (hasta 13: varía un poco hacia arriba) y el
-cargado 30; una rata o un murciélago tienen 10, un slime 20, un gólem 50. Un
-golpe de un enemigo te quita de 20 (una rata) a 45 (el magma del gólem), y
+cargado 30; un murciélago tiene de 10 a 20, un vigía de 30 a 50 y un gólem de 60 a
+100, según la capa. Un golpe de un enemigo te quita de 20 (un murciélago de arriba)
+a 40 (la esquirla de un vigía del núcleo), y
 el **vendaje** cura 60. Es lo único que cura: sale como objeto, a veces lo
 suelta un enemigo y, al limpiar una sala, cae uno de cada cuatro veces. Con
 la vida llena no se coge: se queda en el suelo para luego. Del piso 2 en adelante los hay, y van a
-más según bajas. Los slimes, al morir, se parten en cuatro crías, que siguen
-heladas, quemándose o envenenadas si la madre lo estaba. **Cada uno pelea a su manera**: los slimes saltan (el de
-magma dejando lava) o rebotan por la sala, la rata corre en zigzag, el
-murciélago se lanza en picado, el fantasma atraviesa rocas y se desvanece, la
-planta azul se entierra y sale debajo de ti, la serpiente dispara en abanico
-(y si te escondes tras una roca, se mueve hasta tenerte a tiro),
-la planta venenosa suelta anillos de esporas (y, con las puertas cerradas,
-te persigue cada vez más rápido), el gólem da pisotones con onda y
-el cristal se teletransporta. Todos avisan antes de lo que pega de golpe. Lo
-que hace cada uno está en [`resources/enemigos/`](resources/enemigos/README.md).
+más según bajas. Son **tres criaturas, con una variante por capa** (corteza, manto y
+núcleo), más fuertes cuanto más abajo, y **cada una pelea a su manera**: el **gólem**
+va a por ti, levanta los brazos y golpea el suelo a dos manos; el **vigía** flota, te
+rodea y dispara esquirlas, y si te escondes tras una roca, se mueve hasta tenerte a
+tiro; los **murciélagos** van de tres en tres, dan vueltas a tu alrededor, marcan una
+línea y se lanzan en picado. Todos avisan antes de lo que pega de golpe. Lo que hace
+cada uno está en [`resources/enemigos/`](resources/enemigos/README.md).
 
 Disparas bolas mágicas para matarlos, con las flechas en las cuatro direcciones
 o con el clic izquierdo apuntando donde quieras: una cada medio segundo,
@@ -316,18 +314,18 @@ cámara se abre para que se vea entera), con un sello grabado en el suelo,
 cuatro pilares de cristal para cubrirse y la bajada en el centro. En el
 minimapa sale con una estrella roja desde que pisas la antesala.
 
-**El jefe es el Mago Caído**, el cuarto mago, el que bajó antes que tú:
-negro y oro, con una guadaña. Se presenta al cerrarse las puertas, su vida sale en una barra abajo y, en vez
-de bolas, dispara **rayos** (con su línea de aviso). Además usa lo de los
-otros tres magos, más cuanto menos vida le queda:
+**El jefe es el Corazón del Núcleo**: una esfera de magma que flota, con un ojo que
+te sigue. Se presenta al cerrarse las puertas, su vida sale en una barra abajo y
+dispara **bolas de magma**, en abanico. Cada poco suelta una **nova**: avisa con un
+aro en el suelo y sale una onda y un anillo de ocho bolas. Y sabe más cuanta menos
+vida le queda:
 
-- **Fase 1:** el agujero negro del oscuro, al revés: se abre donde estás y
-  tira de ti. Sal mientras crece.
-- **Fase 2:** el escudo del blanco: no se le puede dar y suelta anillos de
-  esquirlas de hielo que frenan. Y los rayos salen de tres en tres.
-- **Fase 3:** el ataque cargado del rojo: un rayo de fuego enorme que deja la
-  sala ardiendo. Un pilar te cubre, pero el rayo lo rompe: cada pilar sirve
-  una vez. Y los rayos salen de cinco en cinco.
+- **Fase 1:** un agujero negro al revés: se abre donde estás y tira de ti. Sal
+  mientras crece.
+- **Fase 2:** un escudo: no se le puede dar y suelta anillos de esquirlas de hielo que
+  frenan. Y las bolas salen de tres en tres.
+- **Fase 3:** un rayo de fuego enorme que deja la sala ardiendo. Un pilar te cubre,
+  pero el rayo lo rompe: cada pilar sirve una vez. Y las bolas salen de cinco en cinco.
 
 Cada fase va más deprisa que la anterior. Y de vez en cuando **escupe
 fuego**: avisa con una línea y una flecha, y luego un chorro que empieza a

@@ -16,8 +16,10 @@ const RAYOS_CUANTOS: int = 6
 var _tipo: int = Tipo.NINGUNA
 var _color: Color = Color.WHITE
 var _figura: Texture2D = null
-## Lo que mide el enemigo.
+## Lo que mide el enemigo, y a que escala y con que desfase se pinta su dibujo.
 var _alto: float = 40.0
+var _escala_figura: float = 1.0
+var _desfase_figura: Vector2 = Vector2.ZERO
 var _voltear: bool = false
 var _t: float = 0.0
 ## Un reparto fijo para todo su tiempo: si cambiara en cada fotograma, los rayos
@@ -39,6 +41,10 @@ static func soltar_local(enemigo: Enemigo, tipo: int, color: Color) -> void:
 	animacion._color = color
 	animacion._figura = enemigo.figura()
 	animacion._alto = enemigo.tipo.alto
+	animacion._escala_figura = enemigo.escala_figura()
+	animacion._desfase_figura = enemigo.desfase_figura() * enemigo.escala_figura()
+	# Aqui se le ve morir de esta forma, no con su propia animacion de muerte.
+	enemigo.sin_restos = true
 	animacion._voltear = enemigo.mira_a_la_izquierda()
 	enemigo.get_parent().add_child(animacion)
 	animacion.global_position = enemigo.global_position
@@ -78,9 +84,9 @@ func _draw() -> void:
 func _pintar_figura(desplazado: Vector2, giro: float, escala: float, tinte: Color) -> void:
 	if _figura == null:
 		return
-	var tamano := _figura.get_size() * _alto / _figura.get_size().y
+	var tamano := _figura.get_size() * _escala_figura
 	draw_set_transform(desplazado, giro, Vector2(-escala if _voltear else escala, escala))
-	draw_texture_rect(_figura, Rect2(-tamano * 0.5, tamano), false, tinte)
+	draw_texture_rect(_figura, Rect2(_desfase_figura - tamano * 0.5, tamano), false, tinte)
 	draw_set_transform(Vector2.ZERO)
 
 

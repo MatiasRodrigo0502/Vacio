@@ -48,8 +48,8 @@ func bloqueado(_enemigo: Enemigo) -> void:
 	pass
 
 
-## Si el dibujo se voltea solo para mirar al jugador. Los que tienen una
-## animacion por direccion (el jefe, que es un mago) eligen la suya.
+## Si el dibujo mira solo hacia el jugador. Los que miran a otro sitio (el
+## murcielago, hacia donde se lanza) lo dicen con Enemigo.mirar_a.
 func voltear(_enemigo: Enemigo) -> bool:
 	return true
 

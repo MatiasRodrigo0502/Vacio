@@ -1,4 +1,4 @@
-## El agujero negro del Mago Caido: el del mago oscuro, al reves. Se abre
+## El agujero negro del jefe: el del mago oscuro, al reves. Se abre
 ## donde esta el jugador y tira de EL, no de los enemigos, y en el centro le
 ## quita vida.
 ##
@@ -43,7 +43,7 @@ func _physics_process(delta: float) -> void:
 	# La invulnerabilidad del jugador tras un golpe ya hace de ritmo: no
 	# hace falta contar tics.
 	if distancia <= NUCLEO and not _jugador.escudo_activo():
-		_jugador.recibir_dano(int(_dano), false, "Mago caído (agujero negro)")
+		_jugador.recibir_dano(int(_dano), false, "Corazón del Núcleo (agujero negro)")
 
 
 ## Crece durante el aviso entero (no en el cuarto de segundo del del mago

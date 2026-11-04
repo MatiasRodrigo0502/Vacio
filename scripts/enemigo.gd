@@ -96,6 +96,15 @@ var _rocio_suma: float = 0.0
 var _rocio_reloj: float = 0.0
 var _estados: Node2D = null
 var _objetivo: Node2D = null
+## Si su arte trae una animacion por direccion (caminar_abajo, atacar_abajo...).
+## Los de antes tienen una sola y se voltean.
+var _ocho_direcciones: bool = false
+## Hacia donde mira, en la pantalla (uno de Jugador.LADOS).
+var _lado: StringName = &"abajo"
+## Lo que hace el dibujo: "caminar", o una vez "atacar" o "dano".
+var _gesto: StringName = &"caminar"
+## Lo ha matado un arma con su animacion (AnimacionMuerte): esa es la que se ve.
+var sin_restos: bool = false
 ## Dormido no se mueve ni dispara. La sala lo duerme al registrarlo y lo
 ## despierta cuando el jugador entra.
 ##
@@ -166,6 +175,7 @@ func _ready() -> void:
 	_estados = Node2D.new()
 	_estados.draw.connect(_pintar_estados)
 	add_child(_estados)
+	_sprite.animation_finished.connect(_al_acabar_gesto)
 
 
 ## Lo llama la mecanica que los reparte por el piso.
@@ -182,10 +192,14 @@ func preparar(tipo_enemigo: TipoEnemigo, posicion: Vector2) -> void:
 	_espejo = Red.es_espejo()
 	_sprite.modulate = Color.WHITE
 	_sprite.sprite_frames = tipo.animaciones
-	_sprite.play(&"moverse")
+	_ocho_direcciones = tipo.animaciones.has_animation(&"caminar_abajo")
+	var primera: StringName = &"caminar_abajo" if _ocho_direcciones else &"moverse"
+	_sprite.play(primera)
+	_sprite.offset = tipo.desfase_dibujo
 
-	var tam := tipo.animaciones.get_frame_texture(&"moverse", 0).get_size()
-	var escala := tipo.alto / tam.y
+	var escala := tipo.escala_dibujo
+	if escala <= 0.0:
+		escala = tipo.alto / tipo.animaciones.get_frame_texture(primera, 0).get_size().y
 	_escala_base = Vector2(escala, escala)
 	_sprite.scale = _escala_base
 
@@ -241,10 +255,12 @@ func _physics_process(delta: float) -> void:
 	if not _despierto or tipo == null or not is_instance_valid(_objetivo):
 		return
 
+	var antes := global_position
 	if tipo.comportamiento != null:
 		tipo.comportamiento.procesar(self, delta)
 		if tipo.comportamiento.voltear(self):
-			_sprite.flip_h = Vista.en_pantalla(_objetivo.global_position - global_position).x < 0.0
+			mirar_a(_objetivo.global_position - global_position)
+		_marcar_el_paso(antes)
 		queue_redraw()
 		return
 
@@ -260,10 +276,9 @@ func _physics_process(delta: float) -> void:
 		_pelear_a_distancia(delta, hacia, distancia)
 	elif distancia > 0.0:
 		_mover(hacia / distancia, delta)
-	# Mira hacia donde esta el jugador: el volteo da sensacion de intencion y
-	# sale gratis. A su izquierda en la pantalla, que con la vista girada no
-	# es la del mundo.
-	_sprite.flip_h = Vista.en_pantalla(hacia).x < 0.0
+	# Mira hacia donde esta el jugador: da sensacion de intencion y sale gratis.
+	mirar_a(hacia)
+	_marcar_el_paso(antes)
 
 
 func dormir() -> void:
@@ -381,6 +396,7 @@ func _ensenar_golpe(cantidad: float, estilo: NumeroDano.Estilo) -> void:
 
 ## Parpadeo blanco para que se vea que ha entrado el disparo.
 func _parpadear() -> void:
+	gesto(&"dano")
 	_sprite.modulate = Color(2.0, 2.0, 2.0)
 	await get_tree().create_timer(0.08).timeout
 	if is_instance_valid(self):
@@ -600,6 +616,9 @@ func pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void:
 			_linea_disparo = DURACION_LINEA_DISPARO
 		else:
 			_apuntando = tipo.tiempo_apuntar
+			# El jefe no: su 'atacar' es la nova, y cada disparo pareceria una.
+			if not tipo.jefe:
+				gesto(&"atacar")
 
 
 ## Distancia hasta la primera roca o muro en esa direccion: hasta ahi llega el
@@ -654,12 +673,72 @@ func disparar_hacia(direccion: Vector2, otro: TipoProyectil = null) -> void:
 	MundoRed.anunciar_proyectil(proyectil)
 
 
-## Pone esa animacion de su SpriteFrames, si la tiene y no esta ya puesta.
-## La usa el jefe, que tiene una por direccion como los magos.
-func animar(nombre: StringName) -> void:
-	if _sprite.sprite_frames != null and _sprite.sprite_frames.has_animation(nombre) \
-			and _sprite.animation != nombre:
-		_sprite.play(nombre)
+## Mira hacia 'hacia', una direccion del mundo. Con la vista girada lo que cuenta
+## es hacia donde se ve en la pantalla, no en el mundo.
+func mirar_a(hacia: Vector2) -> void:
+	hacia = Vista.en_pantalla(hacia)
+	if not _ocho_direcciones:
+		_sprite.flip_h = hacia.x < 0.0
+		return
+	var lado: StringName = Jugador.LADOS[posmod(int(roundf(hacia.angle() / (TAU / 8.0))), 8)]
+	if lado == _lado:
+		return
+	_lado = lado
+	# A mitad de un golpe no se gira: el golpe va a donde iba.
+	if _gesto == &"caminar":
+		_animar("caminar_" + _lado)
+
+
+## Una animacion que se hace una vez, mirando a donde mira, y luego vuelve a
+## andar: "atacar" o "dano".
+func gesto(nombre: StringName) -> void:
+	if not _ocho_direcciones:
+		return
+	# Que le den no interrumpe un ataque, ni vuelve a empezar: con el rocio del
+	# mago verde se quedaria en la primera pose, que es toda blanca.
+	if nombre == &"dano" and _gesto != &"caminar":
+		return
+	_gesto = nombre
+	_sprite.play(StringName("%s_%s" % [nombre, _lado]))
+
+
+## La pose por la que va su ataque, o -1 si no esta atacando. Con esto, el golpe
+## cae cuando en el dibujo caen las manos, y frenado (que va mas lento) tambien.
+func pose_ataque() -> int:
+	return _sprite.frame if _gesto == &"atacar" else -1
+
+
+func _al_acabar_gesto() -> void:
+	if _espejo or not _ocho_direcciones:
+		return
+	_gesto = &"caminar"
+	_animar("caminar_" + _lado)
+
+
+## Pone esa animacion, si la tiene y no esta ya puesta. Al girarse andando sigue
+## por la misma pose: empezando de nuevo, el paso daria un salto.
+func _animar(nombre: StringName) -> void:
+	if _sprite.animation == nombre or not _sprite.sprite_frames.has_animation(nombre):
+		return
+	var sigue_andando := String(_sprite.animation).begins_with("caminar") \
+			and String(nombre).begins_with("caminar")
+	var pose := _sprite.frame
+	var avance := _sprite.frame_progress
+	_sprite.play(nombre)
+	if sigue_andando:
+		_sprite.set_frame_and_progress(pose, avance)
+
+
+## Quieto, no anda en el sitio: se queda en la primera pose, la de reposo. Lo que
+## va por el aire sigue aleteando.
+func _marcar_el_paso(antes: Vector2) -> void:
+	if not _ocho_direcciones or tipo.vuela or _gesto != &"caminar":
+		return
+	if global_position.is_equal_approx(antes):
+		_sprite.pause()
+		_sprite.set_frame_and_progress(0, 0.0)
+	elif not _sprite.is_playing():
+		_sprite.play()
 
 
 ## La vida que le queda, de 0 a 1. La ensena la barra del jefe.
@@ -918,9 +997,7 @@ func aplicar_red(datos: Array) -> void:
 	_sprite.modulate = datos[5]
 	modulate = datos[6]
 	_sprite.flip_h = datos[7]
-	var animacion: StringName = datos[8]
-	if _sprite.animation != animacion and _sprite.sprite_frames.has_animation(animacion):
-		_sprite.play(animacion)
+	_animar(datos[8])
 	_frenado = 1.0 if datos[9] else 0.0
 	_sprite.speed_scale = RITMO_FRENADO if datos[9] else 1.0
 	_quemaduras = 1 if datos[10] else 0
@@ -1011,6 +1088,15 @@ func mira_a_la_izquierda() -> bool:
 	return _sprite.flip_h
 
 
+## A que escala se pinta ese dibujo y cuanto se mueve (TipoEnemigo.desfase_dibujo).
+func escala_figura() -> float:
+	return _escala_base.x
+
+
+func desfase_figura() -> Vector2:
+	return _sprite.offset
+
+
 func _explotar() -> void:
 	var destello := Explosion.new()
 	destello.radio = tipo.radio_explosion
@@ -1029,8 +1115,17 @@ func _explotar() -> void:
 
 ## Un destello pequeno de su color al morir, sin dano. Antes los enemigos
 ## desaparecian sin mas: en una sala con ocho, no se sabia bien cual habia
-## caido. Es la misma explosion de los slimes, del tamano del enemigo.
+## caido. Es la misma explosion de los slimes, del tamano del enemigo. Los que
+## tienen animacion de morir no lo necesitan: se ve como se rompen.
 func _destello_muerte() -> void:
+	if _ocho_direcciones:
+		if not sin_restos:
+			# Con la direccion en la que iba (el nombre de lo que estaba haciendo
+			# la lleva, tambien en un espejo).
+			var lado := String(_sprite.animation).split("_", true, 1)[1]
+			RestosEnemigo.soltar(get_parent(), tipo.animaciones, StringName("muerte_" + lado),
+				global_position, _sprite.scale, _sprite.offset)
+		return
 	var destello := Explosion.new()
 	destello.radio = tipo.alto * 0.6
 	destello.color = tipo.color_efectos

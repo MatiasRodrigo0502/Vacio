@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="TipoEnemigo" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
+[ext_resource type="SpriteFrames" path="res://assets/criaturas/golem_manto/animaciones.tres" id="2_anim"]
+[ext_resource type="Script" path="res://scripts/comportamientos/golpe.gd" id="9_comportamiento"]
+
+[sub_resource type="Resource" id="Resource_comportamiento"]
+script = ExtResource("9_comportamiento")
+radio_golpe = 140.0
+dano_golpe = 30
+
+[resource]
+script = ExtResource("1_tipo")
+nombre = "Gólem del manto"
+animaciones = ExtResource("2_anim")
+vida = 80
+monedas = 8
+velocidad = 105.0
+dano = 30
+alto = 70.0
+escala_dibujo = 1.0
+desfase_dibujo = Vector2(0, -6.38)
+piso_minimo = 5
+piso_maximo = 8
+color_efectos = Color(1, 0.52, 0.18, 1)
+ataque = 0
+comportamiento = SubResource("Resource_comportamiento")

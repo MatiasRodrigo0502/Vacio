@@ -45,7 +45,7 @@ func aplicar_a_piso(piso: Node) -> void:
 	# Solo los que ya pueden salir a esta profundidad.
 	var disponibles: Array[TipoEnemigo] = []
 	for tipo in _tipos:
-		if piso.numero_piso >= tipo.piso_minimo:
+		if piso.numero_piso >= tipo.piso_minimo and piso.numero_piso <= tipo.piso_maximo:
 			disponibles.append(tipo)
 	if disponibles.is_empty():
 		return
@@ -92,15 +92,24 @@ func aplicar_a_piso(piso: Node) -> void:
 				if not piso.lugar_libre(sala.to_global(sitio), tipo.alto * 0.5):
 					continue
 
-				var enemigo: Enemigo = ESCENA_ENEMIGO.instantiate()
-				# Hijo de su sala y no del piso: asi la sala sabe quien vive en
-				# ella y puede despertarlos al entrar el jugador.
-				sala.add_child(enemigo)
-				enemigo.preparar(tipo, sala.to_global(sitio))
-				sala.registrar_enemigo(enemigo)
+				_colocar(sala, tipo, sitio)
+				# Los demas de su grupo, alrededor. Si ahi no caben, en el mismo
+				# sitio: van por el aire y se separan en cuanto echan a volar.
+				for k in range(1, tipo.grupo):
+					var cerca: Vector2 = sitio + Vector2.RIGHT.rotated(TAU * k / tipo.grupo) * tipo.alto * 1.5
+					_colocar(sala, tipo, cerca if piso.lugar_libre(sala.to_global(cerca), tipo.alto * 0.5) else sitio)
 				if tipo.es_a_distancia():
 					de_distancia += 1
 				break
+
+
+func _colocar(sala: Node, tipo: TipoEnemigo, sitio: Vector2) -> void:
+	var enemigo: Enemigo = ESCENA_ENEMIGO.instantiate()
+	# Hijo de su sala y no del piso: asi la sala sabe quien vive en ella y puede
+	# despertarlos al entrar el jugador.
+	sala.add_child(enemigo)
+	enemigo.preparar(tipo, sala.to_global(sitio))
+	sala.registrar_enemigo(enemigo)
 
 
 ## Cuantos enemigos salen de media en cada sala de ese piso.

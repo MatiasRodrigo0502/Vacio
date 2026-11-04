@@ -6,9 +6,16 @@ mismo script, `scripts/proyectil_enemigo.gd`: lo que cambia son estos números.
 
 | Proyectil | Estilo | Daño | Velocidad | Efecto | Lo tiran |
 |---|---|---|---|---|---|
-| `veneno.tres` | bola | 20 | 300 | 3 s envenenado: va al 60 % y pierde 2 de vida poco a poco (`veneno_vida`); el veneno no mata | serpiente, planta venenosa |
-| `magma.tres` | parábola | 45 | 330 | al caer deja un charco de lava 3,5 s | gólem de roca |
-| `rayo.tres` | rayo | 50 | 1300 | ninguno: es rápido y va recto | cristal vivo |
+| `esquirla_corteza.tres`, `esquirla_manto.tres`, `esquirla_nucleo.tres` | bola | 20 / 30 / 40 | 300 / 340 / 380 | ninguno; lleva su dibujo (`arte`) | vigía de cada capa |
+| `bola_nucleo.tres` | bola | 20 | 440 | ninguno; lleva su dibujo (`arte`) | Corazón del Núcleo |
+| `esquirla_hielo.tres` | bola | 12 | 220 | frena | Corazón del Núcleo, con el escudo puesto |
+| `veneno.tres` | bola | 20 | 300 | 3 s envenenado: va al 60 % y pierde 2 de vida poco a poco (`veneno_vida`); el veneno no mata | (de antes: serpiente, planta venenosa) |
+| `magma.tres` | parábola | 45 | 330 | al caer deja un charco de lava 3,5 s | (de antes: gólem de roca) |
+| `rayo.tres` | rayo | 50 | 1300 | ninguno: es rápido y va recto | (de antes: cristal vivo) |
+
+Con `arte` (un `ArteHechizo`, como los hechizos de los magos), el proyectil se pinta
+con su animación `vuelo`, girada hacia donde va, y al acabarse suelta `impacto`. Sin
+él, se pinta por código con sus colores.
 
 Los tres estilos:
 

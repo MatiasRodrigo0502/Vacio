@@ -1,11 +1,11 @@
-## El aliento de fuego del Mago Caido: un chorro de fuego que sale de el y
+## El aliento de fuego del jefe: un chorro de fuego que sale de el y
 ## gira barriendo la sala. Pedido por Matias el 2026-11-03: «escupira fuego de
 ## vez en cuando, quemando al jugador. Toma como referencia la posicion del
 ## jugador al empezar a escupirlo; apunta a 10 grados de ese punto, en sentido
 ## horario o antihorario al azar, y gira 90 grados en 2 segundos en el sentido
 ## contrario (hacia el jugador). Llega hasta el limite de la sala».
 ##
-## Lo crea el jefe (ComportamientoMagoCaido, la accion "aliento") por MundoRed:
+## Lo crea el jefe (ComportamientoCorazonNucleo, la accion "aliento") por MundoRed:
 ## sale en todos los ordenadores y cada uno mira si le da al jugador del suyo,
 ## como el resto de lo del jefe.
 ##
@@ -39,7 +39,7 @@ var ancho: float = 44.0
 var dano: int = 15
 var quema_segundos: float = 3.0
 var quema_dano: int = 3
-var origen: String = "Mago caído (aliento de fuego)"
+var origen: String = "Corazón del Núcleo (aliento de fuego)"
 ## Suelo de la sala, en el mundo: hasta ahi llega el chorro.
 var limite: Rect2 = Rect2()
 

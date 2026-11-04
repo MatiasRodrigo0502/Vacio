@@ -41,22 +41,23 @@ código (`herramientas/generar_armas.py`).
   sale y con qué licencia** (quién la hizo o con qué herramienta) antes de
   entregar o publicar.
 
-### Mago Caído — el jefe del piso 12
+### Enemigos y jefe — gólem, vigía, murciélago y Corazón del Núcleo
 
-- **De dónde sale**: de la hoja antigua del mago rojo (hoy en
-  `assets/mago_caido/origen/`), con otra paleta. Esa hoja la aportó Matías sin
-  decir de dónde salía (un GIF de 576×648 y 6 fotogramas en forma de brújula):
-  **hay que averiguar su origen y su licencia antes de publicar nada**.
+- **Origen**: los trajo Matías el 2026-11-04 (`vacio_completo.zip`), del mismo paquete
+  que los magos: arte vectorial generado por los scripts del propio paquete.
+- **Archivos**: lo que usa el juego, en `assets/criaturas/`; el LEEME y los scripts del
+  paquete, en `assets/enemigos_fuente/` (Godot no los importa). Las hojas originales
+  (31 MB) no se versionan: están en `_assets_origen/vacio_completo/`.
+- **Procesado**: `herramientas/generar_enemigos.py` (reducir cada hoja a lo que mide en
+  el juego y montar sus `SpriteFrames` y el `ArteHechizo` de lo que disparan).
+- **Sustituyen** a los once enemigos de antes (abajo) y al Mago Caído.
 
-- **Origen**: la hoja del **mago rojo** (ver abajo) con otra paleta (túnica
-  negra, ribete de oro, ojos amarillos) y, en vez del báculo con el orbe, una
-  guadaña dibujada por código en cada pose. Mismas poses y misma animación,
-  dibujado a ×2.
-- **Archivos**: `assets/mago_caido/atlas_8dir.png` y
-  `animaciones_mago_caido.tres`
-- **Procesado**: `herramientas/generar_mago_caido.py`: color a color, y la
-  guadaña con `ImageDraw` (la hoja es nuestra).
-- **Licencia**: la misma duda que el mago rojo, del que sale.
+### Mago Caído — el jefe de antes, borrado del proyecto
+
+Salía de la hoja antigua del mago rojo, que Matías aportó sin decir de dónde salía.
+Se borró el 2026-11-04 al cambiar de jefe, y con él su generador
+(`generar_mago_caido.py`): al no estar en el proyecto, ya no hace falta aclarar su
+origen. Sigue en el historial de git.
 
 ### Personajes de antes — borrados del proyecto
 
@@ -147,7 +148,7 @@ hace falta aclararlos. Siguen en el historial de git.
 - **Nota**: sigue el estilo del pack del manto. Volver a ejecutar el script da
   exactamente los mismos PNG.
 
-### Enemigos nuevos — rata, serpiente, murciélago, gólem, slime de magma, cristal vivo y fantasma
+### Enemigos de antes (ya sin usar) — rata, serpiente, murciélago, gólem, slime de magma, cristal vivo y fantasma
 
 - **Autor**: Matías (propio)
 - **Licencia**: propio, sin problema de licencia

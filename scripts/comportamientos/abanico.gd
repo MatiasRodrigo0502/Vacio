@@ -1,5 +1,6 @@
 ## Se mueve de lado alrededor del jugador, a su distancia, y dispara varias
-## bolas en abanico. Cambia de lado cada poco y al chocar. La serpiente.
+## bolas en abanico. Cambia de lado cada poco y al chocar. El vigia (y antes, la
+## serpiente).
 ##
 ## Busca tenerte a tiro (Matias, 2026-11-03): cada poco mira si entre ella y
 ## el jugador hay una roca o un muro; si lo hay, busca alrededor el sitio mas
@@ -111,6 +112,7 @@ func procesar(enemigo: Enemigo, delta: float) -> void:
 		espera = tipo.cadencia
 		if tipo.tiempo_apuntar > 0.0:
 			enemigo.estado["apuntando"] = tipo.tiempo_apuntar
+			enemigo.gesto(&"atacar")
 		else:
 			_rafaga(enemigo, radial)
 	enemigo.estado["espera"] = espera

@@ -47,6 +47,7 @@ hechos.
 | Arte de un piso | `assets/<pack>/catalogo_*.tres` + `catalogo_arte` del piso | otro `.tres` |
 | Mecánicas | `resources/mecanicas/*.tres` (+ script que herede de `Mecanica`) | otro `.tres` |
 | Tipos de enemigo | `resources/enemigos/*.tres` (`TipoEnemigo`) | otro `.tres` |
+| Arte de los enemigos y el jefe | `herramientas/generar_enemigos.py`, de `_assets_origen/vacio_completo/enemigos/` (fuera del repositorio) → `assets/criaturas/` | cambiar sus tablas y volver a ejecutarlo |
 | Proyectiles enemigos | `resources/proyectiles/*.tres` (`TipoProyectil`) | otro `.tres` |
 | Cómo se mueve y ataca cada enemigo | `scripts/comportamientos/*.gd` (`ComportamientoEnemigo`), dentro del `.tres` del enemigo como `comportamiento` | números en el `.tres`; uno nuevo, otro script en esa carpeta |
 | Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
@@ -160,42 +161,37 @@ no puede llamarse `prueba_temporal.*`: el preset la excluye.
 Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
-- **El Mago Caído, jefe del piso 12** (2026-10-14, pedido por Matías: «las
-  habilidades de los otros magos y rayos en vez de bolas»). Es un
-  `TipoEnemigo` con `jefe = true` en `resources/jefes/mago_caido.tres` (no
-  en `resources/enemigos/`, que se reparte al azar) y lo pone el piso
-  (`DatosPiso.jefe`, en `Piso._preparar_jefe`). Su pelea es
-  `scripts/comportamientos/mago_caido.gd`: rayos con aviso por
-  `pelear_a_distancia` y tres fases por vida (agujero negro al revés,
-  `PozoVacio`; escudo con anillos de esquirlas de hielo; rayo de fuego cargado
-  que deja charcos y rompe el pilar que lo para, con `Escombros`).
-  **Negro y oro, con guadaña** (Matías, 2026-10-14: el violeta se confundía
-  con el mago oscuro); sus efectos van en oro (`COLOR_ORO`). Todo detallado en
-  `resources/jefes/README.md`. Para él, `ComportamientoEnemigo` ganó
-  `invulnerable`/`bloqueado` (la bola se gasta sin quitar vida),
-  `voltear` (con animación por dirección no se voltea),
-  `marcas_vida` y `al_morir`, y `Enemigo` `animar`, `fraccion_vida`,
-  `es_invulnerable` y un segundo proyectil en `disparar_hacia`. Barra de vida
-  y presentación: `scripts/barra_jefe.gd`, en el HUD, que pone Principal
-  cuando se cierran las puertas (`Sala.pelea_empezada`), con su música
-  (`DatosPiso.musica_jefe`, `jefe.wav`). Arte: la hoja antigua del mago rojo
-  (`assets/mago_caido/origen/`) con otra paleta y la guadaña dibujada encima, en
-  casillas de 96 × 72, a ×2 (`herramientas/generar_mago_caido.py`). **Más difícil desde el
-  2026-10-21** (Matías): 1500 de vida en vez de 900, más ritmo, una
-  habilidad cada 3,5 s, rayos en abanico de 3 en la fase 2 y de 5 en la 3
-  (`rayos_por_fase`), pozo, anillos y fuego más fuertes. **Aliento de
-  fuego** desde el 2026-11-03 (Matías): acción `aliento` en la rueda de las
-  tres fases; `_escupir_fuego` toma la referencia (donde está a quien
-  persigue al empezar) y crea por `MundoRed.crear_aliento` un
-  `AlientoFuego` (`scripts/aliento_fuego.gd`) en todos los ordenadores:
-  aviso de 0,6 s (línea de salida y flecha de giro), sale a ±10° (al azar)
-  y gira 90° hacia el otro lado en 2 s, hasta el borde del suelo de la sala
-  sin pararse en rocas ni pilares; al jugador de cada ordenador que toca le
-  quita 15 y lo quema (`Jugador.quemar`: 3 s, 3 cada 0,5, no mata, llamas a
-  los pies con `Llamas.pintar`, las mismas de los enemigos quemados; señal
-  `quemadura_quita`, en naranja y apuntada en el registro); el escudo lo
-  para. Los números de
-  antes y lo medido, en `resources/jefes/README.md`. **Nadie lo ha jugado.**
+- **El Corazón del Núcleo, jefe del piso 12** (2026-11-04, lo trajo Matías en
+  `vacio_completo.zip`, en lugar del Mago Caído, el cuarto mago negro y oro de
+  antes). Es un `TipoEnemigo` con `jefe = true` en
+  `resources/jefes/corazon_nucleo.tres` (no en `resources/enemigos/`, que se reparte
+  al azar) y lo pone el piso (`DatosPiso.jefe`, en `Piso._preparar_jefe`). Su pelea es
+  `scripts/comportamientos/corazon_nucleo.gd`: **se quedó la del Mago Caído**, que es
+  lo que Matías fue pidiendo («las habilidades de los otros magos», «más difícil» el
+  2026-10-21, el aliento el 2026-11-03), **y se le añadió la del paquete**, que sola
+  sería un jefe mucho más fácil. Lo que cambia: dispara **bolas de magma** con arte
+  (`proyectiles/bola_nucleo.tres`, abanico de 1, 3 y 5, `bolas_por_fase`) en vez de
+  rayos, y la **nova** en las tres fases (acción `nova`: 0,9 s de aviso con un aro,
+  `_soltar_nova`: onda desde su sombra con `MundoRed.crear_onda` y anillo de 8 bolas;
+  `atacar` empieza 0,4 s antes para que la onda del dibujo salga a la vez). La furia
+  del paquete no: ya acelera en cada fase. **Falta que Matías diga si quiere otra
+  cosa.** Lo demás sigue igual: tres fases por vida (agujero negro al revés,
+  `PozoVacio`; escudo con anillos de esquirlas de hielo; rayo de fuego cargado que deja
+  charcos y rompe el pilar que lo para, con `Escombros`), y el aliento de fuego
+  (`AlientoFuego`, `scripts/aliento_fuego.gd`, por `MundoRed.crear_aliento`: aviso de
+  0,6 s, sale a ±10° y gira 90° en 2 s, quita 15 y quema con `Jugador.quemar`). Sus
+  efectos van en oro (`COLOR_ORO`). Solo `atacar` en la nova: con cada disparo parecería
+  una (`Enemigo.pelear_a_distancia` no la pone si es jefe). Todo detallado en
+  `resources/jefes/README.md`. Para el jefe, `ComportamientoEnemigo` ganó
+  `invulnerable`/`bloqueado` (la bola se gasta sin quitar vida), `voltear`,
+  `marcas_vida` y `al_morir`, y `Enemigo` `fraccion_vida`, `es_invulnerable` y un
+  segundo proyectil en `disparar_hacia`. Barra de vida y presentación:
+  `scripts/barra_jefe.gd`, en el HUD, que pone Principal cuando se cierran las puertas
+  (`Sala.pelea_empezada`), con su música (`DatosPiso.musica_jefe`, `jefe.wav`). Tiene
+  **1500 de vida** y 3,5 s entre habilidades. Probado sin ventana: todas las
+  habilidades, las fases, el abanico de 5, su muerte y el botín; y capturas. **Las
+  medidas de dificultad del README son de antes de cambiar los rayos por bolas. Nadie
+  lo ha jugado.**
 - **Sala del jefe del piso 12** (2026-10-13, pedida por Matías). Con `DatosPiso.sala_jefe`, `MapaSalas` cuelga de
   la sala más lejana (o de la siguiente, si no cabe) una **antesala** y detrás
   la sala del **jefe** (`Tipo.ANTESALA` y `Tipo.JEFE`; con jefe no hay
@@ -228,8 +224,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   qué mató y `trucos` si se usó un atajo (`AtajosPrueba.usado`). El origen de
   cada golpe lo pasa quien lo da como tercer argumento de
   `Jugador.recibir_dano(cantidad, forzar, origen)` y sale en la señal
-  `golpeado` («Serpiente», «Serpiente (veneno)», «Gólem de roca (pisotón)»,
-  «Charco de magma (Slime de magma)», «Lava», «Pinchos», «Caída al vacío»).
+  `golpeado` («Murciélago de la corteza», «Vigía del manto (esquirla)», «Gólem del
+  núcleo (golpe)», «Corazón del Núcleo (nova)», «Lava», «Pinchos», «Caída al vacío»).
   **Lo nuevo que quite vida tiene que pasar su origen**, o saldrá como
   «desconocido». Las peleas las marca `Sala.pelea_empezada`. El resumen de
   todos los archivos, `herramientas/analizar_partidas.py`. Botón *Abrir la
@@ -634,7 +630,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   salida es la última y el objeto la penúltima. Cinco salas: 1) a qué se
   juega, moverse, disparar, pausa; 2) el especial (el texto sale del mago,
   `Tutorial._ready`), rocas, vida y mapa; 3) la primera pelea, con
-  `DatosPiso.enemigos_tutorial` (slime verde y dos ratas) en
+  `DatosPiso.enemigos_tutorial` (un gólem y dos murciélagos) en
   `sala_pelea_tutorial`, que coloca `Piso._colocar_enemigos_tutorial` con
   semilla propia después de las rocas (la mecánica de enemigos sigue
   empezando en el 2); 4) objetos y vendajes; 5) la bajada y lo que espera
@@ -758,46 +754,58 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   cerrarse y sube al abrirse (0,22 s).
 - **Piedras pequeñas**: decoración sin colisión. Treinta chinas sólidas por piso
   harían el movimiento un engancharse continuo.
-- **Enemigos**: desde el piso 2, **once tipos** que salen al azar entre los
-  que ya pueden aparecer a esa profundidad (`piso_minimo`). De media 3 por
-  sala en el piso 2 y 0,5 más por piso, hasta 8 en el 12 (378 al empezar los
-  pisos; unas 600 muertes por partida con las crías). Los siete últimos los
-  dibujó Matías. Ninguno se queda dentro de una roca (`Sala.sacar_de_las_rocas`).
-  - **Cada uno hace algo distinto** (pedido por Matías el 2026-10-13): su
-    `TipoEnemigo.comportamiento` (`scripts/comportamientos/`). Slime verde a
-    saltos; slime de magma a saltos dejando lava; slime naranja rebota por la
-    sala sin perseguir; rata en zigzag; murciélago en órbita y picado;
-    fantasma que atraviesa rocas y se desvanece; planta azul que excava y sale
-    debajo; serpiente que rodea y dispara en abanico, **buscando tenerte a
-    tiro** (desde el 2026-11-03: si una roca o un muro tapa la línea, va al
-    sitio más cercano desde el que no, y no dispara hasta tenerte; de lado
-    no se mete otra vez tras la roca; velocidad 55 → 68); planta venenosa
-    («el pulpo» para Matías) con anillos de esporas, quieta hasta que se
-    cierran las puertas y desde entonces **persiguiéndote cada vez más
-    rápido** (2026-11-03: 12 px/s y +45 cada 2 s, lo de las Botas ligeras,
-    con tope en 300, la velocidad del mago; sin tope, a los 20 s iría a
-    460); gólem con magma de lejos y pisotón con onda
-    (`OndaChoque`) de cerca; cristal que se teletransporta tras cada rayo.
-    Todos avisan antes de lo que pega de golpe. Lo de cada enemigo va en
-    `enemigo.estado`: el recurso es uno para todo el tipo.
-  - **Cuerpo a cuerpo** (slimes, rata, murciélago, fantasma, planta azul):
-    rápidos, de 100 a 195.
-  - **A distancia** (serpiente y planta venenosa con veneno, gólem con magma,
-    cristal con rayos): lentos, de 0 a 55, y pegan más. Como mucho la mitad
-    de cada sala.
-  - **Los slimes** explotan al morir (radio 70-85) y sueltan **cuatro
-    crías** (dos hasta el 2026-11-03, Matías), que **heredan lo que le
-    quedaba a la madre** de frío, quemadura y veneno, tal cual
-    (`Enemigo.heredar_estados`, desde `_soltar_cria`). Los
-    demás dejan un destello pequeño de su color, sin daño.
-  - La **línea de mira del cristal** acaba en la primera roca o muro: el rayo
-    se para ahí, y pintada entera avisaba de un peligro que no existe.
-  - **El cristal ya no apunta antes de disparar** (pedido por Matías el
-    2026-10-09): `tiempo_apuntar = 0`, y la línea sale con el disparo y se
-    apaga en 0,3 s (`_linea_disparo`). Con 0 hace falta la rama aparte en
-    `_pelear_a_distancia`: la cuenta atrás de `_apuntando` es la que dispara,
-    y con 0 no se llegaba a disparar nunca. Los demás de distancia siguen
-    avisando.
+- **Enemigos** (nuevos desde el 2026-11-04: Matías trajo `vacio_completo.zip`, «cambia
+  los enemigos actuales por los nuevos»): desde el piso 2, **tres criaturas con una
+  variante por capa**, corteza (pisos 1-4), manto (5-8) y núcleo (9-12; el paquete dice
+  9-11 porque su 12 es solo el jefe, y aquí el 12 tiene más salas), con
+  `TipoEnemigo.piso_maximo`. Salen al azar. De media 3 sitios por sala en el piso 2 y
+  0,5 más por piso, hasta 8 en el 12: de 17 enemigos en el piso 2 a 130 en el 12, unos
+  650 por partida (medido). Números **a ojo**, en cada `.tres`. Ninguno se queda dentro
+  de una roca (`Sala.sacar_de_las_rocas`). Tabla en `resources/enemigos/README.md`.
+  - **Gólem** (cuerpo a cuerpo, 60-100 de vida, velocidad 95-115): `ComportamientoGolpe`
+    (`scripts/comportamientos/golpe.gd`): va a por ti y, a 72 px, se para, levanta los
+    brazos (el aro marca hasta dónde llega) y en la pose 3 de `atacar` (0,375 s, a 8 por
+    segundo) golpea: una `OndaChoque` corta por `MundoRed.crear_onda`, delante de él, que
+    en cooperativo sale en todos y cada uno mira la suya. Si apenas avanza, va de lado
+    `rodeo` s: en línea recta, de frente contra una roca o un agujero, se quedaba parado
+    para siempre. Medido con el mago quieto 25 s en 66 sitios: sin rodeo no llegaban 13,
+    con él 5; la rata de antes, en zigzag, 2. **La velocidad del paquete (45) se subió**:
+    aquí los de cuerpo a cuerpo son rápidos (decisión de abajo).
+  - **Vigía** (a distancia, 30-50 de vida, velocidad 60-70, `vuela`):
+    `ComportamientoAbanico`, el de la serpiente: te rodea, busca tenerte a tiro si una
+    roca tapa la línea y dispara 1, 3 y 3 esquirlas (20, 30 y 40 de daño).
+  - **Murciélago** (cuerpo a cuerpo, 10-20 de vida, velocidad 150-190, `vuela`):
+    `ComportamientoPicado`, de **tres en tres** (`TipoEnemigo.grupo`, que cuentan como un
+    sitio al repartir: `MecanicaEnemigos._colocar`). `atacar` al lanzarse, mirando a
+    donde se lanza.
+  - **El dibujo** (`Enemigo`): una animación por dirección (`caminar_`, `atacar_`, `dano_`,
+    `muerte_` + `Jugador.LADOS`), elegida por dónde se ve en la pantalla (`mirar_a`, con
+    `Vista.en_pantalla`). `gesto` hace una vez `atacar` o `dano` y vuelve a andar; un
+    golpe no interrumpe un ataque ni vuelve a empezar (con el rocío se quedaría en la
+    pose blanca). `pose_ataque` dice por qué pose va: el golpe sale en la pose, y frenado
+    también va más lento. Al girarse andando sigue en la misma pose (`_animar`), y quieto
+    se queda en la primera, salvo lo que vuela (`_marcar_el_paso`). `alto` es el cuerpo,
+    y `escala_dibujo` y `desfase_dibujo` colocan la casilla, que trae margen.
+  - **Al morir, `RestosEnemigo`** (`scripts/restos_enemigo.gd`): un nodo aparte que hace
+    `muerte_<lado>` y deja los restos 1,5 s. Para el juego el enemigo muere de golpe,
+    como antes (la sala lo cuenta, botín, puertas): si se quedara haciendo su animación,
+    todo lo que mira a los enemigos tendría que saber que ese ya no cuenta. No salen si lo
+    mata un arma con su animación (`Enemigo.sin_restos`, `AnimacionMuerte`). También en
+    los espejos, con la dirección sacada del nombre de la animación.
+  - **Proyectiles con dibujo**: `TipoProyectil.arte` (`ArteHechizo`, como los hechizos):
+    `vuelo` girado en `ProyectilEnemigo._dibujo` e `impacto` al acabarse.
+  - **Los once de antes están en `resources/enemigos_antiguos/`** (el arte, en
+    `assets/enemigos/`, y sus comportamientos siguen): para que uno vuelva basta con
+    moverlo a `resources/enemigos/`. Con ellos se fue lo que tenían de especial: los
+    slimes y sus cuatro crías que heredan estados (`division`, `heredar_estados`, que
+    siguen en el código), la explosión al morir, saltos, zigzag, rebotes, el fantasma, la
+    planta que excava, la que persigue cada vez más rápido, el teletransporte y el veneno
+    que frena. **Si Matías echa de menos algo, se recupera de ahí.** `Enemigo` sigue
+    pintando los de una animación (`moverse`, volteándose): probado con el slime verde.
+  **Probado** sin ventana (recursos, qué sale en cada piso, el golpe y apartarse, morir y
+  los restos, el arma, esquirlas, picado, tutorial) y con capturas de las tres capas, las
+  ocho direcciones y la vista en vertical. **En cooperativo solo se ha probado el espejo a
+  mano (`aplicar_red`, `morir_espejo`), no con dos juegos. Nadie lo ha jugado.**
 - **Al recibir un golpe, la cámara tiembla** 7 px durante un cuarto de
   segundo (`CamaraJuego.sacudir`). Va en el `offset`, así que no se mezcla
   con el seguimiento ni con el límite de la sala.
@@ -904,14 +912,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Pendiente
 
-- **De dónde sale la hoja del Mago Caído.** Sale de la antigua del mago rojo
-  (`assets/mago_caido/origen/`), que no trae autor ni origen (ver
-  `CREDITS.md`). Los cuatro magos ya son arte de Matías (2026-11-04). Hay que
-  aclararlo antes de entregar o publicar.
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí). Desde
   el 2026-10-08 los escenarios son todos propios y los packs de itch.io ya no
-  se usan: de fuera solo queda la hoja de la que sale el Mago Caído.
+  se usan, y desde el 2026-11-04 tampoco está la hoja de la que salía el Mago Caído.
 - **Multijugador: fases 1 y 2 hechas (2026-10-18), falta probarlas en
   clase.** El estudio está en `docs/mejoras-futuras/multijugador.md`. Se
   probó en un ordenador con dos juegos abiertos (peleas, crías, objetos,
@@ -921,11 +925,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   Falta la fase 3 (internet), sin decidir cómo.
 - **Equilibrar la dificultad jugando.** Los 12 `.tres` se pusieron a ojo el
   primer día y el juego ha cambiado mucho desde entonces. Ojo sobre todo a los
-  enemigos: desde el 2026-09-30 salen de 9 (piso 2) a 63 (piso 12) al empezar
-  el piso, más las crías de los slimes: una partida entera son unas 600
-  muertes, y los enemigos sueltan 9-16 ventajas además de las 12 de los pisos.
+  enemigos: desde el 2026-11-04 salen de 17 (piso 2) a 130 (piso 12) al empezar
+  el piso: una partida entera son unas 650 muertes, y cada una tiene un 3 % de
+  soltar una ventaja, además de las 12 de los pisos.
   Al limpiar salas caen además unos 16 vendajes por partida (60 cada uno).
-  Los de distancia quitan de 20 a 50 y hay pinchos, lava y agujeros, con 100
+  Los de distancia quitan de 20 a 40 y hay pinchos, lava y agujeros, con 100
   de vida (130 el rojo). Nadie lo ha jugado entero todavía. Todo se toca en los `.tres`
   (`resources/mecanicas/`, `resources/enemigos/`, `resources/proyectiles/`).
 - **Posibles mejoras de las salas**, no pedidas: salas de otras formas.
@@ -1032,9 +1036,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   direcciones bastaba un `if`; con ocho, la misma idea sería una escalera de
   comparaciones. `_lado()` redondea el ángulo al sector de 45° más cercano y
   `LADOS` da el nombre. `_vector_de()` es la vuelta, girando `Vector2.RIGHT`.
-- **El pixel art se mueve en píxeles enteros y se dibuja a escala 1.** Vale para
-  lo que queda en pixel art (el Mago Caído): centrar cada dirección se hizo
-  desplazando un número entero de píxeles, y la escena lo dibuja sin escalar.
+- **El pixel art se mueve en píxeles enteros y se dibuja a escala 1.** Valía para
+  el Mago Caído, lo último en pixel art, hasta el 2026-11-04: centrar cada dirección
+  se hizo desplazando un número entero de píxeles, y la escena lo dibujaba sin escalar.
   Los cuatro magos, desde el 2026-11-04, son vectoriales: se reducen con buen
   filtro en `generar_magos.py`, nunca en el juego.
 - **La izquierda del mago morado (fuera de uso) era la derecha reflejada.** Las dos filas de lado de
@@ -1084,7 +1088,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   no las tiñe ni oscurece las losas (`CatalogoObstaculos.colores_propios`).
   Con los packs de antes la cuenta daba de 1,13 (piso 1) a 0,27 (piso 12).
 - **Cuerpo a cuerpo rápido, distancia lento y letal** (pedido por Matías el
-  2026-09-29). Los de distancia avisan antes de cada disparo (se paran y
+  2026-09-29; por eso el gólem va a 95-115 y no a los 45 de su paquete). Los de distancia avisan antes de cada disparo (se paran y
   brillan), porque quitan 2: sin aviso, un golpe así no se puede esquivar y
   solo frustra. El cristal es la excepción desde el 2026-10-09, por petición
   de Matías: dispara sin avisar.
@@ -1150,8 +1154,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Los pilares van en la franja del muro, no en el suelo**, y son bajos para
   caber: en el suelo estorbarían sin chocar.
 - **Los enemigos salen al azar**, como pidió Matías: cada sala elige entre los
-  tipos cuyo `piso_minimo` ya se alcanzó, sin tope por abajo. El piso mínimo
-  solo escalona la dificultad.
+  tipos que pueden salir a esa profundidad. Desde el 2026-11-04 con **tope por
+  abajo** (`piso_maximo`): cada criatura tiene una variante por capa, y sin tope, los
+  de la corteza seguirían saliendo en el núcleo.
 - **El sprite del jugador se centra en los pies, no en el dibujo.** El báculo y
   el halo del nigromante sobresalen a la derecha; centrando el lienzo en el
   dibujo, el cuerpo se iría a la izquierda y dejaría de cuadrar con el círculo

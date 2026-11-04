@@ -17,7 +17,7 @@ extends Control
 const ANCHO: float = 460.0
 const ALTO: float = 14.0
 const MARGEN_ABAJO: float = 40.0
-## Oro, el color del Mago Caido.
+## Oro, el color de las grietas del Corazon del Nucleo.
 const COLOR_RELLENO := Color(1.0, 0.78, 0.26)
 const COLOR_FONDO := Color(0.06, 0.05, 0.03, 0.85)
 ## Lo que tarda en salir la barra: despues de la presentacion.

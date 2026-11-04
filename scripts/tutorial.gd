@@ -49,7 +49,8 @@ const PASOS: Array[Dictionary] = [
 		"titulo": "¡Enemigos!",
 		"color": Color(1.0, 0.45, 0.38),
 		"texto": "[k]Mata a todos los enemigos[/k]: las puertas no se abren hasta que no quede ninguno.\n"
-			+ "Los [k]slimes[/k] explotan al morir y se parten en dos: dispárales de lejos.\n"
+			+ "El [k]gólem[/k] golpea el suelo a dos manos: apártate cuando levante los brazos.\n"
+			+ "Los [k]murciélagos[/k] marcan una línea y se lanzan por ella: sal de la línea.\n"
 			+ "Cada número es la vida que quitas; en rojo, la que te quitan.",
 	},
 	{
@@ -65,7 +66,7 @@ const PASOS: Array[Dictionary] = [
 		"texto": "Entra en el [k]círculo[/k] para bajar al piso 2.\n"
 			+ "Más abajo: más salas, más enemigos, pinchos, lava y agujeros.\n"
 			+ "Cada piso esconde una [k]sala secreta[/k] con un cofre: si ves una pared agrietada, dispárale.\n"
-			+ "Y en el piso 12 te espera el [k]Mago Caído[/k]. Suerte.",
+			+ "Y en el piso 12 te espera el [k]Corazón del Núcleo[/k]. Suerte.",
 	},
 ]
 

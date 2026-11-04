@@ -3,17 +3,15 @@
 Arte del juego. Aquí entra **solo lo que se usa**, ya recortado y reescalado;
 los packs originales viven fuera del repositorio (ver `CREDITS.md` en la raíz).
 
-## mago_caido/
+## criaturas/
 
-El jefe del piso 12. Sale del `mago_rojo/` con
-`herramientas/generar_mago_caido.py`: negro y oro y con una **guadaña** en
-vez del báculo (se quita el orbe, se alarga el mango y se dibuja la hoja en
-cada pose). La hoja no cabía en las casillas de 64 px, así que **cada casilla
-mide 96 × 72**, con el mago en el centro (16 px más a cada lado; el
-`SpriteFrames` ya recorta así). Tiene una animación más, `moverse` (la misma
-que `caminar_abajo`): es la que `Enemigo` pide al prepararse. El juego lo
-dibuja a ×2 (`alto = 144` en su `.tres`). Sin retrato: no sale en la
-elección de mago.
+Los enemigos y el jefe (2026-11-04): `golem_`, `vigia_` y `murcielago_` + `corteza`,
+`manto` o `nucleo`, y `jefe`. Cada uno con una hoja por animación (`caminar`, `atacar`,
+`dano`, `muerte`: 8 filas, una por dirección, en el orden de `Jugador.LADOS`) y
+`animaciones.tres`, su `SpriteFrames`. El vigía y el jefe, además, `esquirla.tres` y
+`bola.tres`: el `ArteHechizo` de lo que disparan. Todo sale de
+`herramientas/generar_enemigos.py`: no se toca a mano. Godot no importa
+`enemigos_fuente/` (`.gdignore`): ahí va el LEEME y los scripts del paquete.
 
 ## mago_rojo/
 
@@ -271,7 +269,7 @@ Todo el sonido del juego, generado por síntesis (sin nada bajado):
   El volumen de cada uno respecto a los demás está en ese script (su pico):
   los que suenan sin parar (el disparo) van flojos.
 - `musica/`: `portada.wav` (el menú), `superficie.wav` (pisos 1-6),
-  `profundo.wav` (pisos 7-12), `jefe.wav` (la pelea con el Mago Caído),
+  `profundo.wav` (pisos 7-12), `jefe.wav` (la pelea con el jefe),
   `victoria.wav` y `derrota.wav`, de `herramientas/generar_musica.py`. Las
   cuatro primeras llevan dentro su punto
   de repetición (un bloque `smpl` del WAV) y Godot las repite solas al
@@ -358,9 +356,10 @@ regenerar. Para cambiar un piso, su tema en `TEMAS`.
 Común a todos: `reja.png`, el rastrillo de hierro de las puertas, con las
 puntas abajo. Mide lo mismo que el hueco de una puerta (130×64).
 
-## enemigos/ (nuevos)
+## enemigos/ (los de antes, sin usar desde el 2026-11-04)
 
-Siete enemigos más, en el mismo formato que los slimes y las plantas:
+Los guarda `resources/enemigos_antiguos/`. Siete de ellos, en el mismo formato que los
+slimes y las plantas:
 10 fotogramas `<nombre>_00..09.png` y un `animaciones_<nombre>.tres` con la
 animación `moverse` a 12 fps en bucle.
 
