@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="PersonajeJugable" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="PersonajeJugable" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/personaje_jugable.gd" id="1_script"]
 [ext_resource type="SpriteFrames" path="res://assets/mago_verde/animaciones_mago_verde.tres" id="2_animaciones"]
 [ext_resource type="Texture2D" path="res://assets/mago_verde/retrato.png" id="3_retrato"]
+[ext_resource type="Resource" path="res://assets/mago_verde/hechizos/especial.tres" id="5_especial"]
 
 [resource]
 script = ExtResource("1_script")
@@ -11,6 +12,7 @@ ventaja = "Rocía veneno: dispara 9 veces más rápido. Ataque especial: 8 proye
 pega = "Cada gota quita 10 veces menos (1). Los proyectiles giran muy poco y muchos se estrellan contra rocas y paredes."
 animaciones = ExtResource("2_animaciones")
 retrato = ExtResource("3_retrato")
+arte_especial = ExtResource("5_especial")
 color = Color(0.55, 0.95, 0.3, 1)
 color_disparo = Color(0.66, 1, 0.36, 1)
 halo_disparo = Color(0.22, 0.75, 0.2, 1)

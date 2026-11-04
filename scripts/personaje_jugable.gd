@@ -31,6 +31,15 @@ const ESPECIAL_VENENO := 2
 ## Color del nombre en la pantalla de seleccion.
 @export var color: Color = Color.WHITE
 
+@export_group("Arte de los hechizos")
+## Como se ven su disparo normal y su ataque especial (ver ArteHechizo). Sin
+## arte se pintan por codigo, con los colores de abajo: asi sigue el rocio del
+## mago verde, que es una rafaga y no un proyectil.
+@export var arte_disparo: ArteHechizo
+@export var arte_especial: ArteHechizo
+## La marca que deja en el suelo la explosion del especial, si tiene.
+@export var marca_especial: Texture2D
+
 @export_group("Colores del disparo")
 ## Centro y resplandor de las bolas del disparo normal.
 ##

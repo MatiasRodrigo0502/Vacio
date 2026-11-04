@@ -17,7 +17,9 @@ const SUAVIZADO: float = 18.0
 ## el primer aviso).
 const SALTO_MAXIMO: float = 160.0
 ## Mismo sitio y tamano que en Jugador.tscn y EscudoBurbuja.
-const DESFASE_SPRITE := Vector2(0.0, -33.0)
+const DESFASE_SPRITE := Vector2(0.0, -30.0)
+## El centro de la burbuja: el del cuerpo (EscudoBurbuja.CENTRO).
+const CENTRO_ESCUDO := EscudoBurbuja.CENTRO
 const RADIO_ESCUDO: float = 42.0
 const COLOR_ESCUDO := Color(0.62, 0.9, 1.0)
 
@@ -33,6 +35,10 @@ var _objetivo: Vector2 = Vector2.ZERO
 var _recibido: bool = false
 var _escudo: bool = false
 var _sprite: AnimatedSprite2D
+## La burbuja con su arte, si el mago la trae: las dos capas, con el mago en
+## medio (como EscudoBurbuja). Sin arte se pinta por codigo.
+var _burbuja_detras: AnimatedSprite2D = null
+var _burbuja_delante: AnimatedSprite2D = null
 
 
 func _init(mago: PersonajeJugable, numero_jugador: int) -> void:
@@ -57,6 +63,20 @@ func _ready() -> void:
 	_sprite.offset = DESFASE_SPRITE
 	_sprite.play(&"quieto_abajo")
 	add_child(_sprite)
+	var arte := personaje.arte_especial
+	if arte != null and arte.tiene(&"bucle_delante"):
+		_burbuja_detras = _capa_burbuja(arte, &"bucle_detras", -1)
+		_burbuja_delante = _capa_burbuja(arte, &"bucle_delante", 1)
+
+
+func _capa_burbuja(arte: ArteHechizo, nombre: StringName, orden: int) -> AnimatedSprite2D:
+	var capa := AnimatedSprite2D.new()
+	capa.position = CENTRO_ESCUDO
+	capa.z_index = orden
+	capa.visible = false
+	add_child(capa)
+	arte.poner(capa, nombre)
+	return capa
 
 
 func sigue_vivo() -> bool:
@@ -84,6 +104,9 @@ func recibir(posicion: Vector2, animacion: StringName, color: Color, escudo: boo
 		_sprite.play(animacion)
 	_sprite.modulate = color
 	_escudo = escudo
+	if _burbuja_delante != null:
+		_burbuja_detras.visible = escudo
+		_burbuja_delante.visible = escudo
 
 
 func _process(delta: float) -> void:
@@ -96,9 +119,9 @@ func _process(delta: float) -> void:
 ## El escudo del mago blanco, si lo lleva puesto, y su numero encima, para
 ## saber quien es quien (dos magos pueden parecerse de lejos).
 func _draw() -> void:
-	if _escudo:
-		draw_circle(DESFASE_SPRITE, RADIO_ESCUDO, Color(COLOR_ESCUDO, 0.14))
-		draw_arc(DESFASE_SPRITE, RADIO_ESCUDO, 0.0, TAU, 48, Color(COLOR_ESCUDO, 0.85), 2.5, true)
+	if _escudo and _burbuja_delante == null:
+		draw_circle(CENTRO_ESCUDO, RADIO_ESCUDO, Color(COLOR_ESCUDO, 0.14))
+		draw_arc(CENTRO_ESCUDO, RADIO_ESCUDO, 0.0, TAU, 48, Color(COLOR_ESCUDO, 0.85), 2.5, true)
 	# El rotulo mide lo mismo en pantalla con cualquier zoom, como los
 	# numeros de dano.
 	var camara := get_viewport().get_camera_2d()

@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 03/11/2026 | Versión para Android (`.apk` en cada release) con dos joysticks como Brawl Stars, botones de especial y pausa, y la vista girada 90° con el móvil en vertical | — |
+| 04/11/2026 | Arte nuevo de los cuatro magos y sus hechizos: figuras en ocho direcciones, bola de fuego y meteoro, bola morada y agujero negro, lanza de hielo y burbuja, dardos y los estados de los enemigos | — |
+| 03/11/2026 | Versión para Android (`.apk` en cada release) con dos joysticks como Brawl Stars, botones de especial y pausa, y la vista girada 90° con el móvil en vertical | `691454a` |
 | 03/11/2026 | Iconos de los objetos más sencillos: un aro de su color y el símbolo dentro, en dos tonos de ese color | `9c8e7d9` |
 | 03/11/2026 | Estadísticas con F3 (FPS, rendimiento, partida y ping en cooperativo) e iconos nuevos de los objetos | `f75cef9` |
 | 03/11/2026 | Mago verde: rocío de veneno 9 veces más rápido y 8 proyectiles que persiguen y envenenan (los venenos se suman); los slimes se parten en 4 crías que heredan el frío, el fuego y el veneno | `c3afeec` |
@@ -210,7 +211,7 @@ Antes se usaban packs de itch.io (de maaot), uno de Matías y otro generado, com
 
 **Personajes:**
 
-- **Magos:** el mago oscuro, en pixel art y en ocho direcciones, el mago rojo y el mago blanco (el rojo con otra paleta, hecha con `generar_mago_blanco.py`). Antes se probaron el BlueWizard, el nigromante y un mago morado de cuatro direcciones; ya no están en el proyecto.
+- **Magos:** los cuatro (oscuro, rojo, blanco y verde) son el arte vectorial que trajo Matías el 04/11/2026, en ocho direcciones y con sus hechizos, preparado por `generar_magos.py`. Antes hubo un mago oscuro y uno rojo en pixel art, el blanco como el rojo con otra paleta, y se probaron el BlueWizard, el nigromante y un mago morado de cuatro direcciones; ya no están en el proyecto.
 - **Enemigos:** los siete últimos (rata, serpiente, murciélago, gólem, slime de magma, cristal vivo y fantasma) los dibujó Matías.
 
 **Interfaz:**

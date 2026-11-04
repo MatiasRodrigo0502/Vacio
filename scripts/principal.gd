@@ -192,11 +192,14 @@ func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 	bola.atraviesa = datos.atraviesa
 	bola.alcance = datos.alcance
 	bola.solo_ver = Red.es_espejo()
+	bola.arte = mago.arte_especial if datos.cargada else mago.arte_disparo
 	var sala := _piso_actual.sala_en(datos.desde)
 	if sala != null:
 		bola.limite = sala.rect_con_muros()
 		if datos.agujero:
 			bola.apagada.connect(_abrir_agujero.bind(sala, mago))
+		elif datos.cargada and mago.arte_especial != null and mago.arte_especial.tiene(&"explosion"):
+			bola.apagada.connect(_explotar_especial.bind(sala, mago))
 	_soltar_bola(bola, datos.desde, datos.cargada)
 
 
@@ -230,6 +233,7 @@ func _bola_del_jugador(direccion: Vector2, cargada: bool) -> BolaMagica:
 	bola.frena = _jugador.frena_disparo
 	# La quemadura del mago rojo, en las dos bolas.
 	if _jugador.mago != null:
+		bola.arte = _jugador.mago.arte_especial if cargada else _jugador.mago.arte_disparo
 		bola.quema = _jugador.mago.quemadura_duracion
 		bola.dano_quema = _jugador.mago.quemadura_dano
 		# El rocio del mago verde: cada gota un poco torcida y a su
@@ -265,6 +269,8 @@ func _ajustar_al_mago(bola: BolaMagica) -> void:
 		bola.alcance = mago.alcance_cargado
 	if mago.agujero_negro:
 		bola.apagada.connect(_abrir_agujero.bind(_piso_actual.sala_actual(), mago))
+	elif mago.arte_especial != null and mago.arte_especial.tiene(&"explosion"):
+		bola.apagada.connect(_explotar_especial.bind(_piso_actual.sala_actual(), mago))
 
 
 ## El ataque especial del mago verde: sus proyectiles de veneno, repartidos
@@ -292,6 +298,7 @@ func _soltar_veneno(desde: Vector2, direccion: Vector2, mago: PersonajeJugable, 
 	for i in cuantos:
 		var bola := BolaVenenosa.new()
 		bola.direccion = direccion.rotated(TAU * i / cuantos)
+		bola.arte = mago.arte_especial
 		bola.velocidad = mago.velocidad_veneno
 		bola.salida = mago.salida_veneno
 		bola.giro = deg_to_rad(mago.giro_veneno)
@@ -304,11 +311,25 @@ func _soltar_veneno(desde: Vector2, direccion: Vector2, mago: PersonajeJugable, 
 	Sonido.tocar(&"veneno_lanzado")
 
 
+## Donde se acaba el meteoro del mago rojo: su explosion y la marca que deja en
+## el suelo. SOLO SE VE: el dano lo hace la bola al pasar (atraviesa y quita lo
+## suyo a cada enemigo). Si el dia de manana tiene que quitar vida, es aqui.
+## En el suelo aunque se apague contra el muro, como el agujero negro.
+func _explotar_especial(punto: Vector2, sala: Sala, mago: PersonajeJugable) -> void:
+	if _piso_actual == null or not is_instance_valid(sala):
+		return
+	var suelo := sala.rect_suelo_global().grow(-AgujeroNegro.NUCLEO)
+	var sitio := punto.clamp(suelo.position, suelo.end)
+	EfectoHechizo.soltar(_piso_actual, mago.arte_especial, &"explosion", sitio)
+	EfectoHechizo.dejar_marca(_piso_actual, mago.marca_especial, sitio)
+	Sonido.tocar(&"explosion")
+
+
 func _abrir_agujero(punto: Vector2, sala: Sala, mago: PersonajeJugable) -> void:
 	if _piso_actual == null or not is_instance_valid(sala):
 		return
 	var agujero := AgujeroNegro.new(sala, mago.duracion_agujero, mago.radio_agujero,
-		mago.dano_agujero, mago.color_cargado, mago.halo_cargado)
+		mago.dano_agujero, mago.color_cargado, mago.halo_cargado, mago.arte_especial)
 	# Si la bola se ha apagado contra el muro, el agujero se abre en el suelo,
 	# no medio metido en la pared.
 	var suelo := sala.rect_suelo_global().grow(-AgujeroNegro.NUCLEO)

@@ -1,73 +1,171 @@
-[gd_resource type="SpriteFrames" load_steps=18 format=3]
+[gd_resource type="SpriteFrames" load_steps=34 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/mago_verde/atlas_4dir.png" id="atlas"]
-
-[sub_resource type="AtlasTexture" id="abajo_0"]
-atlas = ExtResource("atlas")
-region = Rect2(0, 0, 72, 72)
-
-[sub_resource type="AtlasTexture" id="abajo_1"]
-atlas = ExtResource("atlas")
-region = Rect2(72, 0, 72, 72)
-
-[sub_resource type="AtlasTexture" id="abajo_2"]
-atlas = ExtResource("atlas")
-region = Rect2(144, 0, 72, 72)
-
-[sub_resource type="AtlasTexture" id="abajo_3"]
-atlas = ExtResource("atlas")
-region = Rect2(216, 0, 72, 72)
-
-[sub_resource type="AtlasTexture" id="izquierda_0"]
-atlas = ExtResource("atlas")
-region = Rect2(0, 72, 72, 72)
-
-[sub_resource type="AtlasTexture" id="izquierda_1"]
-atlas = ExtResource("atlas")
-region = Rect2(72, 72, 72, 72)
-
-[sub_resource type="AtlasTexture" id="izquierda_2"]
-atlas = ExtResource("atlas")
-region = Rect2(144, 72, 72, 72)
-
-[sub_resource type="AtlasTexture" id="izquierda_3"]
-atlas = ExtResource("atlas")
-region = Rect2(216, 72, 72, 72)
+[ext_resource type="Texture2D" path="res://assets/mago_verde/atlas_8dir.png" id="atlas"]
 
 [sub_resource type="AtlasTexture" id="derecha_0"]
 atlas = ExtResource("atlas")
-region = Rect2(0, 144, 72, 72)
+region = Rect2(0, 0, 72, 72)
 
 [sub_resource type="AtlasTexture" id="derecha_1"]
 atlas = ExtResource("atlas")
-region = Rect2(72, 144, 72, 72)
+region = Rect2(72, 0, 72, 72)
 
 [sub_resource type="AtlasTexture" id="derecha_2"]
 atlas = ExtResource("atlas")
-region = Rect2(144, 144, 72, 72)
+region = Rect2(144, 0, 72, 72)
 
 [sub_resource type="AtlasTexture" id="derecha_3"]
 atlas = ExtResource("atlas")
+region = Rect2(216, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="abajo_derecha_0"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 72, 72, 72)
+
+[sub_resource type="AtlasTexture" id="abajo_derecha_1"]
+atlas = ExtResource("atlas")
+region = Rect2(72, 72, 72, 72)
+
+[sub_resource type="AtlasTexture" id="abajo_derecha_2"]
+atlas = ExtResource("atlas")
+region = Rect2(144, 72, 72, 72)
+
+[sub_resource type="AtlasTexture" id="abajo_derecha_3"]
+atlas = ExtResource("atlas")
+region = Rect2(216, 72, 72, 72)
+
+[sub_resource type="AtlasTexture" id="abajo_0"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 144, 72, 72)
+
+[sub_resource type="AtlasTexture" id="abajo_1"]
+atlas = ExtResource("atlas")
+region = Rect2(72, 144, 72, 72)
+
+[sub_resource type="AtlasTexture" id="abajo_2"]
+atlas = ExtResource("atlas")
+region = Rect2(144, 144, 72, 72)
+
+[sub_resource type="AtlasTexture" id="abajo_3"]
+atlas = ExtResource("atlas")
 region = Rect2(216, 144, 72, 72)
 
-[sub_resource type="AtlasTexture" id="arriba_0"]
+[sub_resource type="AtlasTexture" id="abajo_izquierda_0"]
 atlas = ExtResource("atlas")
 region = Rect2(0, 216, 72, 72)
 
-[sub_resource type="AtlasTexture" id="arriba_1"]
+[sub_resource type="AtlasTexture" id="abajo_izquierda_1"]
 atlas = ExtResource("atlas")
 region = Rect2(72, 216, 72, 72)
 
-[sub_resource type="AtlasTexture" id="arriba_2"]
+[sub_resource type="AtlasTexture" id="abajo_izquierda_2"]
 atlas = ExtResource("atlas")
 region = Rect2(144, 216, 72, 72)
 
-[sub_resource type="AtlasTexture" id="arriba_3"]
+[sub_resource type="AtlasTexture" id="abajo_izquierda_3"]
 atlas = ExtResource("atlas")
 region = Rect2(216, 216, 72, 72)
 
+[sub_resource type="AtlasTexture" id="izquierda_0"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 288, 72, 72)
+
+[sub_resource type="AtlasTexture" id="izquierda_1"]
+atlas = ExtResource("atlas")
+region = Rect2(72, 288, 72, 72)
+
+[sub_resource type="AtlasTexture" id="izquierda_2"]
+atlas = ExtResource("atlas")
+region = Rect2(144, 288, 72, 72)
+
+[sub_resource type="AtlasTexture" id="izquierda_3"]
+atlas = ExtResource("atlas")
+region = Rect2(216, 288, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_izquierda_0"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 360, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_izquierda_1"]
+atlas = ExtResource("atlas")
+region = Rect2(72, 360, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_izquierda_2"]
+atlas = ExtResource("atlas")
+region = Rect2(144, 360, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_izquierda_3"]
+atlas = ExtResource("atlas")
+region = Rect2(216, 360, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_0"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 432, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_1"]
+atlas = ExtResource("atlas")
+region = Rect2(72, 432, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_2"]
+atlas = ExtResource("atlas")
+region = Rect2(144, 432, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_3"]
+atlas = ExtResource("atlas")
+region = Rect2(216, 432, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_derecha_0"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 504, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_derecha_1"]
+atlas = ExtResource("atlas")
+region = Rect2(72, 504, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_derecha_2"]
+atlas = ExtResource("atlas")
+region = Rect2(144, 504, 72, 72)
+
+[sub_resource type="AtlasTexture" id="arriba_derecha_3"]
+atlas = ExtResource("atlas")
+region = Rect2(216, 504, 72, 72)
+
 [resource]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("derecha_3")
+}],
+"loop": true,
+"name": &"caminar_derecha",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("abajo_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("abajo_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("abajo_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("abajo_derecha_3")
+}],
+"loop": true,
+"name": &"caminar_abajo_derecha",
+"speed": 8.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("abajo_0")
@@ -87,16 +185,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("izquierda_0")
+"texture": SubResource("abajo_izquierda_0")
 }, {
 "duration": 1.0,
-"texture": SubResource("izquierda_1")
+"texture": SubResource("abajo_izquierda_1")
 }, {
 "duration": 1.0,
-"texture": SubResource("izquierda_2")
+"texture": SubResource("abajo_izquierda_2")
 }, {
 "duration": 1.0,
-"texture": SubResource("izquierda_3")
+"texture": SubResource("abajo_izquierda_3")
 }],
 "loop": true,
 "name": &"caminar_abajo_izquierda",
@@ -121,16 +219,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("izquierda_0")
+"texture": SubResource("arriba_izquierda_0")
 }, {
 "duration": 1.0,
-"texture": SubResource("izquierda_1")
+"texture": SubResource("arriba_izquierda_1")
 }, {
 "duration": 1.0,
-"texture": SubResource("izquierda_2")
+"texture": SubResource("arriba_izquierda_2")
 }, {
 "duration": 1.0,
-"texture": SubResource("izquierda_3")
+"texture": SubResource("arriba_izquierda_3")
 }],
 "loop": true,
 "name": &"caminar_arriba_izquierda",
@@ -155,16 +253,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("derecha_0")
+"texture": SubResource("arriba_derecha_0")
 }, {
 "duration": 1.0,
-"texture": SubResource("derecha_1")
+"texture": SubResource("arriba_derecha_1")
 }, {
 "duration": 1.0,
-"texture": SubResource("derecha_2")
+"texture": SubResource("arriba_derecha_2")
 }, {
 "duration": 1.0,
-"texture": SubResource("derecha_3")
+"texture": SubResource("arriba_derecha_3")
 }],
 "loop": true,
 "name": &"caminar_arriba_derecha",
@@ -173,36 +271,18 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("derecha_0")
-}, {
-"duration": 1.0,
-"texture": SubResource("derecha_1")
-}, {
-"duration": 1.0,
-"texture": SubResource("derecha_2")
-}, {
-"duration": 1.0,
-"texture": SubResource("derecha_3")
 }],
 "loop": true,
-"name": &"caminar_derecha",
-"speed": 8.0
+"name": &"quieto_derecha",
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("derecha_0")
-}, {
-"duration": 1.0,
-"texture": SubResource("derecha_1")
-}, {
-"duration": 1.0,
-"texture": SubResource("derecha_2")
-}, {
-"duration": 1.0,
-"texture": SubResource("derecha_3")
+"texture": SubResource("abajo_derecha_0")
 }],
 "loop": true,
-"name": &"caminar_abajo_derecha",
-"speed": 8.0
+"name": &"quieto_abajo_derecha",
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -214,7 +294,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("izquierda_0")
+"texture": SubResource("abajo_izquierda_0")
 }],
 "loop": true,
 "name": &"quieto_abajo_izquierda",
@@ -230,7 +310,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("izquierda_0")
+"texture": SubResource("arriba_izquierda_0")
 }],
 "loop": true,
 "name": &"quieto_arriba_izquierda",
@@ -246,25 +326,9 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("derecha_0")
+"texture": SubResource("arriba_derecha_0")
 }],
 "loop": true,
 "name": &"quieto_arriba_derecha",
-"speed": 1.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("derecha_0")
-}],
-"loop": true,
-"name": &"quieto_derecha",
-"speed": 1.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("derecha_0")
-}],
-"loop": true,
-"name": &"quieto_abajo_derecha",
 "speed": 1.0
 }]

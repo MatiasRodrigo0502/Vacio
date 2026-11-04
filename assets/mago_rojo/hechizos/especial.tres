@@ -1,0 +1,212 @@
+[gd_resource type="Resource" script_class="ArteHechizo" load_steps=32 format=3]
+
+[ext_resource type="Script" path="res://scripts/arte_hechizo.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/mago_rojo/hechizos/especial_vuelo.png" id="t_vuelo"]
+[ext_resource type="Texture2D" path="res://assets/mago_rojo/hechizos/especial_carga.png" id="t_carga"]
+[ext_resource type="Texture2D" path="res://assets/mago_rojo/hechizos/especial_explosion.png" id="t_explosion"]
+
+[sub_resource type="AtlasTexture" id="vuelo_0"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(0, 0, 288, 144)
+
+[sub_resource type="AtlasTexture" id="vuelo_1"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(288, 0, 288, 144)
+
+[sub_resource type="AtlasTexture" id="vuelo_2"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(576, 0, 288, 144)
+
+[sub_resource type="AtlasTexture" id="vuelo_3"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(0, 144, 288, 144)
+
+[sub_resource type="AtlasTexture" id="vuelo_4"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(288, 144, 288, 144)
+
+[sub_resource type="AtlasTexture" id="vuelo_5"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(576, 144, 288, 144)
+
+[sub_resource type="AtlasTexture" id="carga_0"]
+atlas = ExtResource("t_carga")
+region = Rect2(0, 0, 108, 108)
+
+[sub_resource type="AtlasTexture" id="carga_1"]
+atlas = ExtResource("t_carga")
+region = Rect2(108, 0, 108, 108)
+
+[sub_resource type="AtlasTexture" id="carga_2"]
+atlas = ExtResource("t_carga")
+region = Rect2(216, 0, 108, 108)
+
+[sub_resource type="AtlasTexture" id="carga_3"]
+atlas = ExtResource("t_carga")
+region = Rect2(324, 0, 108, 108)
+
+[sub_resource type="AtlasTexture" id="carga_4"]
+atlas = ExtResource("t_carga")
+region = Rect2(0, 108, 108, 108)
+
+[sub_resource type="AtlasTexture" id="carga_5"]
+atlas = ExtResource("t_carga")
+region = Rect2(108, 108, 108, 108)
+
+[sub_resource type="AtlasTexture" id="carga_6"]
+atlas = ExtResource("t_carga")
+region = Rect2(216, 108, 108, 108)
+
+[sub_resource type="AtlasTexture" id="carga_7"]
+atlas = ExtResource("t_carga")
+region = Rect2(324, 108, 108, 108)
+
+[sub_resource type="AtlasTexture" id="explosion_0"]
+atlas = ExtResource("t_explosion")
+region = Rect2(0, 0, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_1"]
+atlas = ExtResource("t_explosion")
+region = Rect2(230, 0, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_2"]
+atlas = ExtResource("t_explosion")
+region = Rect2(460, 0, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_3"]
+atlas = ExtResource("t_explosion")
+region = Rect2(690, 0, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_4"]
+atlas = ExtResource("t_explosion")
+region = Rect2(0, 230, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_5"]
+atlas = ExtResource("t_explosion")
+region = Rect2(230, 230, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_6"]
+atlas = ExtResource("t_explosion")
+region = Rect2(460, 230, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_7"]
+atlas = ExtResource("t_explosion")
+region = Rect2(690, 230, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_8"]
+atlas = ExtResource("t_explosion")
+region = Rect2(0, 460, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_9"]
+atlas = ExtResource("t_explosion")
+region = Rect2(230, 460, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_10"]
+atlas = ExtResource("t_explosion")
+region = Rect2(460, 460, 230, 230)
+
+[sub_resource type="AtlasTexture" id="explosion_11"]
+atlas = ExtResource("t_explosion")
+region = Rect2(690, 460, 230, 230)
+
+[sub_resource type="SpriteFrames" id="animaciones"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("vuelo_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_5")
+}],
+"loop": true,
+"name": &"vuelo",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("carga_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("carga_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("carga_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("carga_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("carga_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("carga_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("carga_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("carga_7")
+}],
+"loop": false,
+"name": &"carga",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("explosion_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_9")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_10")
+}, {
+"duration": 1.0,
+"texture": SubResource("explosion_11")
+}],
+"loop": false,
+"name": &"explosion",
+"speed": 14.0
+}]
+
+[resource]
+script = ExtResource("1_script")
+animaciones = SubResource("animaciones")
+desfases = {"vuelo": Vector2(-65.25, 0.00), "carga": Vector2(0.00, 0.00), "explosion": Vector2(0.00, -33.30)}
+radio_base = 23.1

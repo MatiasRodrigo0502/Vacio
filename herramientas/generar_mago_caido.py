@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """Genera el Mago Caido, el jefe del piso 12, a partir del mago rojo.
 
-Como el mago blanco (generar_mago_blanco.py): la hoja del rojo es pixel art de
-25 colores, y basta con cambiar unos por otros para tener las mismas 48 poses
-(8 direcciones x 6 pasos) con otra piel. Es el cuarto mago, el que bajo antes
-que tu y se lo trago el vacio.
+La hoja antigua del rojo (assets/mago_caido/origen/: el mago rojo tiene otra
+desde el 2026-11-04) es pixel art de 25 colores, y basta con cambiar unos por
+otros para tener las mismas 48 poses (8 direcciones x 6 pasos) con otra piel.
+Es el mago que bajo antes que tu y se lo trago el vacio.
 
 NEGRO Y ORO (Matias, 2026-10-14): la primera version era violeta y se
 confundia con el mago oscuro. Ahora:
@@ -40,7 +40,7 @@ import re
 from PIL import Image, ImageDraw
 
 RAIZ = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-ORIGEN = os.path.join(RAIZ, "assets", "mago_rojo")
+ORIGEN = os.path.join(RAIZ, "assets", "mago_caido", "origen")
 DESTINO = os.path.join(RAIZ, "assets", "mago_caido")
 
 ANCHO, ALTO = 64, 72

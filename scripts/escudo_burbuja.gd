@@ -51,6 +51,17 @@ var _destello: float = 0.0
 var _fase: float = 0.0
 ## Lo que ve a los enemigos que tocan la burbuja.
 var _zona: Area2D
+## Desde el 2026-11-04 con el arte de Matias, si el mago lo trae (ArteHechizo:
+## "aparece", "bucle" y "rompe"). Va en DOS CAPAS, para que el mago quede dentro
+## de la burbuja: la de detras se pinta antes que su dibujo y la de delante,
+## despues. Sin arte se pinta por codigo. El aro del tiempo que queda va siempre.
+var _arte: ArteHechizo = null
+var _detras: AnimatedSprite2D = null
+var _delante: AnimatedSprite2D = null
+## Si estaba levantada en el fotograma anterior, para saber cuando se rompe; y
+## si se esta viendo romperse, que ya no protege.
+var _estaba_activo: bool = false
+var _rompiendo: bool = false
 
 
 func _init(jugador: Jugador) -> void:
@@ -74,11 +85,69 @@ func _ready() -> void:
 	add_child(_zona)
 
 
+## El arte del especial del mago, si es un escudo. Lo llama el jugador.
+func usar_arte(arte: ArteHechizo) -> void:
+	if arte == null or not arte.tiene(&"bucle_delante"):
+		return
+	_arte = arte
+	if _detras != null:
+		return
+	_detras = _capa(-1)
+	_delante = _capa(1)
+	_delante.animation_finished.connect(_al_acabar_animacion)
+
+
+func _capa(orden: int) -> AnimatedSprite2D:
+	var capa := AnimatedSprite2D.new()
+	capa.z_index = orden
+	# De pie con la vista girada (Vista): lo de arriba de la burbuja, arriba.
+	capa.rotation = Vista.giro
+	capa.add_to_group("de_pie")
+	capa.visible = false
+	add_child(capa)
+	return capa
+
+
+func _poner_capas(nombre: String) -> void:
+	_detras.visible = true
+	_delante.visible = true
+	_detras.modulate.a = 1.0
+	_delante.modulate.a = 1.0
+	_arte.poner(_detras, StringName(nombre + "_detras"))
+	_arte.poner(_delante, StringName(nombre + "_delante"))
+
+
+func _al_acabar_animacion() -> void:
+	if _delante.animation == &"aparece_delante":
+		_poner_capas("bucle")
+	elif _delante.animation == &"rompe_delante":
+		_esconder_capas()
+
+
+func _esconder_capas() -> void:
+	_rompiendo = false
+	if _detras != null:
+		_detras.visible = false
+		_delante.visible = false
+
+
 func _process(delta: float) -> void:
 	_levantado = maxf(0.0, _levantado - delta)
 	_destello = maxf(0.0, _destello - delta)
 	_fase += delta
-	visible = activo()
+	if _detras != null:
+		var ahora := activo()
+		# Se acaba el tiempo: se rompe, y mientras se ve, ya no para nada.
+		if _estaba_activo and not ahora:
+			_rompiendo = true
+			_poner_capas("rompe")
+		_estaba_activo = ahora
+		# Parpadea cuando le queda poco, como la pintada por codigo.
+		if ahora and _levantado < AVISO_FIN:
+			var alfa := 0.45 + 0.55 * absf(cos(_levantado * TAU * 3.0))
+			_detras.modulate.a = alfa
+			_delante.modulate.a = alfa
+	visible = activo() or _rompiendo
 	# Fuera del paso de fisica: encender o apagar un area en mitad de el hace
 	# quejarse al motor.
 	if _zona.monitoring != activo():
@@ -122,12 +191,18 @@ func levantar() -> bool:
 	if activo() or _jugador.vida_actual <= 0 or _jugador.esta_cayendo():
 		return false
 	_levantado = duracion
+	if _detras != null:
+		_rompiendo = false
+		_estaba_activo = true
+		_poner_capas("aparece")
 	return true
 
 
 ## La baja. Al empezar partida y al llegar a un piso.
 func bajar() -> void:
 	_levantado = 0.0
+	_estaba_activo = false
+	_esconder_capas()
 
 
 ## Levantada, y con el mago vivo y en pie: cayendo por un agujero no esta.
@@ -180,15 +255,21 @@ func _draw() -> void:
 		alfa = 0.35 + 0.65 * absf(cos(_levantado * TAU * 3.0))
 	var brillo := _destello / DURACION_DESTELLO
 	var r := RADIO * abierta
-	# El interior, muy flojo: se ve al mago dentro.
-	draw_circle(Vector2.ZERO, r, Color(COLOR, (0.1 + 0.12 * brillo) * alfa))
-	# El borde, con un resplandor por fuera.
-	draw_arc(Vector2.ZERO, r, 0.0, TAU, 48, Color(COLOR, (0.25 + 0.35 * brillo) * alfa), 7.0 + 5.0 * brillo, true)
-	draw_arc(Vector2.ZERO, r, 0.0, TAU, 48, Color(COLOR, 0.85 * alfa), 2.5, true)
-	# Un brillo que da la vuelta despacio y el reflejo de arriba a la
-	# izquierda: se lee como una burbuja y no como un aro plano.
-	var giro := _fase * 1.6
-	draw_arc(Vector2.ZERO, r - 3.0, giro, giro + 0.9, 12, Color(1.0, 1.0, 1.0, 0.55 * alfa), 2.0, true)
+	if _detras != null:
+		# Con arte, solo el destello de lo que rebota: la burbuja es el dibujo.
+		draw_circle(Vector2.ZERO, r, Color(COLOR, 0.3 * brillo * alfa))
+	else:
+		# El interior, muy flojo: se ve al mago dentro.
+		draw_circle(Vector2.ZERO, r, Color(COLOR, (0.1 + 0.12 * brillo) * alfa))
+		# El borde, con un resplandor por fuera.
+		draw_arc(Vector2.ZERO, r, 0.0, TAU, 48, Color(COLOR, (0.25 + 0.35 * brillo) * alfa), 7.0 + 5.0 * brillo, true)
+		draw_arc(Vector2.ZERO, r, 0.0, TAU, 48, Color(COLOR, 0.85 * alfa), 2.5, true)
+		# Un brillo que da la vuelta despacio y el reflejo de arriba a la
+		# izquierda: se lee como una burbuja y no como un aro plano.
+		var giro := _fase * 1.6
+		draw_arc(Vector2.ZERO, r - 3.0, giro, giro + 0.9, 12, Color(1.0, 1.0, 1.0, 0.55 * alfa), 2.0, true)
+		draw_arc(Vector2.ZERO, r * 0.72, deg_to_rad(200.0), deg_to_rad(245.0), 10,
+			Color(1.0, 1.0, 1.0, 0.6 * alfa), 3.0, true)
 	# El tiempo que le queda: un aro por fuera que se va vaciando desde arriba,
 	# en el sentido del reloj (pedido por Matias el 2026-10-14). El hueco se
 	# ve flojo, para que se lea cuanto falta.
@@ -196,5 +277,3 @@ func _draw() -> void:
 	draw_arc(Vector2.ZERO, r + 8.0, 0.0, TAU, 48, Color(0.0, 0.0, 0.0, 0.35 * alfa), 5.0, true)
 	draw_arc(Vector2.ZERO, r + 8.0, -PI * 0.5, -PI * 0.5 + TAU * queda, 48,
 		Color(1.0, 1.0, 1.0, 0.9 * alfa), 3.5, true)
-	draw_arc(Vector2.ZERO, r * 0.72, deg_to_rad(200.0), deg_to_rad(245.0), 10,
-		Color(1.0, 1.0, 1.0, 0.6 * alfa), 3.0, true)

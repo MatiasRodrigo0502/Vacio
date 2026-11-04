@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-11-03.**
+**Última actualización: 2026-11-04.**
 
 ---
 
@@ -52,6 +52,7 @@ hechos.
 | Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
+| Arte de los magos y sus hechizos | `herramientas/generar_magos.py`, de `assets/magos_fuente/` → `assets/mago_<color>/` (atlas, retrato y `hechizos/`, con un `ArteHechizo` por hechizo), y `arte_disparo`/`arte_especial` en el `.tres` del mago | cambiar las tablas del script y volver a ejecutarlo |
 | Rocas de dentro, una por piso | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 | Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
@@ -173,9 +174,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `es_invulnerable` y un segundo proyectil en `disparar_hacia`. Barra de vida
   y presentación: `scripts/barra_jefe.gd`, en el HUD, que pone Principal
   cuando se cierran las puertas (`Sala.pelea_empezada`), con su música
-  (`DatosPiso.musica_jefe`, `jefe.wav`). Arte: el mago rojo con otra paleta
-  y la guadaña dibujada encima, en casillas de 96 × 72, a ×2
-  (`herramientas/generar_mago_caido.py`). **Más difícil desde el
+  (`DatosPiso.musica_jefe`, `jefe.wav`). Arte: la hoja antigua del mago rojo
+  (`assets/mago_caido/origen/`) con otra paleta y la guadaña dibujada encima, en
+  casillas de 96 × 72, a ×2 (`herramientas/generar_mago_caido.py`). **Más difícil desde el
   2026-10-21** (Matías): 1500 de vida en vez de 900, más ritmo, una
   habilidad cada 3,5 s, rayos en abanico de 3 en la fase 2 y de 5 en la 3
   (`rayos_por_fase`), pozo, anillos y fuego más fuertes. **Aliento de
@@ -358,6 +359,44 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     (`Red.factor_vida_enemigos`: ×1,5 con dos, ×2 con tres). La vida de los
     compañeros, abajo a la izquierda (`VidasCompaneros`).
 
+- **Arte nuevo de los cuatro magos y sus hechizos** (2026-11-04, lo trajo
+  Matías: `vacio_magos_y_hechizos.zip`, con su LEEME en
+  `assets/magos_fuente/`). Piromante = rojo, Envenenador = verde, Criomante =
+  blanco, Vacío = oscuro. Hojas de 128 px por pose, 4 pasos × 8 direcciones,
+  **en el orden de `Jugador.LADOS`**; `herramientas/generar_magos.py` las reduce
+  a 72 px, y los pies quedan a 66,4 px de la casilla (por eso el `offset` del
+  sprite es −30, en `Jugador.tscn` y en `MagoRemoto`). **Se cambió el arte, no
+  cómo juegan.** Cada hechizo es un `ArteHechizo` (`scripts/arte_hechizo.gd`:
+  sus animaciones, sus desfases y `radio_base`), que el mago dice en su `.tres`
+  (`arte_disparo`, `arte_especial`, `marca_especial`); sin arte, todo sigue
+  pintándose por código (el rocío del verde). `EfectoHechizo`
+  (`scripts/efecto_hechizo.gd`) pinta una animación una vez y se va, y deja la
+  marca del suelo. Lo que usa cada cosa:
+  - `BolaMagica`: `vuelo` (girada hacia donde va, a la escala de su radio entre
+    `radio_base`) e `impacto` al acabarse. Fuego, lanza de hielo, bola morada.
+  - **Meteoro del rojo**: `carga` en `CargaAtaque` (la pose la manda lo cargado,
+    no el reloj: carga en 0,375 s), `vuelo` y, al apagarse,
+    `Principal._explotar_especial`: `explosion` y la marca (4 s y se apaga en 2).
+    **La explosión solo se ve; el daño lo hace la bola al pasar**, como antes.
+  - **Agujero negro del oscuro**: `abrir`, `bucle` y `colapso` por debajo de los
+    enemigos; se quedan el círculo de alcance y lo negro por código, encima de
+    ellos, para que se les vea tragados (mide 34, lo negro de la hoja al 80 %).
+    Al acabarse el tiempo deja de tirar y se va al acabar `colapso`.
+  - **Burbuja del blanco**: dos capas (`_detras` con z −1 y `_delante` con z +1,
+    con el mago en medio), `aparece`, `bucle` y `rompe`. Mientras se rompe ya no
+    protege. Al cambiar de piso se va sin romperse. Se queda el aro del tiempo.
+    `MagoRemoto` pinta el `bucle`.
+  - **Proyectiles del verde**: `dardo` e impacto, girando con el proyectil.
+  - **Estados** (`estado_envenenado`, `estado_ralentizado`): los pintan `Burbujas`
+    y `Escarcha` (`ArteHechizo.pintar_estado`), **encima del sprite** (en un nodo
+    `_estados` del enemigo): por debajo, en un slime casi no se veían.
+  **El paquete trae más de lo que se usa** (en `assets/magos_fuente/`): el
+  verde allí dispara 3 dardos en abanico y su ultimate es una lluvia de veneno
+  (`lluvia_*`, sin usar); la explosión del meteoro y el colapso del agujero
+  hacen daño, y el escudo aguanta 3 golpes. Aquí se dejó lo que había pedido
+  Matías; **falta que diga si quiere cambiar algo de eso**. La portada sigue
+  enseñando los tres magos de antes. Probado con los cuatro: cada hechizo sale,
+  se ve en su sitio y se va, también en vertical. **Nadie lo ha jugado.**
 - **Versión para móvil** (2026-11-03, pedido por Matías: «un joystick a
   cada lado, como en Brawl Stars; si pone el móvil en vertical, que todas
   las entes giren 90º, que no cambie nada de posición, pero que cambie el
@@ -457,8 +496,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   normal y del cargado): el oscuro lila (el normal, del color de la llama de
   su bastón, desde el 2026-10-14; antes azul) y morado el cargado, el rojo en
   rojo, el blanco en azul hielo.
-- **Mago blanco** (2026-10-08, pedido por Matías): es el rojo con otra paleta
-  (`herramientas/generar_mago_blanco.py`). Su disparo normal quita **lo
+- **Mago blanco** (2026-10-08, pedido por Matías). Su disparo normal quita **lo
   mismo que los demás**, 1 (`dano_disparo`; quitaba medio punto hasta el
   2026-10-14, cuando Matías lo igualó; su pega es no tener bola cargada) y
   **frena** 1,5 s
@@ -482,11 +520,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `duracion_escudo`). No tiene bola cargada. Antes fue un arco pequeño
   delante, primero como pasiva siempre puesta y luego como especial: lo
   cambió Matías las dos veces.
-- **Mago verde** (2026-11-03, pedido por Matías, con su arte: hoja de 4
-  direcciones × 4 pasos de 128 px, que `herramientas/generar_mago_verde.py`
-  pasa a 72 px con filtro bueno y a las 8 direcciones, las diagonales con la
-  vista de lado; originales en `assets/mago_verde/fuente/`, con
-  `.gdignore`). **Disparo en rocío**: `cadencia_multiplicador` 1/9 (18 por
+- **Mago verde** (2026-11-03, pedido por Matías). **Disparo en rocío**: `cadencia_multiplicador` 1/9 (18 por
   segundo) y `dano_disparo` 1. El tope de cadencia baja con él
   (`Jugador._cadencia_minima`) y la espera entre disparos guarda lo que
   sobra del paso de física (sin eso salían 15 por segundo). Cada gota es una
@@ -828,16 +862,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Pendiente
 
-- **De dónde salen las hojas de los magos.** Ni la del mago oscuro ni la del
-  rojo traen autor ni origen (ver `CREDITS.md`); el blanco sale de la del
-  rojo. Hay que aclararlo antes de entregar o publicar.
-- **Contraste del mago oscuro: 1,66:1** contra el suelo. Mejor que el mago
-  morado al que sustituye (1,40:1), por debajo del nigromante (1,81:1).
+- **De dónde sale la hoja del Mago Caído.** Sale de la antigua del mago rojo
+  (`assets/mago_caido/origen/`), que no trae autor ni origen (ver
+  `CREDITS.md`). Los cuatro magos ya son arte de Matías (2026-11-04). Hay que
+  aclararlo antes de entregar o publicar.
 - **Licencias**: `CREDITS.md` tiene packs, autores y URLs, pero la licencia de
   cada uno está "sin verificar" (no se pudo abrir itch.io desde aquí). Desde
   el 2026-10-08 los escenarios son todos propios y los packs de itch.io ya no
-  se usan: de fuera solo quedan las hojas de los magos (el blanco sale de la
-  del rojo, así que tiene la misma duda).
+  se usan: de fuera solo queda la hoja de la que sale el Mago Caído.
 - **Multijugador: fases 1 y 2 hechas (2026-10-18), falta probarlas en
   clase.** El estudio está en `docs/mejoras-futuras/multijugador.md`. Se
   probó en un ordenador con dos juegos abiertos (peleas, crías, objetos,
@@ -958,10 +990,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   direcciones bastaba un `if`; con ocho, la misma idea sería una escalera de
   comparaciones. `_lado()` redondea el ángulo al sector de 45° más cercano y
   `LADOS` da el nombre. `_vector_de()` es la vuelta, girando `Vector2.RIGHT`.
-- **El pixel art se mueve en píxeles enteros y se dibuja a escala 1.** El atlas
-  del mago oscuro es pixel art de verdad (64×72): centrar cada dirección se
-  hizo desplazando un número entero de píxeles, y la escena lo dibuja sin
-  escalar. Un decimal en cualquiera de los dos sitios emborrona los bordes.
+- **El pixel art se mueve en píxeles enteros y se dibuja a escala 1.** Vale para
+  lo que queda en pixel art (el Mago Caído): centrar cada dirección se hizo
+  desplazando un número entero de píxeles, y la escena lo dibuja sin escalar.
+  Los cuatro magos, desde el 2026-11-04, son vectoriales: se reducen con buen
+  filtro en `generar_magos.py`, nunca en el juego.
 - **La izquierda del mago morado (fuera de uso) era la derecha reflejada.** Las dos filas de lado de
   la hoja son la misma pose y las dos miran a la derecha, aunque una se
   rotule «izquierda». Reflejar garantiza el par.

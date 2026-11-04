@@ -13,8 +13,12 @@
 ## enemigos de la sala de al lado, que el jugador no ve, los sacaria de su
 ## sitio sin que nadie lo entienda.
 ##
-## Lo crea Principal al apagarse la bola (BolaMagica.apagada). Dibujado por
-## codigo, como las bolas: no hay arte de esto en los packs.
+## Lo crea Principal al apagarse la bola (BolaMagica.apagada). Desde el
+## 2026-11-04 con el arte de Matias, si el mago lo trae (ArteHechizo: "abrir",
+## "bucle" y "colapso"); sin el, sigue dibujandose por codigo. Con el arte se
+## queda el circulo de alcance (el dibujo no llega hasta ahi, y hay que ver de
+## donde salir) y el centro negro por encima de los enemigos, medido para que
+## tape lo negro de la hoja: asi lo que llega se sigue viendo tragado.
 class_name AgujeroNegro
 extends Node2D
 
@@ -31,6 +35,10 @@ const TIRON_BORDE: float = 150.0
 ## Lo que tarda en abrirse y en cerrarse: crece y se encoge, no salta.
 const APERTURA: float = 0.25
 const CIERRE: float = 0.35
+## Con arte, cuando empieza a verse lo negro en la animacion de abrirse (a 12
+## poses por segundo) y lo que tarda en llegar a su tamano.
+const INICIO_NEGRO: float = 0.25
+const CRECE_NEGRO: float = 0.4
 ## Motas de luz que caen hacia el centro en espiral.
 const MOTAS: int = 28
 const NEGRO := Color(0.02, 0.0, 0.05)
@@ -48,10 +56,15 @@ var _tic: float = TIC * 0.5
 ## enemigos (z 5): asi lo que llega al centro se ve tragado. Lo demas (el
 ## circulo de alcance y las motas) va por debajo, para no tapar a nadie.
 var _nucleo: Node2D
+var _arte: ArteHechizo = null
+var _dibujo: AnimatedSprite2D = null
+## True desde que se acaba su tiempo: ya no tira ni quita vida, y se va cuando
+## acabe la animacion de cerrarse.
+var _colapsando: bool = false
 
 
 func _init(sala: Sala, duracion: float, radio: float, dano_por_segundo: float,
-		color: Color, halo: Color) -> void:
+		color: Color, halo: Color, arte: ArteHechizo = null) -> void:
 	_sala = sala
 	_duracion = duracion
 	_radio = radio
@@ -68,12 +81,37 @@ func _init(sala: Sala, duracion: float, radio: float, dano_por_segundo: float,
 	_nucleo.z_as_relative = false
 	_nucleo.draw.connect(_pintar_nucleo)
 	add_child(_nucleo)
+	if arte != null and arte.tiene(&"bucle"):
+		_arte = arte
+		_dibujo = AnimatedSprite2D.new()
+		# De pie con la vista girada (Vista): es un disco visto en 3/4.
+		_dibujo.rotation = Vista.giro
+		_dibujo.add_to_group("de_pie")
+		add_child(_dibujo)
+		move_child(_dibujo, 0)
+		_dibujo.animation_finished.connect(_al_acabar_animacion)
+		_arte.poner(_dibujo, &"abrir")
+
+
+func _al_acabar_animacion() -> void:
+	if _dibujo.animation == &"abrir":
+		_arte.poner(_dibujo, &"bucle")
+	elif _dibujo.animation == &"colapso":
+		queue_free()
 
 
 func _physics_process(delta: float) -> void:
+	if _colapsando:
+		return
 	_tiempo += delta
 	if _tiempo >= _duracion or not is_instance_valid(_sala):
-		queue_free()
+		if _dibujo == null:
+			queue_free()
+			return
+		_colapsando = true
+		_arte.poner(_dibujo, &"colapso")
+		queue_redraw()
+		_nucleo.queue_redraw()
 		return
 	_tic -= delta
 	var toca_dano := _tic <= 0.0
@@ -121,6 +159,8 @@ func _draw() -> void:
 	# Hasta donde atrae: un circulo flojo, para que se vea que hay que salir.
 	draw_circle(Vector2.ZERO, _radio * f, Color(_halo, 0.08))
 	draw_arc(Vector2.ZERO, _radio * f, 0.0, TAU, 48, Color(_halo, 0.3), 1.5, true)
+	if _dibujo != null:
+		return
 	# Se oscurece hacia dentro: se lee como un hoyo y no como un circulo plano.
 	for k in 4:
 		draw_circle(Vector2.ZERO, lerpf(_radio * 0.7, NUCLEO * 1.2, k / 3.0) * f, Color(NEGRO, 0.13))
@@ -139,6 +179,12 @@ func _draw() -> void:
 func _pintar_nucleo() -> void:
 	var f := _fuerza()
 	if f <= 0.0:
+		return
+	if _dibujo != null:
+		# Solo lo negro, de lo que mide en la hoja: sale cuando sale en la
+		# animacion de abrirse (de la cuarta pose en adelante).
+		var abierto := clampf((_tiempo - INICIO_NEGRO) / CRECE_NEGRO, 0.0, 1.0)
+		_nucleo.draw_circle(Vector2.ZERO, NUCLEO * abierto * f, NEGRO)
 		return
 	# El disco que gira alrededor del centro, con dos tramos mas brillantes.
 	var giro := _tiempo * 4.0

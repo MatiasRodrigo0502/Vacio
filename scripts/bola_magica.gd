@@ -64,6 +64,10 @@ const VARIACION: float = 1.3
 @export var color: Color = Color(0.62, 0.84, 1.0)
 @export var color_halo: Color = Color(0.35, 0.60, 1.0)
 
+## Como se ve (del mago que dispara, ver ArteHechizo). Sin arte, una bola de luz
+## pintada por codigo con los dos colores de arriba.
+var arte: ArteHechizo = null
+
 ## Si es true, los disparos tambien destruyen rocas y plataformas. Esta en false
 ## porque las rocas son el terreno: si el disparo las borra, el piso se limpia
 ## solo y esquivar deja de importar. Ahora la roca para la bola y sirve de
@@ -96,6 +100,9 @@ const RADIO_CONTRA_ROCAS: float = 10.0
 
 var _recorrido: float = 0.0
 var _fase: float = 0.0
+## El dibujo, si tiene arte. Mirando hacia donde va: las hojas estan dibujadas
+## mirando a la derecha. A la escala de su radio: el orbe hinchado la agranda.
+var _dibujo: AnimatedSprite2D = null
 
 @onready var _forma: CollisionShape2D = $Forma
 
@@ -108,6 +115,12 @@ func _ready() -> void:
 	var circulo := CircleShape2D.new()
 	circulo.radius = radio
 	_forma.shape = circulo
+	if arte != null and arte.tiene(&"vuelo"):
+		_dibujo = AnimatedSprite2D.new()
+		add_child(_dibujo)
+		_dibujo.rotation = direccion.angle()
+		_dibujo.scale = Vector2.ONE * radio / arte.radio_base
+		arte.poner(_dibujo, &"vuelo")
 
 
 func _physics_process(delta: float) -> void:
@@ -145,6 +158,7 @@ func _apagar(punto: Vector2) -> void:
 	if is_queued_for_deletion():
 		return
 	apagada.emit(punto)
+	EfectoHechizo.soltar(get_parent(), arte, &"impacto", punto, z_index)
 	queue_free()
 
 
@@ -157,6 +171,7 @@ func _al_tocar(area: Area2D) -> void:
 		return
 	if solo_ver:
 		if (area.has_method("herir") or area.has_method("romper")) and not atraviesa:
+			EfectoHechizo.soltar(get_parent(), arte, &"impacto", global_position, z_index)
 			queue_free()
 		return
 	if area.has_method("herir"):
@@ -182,12 +197,15 @@ func _al_tocar(area: Area2D) -> void:
 		return
 	impacto.emit(area)
 	if not atraviesa:
+		EfectoHechizo.soltar(get_parent(), arte, &"impacto", global_position, z_index)
 		queue_free()
 
 
 ## Dibujada por codigo, como los corazones: no hay arte de proyectil en los
 ## packs y una bola de luz se resuelve con unos circulos y un rastro.
 func _draw() -> void:
+	if _dibujo != null:
+		return
 	if rocio:
 		_pintar_rocio()
 		return

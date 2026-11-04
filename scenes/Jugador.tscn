@@ -19,7 +19,7 @@ metadata/_edit_group_ = true
 sprite_frames = ExtResource("2_animaciones")
 animation = &"quieto_abajo"
 autoplay = "quieto_abajo"
-offset = Vector2(0, -33)
+offset = Vector2(0, -30)
 
 [node name="Forma" type="CollisionShape2D" parent="."]
 position = Vector2(0, -16)

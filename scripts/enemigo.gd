@@ -94,6 +94,7 @@ var _envenenado_red: bool = false
 ## falta para que salga.
 var _rocio_suma: float = 0.0
 var _rocio_reloj: float = 0.0
+var _estados: Node2D = null
 var _objetivo: Node2D = null
 ## Dormido no se mueve ni dispara. La sala lo duerme al registrarlo y lo
 ## despierta cuando el jugador entra.
@@ -160,6 +161,11 @@ func _ready() -> void:
 	# del cristal, el picado) se pinta deshaciendo el giro.
 	add_to_group("de_pie")
 	rotation = Vista.giro
+	# Lo que lleva encima (ver _pintar_estados): un nodo aparte, despues del
+	# sprite, porque lo que pinta el enemigo en su _draw sale debajo de el.
+	_estados = Node2D.new()
+	_estados.draw.connect(_pintar_estados)
+	add_child(_estados)
 
 
 ## Lo llama la mecanica que los reparte por el piso.
@@ -505,24 +511,25 @@ func _dejar_de_frenar() -> void:
 	queue_redraw()
 
 
-## Un aro de escarcha en el suelo, a sus pies, con unos copos girando
-## despacio. El tinte azul solo no bastaba: sobre un slime verde casi no se
-## notaba. Va en el suelo y mas ancho que el cuerpo porque el sprite se pinta
-## encima de esto: en el cuerpo quedaria tapado.
-func _pintar_escarcha() -> void:
-	Escarcha.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.62, _fase)
-
-
-## Unas llamas a los pies, por el mismo motivo que la escarcha: el sprite se
-## pinta encima de esto, asi que en el cuerpo quedarian tapadas. Suben y
-## bajan cada una a su ritmo, para que se vea que arden.
+## Unas llamas a los pies: van en el suelo y mas anchas que el cuerpo porque el
+## sprite se pinta encima de esto, asi que en el cuerpo quedarian tapadas. Suben
+## y bajan cada una a su ritmo, para que se vea que arden.
 func _pintar_llamas() -> void:
 	Llamas.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.62, tipo.alto, _fase)
 
 
-## Envenenado: un charco y burbujas verdes, por los lados (Burbujas).
-func _pintar_burbujas() -> void:
-	Burbujas.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.58, tipo.alto, _fase)
+## Frenado y envenenado, con el arte de sus magos (Escarcha y Burbujas), ENCIMA
+## del sprite: por debajo solo asomaba lo que sobresalia del cuerpo, y en un
+## slime casi no se veia nada (2026-11-04). El tinte azul solo tampoco bastaba:
+## sobre un slime verde casi no se notaba.
+func _pintar_estados() -> void:
+	if tipo == null:
+		return
+	var pies := Vector2(0.0, tipo.alto * 0.42)
+	if _frenado > 0.0:
+		Escarcha.pintar(_estados, pies, tipo.alto * 0.62, _fase)
+	if esta_envenenado():
+		Burbujas.pintar(_estados, pies, tipo.alto * 0.62, _fase)
 
 
 # --- Movimiento y ataque ----------------------------------------------------
@@ -1027,12 +1034,10 @@ func _soltar_cria(numero: int) -> void:
 ## La linea de mira del rayo: mientras apunta, o un momento con el disparo
 ## si no apunta. Solo el rayo la lleva.
 func _draw() -> void:
-	if _frenado > 0.0 and tipo != null:
-		_pintar_escarcha()
+	if _estados != null:
+		_estados.queue_redraw()
 	if _quemaduras > 0 and tipo != null:
 		_pintar_llamas()
-	if esta_envenenado() and tipo != null:
-		_pintar_burbujas()
 	if tipo != null and tipo.comportamiento != null:
 		tipo.comportamiento.dibujar(self)
 	if tipo == null or not tipo.es_a_distancia():

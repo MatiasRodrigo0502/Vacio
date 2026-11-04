@@ -241,6 +241,7 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 	color_cargado = personaje.color_cargado
 	halo_cargado = personaje.halo_cargado
 	_carga_visual.pintar_con(color_cargado, halo_cargado)
+	_carga_visual.usar_arte(personaje.arte_especial)
 
 	# Siempre desde los valores de la escena, nunca desde los de ahora: asi
 	# llamarla dos veces con el mismo mago deja al jugador igual.
@@ -268,6 +269,7 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 		_escudo = null
 	if _escudo != null:
 		_escudo.duracion = personaje.duracion_escudo
+		_escudo.usar_arte(personaje.arte_especial)
 
 	# restaurar_vida() es lo que copia los valores de fabrica a los de verdad,
 	# asi que sirve igual para "empezar de cero" que para "estrenar mago".
@@ -775,9 +777,8 @@ func congelar(segundos: float) -> void:
 	_tiempo_frio = maxf(_tiempo_frio, segundos)
 	if _escarcha == null:
 		_escarcha = EscarchaMago.new()
+		# Despues del sprite: encima de el, como la de los enemigos.
 		add_child(_escarcha)
-		# La primera: debajo del sprite, como la de los enemigos.
-		move_child(_escarcha, 0)
 		_poner_de_pie()
 	_escarcha.visible = true
 	_sprite.self_modulate = Escarcha.COLOR
@@ -865,8 +866,11 @@ class LlamasMago extends Node2D:
 
 
 ## La escarcha a los pies del mago: un nodo aparte (el jugador no se pinta a
-## si mismo) que pinta la de Escarcha, la misma de los enemigos.
+## si mismo) que pinta la de Escarcha, la misma de los enemigos. Con el radio de
+## un enemigo de su alto (72 px, Enemigo._pintar_escarcha).
 class EscarchaMago extends Node2D:
+	const RADIO_ESTADO: float = 44.0
+
 	var _fase: float = 0.0
 
 	func _process(delta: float) -> void:
@@ -874,7 +878,7 @@ class EscarchaMago extends Node2D:
 		queue_redraw()
 
 	func _draw() -> void:
-		Escarcha.pintar(self, Vector2(0.0, -4.0), 24.0, _fase)
+		Escarcha.pintar(self, Vector2(0.0, -4.0), RADIO_ESTADO, _fase)
 
 
 ## Quita un punto cada _veneno_cada segundos hasta que no le quede. Sin

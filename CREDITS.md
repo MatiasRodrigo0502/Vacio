@@ -12,39 +12,20 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 
 ## En uso
 
-### Mago rojo — personaje jugable
+### Los cuatro magos y sus hechizos — personajes jugables
 
-- **Pack**: sin identificar (brújula animada de 8 direcciones)
-- **Autor**: sin identificar
-- **URL**: —
-- **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
-- **Archivos**: `assets/mago_rojo/atlas_8dir.png`, `animaciones_mago_rojo.tres`
-  y `retrato.png`
-- **Procesado**: extraído de un GIF de 576×648 y 6 fotogramas colocado como
-  brújula, dividiendo por 3 (el GIF es un 3× de píxel entero, así que no se
-  pierde nada), quitando el fondo y centrando cada dirección sobre sus botas.
-- **Nota**: lo aportó Matías, sin decir de dónde salía. **Hay que averiguar de
-  dónde viene.**
-
-### Mago blanco — personaje jugable
-
-- **Origen**: la hoja del **mago rojo** (ver abajo) con otra paleta: túnica
-  blanca y orbe de hielo. Mismas poses y misma animación.
-- **Archivos**: `assets/mago_blanco/atlas_8dir.png`,
-  `animaciones_mago_blanco.tres` y `retrato.png`
-- **Procesado**: `herramientas/generar_mago_blanco.py`, color a color.
-- **Licencia**: la misma duda que el mago rojo, del que sale.
-
-### Mago verde — personaje jugable
-
-- **Origen**: lo trajo Matías el 2026-11-03 (`mago_envenenador.zip`): una
-  ilustración vectorial hecha con un script (SVG por pose, 4 direcciones × 4
-  pasos de 128 px) y el mago suelto en 512 px.
-- **Archivos**: los originales en `assets/mago_verde/fuente/` (Godot no los
-  importa); lo que usa el juego, `atlas_4dir.png`, `retrato.png` y
-  `animaciones_mago_verde.tres`.
-- **Procesado**: `herramientas/generar_mago_verde.py` (reducir a 72 px y
-  montar las 8 direcciones).
+- **Origen**: los trajo Matías el 2026-11-04 (`vacio_magos_y_hechizos.zip`):
+  ilustración vectorial hecha con scripts (SVG por pose), con un LEEME que está
+  en `assets/magos_fuente/LEEME_del_paquete.md`. Piromante = mago rojo,
+  Envenenador = mago verde, Criomante = mago blanco, Mago del Vacío = mago
+  oscuro.
+- **Archivos**: los originales en `assets/magos_fuente/` (Godot no los importa);
+  lo que usa el juego, en `assets/mago_<color>/` (`atlas_8dir.png`,
+  `animaciones_mago_<color>.tres`, `retrato.png` y `hechizos/`).
+- **Procesado**: `herramientas/generar_magos.py` (reducir cada hoja a lo que
+  mide en el juego y montar sus `SpriteFrames` y `ArteHechizo`).
+- **Sustituyen** a las hojas de antes: la del mago oscuro y la del mago rojo,
+  de origen sin identificar, y el mago blanco, que era el rojo con otra paleta.
 
 ### Portada — «Los tres Magos de Vacío: El Bosque Ancestral»
 
@@ -56,6 +37,11 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 
 ### Mago Caído — el jefe del piso 12
 
+- **De dónde sale**: de la hoja antigua del mago rojo (hoy en
+  `assets/mago_caido/origen/`), con otra paleta. Esa hoja la aportó Matías sin
+  decir de dónde salía (un GIF de 576×648 y 6 fotogramas en forma de brújula):
+  **hay que averiguar su origen y su licencia antes de publicar nada**.
+
 - **Origen**: la hoja del **mago rojo** (ver abajo) con otra paleta (túnica
   negra, ribete de oro, ojos amarillos) y, en vez del báculo con el orbe, una
   guadaña dibujada por código en cada pose. Mismas poses y misma animación,
@@ -65,20 +51,6 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Procesado**: `herramientas/generar_mago_caido.py`: color a color, y la
   guadaña con `ImageDraw` (la hoja es nuestra).
 - **Licencia**: la misma duda que el mago rojo, del que sale.
-
-### Mago oscuro — personaje jugable
-
-- **Pack**: «Mago oscuro — sprites de caminata en 8 direcciones»
-- **Autor**: sin identificar
-- **URL**: —
-- **Licencia**: **SIN VERIFICAR — hay que aclararla antes de publicar nada**
-- **Archivos**: `assets/mago_oscuro/atlas_8dir.png` (8×6 fotogramas de 64×72),
-  `animaciones_mago_oscuro.tres` y `retrato.png`
-- **Procesado**: se parte del `atlas_8dir_64px.png` del pack. Solo se ha
-  centrado cada dirección sobre el eje de sus botas, desplazando un número
-  entero de píxeles; no se ha reescalado ni recoloreado nada.
-- **Nota**: lo aportó Matías, sin decir de dónde salía. **Hay que averiguar de
-  dónde viene.**
 
 ### Personajes de antes — borrados del proyecto
 

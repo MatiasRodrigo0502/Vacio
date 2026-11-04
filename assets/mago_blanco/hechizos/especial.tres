@@ -1,0 +1,356 @@
+[gd_resource type="Resource" script_class="ArteHechizo" load_steps=53 format=3]
+
+[ext_resource type="Script" path="res://scripts/arte_hechizo.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/mago_blanco/hechizos/especial_aparece_detras.png" id="t_aparece_detras"]
+[ext_resource type="Texture2D" path="res://assets/mago_blanco/hechizos/especial_aparece_delante.png" id="t_aparece_delante"]
+[ext_resource type="Texture2D" path="res://assets/mago_blanco/hechizos/especial_bucle_detras.png" id="t_bucle_detras"]
+[ext_resource type="Texture2D" path="res://assets/mago_blanco/hechizos/especial_bucle_delante.png" id="t_bucle_delante"]
+[ext_resource type="Texture2D" path="res://assets/mago_blanco/hechizos/especial_rompe_detras.png" id="t_rompe_detras"]
+[ext_resource type="Texture2D" path="res://assets/mago_blanco/hechizos/especial_rompe_delante.png" id="t_rompe_delante"]
+
+[sub_resource type="AtlasTexture" id="aparece_detras_0"]
+atlas = ExtResource("t_aparece_detras")
+region = Rect2(0, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_detras_1"]
+atlas = ExtResource("t_aparece_detras")
+region = Rect2(113, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_detras_2"]
+atlas = ExtResource("t_aparece_detras")
+region = Rect2(226, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_detras_3"]
+atlas = ExtResource("t_aparece_detras")
+region = Rect2(339, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_detras_4"]
+atlas = ExtResource("t_aparece_detras")
+region = Rect2(0, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_detras_5"]
+atlas = ExtResource("t_aparece_detras")
+region = Rect2(113, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_detras_6"]
+atlas = ExtResource("t_aparece_detras")
+region = Rect2(226, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_detras_7"]
+atlas = ExtResource("t_aparece_detras")
+region = Rect2(339, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_delante_0"]
+atlas = ExtResource("t_aparece_delante")
+region = Rect2(0, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_delante_1"]
+atlas = ExtResource("t_aparece_delante")
+region = Rect2(113, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_delante_2"]
+atlas = ExtResource("t_aparece_delante")
+region = Rect2(226, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_delante_3"]
+atlas = ExtResource("t_aparece_delante")
+region = Rect2(339, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_delante_4"]
+atlas = ExtResource("t_aparece_delante")
+region = Rect2(0, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_delante_5"]
+atlas = ExtResource("t_aparece_delante")
+region = Rect2(113, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_delante_6"]
+atlas = ExtResource("t_aparece_delante")
+region = Rect2(226, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="aparece_delante_7"]
+atlas = ExtResource("t_aparece_delante")
+region = Rect2(339, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_detras_0"]
+atlas = ExtResource("t_bucle_detras")
+region = Rect2(0, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_detras_1"]
+atlas = ExtResource("t_bucle_detras")
+region = Rect2(113, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_detras_2"]
+atlas = ExtResource("t_bucle_detras")
+region = Rect2(226, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_detras_3"]
+atlas = ExtResource("t_bucle_detras")
+region = Rect2(0, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_detras_4"]
+atlas = ExtResource("t_bucle_detras")
+region = Rect2(113, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_detras_5"]
+atlas = ExtResource("t_bucle_detras")
+region = Rect2(226, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_delante_0"]
+atlas = ExtResource("t_bucle_delante")
+region = Rect2(0, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_delante_1"]
+atlas = ExtResource("t_bucle_delante")
+region = Rect2(113, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_delante_2"]
+atlas = ExtResource("t_bucle_delante")
+region = Rect2(226, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_delante_3"]
+atlas = ExtResource("t_bucle_delante")
+region = Rect2(0, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_delante_4"]
+atlas = ExtResource("t_bucle_delante")
+region = Rect2(113, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="bucle_delante_5"]
+atlas = ExtResource("t_bucle_delante")
+region = Rect2(226, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_detras_0"]
+atlas = ExtResource("t_rompe_detras")
+region = Rect2(0, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_detras_1"]
+atlas = ExtResource("t_rompe_detras")
+region = Rect2(113, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_detras_2"]
+atlas = ExtResource("t_rompe_detras")
+region = Rect2(226, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_detras_3"]
+atlas = ExtResource("t_rompe_detras")
+region = Rect2(339, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_detras_4"]
+atlas = ExtResource("t_rompe_detras")
+region = Rect2(0, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_detras_5"]
+atlas = ExtResource("t_rompe_detras")
+region = Rect2(113, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_detras_6"]
+atlas = ExtResource("t_rompe_detras")
+region = Rect2(226, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_detras_7"]
+atlas = ExtResource("t_rompe_detras")
+region = Rect2(339, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_delante_0"]
+atlas = ExtResource("t_rompe_delante")
+region = Rect2(0, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_delante_1"]
+atlas = ExtResource("t_rompe_delante")
+region = Rect2(113, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_delante_2"]
+atlas = ExtResource("t_rompe_delante")
+region = Rect2(226, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_delante_3"]
+atlas = ExtResource("t_rompe_delante")
+region = Rect2(339, 0, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_delante_4"]
+atlas = ExtResource("t_rompe_delante")
+region = Rect2(0, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_delante_5"]
+atlas = ExtResource("t_rompe_delante")
+region = Rect2(113, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_delante_6"]
+atlas = ExtResource("t_rompe_delante")
+region = Rect2(226, 113, 113, 113)
+
+[sub_resource type="AtlasTexture" id="rompe_delante_7"]
+atlas = ExtResource("t_rompe_delante")
+region = Rect2(339, 113, 113, 113)
+
+[sub_resource type="SpriteFrames" id="animaciones"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("aparece_detras_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_detras_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_detras_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_detras_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_detras_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_detras_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_detras_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_detras_7")
+}],
+"loop": false,
+"name": &"aparece_detras",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("aparece_delante_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_delante_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_delante_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_delante_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_delante_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_delante_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_delante_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("aparece_delante_7")
+}],
+"loop": false,
+"name": &"aparece_delante",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("bucle_detras_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_detras_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_detras_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_detras_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_detras_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_detras_5")
+}],
+"loop": true,
+"name": &"bucle_detras",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("bucle_delante_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_delante_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_delante_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_delante_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_delante_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_delante_5")
+}],
+"loop": true,
+"name": &"bucle_delante",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("rompe_detras_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_detras_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_detras_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_detras_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_detras_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_detras_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_detras_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_detras_7")
+}],
+"loop": false,
+"name": &"rompe_detras",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("rompe_delante_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_delante_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_delante_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_delante_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_delante_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_delante_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_delante_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("rompe_delante_7")
+}],
+"loop": false,
+"name": &"rompe_delante",
+"speed": 14.0
+}]
+
+[resource]
+script = ExtResource("1_script")
+animaciones = SubResource("animaciones")
+desfases = {"aparece_detras": Vector2(0.00, 0.00), "aparece_delante": Vector2(0.00, 0.00), "bucle_detras": Vector2(0.00, 0.00), "bucle_delante": Vector2(0.00, 0.00), "rompe_detras": Vector2(0.00, 0.00), "rompe_delante": Vector2(0.00, 0.00)}
+radio_base = 42.0

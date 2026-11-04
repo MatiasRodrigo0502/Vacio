@@ -212,6 +212,10 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 | **Mago blanco** | Su ataque especial es una burbuja que lo cubre entero durante 5 s: los disparos rebotan en ella (y los rebotados dañan a los enemigos) y los enemigos que la tocan salen despedidos. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | No tiene bola cargada: su ataque especial protege, pero no hace daño |
 | **Mago verde** | **Rocía veneno**: dispara 9 veces más rápido. Su ataque especial son 8 proyectiles lentos que salen a su alrededor y luego persiguen al enemigo más cercano; el que da lo **envenena** (5 por segundo durante 5 s), y si le dan varios, los venenos se suman | Cada gota quita 1, diez veces menos. Los proyectiles giran tan poco que muchos se estrellan contra rocas y paredes |
 
+Cada mago tiene su arte: su figura en ocho direcciones y sus hechizos (la bola
+de fuego y el meteoro del rojo, la bola morada y el agujero negro del oscuro,
+la lanza de hielo y la burbuja del blanco, y los dardos del verde).
+
 La ventaja dura toda la partida y no se pierde al reiniciar: es lo que *es* ese
 mago, no un objeto que se recoge.
 

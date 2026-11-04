@@ -24,7 +24,8 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 
 1. Mete su arte en `assets/<lo que sea>/` con su `SpriteFrames`. Necesita las
    16 animaciones (`caminar_` y `quieto_` por cada una de las ocho
-   direcciones), y un PNG suelto de retrato para el menú.
+   direcciones), y un PNG suelto de retrato para el menú. Los cuatro de ahora
+   salen de `herramientas/generar_magos.py`, que también prepara sus hechizos.
 2. Copia uno de estos `.tres`, cámbiale el nombre del archivo por uno que
    empiece por el número que le toque, y rellena los campos.
 3. Ya está. Arranca el juego y su ficha sale en «Elegir mago».
@@ -72,6 +73,16 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
   (2,5 s), atrae a los enemigos de su sala que están a `radio_agujero`
   (150 px) y a los del centro les quita `dano_agujero` (2) por segundo. Ver
   `scripts/agujero_negro.gd`.
+
+## El arte de los hechizos
+
+`arte_disparo` y `arte_especial` son `ArteHechizo`
+(`scripts/arte_hechizo.gd`): las animaciones de cada hechizo y dónde va cada una.
+Sin arte, se pinta por código con los colores de abajo (el rocío del verde).
+Las animaciones que busca cada cosa: la bola, `vuelo` e `impacto`; la bola
+cargada, además `carga` y `explosion` (con `marca_especial`, la marca que deja
+en el suelo; la explosión solo se ve); el agujero negro, `abrir`, `bucle` y
+`colapso`; el escudo, `aparece`, `bucle` y `rompe`, cada una `_detras` y `_delante`.
 
 ## Colores del disparo
 

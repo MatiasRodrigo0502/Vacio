@@ -40,10 +40,15 @@ var sala: Sala = null
 ## En cooperativo, fuera del anfitrion: solo se ve, como la bola. Alli otra
 ## igual es la que envenena (MundoRed).
 var solo_ver: bool = false
+## Como se ve: un dardo (del mago, ver ArteHechizo). Sin arte, una gota pintada
+## por codigo.
+var arte: ArteHechizo = null
 
 var _vida: float = 0.0
 var _fase: float = 0.0
 var _acabada: bool = false
+## El dardo, si tiene arte: mira hacia donde va, asi que gira con el proyectil.
+var _dibujo: AnimatedSprite2D = null
 
 
 func _ready() -> void:
@@ -59,6 +64,11 @@ func _ready() -> void:
 	area_entered.connect(_al_tocar)
 	# Cada una con su vaiven: si no, las ocho latirian a la vez.
 	_fase = randf() * TAU
+	if arte != null and arte.tiene(&"vuelo"):
+		_dibujo = AnimatedSprite2D.new()
+		add_child(_dibujo)
+		_dibujo.rotation = direccion.angle()
+		arte.poner(_dibujo, &"vuelo")
 
 
 func _physics_process(delta: float) -> void:
@@ -95,6 +105,8 @@ func _girar_hacia_enemigo(delta: float) -> void:
 	var hacia := objetivo.global_position - global_position
 	var falta := wrapf(hacia.angle() - direccion.angle(), -PI, PI)
 	direccion = direccion.rotated(clampf(falta, -giro * delta, giro * delta))
+	if _dibujo != null:
+		_dibujo.rotation = direccion.angle()
 
 
 func _enemigo_mas_cercano() -> Enemigo:
@@ -137,6 +149,10 @@ func _acabar(chocada: bool) -> void:
 		return
 	_acabada = true
 	set_deferred("monitoring", false)
+	if chocada and arte != null and arte.tiene(&"impacto"):
+		EfectoHechizo.soltar(get_parent(), arte, &"impacto", global_position, z_index)
+		queue_free()
+		return
 	if chocada:
 		var chapoteo := Explosion.new()
 		chapoteo.radio = RADIO * 2.2
@@ -153,6 +169,8 @@ func _acabar(chocada: bool) -> void:
 ## Una gota de veneno gorda: halo, cuerpo verde con un borde oscuro, brillo,
 ## y un rastro de gotitas detras.
 func _draw() -> void:
+	if _dibujo != null:
+		return
 	var pulso := 1.0 + sin(_fase * 9.0) * 0.1
 	var atras := -direccion
 	for i in 4:

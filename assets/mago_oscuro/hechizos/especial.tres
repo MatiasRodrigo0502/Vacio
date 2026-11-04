@@ -1,0 +1,246 @@
+[gd_resource type="Resource" script_class="ArteHechizo" load_steps=37 format=3]
+
+[ext_resource type="Script" path="res://scripts/arte_hechizo.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/mago_oscuro/hechizos/especial_vuelo.png" id="t_vuelo"]
+[ext_resource type="Texture2D" path="res://assets/mago_oscuro/hechizos/especial_abrir.png" id="t_abrir"]
+[ext_resource type="Texture2D" path="res://assets/mago_oscuro/hechizos/especial_bucle.png" id="t_bucle"]
+[ext_resource type="Texture2D" path="res://assets/mago_oscuro/hechizos/especial_colapso.png" id="t_colapso"]
+
+[sub_resource type="AtlasTexture" id="vuelo_0"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(0, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="vuelo_1"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(128, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="vuelo_2"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(256, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="vuelo_3"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(384, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="vuelo_4"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(512, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="vuelo_5"]
+atlas = ExtResource("t_vuelo")
+region = Rect2(640, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="abrir_0"]
+atlas = ExtResource("t_abrir")
+region = Rect2(0, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="abrir_1"]
+atlas = ExtResource("t_abrir")
+region = Rect2(307, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="abrir_2"]
+atlas = ExtResource("t_abrir")
+region = Rect2(614, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="abrir_3"]
+atlas = ExtResource("t_abrir")
+region = Rect2(921, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="abrir_4"]
+atlas = ExtResource("t_abrir")
+region = Rect2(0, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="abrir_5"]
+atlas = ExtResource("t_abrir")
+region = Rect2(307, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="abrir_6"]
+atlas = ExtResource("t_abrir")
+region = Rect2(614, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="abrir_7"]
+atlas = ExtResource("t_abrir")
+region = Rect2(921, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="bucle_0"]
+atlas = ExtResource("t_bucle")
+region = Rect2(0, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="bucle_1"]
+atlas = ExtResource("t_bucle")
+region = Rect2(307, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="bucle_2"]
+atlas = ExtResource("t_bucle")
+region = Rect2(614, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="bucle_3"]
+atlas = ExtResource("t_bucle")
+region = Rect2(921, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="bucle_4"]
+atlas = ExtResource("t_bucle")
+region = Rect2(0, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="bucle_5"]
+atlas = ExtResource("t_bucle")
+region = Rect2(307, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="bucle_6"]
+atlas = ExtResource("t_bucle")
+region = Rect2(614, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="bucle_7"]
+atlas = ExtResource("t_bucle")
+region = Rect2(921, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="colapso_0"]
+atlas = ExtResource("t_colapso")
+region = Rect2(0, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="colapso_1"]
+atlas = ExtResource("t_colapso")
+region = Rect2(307, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="colapso_2"]
+atlas = ExtResource("t_colapso")
+region = Rect2(614, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="colapso_3"]
+atlas = ExtResource("t_colapso")
+region = Rect2(921, 0, 307, 307)
+
+[sub_resource type="AtlasTexture" id="colapso_4"]
+atlas = ExtResource("t_colapso")
+region = Rect2(0, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="colapso_5"]
+atlas = ExtResource("t_colapso")
+region = Rect2(307, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="colapso_6"]
+atlas = ExtResource("t_colapso")
+region = Rect2(614, 307, 307, 307)
+
+[sub_resource type="AtlasTexture" id="colapso_7"]
+atlas = ExtResource("t_colapso")
+region = Rect2(921, 307, 307, 307)
+
+[sub_resource type="SpriteFrames" id="animaciones"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("vuelo_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("vuelo_5")
+}],
+"loop": true,
+"name": &"vuelo",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("abrir_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("abrir_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("abrir_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("abrir_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("abrir_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("abrir_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("abrir_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("abrir_7")
+}],
+"loop": false,
+"name": &"abrir",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("bucle_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("bucle_7")
+}],
+"loop": true,
+"name": &"bucle",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("colapso_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("colapso_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("colapso_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("colapso_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("colapso_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("colapso_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("colapso_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("colapso_7")
+}],
+"loop": false,
+"name": &"colapso",
+"speed": 14.0
+}]
+
+[resource]
+script = ExtResource("1_script")
+animaciones = SubResource("animaciones")
+desfases = {"vuelo": Vector2(-26.00, 0.00), "abrir": Vector2(0.00, -3.20), "bucle": Vector2(0.00, -3.20), "colapso": Vector2(0.00, -3.20)}
+radio_base = 17.0

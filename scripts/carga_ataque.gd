@@ -25,6 +25,10 @@ var progreso: float = 0.0
 var direccion: Vector2 = Vector2.DOWN
 
 var _fase: float = 0.0
+## La animacion de la carga, si el mago la tiene (el meteoro del mago rojo): su
+## pose la manda lo que lleva cargado, no el reloj, porque cada mago carga en
+## un tiempo. Sin arte, la bola se pinta por codigo.
+var _dibujo: AnimatedSprite2D = null
 
 
 func _ready() -> void:
@@ -38,11 +42,29 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
+## El arte del especial del mago: se queda con su "carga", si tiene. Se vuelve a
+## llamar al estrenar otro mago.
+func usar_arte(arte: ArteHechizo) -> void:
+	if _dibujo != null:
+		_dibujo.queue_free()
+		_dibujo = null
+	if arte == null or not arte.tiene(&"carga"):
+		return
+	_dibujo = AnimatedSprite2D.new()
+	add_child(_dibujo)
+	arte.poner(_dibujo, &"carga")
+	_dibujo.pause()
+
+
 ## La llama el jugador en cada paso mientras se mantiene el boton.
 func actualizar(nuevo_progreso: float, nueva_direccion: Vector2) -> void:
 	progreso = clampf(nuevo_progreso, 0.0, 1.0)
 	if nueva_direccion != Vector2.ZERO:
 		direccion = nueva_direccion
+	if _dibujo != null:
+		_dibujo.position = _centro()
+		var poses := _dibujo.sprite_frames.get_frame_count(_dibujo.animation)
+		_dibujo.frame = int(progreso * (poses - 1))
 	if not visible:
 		visible = true
 		set_process(true)
@@ -72,13 +94,19 @@ func esta_lista() -> bool:
 	return progreso >= 1.0
 
 
+## Se aleja del mago y crece a la vez: el movimiento hacia fuera se lee mejor
+## que el tamano solo, sobre todo con el sprite tan oscuro de fondo.
+func _centro() -> Vector2:
+	if _dibujo != null:
+		return direccion * (18.0 + 24.0 * progreso)
+	return direccion * (15.0 + 13.0 * progreso)
+
+
 func _draw() -> void:
 	if progreso <= 0.0:
 		return
 
-	# Se aleja del mago y crece a la vez: el movimiento hacia fuera se lee mejor
-	# que el tamano solo, sobre todo con el sprite tan oscuro de fondo.
-	var centro := direccion * (15.0 + 13.0 * progreso)
+	var centro := _centro()
 	var radio := 2.5 + 9.5 * progreso
 	var color := _color_carga.lerp(_color_listo, progreso)
 
@@ -86,16 +114,22 @@ func _draw() -> void:
 	# Mientras carga se mantiene quieta para que crecer sea lo unico que se vea.
 	var pulso := 1.0 + (sin(_fase * 16.0) * 0.16 if esta_lista() else 0.0)
 
-	# Estela corta hacia el mago, para que la bola parezca salir de su mano.
-	for i in 3:
-		var t := float(i) / 3.0
-		draw_circle(centro - direccion * (radio * (1.4 + i * 1.1)),
-			radio * (0.55 - t * 0.3), Color(color.r, color.g, color.b, 0.22 - t * 0.12))
+	if _dibujo != null:
+		# El dibujo late menos: es mucho mas grande que la bola de luz.
+		_dibujo.scale = Vector2.ONE * (1.0 + (pulso - 1.0) * 0.4)
+		# El arco va alrededor de lo que mide la bola del dibujo, casi 40.
+		radio = 14.0
+	else:
+		# Estela corta hacia el mago, para que la bola parezca salir de su mano.
+		for i in 3:
+			var t := float(i) / 3.0
+			draw_circle(centro - direccion * (radio * (1.4 + i * 1.1)),
+				radio * (0.55 - t * 0.3), Color(color.r, color.g, color.b, 0.22 - t * 0.12))
 
-	draw_circle(centro, radio * 2.1 * pulso, Color(color.r, color.g, color.b, 0.20))
-	draw_circle(centro, radio * pulso, Color(color.r, color.g, color.b, 0.92))
-	draw_circle(centro - direccion * radio * 0.25, radio * 0.45 * pulso,
-		Color(1.0, 1.0, 1.0, 0.9))
+		draw_circle(centro, radio * 2.1 * pulso, Color(color.r, color.g, color.b, 0.20))
+		draw_circle(centro, radio * pulso, Color(color.r, color.g, color.b, 0.92))
+		draw_circle(centro - direccion * radio * 0.25, radio * 0.45 * pulso,
+			Color(1.0, 1.0, 1.0, 0.9))
 
 	if esta_lista():
 		# Aro de "cargada": cerrado del todo, frente al arco de mientras carga.
