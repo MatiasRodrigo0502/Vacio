@@ -112,6 +112,25 @@ variable `GODOT` con la ruta del ejecutable de Godot (o añadirla en
 `bash herramientas/exportar.sh`. Si una exportación falla, la versión anterior
 se queda y el motivo está en `build/exportar.log`.
 
+## Monedas, diamantes y gacha
+
+Al matar enemigos ganas **monedas** (de 1 los más débiles a 5 los más fuertes, 200
+el jefe). Los **diamantes** solo los dan los jefes (10 el Mago Caído). Se guardan
+entre partidas, y se gastan en el botón **Gacha** de la portada:
+
+| Gacha | Una tirada | Tiers y probabilidad |
+|---|---|---|
+| **Skins**, una de cada tier para cada mago | 100 monedas | B 70 %, A 20 %, S 9 %, S+ 1 % |
+| **Armas**, para cualquier mago | 5 diamantes | Raro 70 %, Épico 20 %, Legendario 9 %, Mítico 1 % |
+
+Lo que ya tienes te devuelve parte de lo pagado. En la misma pantalla eliges lo que
+llevas puesto. Cada tier de arma da más que el anterior:
+
+- **Raro**: solo cambia el aspecto.
+- **Épico**: el aspecto y la forma de disparar (abanico, ráfaga, serpenteando, rebotando).
+- **Legendario**: además, una animación al matar.
+- **Mítico**: además, varios modos de ataque, que cambias con la **rueda del ratón** o la **Q** (en el móvil, con su botón).
+
 ## Controles
 
 | Acción | Tecla |

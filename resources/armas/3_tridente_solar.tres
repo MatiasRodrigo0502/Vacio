@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ArmaMago" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/arma_mago.gd" id="1_arma"]
+[ext_resource type="Script" path="res://scripts/modo_arma.gd" id="2_modo"]
+[ext_resource type="Texture2D" path="res://assets/armas/3_tridente_solar.png" id="3_icono"]
+
+[sub_resource type="Resource" id="modo_0"]
+script = ExtResource("2_modo")
+nombre = "Normal"
+proyectiles = 3
+apertura = 12.0
+atraviesa = true
+dano = 0.5
+velocidad = 1.2
+
+[resource]
+script = ExtResource("1_arma")
+nombre = "Tridente solar"
+descripcion = "Tres rayos de sol que atraviesan. Al matar, una llamarada."
+tier = 2
+icono = ExtResource("3_icono")
+color = Color(1.000, 0.816, 0.251, 1)
+halo = Color(1.000, 0.416, 0.063, 1)
+estilo = 2
+muerte = 3
+modos = Array[ExtResource("2_modo")]([SubResource("modo_0")])

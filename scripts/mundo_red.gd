@@ -113,6 +113,13 @@ static func anunciar_herido(enemigo: Enemigo, cantidad: float, estilo: NumeroDan
 			actual._herido.rpc_id(id, enemigo.id_red, cantidad, estilo)
 
 
+## Antes de que muera en los demas: alli se hace con su dibujo.
+static func anunciar_muerte_arma(enemigo: Enemigo, tipo: int, color: Color) -> void:
+	if _difunde():
+		for id: int in Red.listos():
+			actual._muerte_arma.rpc_id(id, enemigo.id_red, tipo, color)
+
+
 static func anunciar_muerte(enemigo: Enemigo) -> void:
 	if _difunde():
 		actual._enemigos.erase(enemigo.id_red)
@@ -320,6 +327,13 @@ func _enemigos_red(lista: Array) -> void:
 		var enemigo := _enemigo(datos[0])
 		if enemigo != null:
 			enemigo.aplicar_red(datos)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _muerte_arma(id: String, tipo: int, color: Color) -> void:
+	var enemigo := _enemigo(id)
+	if enemigo != null and enemigo.tipo != null:
+		AnimacionMuerte.soltar_local(enemigo, tipo, color)
 
 
 @rpc("authority", "call_remote", "reliable")

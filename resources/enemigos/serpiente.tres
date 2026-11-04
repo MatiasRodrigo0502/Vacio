@@ -13,6 +13,7 @@ script = ExtResource("1_tipo")
 nombre = "Serpiente"
 animaciones = ExtResource("2_anim")
 vida = 20
+monedas = 2
 velocidad = 68.0
 dano = 25
 alto = 44.0

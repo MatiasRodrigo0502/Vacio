@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TiradaGacha" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/tirada_gacha.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+nombre = "Armas"
+coste = 5
+usa_diamantes = true
+tiers = PackedStringArray("Raro", "Épico", "Legendario", "Mítico")
+colores = PackedColorArray(0.45, 0.72, 1, 1, 0.75, 0.45, 1, 1, 1, 0.65, 0.2, 1, 1, 0.3, 0.4, 1)
+probabilidades = PackedFloat32Array(70, 20, 9, 1)
+devolucion = PackedInt32Array(1, 2, 3, 5)

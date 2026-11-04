@@ -27,6 +27,12 @@ Todo el arte del juego viene de packs de terceros publicados en itch.io.
 - **Sustituyen** a las hojas de antes: la del mago oscuro y la del mago rojo,
   de origen sin identificar, y el mago blanco, que era el rojo con otra paleta.
 
+### Skins y armas del gacha
+
+Propias, generadas por script: las skins salen del arte de los cuatro magos cambiando
+sus colores (`herramientas/generar_skins.py`), y los iconos de las armas se dibujan a
+código (`herramientas/generar_armas.py`).
+
 ### Portada — «Los tres Magos de Vacío: El Bosque Ancestral»
 
 - **Archivo**: `assets/portada/portada.jpg` (1416 × 752), el fondo del menú

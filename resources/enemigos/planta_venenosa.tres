@@ -13,6 +13,7 @@ script = ExtResource("1_tipo")
 nombre = "Planta venenosa"
 animaciones = ExtResource("2_anim")
 vida = 30
+monedas = 3
 velocidad = 28.0
 dano = 25
 alto = 62.0

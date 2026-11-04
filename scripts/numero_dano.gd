@@ -16,7 +16,8 @@ extends Node2D
 ## ROCIO es el disparo del mago verde (lo de varias gotas, sumado) y TOXICO
 ## lo que quita a los enemigos el veneno de sus proyectiles. VENENO es el que
 ## le quitan al jugador: ese lleva el signo menos.
-enum Estilo { NORMAL, FUERTE, FUEGO, VACIO, JUGADOR, VENENO, ROCIO, TOXICO }
+## MONEDA y DIAMANTE son lo que gana el jugador al matar: llevan el signo mas.
+enum Estilo { NORMAL, FUERTE, FUEGO, VACIO, JUGADOR, VENENO, ROCIO, TOXICO, MONEDA, DIAMANTE }
 
 const DURACION: float = 0.8
 ## Lo que sube, en px de pantalla.
@@ -26,7 +27,7 @@ const SALTO: float = 0.12
 
 const TAMANOS := {
 	Estilo.NORMAL: 17, Estilo.FUERTE: 24, Estilo.FUEGO: 14, Estilo.VACIO: 15, Estilo.JUGADOR: 19,
-	Estilo.VENENO: 15, Estilo.ROCIO: 16, Estilo.TOXICO: 15,
+	Estilo.VENENO: 15, Estilo.ROCIO: 16, Estilo.TOXICO: 15, Estilo.MONEDA: 15, Estilo.DIAMANTE: 22,
 }
 const COLORES := {
 	Estilo.NORMAL: Color(1.0, 1.0, 1.0),
@@ -40,6 +41,8 @@ const COLORES := {
 	# proyectiles.
 	Estilo.ROCIO: Color(0.82, 1.0, 0.7),
 	Estilo.TOXICO: Color(0.55, 0.95, 0.25),
+	Estilo.MONEDA: Monedero.COLOR_MONEDA,
+	Estilo.DIAMANTE: Monedero.COLOR_DIAMANTE,
 }
 
 var _texto: String = ""
@@ -55,7 +58,8 @@ static func soltar(padre: Node, posicion: Vector2, cantidad: float, estilo: Esti
 		return
 	var numero := NumeroDano.new()
 	var al_jugador := estilo == Estilo.JUGADOR or estilo == Estilo.VENENO
-	numero._texto = ("-" if al_jugador else "") + str(maxi(1, roundi(cantidad)))
+	var ganado := estilo == Estilo.MONEDA or estilo == Estilo.DIAMANTE
+	numero._texto = ("-" if al_jugador else ("+" if ganado else "")) + str(maxi(1, roundi(cantidad)))
 	numero._estilo = estilo
 	# Un poco a un lado o a otro: si llegan varios seguidos (el agujero negro,
 	# la quemadura), no se pintan uno encima de otro.

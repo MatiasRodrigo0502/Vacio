@@ -27,7 +27,8 @@ func _init(de: PersonajeJugable, texto_boton: String) -> void:
 	add_theme_constant_override("separation", 10)
 
 	var retrato := TextureRect.new()
-	retrato.texture = personaje.retrato
+	# Con la skin que lleva puesta, si lleva (Coleccion).
+	retrato.texture = Coleccion.retrato_de(personaje)
 	retrato.custom_minimum_size = Vector2(0.0, 170.0)
 	retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

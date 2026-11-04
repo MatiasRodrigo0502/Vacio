@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TiradaGacha" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/tirada_gacha.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+nombre = "Skins"
+coste = 100
+usa_diamantes = false
+tiers = PackedStringArray("B", "A", "S", "S+")
+colores = PackedColorArray(0.62, 0.72, 0.8, 1, 0.45, 0.8, 1, 1, 0.8, 0.5, 1, 1, 1, 0.8, 0.25, 1)
+probabilidades = PackedFloat32Array(70, 20, 9, 1)
+devolucion = PackedInt32Array(10, 30, 60, 100)

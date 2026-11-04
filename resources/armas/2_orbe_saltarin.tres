@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ArmaMago" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/arma_mago.gd" id="1_arma"]
+[ext_resource type="Script" path="res://scripts/modo_arma.gd" id="2_modo"]
+[ext_resource type="Texture2D" path="res://assets/armas/2_orbe_saltarin.png" id="3_icono"]
+
+[sub_resource type="Resource" id="modo_0"]
+script = ExtResource("2_modo")
+nombre = "Normal"
+rebotes = 3
+dano = 0.95
+velocidad = 0.95
+
+[resource]
+script = ExtResource("1_arma")
+nombre = "Orbe saltarín"
+descripcion = "Sus bolas rebotan tres veces en muros y rocas."
+tier = 1
+icono = ExtResource("3_icono")
+color = Color(0.502, 0.941, 1.000, 1)
+halo = Color(0.102, 0.565, 0.753, 1)
+estilo = 0
+muerte = 0
+modos = Array[ExtResource("2_modo")]([SubResource("modo_0")])

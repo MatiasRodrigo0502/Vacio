@@ -780,6 +780,7 @@ func _caer_al_pozo(pozo: Vacio) -> void:
 
 
 func _morir_en_pozo() -> void:
+	_dar_botin()
 	MundoRed.anunciar_muerte(self)
 	muerto.emit(self)
 	queue_free()
@@ -955,6 +956,7 @@ func morir_espejo() -> void:
 		Sonido.tocar(&"muerte_enemigo")
 	if tipo.comportamiento != null:
 		tipo.comportamiento.al_morir(self)
+	_dar_botin()
 	muerto.emit(self)
 	queue_free()
 
@@ -977,11 +979,36 @@ func _morir() -> void:
 		_soltar_cria(i)
 	if tipo.comportamiento != null:
 		tipo.comportamiento.al_morir(self)
+	_dar_botin()
 	# Despues de las crias: alli tambien tienen que apuntarse antes de que la
 	# sala se quede sin enemigos.
 	MundoRed.anunciar_muerte(self)
 	muerto.emit(self)
 	queue_free()
+
+
+## Las monedas y los diamantes que da al morir, con su numero encima. En
+## cooperativo, a todos: cada ordenador cuenta los suyos al morir el enemigo
+## (aqui y en morir_espejo).
+func _dar_botin() -> void:
+	if tipo == null:
+		return
+	Coleccion.ganar(tipo.monedas, tipo.diamantes)
+	var sitio := global_position + Vista.en_mundo(Vector2(16.0, -tipo.alto * 0.3))
+	NumeroDano.soltar(get_parent(), sitio, tipo.monedas, NumeroDano.Estilo.MONEDA)
+	NumeroDano.soltar(get_parent(), sitio + Vista.en_mundo(Vector2(0.0, -24.0)), tipo.diamantes, NumeroDano.Estilo.DIAMANTE)
+
+
+## Su dibujo de ahora, y hacia donde mira. Los usa la animacion al matar de las
+## armas (AnimacionMuerte), que se hace con el propio enemigo.
+func figura() -> Texture2D:
+	if _sprite.sprite_frames == null:
+		return null
+	return _sprite.sprite_frames.get_frame_texture(_sprite.animation, _sprite.frame)
+
+
+func mira_a_la_izquierda() -> bool:
+	return _sprite.flip_h
 
 
 func _explotar() -> void:

@@ -162,7 +162,15 @@ func _mandar_estado() -> void:
 	for id: int in Red.listos():
 		_estado.rpc_id(id, _jugador.global_position, _jugador.animacion_actual(),
 			_jugador.color_actual(), _jugador.escudo_activo(), _jugador.vida_actual,
-			_jugador.vida_maxima, not _caido and _jugador.sigue_vivo())
+			_jugador.vida_maxima, not _caido and _jugador.sigue_vivo(), _indice_skin())
+
+
+## La skin de este mago, por su sitio en el catalogo: es un numero, y esto se manda
+## 20 veces por segundo.
+func _indice_skin() -> int:
+	if _jugador.mago == null:
+		return -1
+	return Coleccion.indice_de_skin(Coleccion.skin_puesta(_jugador.mago.nombre))
 
 
 ## Un disparo de este mago, a los demas: la bola tal cual ha salido aqui,
@@ -182,6 +190,9 @@ func mandar_disparo(bola: BolaMagica, desde: Vector2, mago: PersonajeJugable) ->
 		"dano_quema": bola.dano_quema,
 		"cargada": bola.cargada,
 		"rocio": bola.rocio,
+		"arma": Coleccion.indice_de_arma(bola.arma) if bola.arma != null else -1,
+		"modo": _jugador.modo_arma,
+		"signo_onda": bola.signo_onda,
 		"atraviesa": bola.atraviesa,
 		"alcance": bola.alcance,
 		"agujero": bola.cargada and mago != null and mago.agujero_negro,
@@ -309,10 +320,10 @@ func _derrota() -> void:
 
 @rpc("any_peer", "call_remote", "unreliable_ordered")
 func _estado(posicion: Vector2, animacion: StringName, color: Color, escudo: bool,
-		vida: int, vida_maxima: int, vivo: bool) -> void:
+		vida: int, vida_maxima: int, vivo: bool, indice_skin: int = -1) -> void:
 	var remoto := _remoto(multiplayer.get_remote_sender_id())
 	if remoto != null:
-		remoto.recibir(posicion, animacion, color, escudo, vida, vida_maxima, vivo)
+		remoto.recibir(posicion, animacion, color, escudo, vida, vida_maxima, vivo, indice_skin)
 
 
 @rpc("any_peer", "call_remote", "reliable")

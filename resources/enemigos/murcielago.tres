@@ -12,6 +12,7 @@ script = ExtResource("1_tipo")
 nombre = "Murciélago"
 animaciones = ExtResource("2_anim")
 vida = 10
+monedas = 1
 velocidad = 195.0
 dano = 20
 alto = 44.0

@@ -16,6 +16,7 @@ script = ExtResource("1_tipo")
 nombre = "Slime de magma"
 animaciones = ExtResource("2_anim")
 vida = 30
+monedas = 3
 velocidad = 118.0
 dano = 30
 alto = 56.0

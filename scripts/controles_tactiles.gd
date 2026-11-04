@@ -53,6 +53,10 @@ const SITIO_ESPECIAL := Vector2(-130.0, -230.0)
 ## El de la pausa, arriba en el centro.
 const RADIO_PAUSA: float = 30.0
 const SITIO_PAUSA_ALTO: float = 44.0
+## El de cambiar de modo, con un arma mitica, a la izquierda del especial: sin
+## rueda ni tecla, es la unica forma.
+const RADIO_MODO: float = 36.0
+const SITIO_MODO := Vector2(-250.0, -190.0)
 ## El dedo que hace el raton al probarlos en el ordenador.
 const DEDO_RATON: int = 99
 
@@ -162,6 +166,9 @@ func _tocar(dedo: int, sitio: Vector2, pulsado: bool) -> void:
 	if sitio.distance_to(_sitio_pausa()) <= RADIO_PAUSA * 1.3:
 		_pausar()
 		return
+	if _hay_modos() and sitio.distance_to(_sitio_modo()) <= RADIO_MODO * 1.3:
+		_jugador.cambiar_modo_arma()
+		return
 	if sitio.distance_to(_sitio_especial()) <= RADIO_ESPECIAL * 1.2:
 		if not _especial.activa() and _jugador.especial_disponible:
 			_especial.empezar(dedo, _sitio_especial())
@@ -230,6 +237,14 @@ func _sitio_especial() -> Vector2:
 	return _lienzo.size + SITIO_ESPECIAL
 
 
+func _sitio_modo() -> Vector2:
+	return _lienzo.size + SITIO_MODO
+
+
+func _hay_modos() -> bool:
+	return _jugador.arma != null and _jugador.arma.tiene_modos()
+
+
 func _sitio_pausa() -> Vector2:
 	return Vector2(_lienzo.size.x * 0.5, SITIO_PAUSA_ALTO)
 
@@ -244,6 +259,8 @@ func _pintar() -> void:
 		return
 	_pintar_pausa()
 	_pintar_boton_especial()
+	if _hay_modos():
+		_pintar_boton_modo()
 	if _izquierda.activa():
 		_pintar_palanca(_izquierda, AZUL)
 	if _derecha.activa():
@@ -279,6 +296,18 @@ func _pintar_boton_especial() -> void:
 		var largo := RADIO_ESPECIAL * (0.55 if i % 2 == 0 else 0.2)
 		puntos.append(sitio + Vector2.UP.rotated(i * TAU / 8.0) * largo)
 	_lienzo.draw_colored_polygon(puntos, Color(color, alfa))
+
+
+## Una flecha en circulo, del color del arma.
+func _pintar_boton_modo() -> void:
+	var sitio := _sitio_modo()
+	var color := _jugador.arma.color
+	_lienzo.draw_circle(sitio, RADIO_MODO, Color(color, ALFA_CIRCULO))
+	_lienzo.draw_arc(sitio, RADIO_MODO, 0.0, TAU, 40, Color(color, ALFA_BORDE), 3.0, true)
+	_lienzo.draw_arc(sitio, RADIO_MODO * 0.5, -0.4, 4.6, 24, color, 4.0, true)
+	var punta := sitio + Vector2.from_angle(-0.4) * RADIO_MODO * 0.5
+	_lienzo.draw_colored_polygon(PackedVector2Array([punta + Vector2(-8.0, -3.0), punta + Vector2(8.0, -5.0),
+		punta + Vector2(1.0, 9.0)]), color)
 
 
 func _pintar_pausa() -> void:

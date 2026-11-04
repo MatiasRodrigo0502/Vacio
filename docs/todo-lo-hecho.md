@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 04/11/2026 | Arte nuevo de los cuatro magos y sus hechizos: figuras en ocho direcciones, bola de fuego y meteoro, bola morada y agujero negro, lanza de hielo y burbuja, dardos y los estados de los enemigos | — |
+| 04/11/2026 | Monedas y diamantes que dan los enemigos y el jefe, y dos gachas en el menú: 16 skins (B, A, S y S+) y 13 armas (raro, épico, legendario y mítico), con formas de disparar, animaciones al matar y modos con la rueda del ratón | — |
+| 04/11/2026 | Arte nuevo de los cuatro magos y sus hechizos: figuras en ocho direcciones, bola de fuego y meteoro, bola morada y agujero negro, lanza de hielo y burbuja, dardos y los estados de los enemigos | `509d733` |
 | 03/11/2026 | Versión para Android (`.apk` en cada release) con dos joysticks como Brawl Stars, botones de especial y pausa, y la vista girada 90° con el móvil en vertical | `691454a` |
 | 03/11/2026 | Iconos de los objetos más sencillos: un aro de su color y el símbolo dentro, en dos tonos de ese color | `9c8e7d9` |
 | 03/11/2026 | Estadísticas con F3 (FPS, rendimiento, partida y ping en cooperativo) e iconos nuevos de los objetos | `f75cef9` |

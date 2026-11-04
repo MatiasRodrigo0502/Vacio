@@ -32,6 +32,9 @@ var _primer_boton: Button = null
 ## El panel del cooperativo (crear sala, unirse, sala de espera).
 var _cooperativo: SalaCooperativo
 var _boton_cooperativo: Button
+## El gacha (PanelGacha), y el boton que lo abre.
+var _gacha: PanelGacha
+var _boton_gacha: Button
 ## Los dos botones de "Moverse con" del panel de controles, y las reglas tal
 ## cual estan en la escena (con las flechas para disparar).
 var _boton_wasd: Button
@@ -48,6 +51,7 @@ func _ready() -> void:
 
 	_montar_fichas()
 	_montar_cooperativo()
+	_montar_gacha()
 	_montar_eleccion_teclas()
 	_poner_version()
 	Sonido.poner_musica(MUSICA)
@@ -60,6 +64,41 @@ func _ready() -> void:
 		_mostrar_cooperativo(true)
 		_cooperativo.mostrar_mensaje(Red.mensaje_pendiente)
 		Red.mensaje_pendiente = ""
+
+
+## El boton del gacha, entre Jugar y Controles, y las monedas y los diamantes
+## arriba a la derecha de la portada. Por codigo y copiando el boton de al lado,
+## para que quede igual que los de la escena.
+func _montar_gacha() -> void:
+	_boton_gacha = $Botones/BotonControles.duplicate()
+	_boton_gacha.name = "BotonGacha"
+	_boton_gacha.text = "Gacha"
+	# Mas estrecho que Controles: con cuatro botones, Jugar tocaba el volumen.
+	_boton_gacha.custom_minimum_size.x = 130.0
+	$Botones.add_child(_boton_gacha)
+	$Botones.move_child(_boton_gacha, 1)
+	_boton_gacha.pressed.connect(_mostrar_gacha.bind(true))
+	var monedero := Monedero.new()
+	monedero.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	monedero.position = Vector2(size.x - Monedero.ANCHO - 16.0, 26.0)
+	monedero.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	monedero.offset_left = -Monedero.ANCHO - 16.0
+	monedero.offset_right = -16.0
+	monedero.offset_top = 26.0
+	add_child(monedero)
+	_gacha = PanelGacha.new()
+	_gacha.cerrado.connect(_mostrar_gacha.bind(false))
+	add_child(_gacha)
+
+
+func _mostrar_gacha(visible_ahora: bool) -> void:
+	if visible_ahora:
+		_gacha.abrir()
+		return
+	_gacha.visible = false
+	# Las fichas de los magos enseñan la skin que se lleva puesta.
+	_montar_fichas()
+	_boton_gacha.grab_focus()
 
 
 ## "Moverse con: W A S D / Flechas", debajo del titulo de los controles
@@ -203,7 +242,10 @@ func _unhandled_input(evento: InputEvent) -> void:
 	# que abra un panel, y evita tener que apuntar al boton con el raton.
 	if not evento.is_action_pressed("ui_cancel"):
 		return
-	if _panel_controles.visible:
+	if _gacha.visible:
+		_mostrar_gacha(false)
+		get_viewport().set_input_as_handled()
+	elif _panel_controles.visible:
 		_mostrar_controles(false)
 		get_viewport().set_input_as_handled()
 	elif _cooperativo.visible:

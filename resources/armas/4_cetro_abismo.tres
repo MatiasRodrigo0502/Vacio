@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="ArmaMago" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/arma_mago.gd" id="1_arma"]
+[ext_resource type="Script" path="res://scripts/modo_arma.gd" id="2_modo"]
+[ext_resource type="Texture2D" path="res://assets/armas/4_cetro_abismo.png" id="3_icono"]
+
+[sub_resource type="Resource" id="modo_0"]
+script = ExtResource("2_modo")
+nombre = "Ráfaga"
+rafaga = 4
+pausa_rafaga = 0.06
+dano = 0.5
+velocidad = 1.1
+
+[sub_resource type="Resource" id="modo_1"]
+script = ExtResource("2_modo")
+nombre = "Abanico"
+proyectiles = 5
+apertura = 44.0
+dano = 0.45
+
+[sub_resource type="Resource" id="modo_2"]
+script = ExtResource("2_modo")
+nombre = "Lanza"
+atraviesa = true
+dano = 1.6
+velocidad = 1.9
+radio = 1.25
+cadencia = 1.3
+estilo = 5
+
+[resource]
+script = ExtResource("1_arma")
+nombre = "Cetro del abismo"
+descripcion = "Tres modos (rueda del ratón). Al matar, se lo traga un torbellino."
+tier = 3
+icono = ExtResource("3_icono")
+color = Color(0.784, 0.541, 1.000, 1)
+halo = Color(0.416, 0.125, 0.878, 1)
+estilo = 0
+muerte = 2
+modos = Array[ExtResource("2_modo")]([SubResource("modo_0"), SubResource("modo_1"), SubResource("modo_2")])

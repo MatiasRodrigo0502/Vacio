@@ -22,6 +22,33 @@ const DURACION_AVISO: float = 2.6
 ## segundo a medias. Con los enemigos soltando ventajas, coger dos cosas en
 ## menos de tres segundos pasa.
 var _desvanecer: Tween = null
+## El arma que se lleva y en que modo, debajo de los avisos.
+var _etiqueta_arma: Label
+
+
+func _ready() -> void:
+	# Las monedas y los diamantes, a la derecha del piso.
+	var monedero := Monedero.new()
+	monedero.position = Vector2(205.0, 20.0)
+	add_child(monedero)
+	_etiqueta_arma = Label.new()
+	_etiqueta_arma.position = Vector2(28.0, 238.0)
+	_etiqueta_arma.add_theme_font_size_override("font_size", 15)
+	_etiqueta_arma.add_theme_color_override("font_outline_color", Color.BLACK)
+	_etiqueta_arma.add_theme_constant_override("outline_size", 4)
+	_etiqueta_arma.visible = false
+	add_child(_etiqueta_arma)
+
+
+## Que arma se lleva y, si tiene varios modos, cual y como se cambia.
+func actualizar_arma(arma: ArmaMago, modo: ModoArma) -> void:
+	_etiqueta_arma.visible = arma != null
+	if arma == null:
+		return
+	_etiqueta_arma.modulate = arma.color
+	_etiqueta_arma.text = arma.nombre.to_upper()
+	if arma.tiene_modos():
+		_etiqueta_arma.text += "  ·  MODO %s  (rueda o Q)" % modo.nombre.to_upper()
 
 
 func actualizar_piso(numero_piso: int, total: int, nombre_capa: String) -> void:

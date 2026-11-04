@@ -74,6 +74,13 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## La frase que sale debajo de su nombre al presentarse.
 @export var titulo: String = ""
 
+@export_group("Botin")
+## Las monedas que da al morir, para el gacha de skins (se quedan entre
+## partidas, en Coleccion). Pocas los debiles y mas los fuertes: la vida entre 10.
+@export var monedas: int = 1
+## Los diamantes que da al morir, para el gacha de armas. Solo los jefes.
+@export var diamantes: int = 0
+
 @export_group("Al morir")
 ## Cuantas crias suelta al morir. Las crias son el mismo enemigo en pequeno,
 ## con 1 de vida y sin dividirse otra vez.
@@ -103,6 +110,8 @@ func cria() -> TipoEnemigo:
 		_cria = duplicate()
 		_cria.nombre = nombre + " (cria)"
 		_cria.vida = 10
+		_cria.monedas = 1
+		_cria.diamantes = 0
 		_cria.alto = alto * 0.62
 		_cria.velocidad = velocidad * 1.25
 		_cria.division = 0

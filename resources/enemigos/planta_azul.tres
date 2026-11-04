@@ -12,6 +12,7 @@ script = ExtResource("1_tipo")
 nombre = "Planta azul"
 animaciones = ExtResource("2_anim")
 vida = 20
+monedas = 2
 velocidad = 150.0
 dano = 30
 alto = 50.0

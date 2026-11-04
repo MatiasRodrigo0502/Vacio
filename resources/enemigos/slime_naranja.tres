@@ -12,6 +12,7 @@ script = ExtResource("1_tipo")
 nombre = "Slime naranja"
 animaciones = ExtResource("2_anim")
 vida = 30
+monedas = 3
 velocidad = 132.0
 dano = 25
 alto = 58.0

@@ -99,7 +99,9 @@ func _physics_process(delta: float) -> void:
 ## Gira hacia el enemigo mas cercano de su sala, como mucho 'giro' por
 ## segundo. Sin enemigos, sigue recto.
 func _girar_hacia_enemigo(delta: float) -> void:
-	var objetivo := _enemigo_mas_cercano()
+	if not is_instance_valid(sala):
+		return
+	var objetivo := sala.enemigo_mas_cercano(global_position)
 	if objetivo == null:
 		return
 	var hacia := objetivo.global_position - global_position
@@ -107,22 +109,6 @@ func _girar_hacia_enemigo(delta: float) -> void:
 	direccion = direccion.rotated(clampf(falta, -giro * delta, giro * delta))
 	if _dibujo != null:
 		_dibujo.rotation = direccion.angle()
-
-
-func _enemigo_mas_cercano() -> Enemigo:
-	if not is_instance_valid(sala):
-		return null
-	var mejor: Enemigo = null
-	var mejor_distancia := INF
-	for enemigo in sala.enemigos():
-		if not is_instance_valid(enemigo) or enemigo.is_queued_for_deletion() \
-				or not enemigo.visible or not enemigo.es_tangible() or enemigo.fraccion_vida() <= 0.0:
-			continue
-		var distancia := global_position.distance_squared_to(enemigo.global_position)
-		if distancia < mejor_distancia:
-			mejor_distancia = distancia
-			mejor = enemigo
-	return mejor
 
 
 func _al_tocar(area: Area2D) -> void:

@@ -30,6 +30,8 @@ signal bola_lanzada(desde: Vector2, direccion: Vector2, cargada: bool)
 ## todos a la vez alrededor del mago. Aparte de bola_lanzada porque no es una
 ## bola con otros numeros: son varias, y cada una se mueve sola.
 signal veneno_lanzado(desde: Vector2, direccion: Vector2)
+## Ha cambiado el arma o su modo, para que el HUD lo diga. Con null, sin arma.
+signal modo_arma_cambiado(arma: ArmaMago, modo: ModoArma)
 ## Se emite al recoger un objeto, para que el HUD lo anuncie.
 signal mejora_recogida(mejora: ObjetoMejora)
 ## Se emite al gastar el ataque especial y al recuperarlo en el piso
@@ -92,6 +94,12 @@ var _escudo: EscudoBurbuja = null
 ## El mago con el que se juega. Principal mira aqui lo que es solo de un mago
 ## y no del jugador en general (el agujero negro de su bola cargada).
 var mago: PersonajeJugable = null
+## El arma que lleva puesta (el gacha de diamantes, ver ArmaMago) y en que modo.
+## Se ponen, con la skin, al estrenar mago (_ponerse_coleccion).
+var arma: ArmaMago = null
+var modo_arma: int = 0
+var _arma_flotante: ArmaFlotante = null
+var _aura: AuraSkin = null
 ## Si queda el ataque especial en este piso. Se gasta al soltar la bola
 ## cargada o sacar el escudo, y vuelve al llegar al piso siguiente.
 ##
@@ -274,6 +282,59 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 	# restaurar_vida() es lo que copia los valores de fabrica a los de verdad,
 	# asi que sirve igual para "empezar de cero" que para "estrenar mago".
 	restaurar_vida()
+	_ponerse_coleccion(personaje)
+
+
+## La skin de ese mago y el arma, lo que se haya elegido en el gacha (Coleccion).
+func _ponerse_coleccion(personaje: PersonajeJugable) -> void:
+	var skin := Coleccion.skin_puesta(personaje.nombre)
+	if skin != null:
+		_sprite.sprite_frames = skin.animaciones
+	if _aura != null:
+		_aura.queue_free()
+		_aura = null
+	if skin != null and skin.aura.a > 0.0:
+		_aura = AuraSkin.new(skin)
+		add_child(_aura)
+		# La primera: por debajo de su dibujo.
+		move_child(_aura, 0)
+		_poner_de_pie()
+	arma = Coleccion.arma_puesta()
+	modo_arma = 0
+	if _arma_flotante != null:
+		_arma_flotante.queue_free()
+		_arma_flotante = null
+	if arma != null:
+		_arma_flotante = ArmaFlotante.new(arma)
+		add_child(_arma_flotante)
+	modo_arma_cambiado.emit(arma, modo_actual())
+
+
+## La forma de disparar de ahora, o null sin arma.
+func modo_actual() -> ModoArma:
+	return arma.modos[modo_arma] if arma != null else null
+
+
+## Pasa al modo siguiente (o al anterior) de un arma con varios: las miticas.
+func cambiar_modo_arma(paso: int = 1) -> void:
+	if arma == null or not arma.tiene_modos():
+		return
+	modo_arma = posmod(modo_arma + paso, arma.modos.size())
+	Sonido.tocar(&"clic")
+	modo_arma_cambiado.emit(arma, modo_actual())
+
+
+## La rueda del raton cambia de modo, y la tecla Q para quien juega sin el.
+func _unhandled_input(evento: InputEvent) -> void:
+	if not _control_activo or arma == null or not arma.tiene_modos():
+		return
+	var boton := evento as InputEventMouseButton
+	if boton != null and boton.pressed and boton.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+		cambiar_modo_arma(1 if boton.button_index == MOUSE_BUTTON_WHEEL_UP else -1)
+		get_viewport().set_input_as_handled()
+	elif evento.is_action_pressed("cambiar_modo_arma"):
+		cambiar_modo_arma()
+		get_viewport().set_input_as_handled()
 
 
 func _ready() -> void:
@@ -305,7 +366,7 @@ func _ready() -> void:
 ## su circulo esta 16 px por encima de los pies, y girandolo se moveria.
 func _poner_de_pie() -> void:
 	var centro: Vector2 = $Forma.position
-	for nodo in [_sprite, _llamas, _escarcha]:
+	for nodo in [_sprite, _llamas, _escarcha, _aura]:
 		if nodo != null:
 			Vista.poner_de_pie(nodo, Vector2.ZERO, centro)
 
@@ -555,10 +616,21 @@ func _actualizar_disparo(delta: float) -> void:
 		_espera_disparo = 0.0
 		return
 
-	_espera_disparo += cadencia_disparo
+	_espera_disparo += _cadencia_con_arma()
 	# Sale del centro del cuerpo y no de los pies, para que se vea nacer del
 	# personaje y no del suelo.
 	bola_lanzada.emit(centro_colision(), direccion, false)
+
+
+## El tiempo entre disparos. Un arma que dispara a su manera parte del de un mago
+## normal: quita la cadencia del mago, para que el rocio del verde (9 veces mas
+## rapido, y por eso 10 veces mas flojo) no multiplique las bolas del arma. Lo de
+## los objetos se queda.
+func _cadencia_con_arma() -> float:
+	if arma == null or arma.solo_aspecto():
+		return cadencia_disparo
+	var del_mago := mago.cadencia_multiplicador if mago != null else 1.0
+	return cadencia_disparo / del_mago * modo_actual().cadencia
 
 
 ## Elige la animacion: accion (andar o estar quieto) por direccion.
@@ -576,6 +648,8 @@ func _actualizar_animacion() -> void:
 		_mirando = _lado(apuntando)
 	elif velocity.length() > VELOCIDAD_MINIMA_ANDAR:
 		_mirando = _lado(velocity)
+	if _arma_flotante != null:
+		_arma_flotante.apuntar(apuntando if apuntando != Vector2.ZERO else _vector_de(_mirando))
 
 	var accion := "caminar" if velocity.length() > VELOCIDAD_MINIMA_ANDAR else "quieto"
 	var animacion := StringName(accion + "_" + _mirando)

@@ -52,6 +52,10 @@ hechos.
 | Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
+| Skins (gacha de monedas) | `herramientas/generar_skins.py` → `assets/skins/<id>/` + `resources/skins/<id>.tres` (`SkinMago`) | otro `.tres`, o una receta más en el script |
+| Armas (gacha de diamantes) | `herramientas/generar_armas.py` (la tabla `ARMAS`) → `assets/armas/` + `resources/armas/*.tres` (`ArmaMago`, con sus `ModoArma`) | una entrada más en la tabla |
+| Precios y probabilidades de los gachas | `resources/gacha/{skins,armas}.tres` (`TiradaGacha`) | editando números |
+| Monedas y diamantes de cada enemigo | `monedas` y `diamantes` en su `.tres` (`TipoEnemigo`) | editando números |
 | Arte de los magos y sus hechizos | `herramientas/generar_magos.py`, de `assets/magos_fuente/` → `assets/mago_<color>/` (atlas, retrato y `hechizos/`, con un `ArteHechizo` por hechizo), y `arte_disparo`/`arte_especial` en el `.tres` del mago | cambiar las tablas del script y volver a ejecutarlo |
 | Rocas de dentro, una por piso | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
@@ -359,6 +363,44 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     (`Red.factor_vida_enemigos`: ×1,5 con dos, ×2 con tres). La vida de los
     compañeros, abajo a la izquierda (`VidasCompaneros`).
 
+- **Monedas, diamantes y gachas** (2026-11-04, pedido por Matías). Lo que se
+  gana **dura entre partidas**: autoload `Coleccion` (`scripts/coleccion.gd`,
+  `user://coleccion.cfg`): dinero, lo que se tiene, lo que se lleva puesto y el
+  catálogo, leído de las carpetas. **Una prueba no puede tocar la colección de
+  quien la lanza: `Coleccion.usar_archivo("user://otro.cfg")` antes de nada**.
+  - **Botín**: `TipoEnemigo.monedas` (la vida entre 10: de 1 a 5; las crías, 1; el
+    jefe, 200) y `diamantes` (solo el jefe, 10), que da `Enemigo._dar_botin` al
+    morir, con su número (estilos `MONEDA` y `DIAMANTE`); en cooperativo, a cada
+    ordenador. Se ve en `Monedero` (`scripts/monedero.gd`, en el HUD, la portada y
+    el gacha). **Solo hay un jefe, en el piso 12: hasta que lo mates no hay
+    diamantes.** En debug, F9 da 1000 monedas y 50 diamantes (`AtajosPrueba`).
+  - **Gachas**: botón *Gacha* de la portada, `PanelGacha`
+    (`scripts/panel_gacha.gd`, por código): pestañas de skins (100 monedas) y armas
+    (5 diamantes), probabilidades (70, 20, 9 y 1 %, medido en 200 000 tiradas),
+    tirada con destape, y la colección, donde se elige lo que se lleva. Cada
+    `TiradaGacha` saca un tier y, de ese tier, algo al azar; lo repetido devuelve
+    parte (`devolucion`).
+  - **Skins** (`SkinMago`, una de cada tier por mago, 16): las saca
+    `generar_skins.py` del propio atlas del mago, por colores (B gira el tono; A,
+    otra paleta; S, paleta y resplandor; S+, iridiscente y `AuraSkin`). Solo
+    cambian el aspecto. Las pone `Jugador._ponerse_coleccion`; en cooperativo van
+    por su sitio en el catálogo en `_estado` (`MagoRemoto`).
+  - **Armas** (`ArmaMago`, 13, y sirven para cualquier mago): raro, solo aspecto
+    (el rocío del verde se queda); épico, también `ModoArma` (abanico, ráfaga,
+    onda, rebotes); legendario, también `AnimacionMuerte` (`muerte`, por código,
+    con el dibujo del enemigo: llamarada, almas, esquirlas, torbellino, rayos);
+    mítico, también varios modos, que se cambian con **la rueda del ratón**, la Q
+    o un botón en el móvil (`Jugador.cambiar_modo_arma`; el HUD los dice). Solo
+    cambian el disparo normal: el especial es del mago, y la quemadura y el frío
+    siguen en las bolas. `BolaMagica.usar_arma` pone lo que mueve la bola (`onda`,
+    `rebotes`, `busca`, `explosion`) y cómo se pinta (`Estilo`); dano y cadencia
+    parten de un mago normal (`ArmaMago.DANO_BASE`, `Jugador._cadencia_con_arma`),
+    para que el rocío del verde no los multiplique. `ArmaFlotante` la enseña junto
+    al mago. Principal: `_disparar_arma`. En cooperativo la bola lleva su arma y
+    modo por índice, y `MundoRed.anunciar_muerte_arma` la animación.
+  **Probado** con una prueba de todo (reparto, tiradas, guardado, botín, cada arma
+  y cada modo, formas, animaciones, rueda) y capturas. **El cooperativo no se ha
+  probado con dos juegos. Los precios y los daños son a ojo: nadie lo ha jugado.**
 - **Arte nuevo de los cuatro magos y sus hechizos** (2026-11-04, lo trajo
   Matías: `vacio_magos_y_hechizos.zip`, con su LEEME en
   `assets/magos_fuente/`). Piromante = rojo, Envenenador = verde, Criomante =

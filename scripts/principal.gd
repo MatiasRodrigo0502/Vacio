@@ -37,6 +37,7 @@ func _ready() -> void:
 	_jugador.vida_cambiada.connect(_hud.actualizar_vida)
 	_jugador.bola_lanzada.connect(_al_lanzar_bola)
 	_jugador.veneno_lanzado.connect(_al_lanzar_veneno)
+	_jugador.modo_arma_cambiado.connect(_hud.actualizar_arma)
 	_jugador.mejora_recogida.connect(_hud.anunciar_mejora)
 	_jugador.especial_cambiado.connect(_al_cambiar_especial)
 	_jugador.caido.connect(_al_caer)
@@ -162,13 +163,58 @@ func _al_cambiar_piso(numero_piso: int, datos: DatosPiso) -> void:
 func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 	if _piso_actual == null:
 		return
+	var arma := _jugador.arma
+	if arma != null and not cargada and not arma.solo_aspecto():
+		_disparar_arma(desde, direccion, arma, _jugador.modo_actual())
+		return
 	var bola := _bola_del_jugador(direccion, cargada)
+	# Un arma rara solo cambia el aspecto del disparo normal.
+	if arma != null and not cargada:
+		bola.usar_arma(arma, arma.modos[0], _piso_actual.sala_actual())
 	_soltar_bola(bola, desde, cargada)
 	# Donde se apaga puede ser la pared de la puerta secreta.
 	bola.apagada.connect(_piso_actual.golpe_de_bola)
 	# A los demas, la bola ya hecha: lleva lo que haya mejorado este mago.
 	if _cooperativo != null:
 		_cooperativo.mandar_disparo(bola, desde, _jugador.mago)
+
+
+## Un disparo de un arma: sus bolas, repartidas en abanico si son varias, y, si es
+## una rafaga, las siguientes un poco despues, desde donde este ya el mago.
+func _disparar_arma(desde: Vector2, direccion: Vector2, arma: ArmaMago, modo: ModoArma) -> void:
+	var piso := _piso_actual
+	var cuantas := maxi(modo.proyectiles, 1)
+	for vuelta in maxi(modo.rafaga, 1):
+		if vuelta > 0:
+			await get_tree().create_timer(modo.pausa_rafaga, false).timeout
+			if _piso_actual != piso or not _jugador.sigue_vivo():
+				return
+			desde = _jugador.centro_colision()
+		for i in cuantas:
+			var giro := 0.0
+			if cuantas > 1:
+				giro = deg_to_rad(modo.apertura) * (float(i) / (cuantas - 1) - 0.5)
+			var bola := _bola_de_arma(direccion.rotated(giro), arma, modo)
+			# Con la onda, una hacia cada lado: se cruzan.
+			if i % 2 == 1:
+				bola.signo_onda = -1.0
+			_soltar_bola(bola, desde, false)
+			bola.apagada.connect(_piso_actual.golpe_de_bola)
+			if _cooperativo != null:
+				_cooperativo.mandar_disparo(bola, desde, _jugador.mago)
+
+
+## Parte de la del mago (sus objetos, su frio, su fuego) y le pone lo del arma.
+## El dano parte de ArmaMago.DANO_BASE y no del mago: el verde quita 1 por gota,
+## porque tira 18 por segundo.
+func _bola_de_arma(direccion: Vector2, arma: ArmaMago, modo: ModoArma) -> BolaMagica:
+	var bola := _bola_del_jugador(direccion, false)
+	bola.direccion = direccion
+	bola.dano = ArmaMago.DANO_BASE * modo.dano
+	bola.velocidad = _jugador.velocidad_bola * modo.velocidad
+	bola.radio = _jugador.radio_bola * modo.radio
+	bola.usar_arma(arma, modo, _piso_actual.sala_actual())
+	return bola
 
 
 ## La bola de un disparo de otro jugador, con lo que manda su ordenador. En
@@ -194,6 +240,10 @@ func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 	bola.solo_ver = Red.es_espejo()
 	bola.arte = mago.arte_especial if datos.cargada else mago.arte_disparo
 	var sala := _piso_actual.sala_en(datos.desde)
+	var arma := Coleccion.arma_por_indice(datos.get("arma", -1))
+	if arma != null:
+		bola.usar_arma(arma, arma.modos[datos.get("modo", 0)], sala)
+		bola.signo_onda = datos.get("signo_onda", 1.0)
 	if sala != null:
 		bola.limite = sala.rect_con_muros()
 		if datos.agujero:

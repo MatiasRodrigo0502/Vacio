@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="ArmaMago" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/arma_mago.gd" id="1_arma"]
+[ext_resource type="Script" path="res://scripts/modo_arma.gd" id="2_modo"]
+[ext_resource type="Texture2D" path="res://assets/armas/4_corona_tormentas.png" id="3_icono"]
+
+[sub_resource type="Resource" id="modo_0"]
+script = ExtResource("2_modo")
+nombre = "Chispas"
+proyectiles = 2
+apertura = 30.0
+busca = 240.0
+dano = 0.7
+velocidad = 0.9
+estilo = 1
+
+[sub_resource type="Resource" id="modo_1"]
+script = ExtResource("2_modo")
+nombre = "Trueno"
+explosion = 100.0
+dano = 2.2
+velocidad = 0.8
+radio = 1.5
+cadencia = 1.6
+estilo = 0
+
+[sub_resource type="Resource" id="modo_2"]
+script = ExtResource("2_modo")
+nombre = "Cadena"
+rebotes = 5
+dano = 1.0
+velocidad = 1.3
+
+[resource]
+script = ExtResource("1_arma")
+nombre = "Corona de tormentas"
+descripcion = "Tres modos (rueda del ratón). Al matar, lo fulmina un rayo."
+tier = 3
+icono = ExtResource("3_icono")
+color = Color(0.565, 0.910, 1.000, 1)
+halo = Color(0.125, 0.439, 1.000, 1)
+estilo = 5
+muerte = 1
+modos = Array[ExtResource("2_modo")]([SubResource("modo_0"), SubResource("modo_1"), SubResource("modo_2")])

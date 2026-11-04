@@ -35,6 +35,7 @@ var _objetivo: Vector2 = Vector2.ZERO
 var _recibido: bool = false
 var _escudo: bool = false
 var _sprite: AnimatedSprite2D
+var _indice_skin: int = -1
 ## La burbuja con su arte, si el mago la trae: las dos capas, con el mago en
 ## medio (como EscudoBurbuja). Sin arte se pinta por codigo.
 var _burbuja_detras: AnimatedSprite2D = null
@@ -91,7 +92,12 @@ func centro_colision() -> Vector2:
 
 ## Lo que ha mandado su ordenador: donde esta, como se le ve y su vida.
 func recibir(posicion: Vector2, animacion: StringName, color: Color, escudo: bool,
-		vida_ahora: int = 100, maxima: int = 100, sigue: bool = true) -> void:
+		vida_ahora: int = 100, maxima: int = 100, sigue: bool = true, indice_skin: int = -1) -> void:
+	# Con su skin: la que lleva en su ordenador (el catalogo es igual en todos).
+	if indice_skin != _indice_skin:
+		_indice_skin = indice_skin
+		var skin := Coleccion.skin_por_indice(indice_skin)
+		_sprite.sprite_frames = skin.animaciones if skin != null else personaje.animaciones
 	_objetivo = posicion
 	if not _recibido or global_position.distance_to(posicion) > SALTO_MAXIMO:
 		global_position = posicion

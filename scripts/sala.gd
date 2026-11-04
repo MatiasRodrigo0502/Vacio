@@ -376,6 +376,23 @@ func enemigos() -> Array[Enemigo]:
 	return _enemigos.duplicate()
 
 
+## El enemigo de la sala mas cercano a ese punto que se pueda tocar, o null. Lo
+## buscan lo que persigue: los proyectiles del mago verde y las bolas de algunas
+## armas.
+func enemigo_mas_cercano(punto: Vector2) -> Enemigo:
+	var mejor: Enemigo = null
+	var mejor_distancia := INF
+	for enemigo in _enemigos:
+		if not is_instance_valid(enemigo) or enemigo.is_queued_for_deletion() \
+				or not enemigo.visible or not enemigo.es_tangible() or enemigo.fraccion_vida() <= 0.0:
+			continue
+		var distancia := punto.distance_squared_to(enemigo.global_position)
+		if distancia < mejor_distancia:
+			mejor_distancia = distancia
+			mejor = enemigo
+	return mejor
+
+
 func esta_despejada() -> bool:
 	return _enemigos.is_empty()
 

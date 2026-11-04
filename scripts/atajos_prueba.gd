@@ -5,6 +5,7 @@
 ##   F8  piso siguiente
 ##   F4  matar a los enemigos de la sala en la que estas
 ##   F5  recuperar el ataque especial (es uno por piso)
+##   F9  1000 monedas y 50 diamantes, para probar los gachas
 ##
 ## SOLO EXISTEN AL JUGAR DESDE GODOT (el editor o jugar.bat). Principal crea
 ## este nodo solo si OS.is_debug_build(), que en el .exe exportado es false:
@@ -72,6 +73,8 @@ func _unhandled_input(evento: InputEvent) -> void:
 			_limpiar_sala()
 		KEY_F5:
 			_jugador.recargar_especial()
+		KEY_F9:
+			Coleccion.ganar(1000, 50)
 		_:
 			return
 	usado.emit()
@@ -98,7 +101,7 @@ func _limpiar_sala() -> void:
 
 func _actualizar_texto() -> void:
 	var estado := "SÍ" if _jugador.invencible else "no"
-	_etiqueta.text = "PRUEBA  F1 invencible: %s   F7/F8 piso anterior/siguiente   F4 limpiar sala   F5 especial" % estado
+	_etiqueta.text = "PRUEBA  F1 invencible: %s   F7/F8 piso anterior/siguiente   F4 limpiar sala   F5 especial   F9 monedas" % estado
 	# En rojo mientras se es invencible: probando el equilibrio, olvidarse de
 	# que esta puesto da conclusiones falsas («este piso es facil»).
 	_etiqueta.modulate = Color(1.0, 0.45, 0.4) if _jugador.invencible else Color(1.0, 1.0, 1.0, 0.55)
