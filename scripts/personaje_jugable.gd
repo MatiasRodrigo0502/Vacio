@@ -28,6 +28,9 @@ const ESPECIAL_VENENO := 2
 @export var animaciones: SpriteFrames
 ## Solo para el menu: un TextureRect necesita una textura suelta, no animacion.
 @export var retrato: Texture2D
+## Las 8 direcciones en grande, como SkinMago.giro: para la ficha del gacha,
+## que ensena al mago girando con la skin de siempre.
+@export var giro: Texture2D
 ## Color del nombre en la pantalla de seleccion.
 @export var color: Color = Color.WHITE
 

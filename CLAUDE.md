@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-11-04.**
+**Última actualización: 2026-11-05.**
 
 ---
 
@@ -53,9 +53,10 @@ hechos.
 | Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
 | Objetos recogibles | `resources/objetos/*.tres` (`ObjetoMejora`) | otro `.tres` |
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
-| Skins (gacha de monedas) | `herramientas/generar_skins.py` → `assets/skins/<id>/` + `resources/skins/<id>.tres` (`SkinMago`) | otro `.tres`, o una receta más en el script |
-| Armas (gacha de diamantes) | `herramientas/generar_armas.py` (la tabla `ARMAS`) → `assets/armas/` + `resources/armas/*.tres` (`ArmaMago`, con sus `ModoArma`) | una entrada más en la tabla |
-| Precios y probabilidades de los gachas | `resources/gacha/{skins,armas}.tres` (`TiradaGacha`) | editando números |
+| Skins (gacha de monedas) | `herramientas/generar_skins.py` (una clase por skin, sobre el dibujo vectorial de `magos_vectorial.py`) → `assets/skins/<id>/` (atlas, `animaciones.tres`, retrato y `giro.png`) + `resources/skins/<id>.tres` (`SkinMago`); también el `giro.png` de los magos de serie | otro `.tres`, o una clase más en el script |
+| Dibujo vectorial de los magos | `herramientas/magos_vectorial.py` (el código de las hojas de `assets/magos_fuente/`, con ganchos para las skins). Necesita `rsvg-convert` | cambiar el dibujo y volver a ejecutarlo (y luego `generar_magos.py`) |
+| Armas (gacha de diamantes) | `herramientas/generar_armas.py` (la tabla `ARMAS` y un dibujo SVG por `forma`) → `assets/armas/` (icono y `_grande`) + `resources/armas/*.tres` (`ArmaMago`, con sus `ModoArma`). Necesita `rsvg-convert` | una entrada más en la tabla |
+| Precios, probabilidades y garantías de los gachas | `resources/gacha/{skins,armas}.tres` (`TiradaGacha`) | editando números |
 | Monedas y diamantes de cada enemigo | `monedas` y `diamantes` en su `.tres` (`TipoEnemigo`) | editando números |
 | Arte de los magos y sus hechizos | `herramientas/generar_magos.py`, de `assets/magos_fuente/` → `assets/mago_<color>/` (atlas, retrato y `hechizos/`, con un `ArteHechizo` por hechizo), y `arte_disparo`/`arte_especial` en el `.tres` del mago | cambiar las tablas del script y volver a ejecutarlo |
 | Rocas de dentro, una por piso | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
@@ -370,19 +371,48 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     ordenador. Se ve en `Monedero` (`scripts/monedero.gd`, en el HUD, la portada y
     el gacha). **Solo hay un jefe, en el piso 12: hasta que lo mates no hay
     diamantes.** En debug, F9 da 1000 monedas y 50 diamantes (`AtajosPrueba`).
-  - **Gachas**: botón *Gacha* de la portada, `PanelGacha`
-    (`scripts/panel_gacha.gd`, por código): pestañas de skins (100 monedas) y armas
-    (5 diamantes), probabilidades (70, 20, 9 y 1 %, medido en 200 000 tiradas),
-    tirada con destape, y la colección, donde se elige lo que se lleva. Cada
-    `TiradaGacha` saca un tier y, de ese tier, algo al azar; lo repetido da algo,
-    más cuanto más raro (`devolucion`: skins 20, 50, 100 y 250 monedas, desde el
-    2026-11-05, Matías puso los 20 de la B; armas 1, 2, 3 y 5 diamantes). El panel lo
-    dice, sacado del `.tres`.
-  - **Skins** (`SkinMago`, una de cada tier por mago, 16): las saca
-    `generar_skins.py` del propio atlas del mago, por colores (B gira el tono; A,
-    otra paleta; S, paleta y resplandor; S+, iridiscente y `AuraSkin`). Solo
-    cambian el aspecto. Las pone `Jugador._ponerse_coleccion`; en cooperativo van
-    por su sitio en el catálogo en `_estado` (`MagoRemoto`).
+  - **Gachas** (rehechos el 2026-11-05, Matías: «mejora ambas cosas» y «la
+    transición es muy básica»): botón *Gacha* de la portada, `PanelGacha`
+    (`scripts/panel_gacha.gd`, por código). Pestañas de skins y armas; a la
+    izquierda el escaparate (lo del tier más alto girando, `GiroGacha`), las
+    probabilidades en barras (70, 20, 9 y 1 %), la garantía y *Tirar ×1* /
+    *Tirar ×10*; a la derecha la colección (lo que no se tiene, en silueta), y al
+    pulsar una, su ficha (`DetalleGacha`, `scripts/detalle_gacha.gd`), que es donde
+    se pone. Cada `TiradaGacha` saca un tier y, de ese tier, algo al azar; lo
+    repetido da algo, más cuanto más raro (`devolucion`: skins 20, 50, 100 y 250
+    monedas, desde el 2026-11-05, Matías puso los 20 de la B; armas 1, 2, 3 y 5
+    diamantes). El panel lo dice, sacado del `.tres`. **Diez de golpe** cuestan `coste_diez`
+    (900 monedas, 45 diamantes: una gratis) y traen al menos una de `garantia_diez`
+    (A o épica: si las nueve primeras no, la décima). **Garantía** (`garantia_maxima`):
+    a las 60 tiradas sin S+ (30 sin mítica) sale segura; la cuenta se guarda
+    (`[gacha] sin_maximo`). Con ella, medido en 3000 tiradas, la S+ sale en un
+    ~2,2 % y la mítica en un ~3,8 % (el 1 % es sin contarla). `Coleccion.tirar`,
+    `tirar_varias` y `tiradas_hasta_garantia`.
+  - **La cinemática** (`CinematicaGacha`, `scripts/cinematica_gacha.gd`, todo
+    dibujado por código menos lo que sale, que es un `GiroGacha`): círculo de runas,
+    chispas al centro y un orbe que cambia de tier en tier hasta el que ha salido
+    (el mejor, si son diez); antes del tercero caen rayos y antes del cuarto se
+    agrieta. Revienta y: abajo, rayos de su color; **S o legendaria**, franja de su
+    color con el sello que cae y hace temblar, la silueta y una luz que la barre;
+    **S+ o mítica**, destello, estrellas en arcoíris, la S y luego el + con los
+    colores corridos, la skin girando tres vueltas hasta pararse de frente (el arma,
+    dos vueltas) y confeti. Diez: diez orbes a sus cartas, que se dan la vuelta una
+    a una; antes de una de arriba la carta tiembla y sale su cinemática entera. Un
+    clic adelanta; *Saltar* o Escape, al final. Doce sonidos `gacha_*`
+    (`generar_efectos.py`). **Nadie los ha oído.**
+  - **Skins** (`SkinMago`, una de cada tier por mago, 16): desde el 2026-11-05 las
+    saca `generar_skins.py` **del dibujo vectorial** (`magos_vectorial.py`), en las 8
+    direcciones, con una clase por skin: B, otro tono; A, otra paleta y un efecto
+    (ceniza, gotas de sangre, pétalos, burbujas); S, un traje (grietas de lava,
+    eclipse con rayos, hombreras y corona de cristal, máscara de pico) y
+    resplandor; S+, piezas grandes (alas de fuego, planetas en órbita, arcos de
+    aurora, alas de polilla), `AuraSkin` y en dos un brillo iridiscente. Los colores
+    del dibujo de serie van en minúscula y la receta los cambia; lo que añade una
+    skin en MAYÚSCULAS se queda como está. Cada una trae `descripcion` y `giro` (las
+    8 direcciones a 256 px en una tira, para la ficha y la cinemática); los magos de
+    serie, su `giro` en `PersonajeJugable`. Solo cambian el aspecto. Las pone
+    `Jugador._ponerse_coleccion`; en cooperativo van por su sitio en el catálogo en
+    `_estado` (`MagoRemoto`).
   - **Armas** (`ArmaMago`, 13, y sirven para cualquier mago): raro, solo aspecto
     (el rocío del verde se queda); épico, también `ModoArma` (abanico, ráfaga,
     onda, rebotes); legendario, también `AnimacionMuerte` (`muerte`, por código,
@@ -395,10 +425,17 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     parten de un mago normal (`ArmaMago.DANO_BASE`, `Jugador._cadencia_con_arma`),
     para que el rocío del verde no los multiplique. `ArmaFlotante` la enseña junto
     al mago. Principal: `_disparar_arma`. En cooperativo la bola lleva su arma y
-    modo por índice, y `MundoRed.anunciar_muerte_arma` la animación.
+    modo por índice, y `MundoRed.anunciar_muerte_arma` la animación. Desde el
+    2026-11-05 se dibujan en SVG con el trazo de los magos (`generar_armas.py`, una
+    función por `forma`): `icono` (96 px, recto) e `ilustracion` (256 px, inclinada,
+    con resplandor desde las épicas, destellos desde las legendarias y un anillo de
+    runas en las míticas).
   **Probado** con una prueba de todo (reparto, tiradas, guardado, botín, cada arma
   y cada modo, formas, animaciones, rueda) y capturas. **El cooperativo no se ha
   probado con dos juegos. Los precios y los daños son a ojo: nadie lo ha jugado.**
+  El gacha nuevo (2026-11-05), probado sin ventana (reparto, garantía, diez, guardado)
+  y con capturas de la pantalla, la ficha y cada paso de las cinemáticas, y la Fénix
+  con la Corona puestas en una partida.
 - **Arte nuevo de los cuatro magos y sus hechizos** (2026-11-04, lo trajo
   Matías: `vacio_magos_y_hechizos.zip`, con su LEEME en
   `assets/magos_fuente/`). Piromante = rojo, Envenenador = verde, Criomante =
@@ -1167,6 +1204,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Trampas ya pisadas (no repetirlas)
 
+- **Un `Label` con autowrap y sin ancho se parte letra a letra.** Las del rincón
+  de las tarjetas del gacha («PUESTA») salían en vertical: estaban sueltas dentro
+  de un botón, sin contenedor que les diera ancho (2026-11-05). Para un rótulo
+  corto, `AUTOWRAP_OFF`.
+- **Los hijos se pintan después que el padre.** Lo que la cinemática del gacha
+  pintaba en su `_draw` (el sello, la luz que barre, el destello) quedaba debajo
+  del `GiroGacha` hijo; va en otro hijo, `_encima`, añadido después.
 - **Para probar el cooperativo hacen falta dos juegos a la vez**, y el
   controlador de cada prueba tiene que **colgar de la raíz** (un nodo creado
   desde la escena de prueba con `root.add_child`): la escena de prueba se

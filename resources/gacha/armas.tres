@@ -11,3 +11,6 @@ tiers = PackedStringArray("Raro", "Épico", "Legendario", "Mítico")
 colores = PackedColorArray(0.45, 0.72, 1, 1, 0.75, 0.45, 1, 1, 1, 0.65, 0.2, 1, 1, 0.3, 0.4, 1)
 probabilidades = PackedFloat32Array(70, 20, 9, 1)
 devolucion = PackedInt32Array(1, 2, 3, 5)
+coste_diez = 45
+garantia_diez = 1
+garantia_maxima = 30

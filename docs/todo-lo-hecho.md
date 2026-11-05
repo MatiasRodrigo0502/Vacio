@@ -69,6 +69,7 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
+| 05/11/2026 | Gacha nuevo: skins redibujadas en ocho direcciones (las S con traje propio y las S+ con alas, planetas, arcos de aurora o alas de polilla), las 13 armas redibujadas, tiradas de diez con una A o épica segura, garantía de S+ (60 tiradas) y de mítica (30), colección con siluetas y ficha de cada una, y una cinemática al abrir, con la suya para la S y la legendaria y otra aún mayor para la S+ y la mítica | — |
 | 05/11/2026 | Una skin repetida da monedas según su tier: 20 la B, 50 la A, 100 la S y 250 la S+, y el panel lo dice | — |
 | 05/11/2026 | La burbuja del mago blanco ya no lleva el aro con el tiempo que le queda; avisa parpadeando | `1797365` |
 | 04/11/2026 | Enemigos nuevos: gólem, vigía y murciélago, en ocho direcciones y con una variante por capa, con animaciones de atacar, daño y muerte; el Corazón del Núcleo sustituye al Mago Caído como jefe, con su pelea más una nova con anillo de bolas | `6de4e0b` |

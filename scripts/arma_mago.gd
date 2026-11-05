@@ -27,6 +27,9 @@ const MITICO: int = 3
 @export var tier: int = RARO
 ## Dibujada mirando a la derecha: flota junto al mago, apuntando (ArmaFlotante).
 @export var icono: Texture2D
+## La grande (256 px), inclinada y con lo que da su tier alrededor: para el
+## gacha y la coleccion. Sin ella, se ensena el icono.
+@export var ilustracion: Texture2D
 ## Centro y resplandor de sus bolas.
 @export var color: Color = Color.WHITE
 @export var halo: Color = Color.WHITE

@@ -40,6 +40,9 @@ var _tengo: Dictionary = {}
 ## Nombre del mago -> id de la skin puesta. Sin entrada, la de siempre.
 var _skin_puesta: Dictionary = {}
 var _arma_puesta: String = ""
+## Gacha (su _clave) -> tiradas seguidas sin sacar su tier mas alto. Se guarda: la
+## garantia no se pierde por cerrar el juego.
+var _sin_maximo: Dictionary = {}
 var _guardado: Timer
 
 
@@ -76,32 +79,63 @@ func dinero_de(tirada: TiradaGacha) -> int:
 	return diamantes if tirada.usa_diamantes else monedas
 
 
-func puede_tirar(tirada: TiradaGacha) -> bool:
-	return dinero_de(tirada) >= tirada.coste
+func puede_tirar(tirada: TiradaGacha, veces: int = 1) -> bool:
+	return dinero_de(tirada) >= tirada.coste_de(veces)
 
 
 ## Una tirada: paga, saca un tier segun sus probabilidades y, de ese tier, una
 ## cosa al azar. Lo repetido da algo, mas cuanto mas raro (TiradaGacha.devolucion;
 ## Matias, 2026-11-05: en las skins, 20 la B y mas en cada tier). Devuelve {} si no llega
-## el dinero; si no, {"objeto", "tier", "nuevo", "devuelto"}.
+## el dinero; si no, {"objeto", "tier", "nuevo", "devuelto", "garantizada"}.
 func tirar(tirada: TiradaGacha) -> Dictionary:
 	if not puede_tirar(tirada):
 		return {}
 	_pagar(tirada, -tirada.coste)
-	var catalogo: Array = skins if tirada == gacha_skins else armas
-	var tier := tirada.sacar_tier()
-	var objeto: Resource = _de_tier(catalogo, tier)
-	var id := id_de(objeto)
-	var nuevo := not _tengo.has(id)
-	var devuelto := 0
-	if nuevo:
-		_tengo[id] = true
-	else:
-		devuelto = tirada.devolucion[tier]
-		_pagar(tirada, devuelto)
+	var resultado := _sacar(tirada, 0)
 	guardar()
 	cambiado.emit()
-	return {"objeto": objeto, "tier": tier, "nuevo": nuevo, "devuelto": devuelto}
+	return resultado
+
+
+## Varias de golpe (diez, en el gacha), con su precio de lote. Si ninguna de las
+## anteriores llega al tier de 'garantia_diez', la ultima sale de ese o mejor.
+## Devuelve [] si no llega el dinero.
+func tirar_varias(tirada: TiradaGacha, veces: int = 10) -> Array[Dictionary]:
+	var resultados: Array[Dictionary] = []
+	if not puede_tirar(tirada, veces):
+		return resultados
+	_pagar(tirada, -tirada.coste_de(veces))
+	var mejor := -1
+	for i in veces:
+		var minimo := 0
+		if veces == 10 and i == veces - 1 and mejor < tirada.garantia_diez:
+			minimo = tirada.garantia_diez
+		var resultado := _sacar(tirada, minimo)
+		mejor = maxi(mejor, resultado.tier)
+		resultados.append(resultado)
+	guardar()
+	cambiado.emit()
+	return resultados
+
+
+## Cuantas tiradas faltan, como mucho, para que salga seguro el tier mas alto.
+## -1 si ese gacha no tiene garantia.
+func tiradas_hasta_garantia(tirada: TiradaGacha) -> int:
+	if tirada.garantia_maxima <= 0:
+		return -1
+	return tirada.garantia_maxima - int(_sin_maximo.get(_clave(tirada), 0))
+
+
+## Lo que sale en ese gacha: las skins o las armas.
+func catalogo_de(tirada: TiradaGacha) -> Array:
+	return skins if tirada == gacha_skins else armas
+
+
+## Cuantas cosas de ese gacha se tienen, de cuantas hay.
+func progreso(tirada: TiradaGacha) -> Vector2i:
+	var catalogo := catalogo_de(tirada)
+	var tenidas := catalogo.filter(func(cosa: Resource) -> bool: return tiene(cosa)).size()
+	return Vector2i(tenidas, catalogo.size())
 
 
 func tiene(objeto: Resource) -> bool:
@@ -200,6 +234,7 @@ func guardar() -> void:
 	datos.set_value("tengo", "ids", _tengo.keys())
 	datos.set_value("puesto", "skins", _skin_puesta)
 	datos.set_value("puesto", "arma", _arma_puesta)
+	datos.set_value("gacha", "sin_maximo", _sin_maximo)
 	datos.save(_archivo)
 
 
@@ -213,6 +248,7 @@ func _cargar() -> void:
 		_tengo[String(id)] = true
 	_skin_puesta = datos.get_value("puesto", "skins", {})
 	_arma_puesta = datos.get_value("puesto", "arma", "")
+	_sin_maximo = datos.get_value("gacha", "sin_maximo", {})
 	cambiado.emit()
 
 
@@ -221,6 +257,31 @@ func _pagar(tirada: TiradaGacha, cuanto: int) -> void:
 		diamantes += cuanto
 	else:
 		monedas += cuanto
+
+
+## Una tirada ya pagada: el tier (con la garantia y un minimo), la cosa y si es
+## nueva. Lo repetido devuelve su parte.
+func _sacar(tirada: TiradaGacha, minimo: int) -> Dictionary:
+	var clave := _clave(tirada)
+	var sin_maximo: int = int(_sin_maximo.get(clave, 0)) + 1
+	var maximo := tirada.tier_maximo()
+	var garantizada := tirada.garantia_maxima > 0 and sin_maximo >= tirada.garantia_maxima
+	var tier := maximo if garantizada else maxi(tirada.sacar_tier(), minimo)
+	_sin_maximo[clave] = 0 if tier == maximo else sin_maximo
+	var objeto: Resource = _de_tier(catalogo_de(tirada), tier)
+	var id := id_de(objeto)
+	var nuevo := not _tengo.has(id)
+	var devuelto := 0
+	if nuevo:
+		_tengo[id] = true
+	else:
+		devuelto = tirada.devolucion[tier]
+		_pagar(tirada, devuelto)
+	return {"objeto": objeto, "tier": tier, "nuevo": nuevo, "devuelto": devuelto, "garantizada": garantizada}
+
+
+func _clave(tirada: TiradaGacha) -> String:
+	return tirada.resource_path.get_file().get_basename()
 
 
 ## Una cosa al azar de ese tier. Si de ese tier no hay ninguna, la del tier de

@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="PersonajeJugable" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="PersonajeJugable" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/personaje_jugable.gd" id="1_script"]
 [ext_resource type="SpriteFrames" path="res://assets/mago_blanco/animaciones_mago_blanco.tres" id="2_animaciones"]
 [ext_resource type="Texture2D" path="res://assets/mago_blanco/retrato.png" id="3_retrato"]
+[ext_resource type="Texture2D" path="res://assets/mago_blanco/giro.png" id="9_giro"]
 [ext_resource type="Resource" path="res://assets/mago_blanco/hechizos/especial.tres" id="5_especial"]
 [ext_resource type="Resource" path="res://assets/mago_blanco/hechizos/disparo.tres" id="4_disparo"]
 
@@ -13,6 +14,7 @@ ventaja = "Ataque especial: una burbuja que lo cubre entero 5 s; los disparos re
 pega = "No tiene bola cargada: su ataque especial no hace daño."
 animaciones = ExtResource("2_animaciones")
 retrato = ExtResource("3_retrato")
+giro = ExtResource("9_giro")
 arte_disparo = ExtResource("4_disparo")
 arte_especial = ExtResource("5_especial")
 color = Color(0.9, 0.95, 1, 1)

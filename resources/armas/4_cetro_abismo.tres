@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="ArmaMago" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="ArmaMago" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/arma_mago.gd" id="1_arma"]
 [ext_resource type="Script" path="res://scripts/modo_arma.gd" id="2_modo"]
 [ext_resource type="Texture2D" path="res://assets/armas/4_cetro_abismo.png" id="3_icono"]
+[ext_resource type="Texture2D" path="res://assets/armas/4_cetro_abismo_grande.png" id="4_ilustracion"]
 
 [sub_resource type="Resource" id="modo_0"]
 script = ExtResource("2_modo")
@@ -35,6 +36,7 @@ nombre = "Cetro del abismo"
 descripcion = "Tres modos (rueda del ratón). Al matar, se lo traga un torbellino."
 tier = 3
 icono = ExtResource("3_icono")
+ilustracion = ExtResource("4_ilustracion")
 color = Color(0.784, 0.541, 1.000, 1)
 halo = Color(0.416, 0.125, 0.878, 1)
 estilo = 0

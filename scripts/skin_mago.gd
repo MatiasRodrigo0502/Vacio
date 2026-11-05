@@ -10,8 +10,14 @@ extends Resource
 @export var mago: String = ""
 ## 0 = B, 1 = A, 2 = S, 3 = S+ (TiradaGacha.tiers).
 @export var tier: int = 0
+## Una frase, la que se lee en la ficha y al sacarla.
+@export var descripcion: String = ""
 @export var animaciones: SpriteFrames
 @export var retrato: Texture2D
+## Las 8 direcciones en grande, en una tira (una casilla cuadrada por
+## direccion, en el orden de Jugador.LADOS): la ficha y la cinematica del gacha
+## la hacen girar. Sin ella, se ensena el retrato quieto.
+@export var giro: Texture2D
 ## El aura que lleva a los pies en el juego (AuraSkin). Transparente, sin aura.
 @export var aura: Color = Color(0.0, 0.0, 0.0, 0.0)
 ## El aura cambia de color sin parar (las S+).

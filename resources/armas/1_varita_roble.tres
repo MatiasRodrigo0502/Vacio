@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="ArmaMago" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="ArmaMago" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/arma_mago.gd" id="1_arma"]
 [ext_resource type="Script" path="res://scripts/modo_arma.gd" id="2_modo"]
 [ext_resource type="Texture2D" path="res://assets/armas/1_varita_roble.png" id="3_icono"]
+[ext_resource type="Texture2D" path="res://assets/armas/1_varita_roble_grande.png" id="4_ilustracion"]
 
 [sub_resource type="Resource" id="modo_0"]
 script = ExtResource("2_modo")
@@ -14,6 +15,7 @@ nombre = "Varita de roble"
 descripcion = "Estrellas de savia. Dispara como siempre."
 tier = 0
 icono = ExtResource("3_icono")
+ilustracion = ExtResource("4_ilustracion")
 color = Color(0.722, 0.878, 0.416, 1)
 halo = Color(0.353, 0.541, 0.165, 1)
 estilo = 1

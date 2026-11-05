@@ -16,3 +16,8 @@ Un `ModoArma` son multiplicadores sobre un disparo normal (10 de daño, uno cada
 su forma: `proyectiles` y `apertura`, `rafaga` y `pausa_rafaga`, `onda`, `atraviesa`,
 `rebotes`, `busca` y `explosion`. `estilo` es cómo se pinta la bola (`BolaMagica.Estilo`)
 y `muerte`, la animación (`AnimacionMuerte.Tipo`).
+
+El dibujo sale de su `forma` (una función SVG en el script): `icono`, 96 px y mirando a
+la derecha (flota junto al mago apuntando), e `ilustracion`, 256 px e inclinada, con lo
+que da el tier alrededor (resplandor, destellos, el anillo de runas de las míticas), para
+el gacha.

@@ -259,6 +259,111 @@ def clic(azar):
     return golpe(barrido(1300, 900, 0.04, SR, "triangulo"), SR, 0.0008, 70.0)
 
 
+# --- Gacha (2026-11-05) -------------------------------------------------------
+
+def gacha_carga(azar):
+    """La invocacion: un zumbido que crece y sube, con un brillo de cristal
+    encima. Dura lo que la parte comun de todas las tiradas."""
+    n = int(1.7 * SR)
+    zumbido = adsr(barrido(70, 160, 1.7, SR, "triangulo", curva=1.6), SR, 0.3, 0.2, 0.9, 0.25)
+    aire = adsr(banda(ruido(n, azar), SR, lambda t: 500 + 3500 * t * t, 3.0), SR, 0.4, 0.2, 0.8, 0.3)
+    brillo = vacio(n)
+    for k in range(9):
+        nota = parciales(hz("E6") * (1 + k * 0.06), 0.35, SR, [(1, 1.0, 12), (2.76, 0.3, 18)], ataque=0.01)
+        sumar(brillo, nota, int((0.25 + k * 0.15) * SR), 0.2 + k * 0.03)
+    return reverberacion(_mezcla((zumbido, 0.6), (aire, 0.4), (brillo, 0.5)), SR, 0.35, 0.8)
+
+
+def _subida(nota):
+    def efecto(azar):
+        """El orbe cambia al color de un tier mejor: una campana, mas aguda
+        cuanto mas alto el tier."""
+        tono = parciales(hz(nota), 0.7, SR, [(1, 1.0, 6), (2.0, 0.45, 9), (3.0, 0.2, 13), (4.2, 0.1, 18)], ataque=0.004)
+        soplo = adsr(banda(ruido(int(0.25 * SR), azar), SR, lambda t: 1500 + 4000 * t, 4.0), SR, 0.02, 0.05, 0.5, 0.15)
+        return reverberacion(_mezcla((tono, 1.0), (soplo, 0.25)), SR, 0.35, 0.75)
+    return efecto
+
+
+def gacha_estallido(azar):
+    """El orbe revienta y sale lo que ha tocado: golpe grave, un "fsss" de
+    chispas y un acorde que se abre."""
+    n = int(1.4 * SR)
+    boom = golpe(barrido(120, 40, 0.6, SR), SR, 0.002, 5.0)
+    chispas = adsr(paso_alto(ruido(n, azar), SR, 3000), SR, 0.002, 0.3, 0.2, 0.8)
+    acorde = vacio(n)
+    for k, nota in enumerate(("C5", "G5", "C6", "E6")):
+        sumar(acorde, parciales(hz(nota), 1.1, SR, [(1, 1.0, 3), (2, 0.3, 6)], ataque=0.01), int(k * 0.03 * SR), 0.3)
+    return reverberacion(saturar(_mezcla((boom, 1.0), (chispas, 0.35), (acorde, 0.6)), 1.2), SR, 0.4, 0.85)
+
+
+def gacha_carta(azar):
+    """Una carta se da la vuelta: un "fip" de papel."""
+    n = int(0.16 * SR)
+    papel = adsr(banda(ruido(n, azar), SR, lambda t: 2500 + 3000 * t, 2.0), SR, 0.003, 0.04, 0.3, 0.08)
+    return _mezcla((papel, 1.0), (golpe(barrido(900, 1400, 0.05, SR, "triangulo"), SR, 0.001, 50.0), 0.3))
+
+
+def gacha_trueno(azar):
+    """Un rayo cae sobre el orbe (solo si va a salir algo de los dos tiers de
+    arriba): chasquido y retumbo."""
+    n = int(1.2 * SR)
+    chasquido = golpe(paso_alto(ruido(n, azar), SR, 1800), SR, 0.001, 14.0)
+    retumbo = adsr(paso_bajo(ruido(n, azar), SR, 160), SR, 0.03, 0.3, 0.6, 0.8)
+    return reverberacion(saturar(_mezcla((chasquido, 1.0), (retumbo, 0.9)), 1.4), SR, 0.3, 0.8)
+
+
+def gacha_grieta(azar):
+    """El orbe se agrieta (solo antes del tier mas alto): cristal que cruje."""
+    salida = vacio(int(0.9 * SR))
+    for k in range(6):
+        f = 2400 + azar.random() * 3000
+        sumar(salida, parciales(f, 0.25, SR, [(1, 1.0, 25), (1.5, 0.5, 30), (2.3, 0.3, 40)], ataque=0.001),
+              int((k * 0.09 + azar.random() * 0.03) * SR), 0.4)
+    crujido = golpe(paso_alto(ruido(int(0.4 * SR), azar), SR, 2500), SR, 0.001, 18.0)
+    sumar(salida, crujido, 0, 0.6)
+    return reverberacion(salida, SR, 0.35, 0.7)
+
+
+def gacha_revelar(azar):
+    """Se destapa algo de los tiers de abajo: arpegio corto que sube."""
+    salida = vacio(int(1.1 * SR))
+    for k, nota in enumerate(("G4", "C5", "E5", "G5")):
+        sumar(salida, parciales(hz(nota), 0.7, SR, [(1, 1.0, 6), (2, 0.3, 9), (3, 0.12, 12)]), int(k * 0.06 * SR), 0.45)
+    return reverberacion(salida, SR, 0.35, 0.8)
+
+
+def gacha_s(azar):
+    """El sello de una S o una legendaria: golpe de tambor grande y un acorde
+    mayor que se queda sonando."""
+    n = int(2.2 * SR)
+    tambor = golpe(barrido(95, 42, 0.8, SR), SR, 0.002, 4.0)
+    golpe_ruido = golpe(paso_bajo(ruido(n, azar), SR, 2500), SR, 0.001, 12.0)
+    acorde = vacio(n)
+    for k, nota in enumerate(("D4", "A4", "D5", "F#5", "A5")):
+        sumar(acorde, adsr(oscilador("sierra", hz(nota), 1.9, SR, vibrato=0.004), SR, 0.04, 0.3, 0.6, 0.9), int(0.05 * SR), 0.12)
+        sumar(acorde, parciales(hz(nota) * 2, 1.6, SR, [(1, 1.0, 3), (2, 0.3, 5)], ataque=0.01), int((0.08 + k * 0.05) * SR), 0.18)
+    acorde = paso_bajo(acorde, SR, 3500)
+    return reverberacion(saturar(_mezcla((tambor, 1.0), (golpe_ruido, 0.5), (acorde, 0.8)), 1.2), SR, 0.45, 0.9)
+
+
+def gacha_smas(azar):
+    """Lo mas raro (S+ o mitica): un barrido que sube, el estallido y un acorde
+    brillante que se abre en arpegio, con destellos."""
+    n = int(3.0 * SR)
+    salida = vacio(n)
+    subida = adsr(barrido(200, 2400, 0.55, SR, "sierra", curva=1.8), SR, 0.05, 0.05, 0.9, 0.05)
+    sumar(salida, paso_bajo(subida, SR, 5000), 0, 0.25)
+    sumar(salida, golpe(barrido(110, 38, 0.9, SR), SR, 0.002, 3.5), int(0.55 * SR), 1.0)
+    sumar(salida, golpe(paso_alto(ruido(int(1.5 * SR), azar), SR, 2000), SR, 0.001, 4.0), int(0.55 * SR), 0.45)
+    for k, nota in enumerate(("C4", "G4", "C5", "E5", "G5", "C6", "E6", "G6")):
+        sumar(salida, parciales(hz(nota), 1.8, SR, [(1, 1.0, 2.5), (2, 0.35, 4), (3, 0.15, 6)], ataque=0.008),
+              int((0.6 + k * 0.07) * SR), 0.22)
+    for k in range(10):
+        sumar(salida, parciales(hz("C7") * (1 + azar.random() * 0.5), 0.3, SR, [(1, 1.0, 14), (2.76, 0.3, 20)]),
+              int((0.9 + k * 0.17) * SR), 0.12)
+    return reverberacion(saturar(salida, 1.15), SR, 0.5, 0.92)
+
+
 # Nombre del archivo -> (funcion, pico en dB). El pico es el volumen de cada
 # uno respecto a los demas.
 EFECTOS = {
@@ -287,6 +392,18 @@ EFECTOS = {
     "emerger": (emerger, -6.0),
     "rocio": (rocio, -15.0),
     "veneno_lanzado": (veneno_lanzado, -5.0),
+    "gacha_carga": (gacha_carga, -9.0),
+    "gacha_sube_0": (_subida("C5"), -9.0),
+    "gacha_sube_1": (_subida("E5"), -8.0),
+    "gacha_sube_2": (_subida("G5"), -7.0),
+    "gacha_sube_3": (_subida("C6"), -6.0),
+    "gacha_estallido": (gacha_estallido, -4.0),
+    "gacha_carta": (gacha_carta, -12.0),
+    "gacha_trueno": (gacha_trueno, -4.0),
+    "gacha_grieta": (gacha_grieta, -7.0),
+    "gacha_revelar": (gacha_revelar, -6.0),
+    "gacha_s": (gacha_s, -3.0),
+    "gacha_smas": (gacha_smas, -2.0),
 }
 
 # La semilla de cada efecto. Los 20 primeros la sacaban de su puesto en orden

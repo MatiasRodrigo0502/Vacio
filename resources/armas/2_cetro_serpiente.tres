@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="ArmaMago" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="ArmaMago" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/arma_mago.gd" id="1_arma"]
 [ext_resource type="Script" path="res://scripts/modo_arma.gd" id="2_modo"]
 [ext_resource type="Texture2D" path="res://assets/armas/2_cetro_serpiente.png" id="3_icono"]
+[ext_resource type="Texture2D" path="res://assets/armas/2_cetro_serpiente_grande.png" id="4_ilustracion"]
 
 [sub_resource type="Resource" id="modo_0"]
 script = ExtResource("2_modo")
@@ -18,6 +19,7 @@ nombre = "Cetro serpiente"
 descripcion = "Sus disparos serpentean."
 tier = 1
 icono = ExtResource("3_icono")
+ilustracion = ExtResource("4_ilustracion")
 color = Color(0.478, 1.000, 0.690, 1)
 halo = Color(0.086, 0.627, 0.376, 1)
 estilo = 1

@@ -118,14 +118,18 @@ Al matar enemigos ganas **monedas** (de 1 los más débiles a 10 los más fuerte
 el jefe). Los **diamantes** solo los dan los jefes (10 el Corazón del Núcleo). Se guardan
 entre partidas, y se gastan en el botón **Gacha** de la portada:
 
-| Gacha | Una tirada | Tiers y probabilidad |
-|---|---|---|
-| **Skins**, una de cada tier para cada mago | 100 monedas | B 70 %, A 20 %, S 9 %, S+ 1 % |
-| **Armas**, para cualquier mago | 5 diamantes | Raro 70 %, Épico 20 %, Legendario 9 %, Mítico 1 % |
+| Gacha | Una tirada | Diez de golpe | Tiers y probabilidad | Garantía |
+|---|---|---|---|---|
+| **Skins**, una de cada tier para cada mago | 100 monedas | 900 monedas | B 70 %, A 20 %, S 9 %, S+ 1 % | una S+ cada 60 tiradas como mucho |
+| **Armas**, para cualquier mago | 5 diamantes | 45 diamantes | Raro 70 %, Épico 20 %, Legendario 9 %, Mítico 1 % | una mítica cada 30 como mucho |
+
+Diez de golpe traen siempre al menos una A (o una épica). Al abrir sale una cinemática,
+más larga cuanto más raro es lo que ha tocado: la S y la legendaria tienen la suya, y la
+S+ y la mítica otra todavía mayor. Un clic la adelanta y *Saltar* la acaba.
 
 Si te sale algo que ya tienes, ganas más cuanto más raro es: una skin repetida da 20
 monedas la B, 50 la A, 100 la S y 250 la S+, y un arma repetida, 1, 2, 3 o 5 diamantes.
-En la misma pantalla eliges lo que llevas puesto. Cada tier de arma da más que el anterior:
+En la colección (lo que no tienes sale en silueta) pulsas una para verla en grande y ponértela. Cada tier de arma da más que el anterior:
 
 - **Raro**: solo cambia el aspecto.
 - **Épico**: el aspecto y la forma de disparar (abanico, ráfaga, serpenteando, rebotando).

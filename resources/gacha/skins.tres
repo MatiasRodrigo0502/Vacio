@@ -11,3 +11,6 @@ tiers = PackedStringArray("B", "A", "S", "S+")
 colores = PackedColorArray(0.62, 0.72, 0.8, 1, 0.45, 0.8, 1, 1, 0.8, 0.5, 1, 1, 1, 0.8, 0.25, 1)
 probabilidades = PackedFloat32Array(70, 20, 9, 1)
 devolucion = PackedInt32Array(20, 50, 100, 250)
+coste_diez = 900
+garantia_diez = 1
+garantia_maxima = 60
