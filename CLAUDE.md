@@ -422,7 +422,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     Al acabarse el tiempo deja de tirar y se va al acabar `colapso`.
   - **Burbuja del blanco**: dos capas (`_detras` con z −1 y `_delante` con z +1,
     con el mago en medio), `aparece`, `bucle` y `rompe`. Mientras se rompe ya no
-    protege. Al cambiar de piso se va sin romperse. Se queda el aro del tiempo.
+    protege. Al cambiar de piso se va sin romperse. Sin aro del tiempo desde el 2026-11-05 (Matías):
+    avisa el parpadeo de los últimos 0,8 s.
     `MagoRemoto` pinta el `bucle`.
   - **Proyectiles del verde**: `dardo` e impacto, girando con el proyectil.
   - **Estados** (`estado_envenenado`, `estado_ralentizado`): los pintan `Burbujas`
@@ -889,9 +890,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   tamaño de pantalla aunque cambie el zoom): blanco el normal, dorado el
   cargado, naranja la quemadura, violeta el agujero negro y rojo encima del
   jugador. El número es lo que quita de verdad (el golpe que mata enseña lo
-  que le quedaba). **El escudo del mago blanco lleva
-  un aro** por fuera que se vacía con el tiempo que le queda (y el del jefe,
-  igual).
+  que le quedaba). **El escudo del jefe lleva un aro**
+  por fuera que se vacía con el tiempo que le queda. El del mago blanco lo llevó
+  hasta el 2026-11-05, cuando Matías lo quitó.
 - **Arte por piso**: desde el 2026-10-08, cada uno de los 12 pisos tiene sus
   propias rocas de dentro (`assets/rocas/piso_NN/`), de la misma roca que su
   pared: cantos con musgo, basalto mojado, caliza, magma con olivino,

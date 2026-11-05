@@ -17,7 +17,7 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 |---|---|---|
 | Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
 | Mago rojo | +30 de vida, tiempo de carga ×0,5, +20 de daño cargado (50); sus disparos queman 3 por segundo durante 3 s | −25 px/s de velocidad |
-| Mago blanco | ataque especial: escudo burbuja (5 s, con un aro que va marcando lo que le queda); su disparo frena 1,5 s | no tiene bola cargada |
+| Mago blanco | ataque especial: escudo burbuja (5 s; parpadea cuando se va a acabar); su disparo frena 1,5 s | no tiene bola cargada |
 | Mago verde | rocía 9 veces más rápido; ataque especial: 8 proyectiles de veneno que persiguen al enemigo más cercano (5 por segundo durante 5 s, y se suman) | cada gota quita 1; los proyectiles giran tan poco que muchos se estrellan |
 
 ## Cómo añadir uno

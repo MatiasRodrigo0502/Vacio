@@ -38,7 +38,8 @@ const COLOR := Color(0.62, 0.9, 1.0)
 const DURACION_DESTELLO: float = 0.2
 ## Lo que tarda en hincharse al sacarla.
 const APERTURA: float = 0.15
-## En el ultimo tramo parpadea, para avisar de que se va a acabar.
+## En el ultimo tramo parpadea, para avisar de que se va a acabar. Es el unico
+## aviso: el aro con el tiempo que quedaba lo quito Matias el 2026-11-05.
 const AVISO_FIN: float = 0.8
 
 ## La pone el jugador desde el mago (PersonajeJugable.duracion_escudo).
@@ -54,7 +55,7 @@ var _zona: Area2D
 ## Desde el 2026-11-04 con el arte de Matias, si el mago lo trae (ArteHechizo:
 ## "aparece", "bucle" y "rompe"). Va en DOS CAPAS, para que el mago quede dentro
 ## de la burbuja: la de detras se pinta antes que su dibujo y la de delante,
-## despues. Sin arte se pinta por codigo. El aro del tiempo que queda va siempre.
+## despues. Sin arte se pinta por codigo.
 var _arte: ArteHechizo = null
 var _detras: AnimatedSprite2D = null
 var _delante: AnimatedSprite2D = null
@@ -270,10 +271,3 @@ func _draw() -> void:
 		draw_arc(Vector2.ZERO, r - 3.0, giro, giro + 0.9, 12, Color(1.0, 1.0, 1.0, 0.55 * alfa), 2.0, true)
 		draw_arc(Vector2.ZERO, r * 0.72, deg_to_rad(200.0), deg_to_rad(245.0), 10,
 			Color(1.0, 1.0, 1.0, 0.6 * alfa), 3.0, true)
-	# El tiempo que le queda: un aro por fuera que se va vaciando desde arriba,
-	# en el sentido del reloj (pedido por Matias el 2026-10-14). El hueco se
-	# ve flojo, para que se lea cuanto falta.
-	var queda := _levantado / duracion
-	draw_arc(Vector2.ZERO, r + 8.0, 0.0, TAU, 48, Color(0.0, 0.0, 0.0, 0.35 * alfa), 5.0, true)
-	draw_arc(Vector2.ZERO, r + 8.0, -PI * 0.5, -PI * 0.5 + TAU * queda, 48,
-		Color(1.0, 1.0, 1.0, 0.9 * alfa), 3.5, true)

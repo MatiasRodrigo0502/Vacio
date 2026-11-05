@@ -508,7 +508,7 @@ func _pintar_escudo(enemigo: Enemigo, accion: StringName, destello: float, fase:
 	enemigo.draw_arc(Vector2.ZERO, radio, 0.0, TAU, 48, Color(color, 0.85 * alfa), 2.0, true)
 	var giro := fase * 1.6
 	enemigo.draw_arc(Vector2.ZERO, radio - 3.0, giro, giro + 0.9, 12, Color(1.0, 1.0, 1.0, 0.5 * alfa), 2.0, true)
-	# Lo que le queda de escudo, como en la burbuja del mago blanco.
+	# Lo que le queda de escudo: un aro que se vacia, para saber cuando atacar.
 	if accion == &"escudo":
 		var queda := clampf(1.0 - float(enemigo.estado["t"]) / duracion_escudo, 0.0, 1.0)
 		enemigo.draw_arc(Vector2.ZERO, radio + 9.0, 0.0, TAU, 48, Color(0.0, 0.0, 0.0, 0.35 * alfa), 5.0, true)
