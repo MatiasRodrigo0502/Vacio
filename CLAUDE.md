@@ -374,8 +374,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     (`scripts/panel_gacha.gd`, por código): pestañas de skins (100 monedas) y armas
     (5 diamantes), probabilidades (70, 20, 9 y 1 %, medido en 200 000 tiradas),
     tirada con destape, y la colección, donde se elige lo que se lleva. Cada
-    `TiradaGacha` saca un tier y, de ese tier, algo al azar; lo repetido devuelve
-    parte (`devolucion`).
+    `TiradaGacha` saca un tier y, de ese tier, algo al azar; lo repetido da algo,
+    más cuanto más raro (`devolucion`: skins 20, 50, 100 y 250 monedas, desde el
+    2026-11-05, Matías puso los 20 de la B; armas 1, 2, 3 y 5 diamantes). El panel lo
+    dice, sacado del `.tres`.
   - **Skins** (`SkinMago`, una de cada tier por mago, 16): las saca
     `generar_skins.py` del propio atlas del mago, por colores (B gira el tono; A,
     otra paleta; S, paleta y resplandor; S+, iridiscente y `AuraSkin`). Solo

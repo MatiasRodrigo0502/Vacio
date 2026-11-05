@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 05/11/2026 | La burbuja del mago blanco ya no lleva el aro con el tiempo que le queda; avisa parpadeando | — |
+| 05/11/2026 | Una skin repetida da monedas según su tier: 20 la B, 50 la A, 100 la S y 250 la S+, y el panel lo dice | — |
+| 05/11/2026 | La burbuja del mago blanco ya no lleva el aro con el tiempo que le queda; avisa parpadeando | `1797365` |
 | 04/11/2026 | Enemigos nuevos: gólem, vigía y murciélago, en ocho direcciones y con una variante por capa, con animaciones de atacar, daño y muerte; el Corazón del Núcleo sustituye al Mago Caído como jefe, con su pelea más una nova con anillo de bolas | `6de4e0b` |
 | 04/11/2026 | Monedas y diamantes que dan los enemigos y el jefe, y dos gachas en el menú: 16 skins (B, A, S y S+) y 13 armas (raro, épico, legendario y mítico), con formas de disparar, animaciones al matar y modos con la rueda del ratón | `04364db` |
 | 04/11/2026 | Arte nuevo de los cuatro magos y sus hechizos: figuras en ocho direcciones, bola de fuego y meteoro, bola morada y agujero negro, lanza de hielo y burbuja, dardos y los estados de los enemigos | `509d733` |

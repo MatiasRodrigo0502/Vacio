@@ -81,7 +81,8 @@ func puede_tirar(tirada: TiradaGacha) -> bool:
 
 
 ## Una tirada: paga, saca un tier segun sus probabilidades y, de ese tier, una
-## cosa al azar. Lo repetido devuelve parte de lo pagado. Devuelve {} si no llega
+## cosa al azar. Lo repetido da algo, mas cuanto mas raro (TiradaGacha.devolucion;
+## Matias, 2026-11-05: en las skins, 20 la B y mas en cada tier). Devuelve {} si no llega
 ## el dinero; si no, {"objeto", "tier", "nuevo", "devuelto"}.
 func tirar(tirada: TiradaGacha) -> Dictionary:
 	if not puede_tirar(tirada):

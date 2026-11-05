@@ -11,7 +11,7 @@ extends Resource
 @export var coste: int = 100
 @export var usa_diamantes: bool = false
 ## Un tier por posicion, del mas comun al mas raro: nombre, color, probabilidad
-## en % (tienen que sumar 100) y lo que devuelve si sale uno que ya se tiene.
+## en % (tienen que sumar 100) y lo que da si sale uno que ya se tiene.
 @export var tiers: PackedStringArray = PackedStringArray()
 @export var colores: PackedColorArray = PackedColorArray()
 @export var probabilidades: PackedFloat32Array = PackedFloat32Array()

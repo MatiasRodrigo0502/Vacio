@@ -201,11 +201,21 @@ func _poner_boton() -> void:
 	var llega := Coleccion.puede_tirar(_tirada)
 	_boton_tirar.disabled = not llega
 	if llega:
-		_estado.text = "Lo repetido devuelve parte de lo pagado."
+		_estado.text = _texto_repetida()
 	elif _tirada.usa_diamantes:
 		_estado.text = "No tienes diamantes bastantes: solo los dan los jefes."
 	else:
 		_estado.text = "No tienes monedas bastantes: las dan los enemigos."
+
+
+## Lo que da una repetida en este gacha, de su .tres: "20, 50, 100 o 250 monedas".
+func _texto_repetida() -> String:
+	var cantidades := PackedStringArray()
+	for cantidad in _tirada.devolucion:
+		cantidades.append(str(cantidad))
+	var ultima := cantidades[-1]
+	cantidades.resize(cantidades.size() - 1)
+	return "Si te sale repetida, te da %s o %s %s, según su tier." % [", ".join(cantidades), ultima, _tirada.moneda()]
 
 
 ## Una fila por mago: la de siempre y las suyas.
@@ -366,7 +376,7 @@ func _revelar(salida: Dictionary) -> void:
 		_resultado.text = "¡Nueva!"
 		_resultado.add_theme_color_override("font_color", COLOR_TITULO)
 	else:
-		_resultado.text = "Ya la tenías: te devuelve %d %s" % [salida.devuelto, _tirada.moneda()]
+		_resultado.text = "Ya la tenías: ganas %d %s" % [salida.devuelto, _tirada.moneda()]
 		_resultado.add_theme_color_override("font_color", COLOR_APAGADO)
 	Sonido.tocar(&"puertas_abren" if tier >= 2 else &"objeto")
 	_boton_seguir.visible = true
