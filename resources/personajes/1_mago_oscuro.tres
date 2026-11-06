@@ -30,6 +30,7 @@ radio_bola_extra = 0.0
 tiempo_carga_multiplicador = 1.0
 dano_cargado_extra = 0
 alcance_cargado = 320.0
+cargada_tamano_fijo = true
 agujero_negro = true
 duracion_agujero = 2.5
 radio_agujero = 150.0

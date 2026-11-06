@@ -18,7 +18,7 @@ partida** y se pierden al empezar una nueva.
 | Botas ligeras | +45 de velocidad | 1 |
 | Dedal rápido | Cadencia ×0,76 (disparas más seguido) | 2 |
 | Núcleo ardiente | +190 de velocidad de bola | 3 |
-| Piedra hinchada | +6 de radio de bola (no agranda la bola cargada del mago rojo) | 4 |
+| Piedra hinchada | +6 de radio de bola (no agranda las bolas cargadas) | 4 |
 
 **Ningún objeto sube la vida máxima** (decisión de Matías, 2026-10-13): los
 la vida solo se recupera, no se añade. **Lo único que cura es el vendaje**

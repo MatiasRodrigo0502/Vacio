@@ -13,8 +13,9 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 
 ## Los que hay
 
-La bola cargada crece con lo que agranda las bolas (el Orbe hinchado), salvo la del
-mago rojo, que mide siempre lo mismo (`cargada_tamano_fijo`; Matías, 2026-11-06).
+La bola cargada del mago rojo y la del oscuro miden siempre lo mismo: lo que agranda las
+bolas (el Orbe hinchado) solo se nota en el disparo normal (`cargada_tamano_fijo`; Matías,
+2026-11-06).
 
 | Mago | Ventaja | Pega |
 |---|---|---|
