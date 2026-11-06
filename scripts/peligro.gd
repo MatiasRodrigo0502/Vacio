@@ -52,6 +52,20 @@ func _crear_forma() -> Shape2D:
 	return rectangulo
 
 
+## Lo que ocupa en la pantalla. Con el movil en vertical (Vista) la vista gira
+## 90 grados y la caja se ve con los lados cambiados.
+func tamano_en_pantalla() -> Vector2:
+	return tamano.rotated(-Vista.giro).abs()
+
+
+## Lo que se pinta despues, de pie en la pantalla y en sus coordenadas
+## (centradas en el peligro, con su tamano_en_pantalla). Sin esto, en vertical
+## los pinchos salian tumbados y el agujero ensenaba su pared de dentro a un
+## lado. 'posicion' y 'escala', como en draw_set_transform, ya en la pantalla.
+func _de_pie_en_pantalla(posicion: Vector2 = Vector2.ZERO, escala: Vector2 = Vector2.ONE) -> void:
+	draw_set_transform(posicion.rotated(Vista.giro), Vista.giro, escala)
+
+
 ## Lo que le hace a quien lo pisa. Cada peligro lo sobrescribe.
 func _al_pisar(_cuerpo: Node2D) -> void:
 	pass

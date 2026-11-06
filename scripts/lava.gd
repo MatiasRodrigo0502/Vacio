@@ -122,6 +122,8 @@ func _draw() -> void:
 
 	var lado := radio * 2.0 / RADIO_EN_TEXTURA * crecer
 	var opacidad := 1.0 - enfriado * enfriado
+	# De pie en la pantalla: el borde de basalto tiene su luz por arriba.
+	_de_pie_en_pantalla()
 	draw_texture_rect(TEXTURAS[_variante], Rect2(-Vector2.ONE * lado * 0.5, Vector2.ONE * lado),
 		false, Color(1.0, 1.0, 1.0, opacidad))
 	if enfriado <= 0.0:

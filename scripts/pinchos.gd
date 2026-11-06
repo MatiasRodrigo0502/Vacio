@@ -77,14 +77,18 @@ func _salida() -> float:
 
 
 func _draw() -> void:
-	var caja := Rect2(-tamano * 0.5, tamano)
+	# De pie en la pantalla: en vertical los pinchos tienen que seguir
+	# saliendo hacia arriba.
+	_de_pie_en_pantalla()
+	var tam := tamano_en_pantalla()
+	var caja := Rect2(-tam * 0.5, tam)
 	_pintar_placa(caja)
 
 	var salida := _salida()
 	var metal := Color.WHITE.lerp(tinte, 0.4)
-	var margen := MARGEN * tamano
-	var celda := Vector2((tamano.x - margen.x * 2.0) / FILAS,
-		(tamano.y - margen.y * 2.0 - GROSOR * tamano.y) / FILAS)
+	var margen := MARGEN * tam
+	var celda := Vector2((tam.x - margen.x * 2.0) / FILAS,
+		(tam.y - margen.y * 2.0 - GROSOR * tam.y) / FILAS)
 	var semieje := celda.x * AGUJERO_ANCHO
 	var ancho := semieje * 2.0 * 0.75
 	var alto := ancho * PINCHO.get_height() / PINCHO.get_width()
@@ -99,10 +103,10 @@ func _draw() -> void:
 				var x := caja.position.x + margen.x + (columna + 0.5) * celda.x
 				var pie := y + semieje * AGUJERO_ALTO * 0.3
 				_pintar_pincho(x, pie, ancho, alto * salida, salida, metal)
-		var banda_desde := MARGEN + fila * celda.y / tamano.y
-		var banda := Rect2(0.0, banda_desde * tam_labio.y, tam_labio.x, celda.y / tamano.y * tam_labio.y)
+		var banda_desde := MARGEN + fila * celda.y / tam.y
+		var banda := Rect2(0.0, banda_desde * tam_labio.y, tam_labio.x, celda.y / tam.y * tam_labio.y)
 		draw_texture_rect_region(LABIO,
-			Rect2(caja.position.x, caja.position.y + banda_desde * tamano.y, tamano.x, celda.y),
+			Rect2(caja.position.x, caja.position.y + banda_desde * tam.y, tam.x, celda.y),
 			banda, tinte)
 	_pintar_encima(caja, salida)
 

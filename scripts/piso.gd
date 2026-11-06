@@ -60,6 +60,8 @@ var datos: DatosPiso = null
 var numero_piso: int = 1
 
 var _pool: PoolObstaculos = null
+## El arte de las rocas de este piso: de el sale tambien su dibujo en vertical.
+var _catalogo: CatalogoObstaculos = null
 var _obstaculos: Array[Obstaculo] = []
 var _mecanicas: Array[Mecanica] = []
 var _salida_usada: bool = false
@@ -87,6 +89,16 @@ func _ready() -> void:
 	_zona_salida.body_entered.connect(_al_entrar_en_salida)
 	# El fondo de roca se pinta repitiendo su textura, y eso hay que pedirlo.
 	texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	# Con el movil en vertical la roca del fondo gira con la vista (ver
+	# ParedSala.uv_muro), y lo que crece en las losas cambia de sitio.
+	Vista.cambiada.connect(_al_girar_vista.unbind(1))
+
+
+func _al_girar_vista() -> void:
+	queue_redraw()
+	for hijo in _decoracion.get_children():
+		if hijo.has_meta("sitio_vertical"):
+			hijo.position = hijo.get_meta("sitio_vertical" if Vista.vertical() else "sitio_horizontal")
 
 
 ## La roca oscura del fondo, por detras de todas las salas: lo que se ve mas
@@ -113,7 +125,7 @@ func _draw() -> void:
 	var roca := _orden_salas[0].estilo_borde().muro
 	var uvs := PackedVector2Array()
 	for punto in puntos:
-		uvs.append(punto / roca.get_size())
+		uvs.append(ParedSala.uv_muro(punto, roca.get_size()))
 	draw_polygon(puntos, PackedColorArray([color, color, color, color]), uvs, roca)
 
 
@@ -505,6 +517,7 @@ func _colocar_obstaculos() -> void:
 	var catalogo: CatalogoObstaculos = datos.catalogo_arte
 	if catalogo == null:
 		catalogo = CATALOGO_POR_DEFECTO
+	_catalogo = catalogo
 	var texturas := catalogo.texturas_de(datos.familia_obstaculos)
 	if texturas.is_empty():
 		push_warning("El catalogo del piso %d no tiene texturas." % numero_piso)
@@ -540,8 +553,9 @@ func _pilares_jefe(sala: Sala, texturas: Array[Texture2D], tinte: Color, lado_ba
 	for i in cuartos.size():
 		var local := cuartos[i] * Vector2(medio.x * 0.55, medio.y * 0.5)
 		var obstaculo := _pool.obtener()
-		obstaculo.preparar(to_global(sala.position + local), texturas[i % texturas.size()],
-			lado_base * 1.5, tinte, datos.velocidad_obstaculos)
+		var textura := texturas[i % texturas.size()]
+		obstaculo.preparar(to_global(sala.position + local), textura,
+			lado_base * 1.5, tinte, datos.velocidad_obstaculos, _catalogo.vertical_de(textura))
 		_obstaculos.append(obstaculo)
 		sala.registrar_roca(_caja_colision(obstaculo))
 
@@ -577,9 +591,9 @@ func _rocas_en_sala(sala: Sala, generador: RandomNumberGenerator,
 				continue
 
 			var obstaculo := _pool.obtener()
-			obstaculo.preparar(to_global(en_piso),
-				texturas[generador.randi() % texturas.size()],
-				lado, tinte, datos.velocidad_obstaculos)
+			var textura := texturas[generador.randi() % texturas.size()]
+			obstaculo.preparar(to_global(en_piso), textura,
+				lado, tinte, datos.velocidad_obstaculos, _catalogo.vertical_de(textura))
 			_obstaculos.append(obstaculo)
 			sala.registrar_roca(_caja_colision(obstaculo))
 			posiciones.append(en_piso)
@@ -639,7 +653,7 @@ func _colocar_plataformas(generador: RandomNumberGenerator, tinte: Color,
 			var textura: Texture2D = losas[generador.randi() % losas.size()]
 			var losa := _pool.obtener()
 			losa.preparar(to_global(en_piso), textura, ancho_losa, tinte_losa,
-				datos.velocidad_obstaculos)
+				datos.velocidad_obstaculos, catalogo.vertical_de(textura))
 			_obstaculos.append(losa)
 			sala.registrar_roca(_caja_colision(losa))
 			_plantar_encima(en_piso, losa.tamano(), generador, tinte, plantas)
@@ -675,9 +689,17 @@ func _plantar_encima(centro_losa: Vector2, tamano_losa: Vector2,
 		planta.modulate = Color(tinte.r, tinte.g, tinte.b, 1.0)
 		# Repartidas a lo ancho de la losa y pegadas a su mitad superior, que es
 		# donde se apoyarian si la plataforma tuviera altura de verdad.
-		planta.position = centro_losa + Vector2(
-			generador.randf_range(-ancho_losa * 0.38, ancho_losa * 0.38),
-			generador.randf_range(-alto_losa * 0.35, alto_losa * 0.1))
+		#
+		# Ancho y arriba son los de la pantalla: en vertical la losa se ve de
+		# pie (ver Obstaculo), asi que se guardan los dos sitios, con los
+		# mismos numeros al azar (el generador sigue igual para las rocas).
+		var a := generador.randf_range(-0.38, 0.38)
+		var b := generador.randf_range(-0.35, 0.1)
+		var en_vertical := Vector2(a * alto_losa, b * ancho_losa).rotated(PI * 0.5)
+		planta.set_meta("sitio_horizontal", centro_losa + Vector2(a * ancho_losa, b * alto_losa))
+		planta.set_meta("sitio_vertical", centro_losa + en_vertical)
+		planta.position = planta.get_meta("sitio_vertical" if Vista.vertical() else "sitio_horizontal")
+		_de_pie(planta)
 		_decoracion.add_child(planta)
 
 
@@ -713,7 +735,15 @@ func _colocar_decoracion(generador: RandomNumberGenerator, tinte: Color,
 			adorno.flip_h = generador.randf() < 0.5
 			adorno.modulate = Color(tinte.r, tinte.g, tinte.b, 0.8)
 			adorno.position = sitio
+			_de_pie(adorno)
 			_decoracion.add_child(adorno)
+
+
+## Lo que se ve de frente (plantas, piedrecitas), de pie en la pantalla tambien
+## en vertical: gira lo mismo que la vista (Vista, grupo "de_pie").
+func _de_pie(sprite: Sprite2D) -> void:
+	sprite.rotation = Vista.giro
+	sprite.add_to_group("de_pie")
 
 
 ## La antesala y la sala del jefe, si el piso las tiene: el altar y el corazon

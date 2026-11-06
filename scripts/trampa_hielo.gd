@@ -60,13 +60,13 @@ func _pintar_encima(caja: Rect2, salida: float) -> void:
 	if not estan_fuera():
 		if salida > 0.05:
 			var brillo := Color(0.7, 0.9, 1.0, 0.35 * salida / ASOMADO)
-			draw_set_transform(caja.get_center(), 0.0, Vector2(1.0, 0.75))
+			_de_pie_en_pantalla(caja.get_center(), Vector2(1.0, 0.75))
 			draw_circle(Vector2.ZERO, caja.size.x * 0.45, Color(brillo, brillo.a * 0.4))
-			draw_set_transform(Vector2.ZERO)
+			_de_pie_en_pantalla()
 		return
-	draw_set_transform(caja.get_center(), 0.0, Vector2(1.0, 0.75))
+	_de_pie_en_pantalla(caja.get_center(), Vector2(1.0, 0.75))
 	draw_circle(Vector2.ZERO, caja.size.x * 0.55, Color(0.75, 0.92, 1.0, 0.16))
-	draw_set_transform(Vector2.ZERO)
+	_de_pie_en_pantalla()
 	for k in 6:
 		var angulo := _fase * 0.8 + k * TAU / 6.0
 		var destello := caja.get_center() + Vector2(cos(angulo), sin(angulo) * 0.6) * caja.size.x * 0.38

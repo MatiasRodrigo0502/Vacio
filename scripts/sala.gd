@@ -155,7 +155,19 @@ func construir(celda_sala: Vector2i, tipo_sala: MapaSalas.Tipo, tamano_sala: Vec
 			_cierres[direccion].disabled = true
 		else:
 			_anadir_forma(muros, banda)
+	# Al girar el movil la pared se vuelve a levantar: la cara va en la que
+	# queda arriba en la pantalla (ver ParedSala).
+	Vista.cambiada.connect(_al_girar_vista.unbind(1))
 	queue_redraw()
+
+
+func _al_girar_vista() -> void:
+	if _pared != null:
+		# Diferido, como al abrir la secreta: quitar y poner formas de
+		# colision en mitad del paso de fisica hace quejarse al motor.
+		_rehacer_pared.call_deferred()
+	else:
+		queue_redraw()
 
 
 ## Levanta la pared de roca que rodea la sala, con el estilo de su piso (ver
@@ -804,7 +816,7 @@ func _poligono_muro(puntos: Array, colores: Array) -> void:
 	var tam := _estilo.muro.get_size()
 	var uvs := PackedVector2Array()
 	for punto: Vector2 in puntos:
-		uvs.append((position + punto) / tam)
+		uvs.append(ParedSala.uv_muro(position + punto, tam))
 	draw_polygon(PackedVector2Array(puntos), PackedColorArray(colores), uvs, _estilo.muro)
 
 
@@ -898,13 +910,19 @@ func _pintar_reja(direccion: Vector2i) -> void:
 ## Un pilar a cada lado de la puerta, de pie en la franja del muro. Con la
 ## base en el filo del suelo para las puertas de arriba y abajo; en las de los
 ## lados, uno encima y otro debajo del hueco.
+##
+## Arriba, abajo y los lados son los de la pantalla: en vertical (Vista) la
+## sala se ve girada, y los pilares se colocan y se pintan en la pantalla, de
+## pie, como si la sala fuera asi de alta. Si no, salian tumbados.
 func _pintar_pilares(direccion: Vector2i) -> void:
 	var pilar := _estilo.pilar
 	var tam := pilar.get_size()
-	var medio := tamano * 0.5
-	var hueco := _hueco(direccion)
+	var giro := Vista.giro
+	var lado := Vector2i(Vector2(direccion).rotated(-giro).round())
+	var medio := (tamano * 0.5).rotated(-giro).abs()
+	var centro_hueco := _hueco(direccion).get_center().rotated(-giro)
 	var sitios: Array[Rect2] = []
-	match direccion:
+	match lado:
 		Vector2i.UP:
 			for signo in [-1.0, 1.0]:
 				var x: float = signo * (ANCHO_PUERTA + tam.x) * 0.5
@@ -914,11 +932,13 @@ func _pintar_pilares(direccion: Vector2i) -> void:
 				var x: float = signo * (ANCHO_PUERTA + tam.x) * 0.5
 				sitios.append(Rect2(x - tam.x * 0.5, medio.y - 8.0, tam.x, tam.y))
 		_:
-			var x := hueco.get_center().x - tam.x * 0.5
+			var x := centro_hueco.x - tam.x * 0.5
 			sitios.append(Rect2(x, -ANCHO_PUERTA * 0.5 - tam.y - 2.0, tam.x, tam.y))
 			sitios.append(Rect2(x, ANCHO_PUERTA * 0.5 - 6.0, tam.x, tam.y))
+	draw_set_transform(Vector2.ZERO, giro)
 	for sitio in sitios:
 		draw_texture_rect(pilar, sitio, false)
+	draw_set_transform(Vector2.ZERO)
 
 
 ## El agujero de bajada. Mientras la sala tiene enemigos esta tapado: se ve
