@@ -69,6 +69,7 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
+| 06/11/2026 | Los once enemigos de antes, redibujados como los nuevos (vectoriales, en ocho direcciones, con andar, atacar, herido y morir), para verlos antes de decidir si vuelven: en una rama aparte, fuera del juego | — |
 | 06/11/2026 | La bola cargada del mago oscuro también mide siempre lo mismo | — |
 | 06/11/2026 | La ulti del mago rojo mide siempre lo mismo: el Orbe hinchado solo agranda su disparo normal | `752c587` |
 | 06/11/2026 | Cofre nuevo en la sala secreta (dibujado en 3D, con la tapa que se abre de verdad y un tesoro dentro) y su animación: tiembla, salta el cierre, sale un haz de luz con monedas y chispas, y la ruleta entra con rayos y un destello para la ventaja que toca | — |

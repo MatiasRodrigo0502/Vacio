@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TipoEnemigo" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
-[ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_planta_venenosa.tres" id="2_anim"]
+[ext_resource type="SpriteFrames" path="res://assets/criaturas/antiguo_planta_venenosa/animaciones.tres" id="2_anim"]
 [ext_resource type="Resource" path="res://resources/proyectiles/veneno.tres" id="3_proyectil"]
 [ext_resource type="Script" path="res://scripts/comportamientos/anillo.gd" id="9_comportamiento"]
 
@@ -17,6 +17,8 @@ monedas = 3
 velocidad = 28.0
 dano = 25
 alto = 62.0
+escala_dibujo = 1.0
+desfase_dibujo = Vector2(0, -7.43)
 piso_minimo = 3
 color_efectos = Color(0.62, 1.0, 0.32, 1)
 ataque = 1

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TipoEnemigo" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
-[ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_golem_roca.tres" id="2_anim"]
+[ext_resource type="SpriteFrames" path="res://assets/criaturas/antiguo_golem_roca/animaciones.tres" id="2_anim"]
 [ext_resource type="Resource" path="res://resources/proyectiles/magma.tres" id="3_proyectil"]
 [ext_resource type="Script" path="res://scripts/comportamientos/pisoton.gd" id="9_comportamiento"]
 
@@ -17,6 +17,8 @@ monedas = 5
 velocidad = 38.0
 dano = 35
 alto = 66.0
+escala_dibujo = 1.0
+desfase_dibujo = Vector2(0, -3.27)
 piso_minimo = 4
 color_efectos = Color(1.0, 0.55, 0.15, 1)
 ataque = 1

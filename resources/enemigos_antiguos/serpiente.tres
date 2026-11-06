@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TipoEnemigo" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
-[ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_serpiente.tres" id="2_anim"]
+[ext_resource type="SpriteFrames" path="res://assets/criaturas/antiguo_serpiente/animaciones.tres" id="2_anim"]
 [ext_resource type="Resource" path="res://resources/proyectiles/veneno.tres" id="3_proyectil"]
 [ext_resource type="Script" path="res://scripts/comportamientos/abanico.gd" id="9_comportamiento"]
 
@@ -17,6 +17,8 @@ monedas = 2
 velocidad = 68.0
 dano = 25
 alto = 44.0
+escala_dibujo = 1.0
+desfase_dibujo = Vector2(0, -2.47)
 piso_minimo = 2
 color_efectos = Color(0.62, 1.0, 0.32, 1)
 ataque = 1

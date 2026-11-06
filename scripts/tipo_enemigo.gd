@@ -131,6 +131,12 @@ func cria() -> TipoEnemigo:
 		_cria.monedas = 1
 		_cria.diamantes = 0
 		_cria.alto = alto * 0.62
+		# Con escala propia (las hojas de ocho direcciones), el dibujo no sale
+		# de 'alto' y hay que encogerlo aparte: si no, la cria se pinta del
+		# tamano de la madre aunque choque como una pequena.
+		if escala_dibujo > 0.0:
+			_cria.escala_dibujo = escala_dibujo * 0.62
+			_cria.desfase_dibujo = desfase_dibujo
 		_cria.velocidad = velocidad * 1.25
 		_cria.division = 0
 		_cria.radio_explosion = 0.0

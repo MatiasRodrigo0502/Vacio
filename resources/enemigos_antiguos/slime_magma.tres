@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TipoEnemigo" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
-[ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_slime_magma.tres" id="2_anim"]
+[ext_resource type="SpriteFrames" path="res://assets/criaturas/antiguo_slime_magma/animaciones.tres" id="2_anim"]
 [ext_resource type="Script" path="res://scripts/comportamientos/saltos.gd" id="9_comportamiento"]
 
 [sub_resource type="Resource" id="Resource_comportamiento"]
@@ -20,6 +20,8 @@ monedas = 3
 velocidad = 118.0
 dano = 30
 alto = 56.0
+escala_dibujo = 1.0
+desfase_dibujo = Vector2(0, -9.52)
 piso_minimo = 5
 color_efectos = Color(1.0, 0.5, 0.15, 1)
 ataque = 0

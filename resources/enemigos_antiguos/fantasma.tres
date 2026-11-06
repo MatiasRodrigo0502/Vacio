@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TipoEnemigo" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/tipo_enemigo.gd" id="1_tipo"]
-[ext_resource type="SpriteFrames" path="res://assets/enemigos/animaciones_fantasma.tres" id="2_anim"]
+[ext_resource type="SpriteFrames" path="res://assets/criaturas/antiguo_fantasma/animaciones.tres" id="2_anim"]
 [ext_resource type="Script" path="res://scripts/comportamientos/fantasma.gd" id="9_comportamiento"]
 
 [sub_resource type="Resource" id="Resource_comportamiento"]
@@ -16,6 +16,8 @@ monedas = 2
 velocidad = 115.0
 dano = 25
 alto = 54.0
+escala_dibujo = 1.0
+desfase_dibujo = Vector2(0, -25.60)
 piso_minimo = 6
 vuela = true
 color_efectos = Color(0.85, 0.9, 1.0, 1)
