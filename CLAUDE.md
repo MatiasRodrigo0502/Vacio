@@ -876,13 +876,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     deja en `assets/criaturas/antiguo_<id>/`; sus `.tres` apuntan ahí, con
     `escala_dibujo = 1` y su `desfase_dibujo`. El murciélago es el dibujo del paquete en
     morado (hacer otro sería tener dos murciélagos dibujados de dos maneras); los demás
-    son nuevos: slimes con burbujas, pinchos o costra; rata con la cresta erizada;
+    son nuevos: slimes con burbujas, pinchos o costra; **un escorpión en lugar de la
+    rata** (Matías, el mismo día: «cambia el asset de la rata por un escorpión»;
+    `escorpion.tres`, «Escorpión», con el zigzag y los números de la rata), que abre
+    las pinzas y clava el aguijón por encima de la cabeza;
     serpiente que abre la capucha y escupe; planta venenosa con tres ojos y pústulas que
     suelta el anillo por la boca de arriba; gólem de roca que salta y da un pisotón con
     onda; cristal que dispara el rayo por el ojo y revienta; fantasma que se lanza y se
     deshace; planta azul que se abre para morder y se hunde. **Se ven del tamaño de
     antes**: el script iguala el área de lo que ocupaban en su hoja vieja (por eso la
-    rata y la serpiente siguen siendo pequeñas). Para que vuelvan al juego, además de
+    serpiente y el escorpión, que ocupa lo que la rata, son pequeños). Para que vuelvan al juego, además de
     moverlos: los de cuerpo a cuerpo con comportamiento propio (saltos, zigzag, rebote,
     excavar, fantasma, pisotón, teletransporte) no llaman a `gesto(&"atacar")`, y sin eso
     no se ve su ataque. `TipoEnemigo.cria()` encoge ahora también `escala_dibujo`: con

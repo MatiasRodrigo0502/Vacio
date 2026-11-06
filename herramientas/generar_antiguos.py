@@ -27,7 +27,7 @@ para que mida eso. Asi chocan como antes.
 Necesita rsvg-convert (como magos_vectorial.py) y los scripts del paquete, que
 estan en assets/enemigos_fuente/del_paquete/.
 
-    python herramientas/generar_antiguos.py [slime_verde rata ...]
+    python herramientas/generar_antiguos.py [slime_verde escorpion ...]
 """
 import importlib.util
 import math
@@ -350,7 +350,7 @@ def tubo(puntos, ancho, color, borde, ancho_borde=2.2, extra=""):
 
 
 def tubo_afilado(puntos, ancho0, ancho1, color, borde):
-    """Una linea que se afila (la cola de la rata): tramos cada vez mas finos."""
+    """Una linea que se afila (los dedos de las pinzas): tramos cada vez mas finos."""
     out = ""
     for capa, (col, mas) in enumerate(((borde, 2.2), (color, 0.0))):
         for i in range(len(puntos) - 1):
@@ -361,163 +361,157 @@ def tubo_afilado(puntos, ancho0, ancho1, color, borde):
     return out
 
 
-# ========================================================== 2. RATA ===
-# Lienzo de 192, el suelo en y = 160. Corre en zigzag: a cuatro patas, con la
-# cola larga y los ojos rojos.
-R_SUELO = 160
-RATA = dict(pelo=("#9a8e88", "#5a504c", "#24201e"), borde="#100c0a", piel="#e8a0a8", piel2="#a85a64", ojo="#ff3a3a")
+# ===================================================== 2. ESCORPION ===
+# Lienzo de 192, el suelo en y = 160. En lugar de la rata (Matias, 2026-11-06:
+# «cambia el asset de la rata por un escorpion»): ocho patas, dos pinzas y la
+# cola curvada por encima del lomo con el aguijon encendido. Corre en zigzag,
+# como la rata; al atacar abre las pinzas y clava el aguijon por encima de la
+# cabeza.
+E_SUELO = 160
+ESCORPION = dict(caparazon=("#e8a850", "#8e4214", "#2a0e04"), borde="#140804", luz="#ffd890", pata="#5e2a0c",
+                 ojo="#ff4a2a", veneno="#c8ff4a")
+# Las patas de cada lado: donde salen (adelante) y hacia donde apuntan.
+E_PATAS = [(7, 22), (2, 6), (-3, -8), (-8, -22)]
+# La cola, de la base a la punta, en el espacio del cuerpo (adelante, alto):
+# sube hacia atras y se curva hacia delante por encima del lomo.
+E_COLA = [(-22, 6), (-32, 12), (-37, 24), (-33, 36), (-23, 43), (-12, 42)]
+E_COLA_ATACA = [(-22, 7), (-28, 18), (-26, 32), (-14, 42), (0, 42), (12, 34)]
 
 
-def pose_rata(anim, f):
-    p = dict(paso=0.0, bob=0.0, avance=0.0, cabeza=0.0, boca=0.0, flash=False, agacha=0.0, tumbada=None,
-             ojos=1.0, cola=f * math.pi / 2)
-    if anim == "caminar":
-        p.update(paso=[1, 0, -1, 0][f], bob=[0, -2, 0, -2][f])
-    elif anim == "atacar":
-        # Se agacha, salta a morder con la boca abierta y vuelve.
-        p.update(agacha=[.4, .8, 0, 0, .2, 0][f], avance=[0, -3, 12, 18, 10, 3][f], cabeza=[0, -2, 6, 8, 3, 0][f],
-                 boca=[0, 0, .8, 1, .4, 0][f], paso=[0, 0, 1, -1, 0, 0][f])
+def pose_escorpion(anim, f):
+    p = dict(paso=f * math.pi / 2, anda=1.0, bob=[0, -1, 0, -1][f % 4], avance=0.0, cola=0.0, abre=.15,
+             pinzas=0.0, flash=False, tumbado=None, ojos=1.0, agacha=0.0)
+    if anim == "atacar":
+        # Echa la cola atras, abre las pinzas y clava: la pose 3 es el golpe.
+        p.update(anda=0.0, cola=[0, -.35, -.5, 1, .6, .1][f], abre=[.15, .7, 1, .1, .2, .15][f],
+                 pinzas=[0, 4, 6, 8, 4, 1][f], avance=[0, -2, -4, 7, 4, 1][f], agacha=[0, .2, .35, 0, 0, 0][f])
     elif anim == "dano":
-        p.update(flash=f == 0, avance=[-6, -4, -1][f], agacha=[.5, .3, 0][f], ojos=[.3, .6, 1][f])
+        p.update(anda=0.0, flash=f == 0, avance=[-6, -4, -1][f], cola=[-.3, -.15, 0][f], abre=[.8, .4, .15][f],
+                 ojos=[.3, .6, 1][f])
     elif anim == "muerte":
         if f < 3:
-            p.update(flash=f == 0, avance=[-4, -6, -6][f], agacha=[.4, .7, 1][f], ojos=[.5, .2, 0][f])
+            p.update(anda=1.5, flash=f == 0, avance=[-5, -6, -6][f], cola=[-.4, .2, -.2][f], abre=[1, .6, .9][f],
+                     ojos=[.5, .2, 0][f])
         else:
-            p.update(tumbada=(f - 3) / 4, ojos=0.0)
+            p.update(tumbado=(f - 3) / 4, ojos=0.0)
     return p
 
 
-def svg_rata(anim, theta, f):
-    t = RATA
-    p = pose_rata(anim, f)
-    defs = degradado("peloR", t["pelo"], True, .38, .3, .85) + degradado("pielR", [t["piel"], t["piel2"]], True)
-    k = Cuerpo(theta, 96, R_SUELO)
+def _cola(p):
+    """Los puntos de la cola entre la de reposo y la del golpe (cola > 0) o
+    echada atras (cola < 0: el aguijon se va mas arriba y mas atras)."""
+    q = p["cola"]
+    if q >= 0:
+        return [(a[0] + (b[0] - a[0]) * q, a[1] + (b[1] - a[1]) * q) for a, b in zip(E_COLA, E_COLA_ATACA)]
+    return [(t - 8 * -q * i / 5, h + 6 * -q * i / 5) for i, (t, h) in enumerate(E_COLA)]
+
+
+def svg_escorpion(anim, theta, f):
+    t = ESCORPION
+    p = pose_escorpion(anim, f)
+    defs = degradado("quitina", t["caparazon"], True, .38, .28, .85)
+    k = Cuerpo(theta, 96, E_SUELO)
     k.x, k.y = k.punto(p["avance"])
-    out = sombra(k.x, R_SUELO + 2, 40, 12)
-    if p["tumbada"] is not None:
-        return lienzo(192, 192, out + _rata_tumbada(k, t, p["tumbada"]), defs)
-    alto_cuerpo = 18 - 6 * p["agacha"] + p["bob"]
-    # Patas: las de delante y las de detras, en diagonal (trote).
-    # Las patas salen de debajo de la panza (si salieran de mas arriba, las de
-    # este lado se pintarian encima del cuerpo como palos).
-    for tp, up, fase in ((14, 9, 1), (14, -9, -1), (-14, 9, -1), (-14, -9, 1)):
-        paso = 6 * p["paso"] * fase
-        pie = k.punto(tp + paso, up, 0)
-        cadera = k.punto(tp * .8 + paso * .3, up * .8, max(4, alto_cuerpo - 11))
-        k.poner(tp + paso, up, tubo([cadera, pie], 5, "#4a403c", t["borde"], 1.6)
-                + elipse(pie[0], pie[1], 4.5, 2.6, 0, "url(#pielR)", t["borde"], 1.4), -6)
-    # La cola: de detras hacia atras, ondeando.
-    cola = []
-    for i in range(9):
-        tt = -24 - i * 5.5
-        cola.append(k.punto(tt, 7 * math.sin(p["cola"] + i * .7) * (i / 8), 10 - i * 1.0))
-    k.poner(-30, 0, tubo_afilado(cola, 4.5, 1.4, t["piel"], t["borde"]))
-    # El cuerpo.
-    rx, ry, giro = k.elipsoide(25, 15, 14)
-    cx, cy = k.punto(-2, 0, alto_cuerpo)
-    cuerpo = elipse(cx, cy, rx, ry, giro, "url(#peloR)", t["borde"], 2.6)
-    cuerpo += elipse(cx - 3, cy - ry * .35, rx * .45, ry * .25, giro, "#ffffff", "none", 0, ' opacity=".12"')
-    # Los cuartos traseros, mas oscuros, para que se lea por donde va.
+    out = sombra(k.x - 8 * k.s, E_SUELO + 2 - 3 * k.c, 46, 14)
+    if p["tumbado"] is not None:
+        return lienzo(192, 192, out + _escorpion_tumbado(k, t, p["tumbado"]), defs)
+    alto = 9 - 3 * p["agacha"] + p["bob"]
+    # Las ocho patas: cada una con su rodilla alta, a pares que se alternan.
     for lado in (-1, 1):
-        if k.hondo(-12, lado * 10) > -2:
-            qx, qy = k.punto(-12, lado * 10, alto_cuerpo - 2)
-            cuerpo += elipse(qx, qy, 9, 8, 0, t["pelo"][1], "none", 0, ' opacity=".55"')
-    # Una cresta de pelo de punta por el lomo: el pelo erizado es lo que la
-    # hace rata del Vacio y no un raton.
+        for i, (tp, apunta) in enumerate(E_PATAS):
+            fase = p["paso"] + i * math.pi / 2 + (0 if lado > 0 else math.pi)
+            paso = 4 * math.sin(fase) * p["anda"]
+            sube = max(0.0, math.cos(fase)) * 3 * p["anda"]
+            cadera = k.punto(tp, lado * 7, alto - 1)
+            # Cortas y con la rodilla baja: largas y altas parecia una arana.
+            rodilla = k.punto(tp + apunta * .3 + paso * .5, lado * 15, alto + 4 + sube)
+            pie = k.punto(tp + apunta * .55 + paso, lado * 20, sube * .4)
+            k.poner(tp, lado * 20, tubo([cadera, rodilla, pie], 2.6, t["pata"], t["borde"], 1.3), -1)
+    # El abdomen: siete placas de atras hacia delante, cada una algo mayor.
     for i in range(6):
-        tt = -18 + i * 6
-        arriba = alto_cuerpo + 14 * math.sqrt(max(0, 1 - (tt / 26) ** 2)) - 1
-        bx, by = k.punto(tt, 0, arriba)
-        px_, py_ = k.punto(tt - 7, 0, arriba + 10 - 1.2 * abs(i - 2.5))
-        cuerpo += (f'<path d="M{bx - 4:.1f},{by + 2:.1f} L{px_:.1f},{py_:.1f} L{bx + 4:.1f},{by + 2:.1f} Z" '
-                   f'fill="{t["pelo"][2]}" stroke="{t["borde"]}" stroke-width="1.1" stroke-linejoin="round"/>')
-    k.poner(0, 0, cuerpo)
-    # La cabeza, con el hocico, las orejas, los ojos y los bigotes.
-    tc = 24 + p["cabeza"]
-    hc = alto_cuerpo + 4 - 4 * p["agacha"]
-    hx, hy = k.punto(tc, 0, hc)
-    rxh, ryh, girh = k.elipsoide(13, 10, 9)
-    cabeza = []
-    for lado in (-1, 1):                       # orejas
-        ox, oy = k.punto(tc - 5, lado * 8, hc + 10)
-        z = k.hondo(tc - 5, lado * 8)
-        cabeza.append((z - 1, elipse(ox, oy, 6.5, 7.5, 0, "url(#peloR)", t["borde"], 1.8)
-                       + elipse(ox, oy + 1, 3.8, 4.5, 0, "url(#pielR)", "none", 0)))
-    cabeza.append((k.hondo(tc), elipse(hx, hy, rxh, ryh, girh, "url(#peloR)", t["borde"], 2.4)))
-    nx, ny = k.punto(tc + 13, 0, hc - 2)
-    cabeza.append((k.hondo(tc + 13), elipse(nx, ny, 3.4, 2.8, 0, t["piel"], t["borde"], 1.4)))
-    if p["boca"] > 0:
-        bx, by = k.punto(tc + 9, 0, hc - 6)
-        cabeza.append((k.hondo(tc + 9) + .1, elipse(bx, by, 5, 2 + 4 * p["boca"], 0, "#2a0808", t["borde"], 1.2)
-                       + f'<path d="M{bx - 2:.1f},{by - 2:.1f} l1,4 l1,-4 M{bx + .5:.1f},{by - 2:.1f} l1,4 l1,-4" fill="#ffffff" stroke="#ffffff" stroke-width=".6"/>'))
-    for lado in (-1, 1):                       # ojos: solo los del lado que se ve
-        ex, ey = k.punto(tc + 6, lado * 5.5, hc + 3)
-        mira = .6 * k.c - .8 * lado * k.s
-        if mira > 0.2 and p["ojos"] > 0:
-            cabeza.append((k.hondo(tc + 6, lado * 5.5) + .2,
-                           f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="5" fill="{t["ojo"]}" opacity=".35" filter="url(#brillo)"/>'
-                           f'<ellipse cx="{ex:.1f}" cy="{ey:.1f}" rx="2.6" ry="{2.8 * p["ojos"]:.1f}" fill="{t["ojo"]}" stroke="{t["borde"]}" stroke-width="1"/>'
-                           f'<circle cx="{ex - .8:.1f}" cy="{ey - .9:.1f}" r=".9" fill="#ffffff"/>'))
-        bx, by = k.punto(tc + 11, lado * 3, hc - 1)
-        cabeza.append((k.hondo(tc + 11, lado * 3) + .3, "".join(
-            f'<path d="M{bx:.1f},{by:.1f} l{lado * 12 * k.c + 10 * k.s:.1f},{(i - 1) * 3 - 1:.1f}" stroke="#e8e0d8" stroke-width=".8" opacity=".8"/>'
-            for i in range(3))))
-    k.poner(tc, 0, "".join(x for _, x in sorted(cabeza, key=lambda q: q[0])), .5)
+        tt = -20 + i * 4.2
+        rx, ry, giro = k.elipsoide(5.5, 9 + i * .5, 5)
+        x, y = k.punto(tt, 0, alto)
+        placa = elipse(x, y, rx, ry, giro, "url(#quitina)", t["borde"], 1.8)
+        lx, ly = k.punto(tt + 1, 0, alto + 3)
+        placa += elipse(lx, ly, rx * .55, ry * .3, giro, t["luz"], "none", 0, ' opacity=".22"')
+        k.poner(tt, 0, placa)
+    # La cabeza (el caparazon de delante), con los ojos encima.
+    cx, cy = k.punto(8, 0, alto + 1)
+    rx, ry, giro = k.elipsoide(10, 11, 6)
+    cabeza = elipse(cx, cy, rx, ry, giro, "url(#quitina)", t["borde"], 2.2)
+    lx, ly = k.punto(9, 0, alto + 5)
+    cabeza += elipse(lx, ly, rx * .5, ry * .28, giro, t["luz"], "none", 0, ' opacity=".4"')
+    if p["ojos"] > 0:
+        for lado in (-1, 1):
+            ex, ey = k.punto(13, lado * 3, alto + 6)
+            cabeza += (f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="3.2" fill="{t["ojo"]}" opacity="{.35 * p["ojos"]:.2f}" filter="url(#brillo)"/>'
+                       f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="1.7" fill="{t["ojo"]}" stroke="{t["borde"]}" stroke-width=".8" opacity="{p["ojos"]:.2f}"/>')
+    k.poner(8, 0, cabeza, .2)
+    # Las pinzas: brazo, codo y la pinza, con sus dos dedos que se abren.
+    for lado in (-1, 1):
+        hombro = k.punto(14, lado * 6, alto)
+        codo = k.punto(19 + p["pinzas"] * .4, lado * 15, alto + 2 + p["pinzas"] * .3)
+        mano_t = 27 + p["pinzas"]
+        mano = k.punto(mano_t, lado * 11, alto + 3 + p["pinzas"] * .4)
+        brazo = tubo([hombro, codo, mano], 3.4, t["pata"], t["borde"], 1.4)
+        # La pinza, grande: es lo que lo distingue de lejos.
+        rx, ry, giro = k.elipsoide(8, 5.5, 5)
+        brazo += elipse(mano[0], mano[1], rx, ry, giro, "url(#quitina)", t["borde"], 1.8)
+        for dedo in (-1, 1):
+            abre = p["abre"] * (0.6 if dedo > 0 else 1.0)
+            base = k.punto(mano_t + 4, lado * (11 + dedo * 2.2), alto + 3)
+            punta = k.punto(mano_t + 14 - 3 * abre, lado * (11 + dedo * (2 + 8 * abre)), alto + 3 + dedo * abre)
+            brazo += tubo_afilado([base, punta], 4.0, 1.0, t["caparazon"][1], t["borde"])
+        k.poner(mano_t - 4, lado * 12, brazo, .4)
+    # La cola, tramo a tramo, cada uno a su profundidad (en vertical tapa o
+    # queda detras del cuerpo segun hacia donde mire), y el aguijon.
+    cola = _cola(p)
+    sway = 2 * math.sin(p["paso"]) * p["anda"]
+    pts = [k.punto(tt, sway * i / 5, alto + hh - 4) for i, (tt, hh) in enumerate(cola)]
+    for i in range(len(pts) - 1):
+        w = 7.5 - i * .6
+        tramo = tubo([pts[i], pts[i + 1]], w, t["caparazon"][1], t["borde"], 1.6)
+        tramo += f'<circle cx="{pts[i + 1][0]:.1f}" cy="{pts[i + 1][1]:.1f}" r="{w * .55:.1f}" fill="url(#quitina)" stroke="{t["borde"]}" stroke-width="1.4"/>'
+        tm, hm = (cola[i][0] + cola[i + 1][0]) / 2, (cola[i][1] + cola[i + 1][1]) / 2
+        k.poner(tm, 0, tramo, hm * .08)
+    # El aguijon: la bola del veneno y la punta, que apunta hacia donde va la cola.
+    (t4, h4), (t5, h5) = cola[-2], cola[-1]
+    fx, fy = pts[-1]
+    dt, dh = t5 - t4, h5 - h4
+    largo = math.hypot(dt, dh) or 1
+    punta = k.punto(t5 + dt / largo * 9, sway, alto + h5 - 4 + dh / largo * 9 - 4)
+    aguijon = (f'<circle cx="{fx:.1f}" cy="{fy:.1f}" r="6.5" fill="url(#quitina)" stroke="{t["borde"]}" stroke-width="1.8"/>'
+               f'<path d="M{fx - 2.5:.1f},{fy:.1f} L{punta[0]:.1f},{punta[1]:.1f} L{fx + 2.5:.1f},{fy + 1:.1f} Z" fill="#2a1206" stroke="{t["borde"]}" stroke-width="1" stroke-linejoin="round"/>'
+               f'<circle cx="{punta[0]:.1f}" cy="{punta[1]:.1f}" r="{3.5 + 2.5 * max(0, p["cola"]):.1f}" fill="{t["veneno"]}" opacity=".55" filter="url(#brillo)"/>'
+               f'<circle cx="{punta[0]:.1f}" cy="{punta[1]:.1f}" r="1.4" fill="{t["veneno"]}"/>')
+    k.poner(t5, 0, aguijon, h5 * .08 + .1)
     out += con_flash(k.pintar(), p["flash"])
     return lienzo(192, 192, out, defs)
 
 
-def _rata_tumbada(k, t, q):
-    """Panza arriba, con las patas al aire, y se va desvaneciendo."""
+def _escorpion_tumbado(k, t, q):
+    """Panza arriba, con las patas encogidas al aire, y se va apagando."""
     op = 1 - max(0, q - .5) / .5
-    cx, cy = k.punto(0, 0, 10)
-    rx, ry, giro = k.elipsoide(25, 15, 11)
-    out = elipse(cx, cy, rx, ry, giro, "url(#peloR)", t["borde"], 2.4)
-    out += elipse(cx, cy + 2, rx * .6, ry * .55, giro, "#c8b8b0", "none", 0, ' opacity=".7"')
-    for tp, up in ((14, 9), (14, -9), (-14, 9), (-14, -9)):
-        x, y = k.punto(tp * .8, up * .8, 14)
-        tiembla = 3 * math.sin(q * 20 + tp) * (1 - q)
-        out += tubo([(x, y), (x + tiembla, y - 12)], 4, "#4a403c", t["borde"], 1.4) + elipse(x + tiembla, y - 13, 3.5, 2.5, 0, "url(#pielR)", t["borde"], 1.2)
-    hx, hy = k.punto(26, 0, 8)
-    out += elipse(hx, hy, 11, 8, 0, "url(#peloR)", t["borde"], 2)
+    out = ""
+    cola = [k.punto(-22 - i * 7, 1.5 * math.sin(i), 3 + 2 * math.sin(i * .9)) for i in range(6)]
+    out += tubo(cola, 6, t["caparazon"][2], t["borde"], 1.4)
+    for i in range(6):
+        x, y = k.punto(-20 + i * 4.2, 0, 5)
+        rx, ry, giro = k.elipsoide(5.5, 9 + i * .5, 4)
+        out += elipse(x, y, rx, ry, giro, t["caparazon"][2], t["borde"], 1.6)
+    x, y = k.punto(8, 0, 6)
+    rx, ry, giro = k.elipsoide(10, 11, 5)
+    out += elipse(x, y, rx, ry, giro, "#5a3016", t["borde"], 2)
     for lado in (-1, 1):
-        ex, ey = k.punto(30, lado * 4, 10)
-        out += f'<path d="M{ex - 2:.1f},{ey - 2:.1f} l4,4 M{ex + 2:.1f},{ey - 2:.1f} l-4,4" stroke="{t["borde"]}" stroke-width="1.6"/>'
-    cola = [k.punto(-24 - i * 6, 2 * math.sin(i), 2) for i in range(8)]
-    out = tubo_afilado(cola, 4, 1.4, t["piel"], t["borde"]) + out
+        for i, (tp, _) in enumerate(E_PATAS):
+            base = k.punto(tp, lado * 7, 8)
+            tiembla = 2.5 * math.sin(q * 18 + i + lado) * (1 - q)
+            arriba = (base[0] + lado * 4 * k.c + tiembla, base[1] - 10 - 2 * (i % 2))
+            out += tubo([base, arriba], 2.4, t["pata"], t["borde"], 1.1)
+        mano = k.punto(26, lado * 10, 6)
+        out += elipse(mano[0], mano[1] - 2, 5, 3.5, 0, t["caparazon"][2], t["borde"], 1.4)
     return f'<g opacity="{op:.2f}">{out}</g>'
-
-
-def tubo_afilado_brillo(puntos, ancho0, ancho1, color, borde, brillo, manchas=None):
-    """Como tubo_afilado, con una linea de luz por encima y, si se pide, manchas
-    (cada cuantos puntos y de que color): el lomo de la serpiente."""
-    out = tubo_afilado(puntos, ancho0, ancho1, color, borde)
-    n = len(puntos) - 1
-    for i in range(n):
-        k = i / max(1, n - 1)
-        w = (ancho0 + (ancho1 - ancho0) * k) * .32
-        (x0, y0), (x1, y1) = puntos[i], puntos[i + 1]
-        # Opaco: con transparencia, las puntas redondas de cada tramo se
-        # solapan y salen cuentas mas claras en cada union.
-        out += (f'<path d="M{x0:.1f},{y0 - w * .9:.1f} L{x1:.1f},{y1 - w * .9:.1f}" stroke="{brillo}" '
-                f'stroke-width="{w:.1f}" stroke-linecap="round"/>')
-    if manchas:
-        cada, col = manchas
-        for i in range(1, n, cada):
-            k = i / max(1, n - 1)
-            w = (ancho0 + (ancho1 - ancho0) * k) * .34
-            x, y = puntos[i]
-            out += f'<ellipse cx="{x:.1f}" cy="{y:.1f}" rx="{w * 1.2:.1f}" ry="{w:.1f}" fill="{col}" opacity=".8"/>'
-    return out
-
-
-def bezier(p0, p1, p2, n):
-    """n+1 puntos de una curva cuadratica (en el espacio del cuerpo: t, u, h)."""
-    out = []
-    for j in range(n + 1):
-        q = j / n
-        out.append(tuple((1 - q) ** 2 * a + 2 * (1 - q) * q * b + q * q * c for a, b, c in zip(p0, p1, p2)))
-    return out
 
 
 # ===================================================== 3. SERPIENTE ===
@@ -1369,7 +1363,8 @@ CRIATURAS = {
     "slime_verde": {"svg": lambda a, th, f: svg_slime("slime_verde", a, th, f), "lienzo": 192, "animaciones": ANIMS},
     "slime_naranja": {"svg": lambda a, th, f: svg_slime("slime_naranja", a, th, f), "lienzo": 192, "animaciones": ANIMS},
     "slime_magma": {"svg": lambda a, th, f: svg_slime("slime_magma", a, th, f), "lienzo": 192, "animaciones": ANIMS},
-    "rata": {"svg": svg_rata, "lienzo": 192, "animaciones": ANIMS},
+    # Ocupa lo que ocupaba la rata, a la que sustituye: ver medidas().
+    "escorpion": {"svg": svg_escorpion, "lienzo": 192, "animaciones": ANIMS, "como": "rata"},
     "serpiente": {"svg": svg_serpiente, "lienzo": 192, "animaciones": ANIMS_DISPARO},
     "planta_venenosa": {"svg": svg_planta_venenosa, "lienzo": 192, "animaciones": ANIMS_DISPARO},
     "murcielago": {"svg": svg_murcielago, "lienzo": 128,
@@ -1412,7 +1407,8 @@ def medidas(nombre, tmp):
     datos = CRIATURAS[nombre]
     lienzo_px = datos["lienzo"]
     alto = _alto_de(nombre)
-    vieja = Image.open(os.path.join(RAIZ, "assets", "enemigos", "%s_00.png" % nombre)).convert("RGBA")
+    # El de antes con el que se mide: el suyo, o el que sustituye ('como').
+    vieja = Image.open(os.path.join(RAIZ, "assets", "enemigos", "%s_00.png" % datos.get("como", nombre))).convert("RGBA")
     x0, y0, x1, y1 = _caja(vieja)
     antes = math.sqrt((x1 - x0) * (y1 - y0)) * alto / vieja.height
     lado = Image.open(_pintar(datos["svg"]("caminar", 90, 0), lienzo_px, tmp)).convert("RGBA")

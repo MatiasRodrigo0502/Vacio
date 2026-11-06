@@ -1,681 +1,681 @@
 [gd_resource type="SpriteFrames" load_steps=173 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_rata/caminar.png" id="t_caminar"]
-[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_rata/atacar.png" id="t_atacar"]
-[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_rata/dano.png" id="t_dano"]
-[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_rata/muerte.png" id="t_muerte"]
+[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_escorpion/caminar.png" id="t_caminar"]
+[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_escorpion/atacar.png" id="t_atacar"]
+[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_escorpion/dano.png" id="t_dano"]
+[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_escorpion/muerte.png" id="t_muerte"]
 
 [sub_resource type="AtlasTexture" id="caminar_derecha_0"]
 atlas = ExtResource("t_caminar")
-region = Rect2(0, 0, 68, 38)
+region = Rect2(0, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_derecha_1"]
 atlas = ExtResource("t_caminar")
-region = Rect2(68, 0, 68, 38)
+region = Rect2(57, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_derecha_2"]
 atlas = ExtResource("t_caminar")
-region = Rect2(136, 0, 68, 38)
+region = Rect2(114, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_derecha_3"]
 atlas = ExtResource("t_caminar")
-region = Rect2(204, 0, 68, 38)
+region = Rect2(171, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_derecha_0"]
 atlas = ExtResource("t_caminar")
-region = Rect2(0, 38, 68, 38)
+region = Rect2(0, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_derecha_1"]
 atlas = ExtResource("t_caminar")
-region = Rect2(68, 38, 68, 38)
+region = Rect2(57, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_derecha_2"]
 atlas = ExtResource("t_caminar")
-region = Rect2(136, 38, 68, 38)
+region = Rect2(114, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_derecha_3"]
 atlas = ExtResource("t_caminar")
-region = Rect2(204, 38, 68, 38)
+region = Rect2(171, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_0"]
 atlas = ExtResource("t_caminar")
-region = Rect2(0, 76, 68, 38)
+region = Rect2(0, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_1"]
 atlas = ExtResource("t_caminar")
-region = Rect2(68, 76, 68, 38)
+region = Rect2(57, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_2"]
 atlas = ExtResource("t_caminar")
-region = Rect2(136, 76, 68, 38)
+region = Rect2(114, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_3"]
 atlas = ExtResource("t_caminar")
-region = Rect2(204, 76, 68, 38)
+region = Rect2(171, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_izquierda_0"]
 atlas = ExtResource("t_caminar")
-region = Rect2(0, 114, 68, 38)
+region = Rect2(0, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_izquierda_1"]
 atlas = ExtResource("t_caminar")
-region = Rect2(68, 114, 68, 38)
+region = Rect2(57, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_izquierda_2"]
 atlas = ExtResource("t_caminar")
-region = Rect2(136, 114, 68, 38)
+region = Rect2(114, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_abajo_izquierda_3"]
 atlas = ExtResource("t_caminar")
-region = Rect2(204, 114, 68, 38)
+region = Rect2(171, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_izquierda_0"]
 atlas = ExtResource("t_caminar")
-region = Rect2(0, 152, 68, 38)
+region = Rect2(0, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_izquierda_1"]
 atlas = ExtResource("t_caminar")
-region = Rect2(68, 152, 68, 38)
+region = Rect2(57, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_izquierda_2"]
 atlas = ExtResource("t_caminar")
-region = Rect2(136, 152, 68, 38)
+region = Rect2(114, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_izquierda_3"]
 atlas = ExtResource("t_caminar")
-region = Rect2(204, 152, 68, 38)
+region = Rect2(171, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_izquierda_0"]
 atlas = ExtResource("t_caminar")
-region = Rect2(0, 190, 68, 38)
+region = Rect2(0, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_izquierda_1"]
 atlas = ExtResource("t_caminar")
-region = Rect2(68, 190, 68, 38)
+region = Rect2(57, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_izquierda_2"]
 atlas = ExtResource("t_caminar")
-region = Rect2(136, 190, 68, 38)
+region = Rect2(114, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_izquierda_3"]
 atlas = ExtResource("t_caminar")
-region = Rect2(204, 190, 68, 38)
+region = Rect2(171, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_0"]
 atlas = ExtResource("t_caminar")
-region = Rect2(0, 228, 68, 38)
+region = Rect2(0, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_1"]
 atlas = ExtResource("t_caminar")
-region = Rect2(68, 228, 68, 38)
+region = Rect2(57, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_2"]
 atlas = ExtResource("t_caminar")
-region = Rect2(136, 228, 68, 38)
+region = Rect2(114, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_3"]
 atlas = ExtResource("t_caminar")
-region = Rect2(204, 228, 68, 38)
+region = Rect2(171, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_derecha_0"]
 atlas = ExtResource("t_caminar")
-region = Rect2(0, 266, 68, 38)
+region = Rect2(0, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_derecha_1"]
 atlas = ExtResource("t_caminar")
-region = Rect2(68, 266, 68, 38)
+region = Rect2(57, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_derecha_2"]
 atlas = ExtResource("t_caminar")
-region = Rect2(136, 266, 68, 38)
+region = Rect2(114, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="caminar_arriba_derecha_3"]
 atlas = ExtResource("t_caminar")
-region = Rect2(204, 266, 68, 38)
+region = Rect2(171, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_derecha_0"]
 atlas = ExtResource("t_atacar")
-region = Rect2(0, 0, 68, 38)
+region = Rect2(0, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_derecha_1"]
 atlas = ExtResource("t_atacar")
-region = Rect2(68, 0, 68, 38)
+region = Rect2(57, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_derecha_2"]
 atlas = ExtResource("t_atacar")
-region = Rect2(136, 0, 68, 38)
+region = Rect2(114, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_derecha_3"]
 atlas = ExtResource("t_atacar")
-region = Rect2(204, 0, 68, 38)
+region = Rect2(171, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_derecha_4"]
 atlas = ExtResource("t_atacar")
-region = Rect2(272, 0, 68, 38)
+region = Rect2(228, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_derecha_5"]
 atlas = ExtResource("t_atacar")
-region = Rect2(340, 0, 68, 38)
+region = Rect2(285, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_derecha_0"]
 atlas = ExtResource("t_atacar")
-region = Rect2(0, 38, 68, 38)
+region = Rect2(0, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_derecha_1"]
 atlas = ExtResource("t_atacar")
-region = Rect2(68, 38, 68, 38)
+region = Rect2(57, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_derecha_2"]
 atlas = ExtResource("t_atacar")
-region = Rect2(136, 38, 68, 38)
+region = Rect2(114, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_derecha_3"]
 atlas = ExtResource("t_atacar")
-region = Rect2(204, 38, 68, 38)
+region = Rect2(171, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_derecha_4"]
 atlas = ExtResource("t_atacar")
-region = Rect2(272, 38, 68, 38)
+region = Rect2(228, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_derecha_5"]
 atlas = ExtResource("t_atacar")
-region = Rect2(340, 38, 68, 38)
+region = Rect2(285, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_0"]
 atlas = ExtResource("t_atacar")
-region = Rect2(0, 76, 68, 38)
+region = Rect2(0, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_1"]
 atlas = ExtResource("t_atacar")
-region = Rect2(68, 76, 68, 38)
+region = Rect2(57, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_2"]
 atlas = ExtResource("t_atacar")
-region = Rect2(136, 76, 68, 38)
+region = Rect2(114, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_3"]
 atlas = ExtResource("t_atacar")
-region = Rect2(204, 76, 68, 38)
+region = Rect2(171, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_4"]
 atlas = ExtResource("t_atacar")
-region = Rect2(272, 76, 68, 38)
+region = Rect2(228, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_5"]
 atlas = ExtResource("t_atacar")
-region = Rect2(340, 76, 68, 38)
+region = Rect2(285, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_0"]
 atlas = ExtResource("t_atacar")
-region = Rect2(0, 114, 68, 38)
+region = Rect2(0, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_1"]
 atlas = ExtResource("t_atacar")
-region = Rect2(68, 114, 68, 38)
+region = Rect2(57, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_2"]
 atlas = ExtResource("t_atacar")
-region = Rect2(136, 114, 68, 38)
+region = Rect2(114, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_3"]
 atlas = ExtResource("t_atacar")
-region = Rect2(204, 114, 68, 38)
+region = Rect2(171, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_4"]
 atlas = ExtResource("t_atacar")
-region = Rect2(272, 114, 68, 38)
+region = Rect2(228, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_5"]
 atlas = ExtResource("t_atacar")
-region = Rect2(340, 114, 68, 38)
+region = Rect2(285, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_izquierda_0"]
 atlas = ExtResource("t_atacar")
-region = Rect2(0, 152, 68, 38)
+region = Rect2(0, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_izquierda_1"]
 atlas = ExtResource("t_atacar")
-region = Rect2(68, 152, 68, 38)
+region = Rect2(57, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_izquierda_2"]
 atlas = ExtResource("t_atacar")
-region = Rect2(136, 152, 68, 38)
+region = Rect2(114, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_izquierda_3"]
 atlas = ExtResource("t_atacar")
-region = Rect2(204, 152, 68, 38)
+region = Rect2(171, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_izquierda_4"]
 atlas = ExtResource("t_atacar")
-region = Rect2(272, 152, 68, 38)
+region = Rect2(228, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_izquierda_5"]
 atlas = ExtResource("t_atacar")
-region = Rect2(340, 152, 68, 38)
+region = Rect2(285, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_0"]
 atlas = ExtResource("t_atacar")
-region = Rect2(0, 190, 68, 38)
+region = Rect2(0, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_1"]
 atlas = ExtResource("t_atacar")
-region = Rect2(68, 190, 68, 38)
+region = Rect2(57, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_2"]
 atlas = ExtResource("t_atacar")
-region = Rect2(136, 190, 68, 38)
+region = Rect2(114, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_3"]
 atlas = ExtResource("t_atacar")
-region = Rect2(204, 190, 68, 38)
+region = Rect2(171, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_4"]
 atlas = ExtResource("t_atacar")
-region = Rect2(272, 190, 68, 38)
+region = Rect2(228, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_5"]
 atlas = ExtResource("t_atacar")
-region = Rect2(340, 190, 68, 38)
+region = Rect2(285, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_0"]
 atlas = ExtResource("t_atacar")
-region = Rect2(0, 228, 68, 38)
+region = Rect2(0, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_1"]
 atlas = ExtResource("t_atacar")
-region = Rect2(68, 228, 68, 38)
+region = Rect2(57, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_2"]
 atlas = ExtResource("t_atacar")
-region = Rect2(136, 228, 68, 38)
+region = Rect2(114, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_3"]
 atlas = ExtResource("t_atacar")
-region = Rect2(204, 228, 68, 38)
+region = Rect2(171, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_4"]
 atlas = ExtResource("t_atacar")
-region = Rect2(272, 228, 68, 38)
+region = Rect2(228, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_5"]
 atlas = ExtResource("t_atacar")
-region = Rect2(340, 228, 68, 38)
+region = Rect2(285, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_derecha_0"]
 atlas = ExtResource("t_atacar")
-region = Rect2(0, 266, 68, 38)
+region = Rect2(0, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_derecha_1"]
 atlas = ExtResource("t_atacar")
-region = Rect2(68, 266, 68, 38)
+region = Rect2(57, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_derecha_2"]
 atlas = ExtResource("t_atacar")
-region = Rect2(136, 266, 68, 38)
+region = Rect2(114, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_derecha_3"]
 atlas = ExtResource("t_atacar")
-region = Rect2(204, 266, 68, 38)
+region = Rect2(171, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_derecha_4"]
 atlas = ExtResource("t_atacar")
-region = Rect2(272, 266, 68, 38)
+region = Rect2(228, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="atacar_arriba_derecha_5"]
 atlas = ExtResource("t_atacar")
-region = Rect2(340, 266, 68, 38)
+region = Rect2(285, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_derecha_0"]
 atlas = ExtResource("t_dano")
-region = Rect2(0, 0, 68, 38)
+region = Rect2(0, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_derecha_1"]
 atlas = ExtResource("t_dano")
-region = Rect2(68, 0, 68, 38)
+region = Rect2(57, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_derecha_2"]
 atlas = ExtResource("t_dano")
-region = Rect2(136, 0, 68, 38)
+region = Rect2(114, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_derecha_0"]
 atlas = ExtResource("t_dano")
-region = Rect2(0, 38, 68, 38)
+region = Rect2(0, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_derecha_1"]
 atlas = ExtResource("t_dano")
-region = Rect2(68, 38, 68, 38)
+region = Rect2(57, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_derecha_2"]
 atlas = ExtResource("t_dano")
-region = Rect2(136, 38, 68, 38)
+region = Rect2(114, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_0"]
 atlas = ExtResource("t_dano")
-region = Rect2(0, 76, 68, 38)
+region = Rect2(0, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_1"]
 atlas = ExtResource("t_dano")
-region = Rect2(68, 76, 68, 38)
+region = Rect2(57, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_2"]
 atlas = ExtResource("t_dano")
-region = Rect2(136, 76, 68, 38)
+region = Rect2(114, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_izquierda_0"]
 atlas = ExtResource("t_dano")
-region = Rect2(0, 114, 68, 38)
+region = Rect2(0, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_izquierda_1"]
 atlas = ExtResource("t_dano")
-region = Rect2(68, 114, 68, 38)
+region = Rect2(57, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_abajo_izquierda_2"]
 atlas = ExtResource("t_dano")
-region = Rect2(136, 114, 68, 38)
+region = Rect2(114, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_izquierda_0"]
 atlas = ExtResource("t_dano")
-region = Rect2(0, 152, 68, 38)
+region = Rect2(0, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_izquierda_1"]
 atlas = ExtResource("t_dano")
-region = Rect2(68, 152, 68, 38)
+region = Rect2(57, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_izquierda_2"]
 atlas = ExtResource("t_dano")
-region = Rect2(136, 152, 68, 38)
+region = Rect2(114, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_izquierda_0"]
 atlas = ExtResource("t_dano")
-region = Rect2(0, 190, 68, 38)
+region = Rect2(0, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_izquierda_1"]
 atlas = ExtResource("t_dano")
-region = Rect2(68, 190, 68, 38)
+region = Rect2(57, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_izquierda_2"]
 atlas = ExtResource("t_dano")
-region = Rect2(136, 190, 68, 38)
+region = Rect2(114, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_0"]
 atlas = ExtResource("t_dano")
-region = Rect2(0, 228, 68, 38)
+region = Rect2(0, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_1"]
 atlas = ExtResource("t_dano")
-region = Rect2(68, 228, 68, 38)
+region = Rect2(57, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_2"]
 atlas = ExtResource("t_dano")
-region = Rect2(136, 228, 68, 38)
+region = Rect2(114, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_derecha_0"]
 atlas = ExtResource("t_dano")
-region = Rect2(0, 266, 68, 38)
+region = Rect2(0, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_derecha_1"]
 atlas = ExtResource("t_dano")
-region = Rect2(68, 266, 68, 38)
+region = Rect2(57, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="dano_arriba_derecha_2"]
 atlas = ExtResource("t_dano")
-region = Rect2(136, 266, 68, 38)
+region = Rect2(114, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_derecha_0"]
 atlas = ExtResource("t_muerte")
-region = Rect2(0, 0, 68, 38)
+region = Rect2(0, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_derecha_1"]
 atlas = ExtResource("t_muerte")
-region = Rect2(68, 0, 68, 38)
+region = Rect2(57, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_derecha_2"]
 atlas = ExtResource("t_muerte")
-region = Rect2(136, 0, 68, 38)
+region = Rect2(114, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_derecha_3"]
 atlas = ExtResource("t_muerte")
-region = Rect2(204, 0, 68, 38)
+region = Rect2(171, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_derecha_4"]
 atlas = ExtResource("t_muerte")
-region = Rect2(272, 0, 68, 38)
+region = Rect2(228, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_derecha_5"]
 atlas = ExtResource("t_muerte")
-region = Rect2(340, 0, 68, 38)
+region = Rect2(285, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_derecha_6"]
 atlas = ExtResource("t_muerte")
-region = Rect2(408, 0, 68, 38)
+region = Rect2(342, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_derecha_7"]
 atlas = ExtResource("t_muerte")
-region = Rect2(476, 0, 68, 38)
+region = Rect2(399, 0, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_derecha_0"]
 atlas = ExtResource("t_muerte")
-region = Rect2(0, 38, 68, 38)
+region = Rect2(0, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_derecha_1"]
 atlas = ExtResource("t_muerte")
-region = Rect2(68, 38, 68, 38)
+region = Rect2(57, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_derecha_2"]
 atlas = ExtResource("t_muerte")
-region = Rect2(136, 38, 68, 38)
+region = Rect2(114, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_derecha_3"]
 atlas = ExtResource("t_muerte")
-region = Rect2(204, 38, 68, 38)
+region = Rect2(171, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_derecha_4"]
 atlas = ExtResource("t_muerte")
-region = Rect2(272, 38, 68, 38)
+region = Rect2(228, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_derecha_5"]
 atlas = ExtResource("t_muerte")
-region = Rect2(340, 38, 68, 38)
+region = Rect2(285, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_derecha_6"]
 atlas = ExtResource("t_muerte")
-region = Rect2(408, 38, 68, 38)
+region = Rect2(342, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_derecha_7"]
 atlas = ExtResource("t_muerte")
-region = Rect2(476, 38, 68, 38)
+region = Rect2(399, 44, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_0"]
 atlas = ExtResource("t_muerte")
-region = Rect2(0, 76, 68, 38)
+region = Rect2(0, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_1"]
 atlas = ExtResource("t_muerte")
-region = Rect2(68, 76, 68, 38)
+region = Rect2(57, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_2"]
 atlas = ExtResource("t_muerte")
-region = Rect2(136, 76, 68, 38)
+region = Rect2(114, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_3"]
 atlas = ExtResource("t_muerte")
-region = Rect2(204, 76, 68, 38)
+region = Rect2(171, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_4"]
 atlas = ExtResource("t_muerte")
-region = Rect2(272, 76, 68, 38)
+region = Rect2(228, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_5"]
 atlas = ExtResource("t_muerte")
-region = Rect2(340, 76, 68, 38)
+region = Rect2(285, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_6"]
 atlas = ExtResource("t_muerte")
-region = Rect2(408, 76, 68, 38)
+region = Rect2(342, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_7"]
 atlas = ExtResource("t_muerte")
-region = Rect2(476, 76, 68, 38)
+region = Rect2(399, 88, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_0"]
 atlas = ExtResource("t_muerte")
-region = Rect2(0, 114, 68, 38)
+region = Rect2(0, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_1"]
 atlas = ExtResource("t_muerte")
-region = Rect2(68, 114, 68, 38)
+region = Rect2(57, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_2"]
 atlas = ExtResource("t_muerte")
-region = Rect2(136, 114, 68, 38)
+region = Rect2(114, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_3"]
 atlas = ExtResource("t_muerte")
-region = Rect2(204, 114, 68, 38)
+region = Rect2(171, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_4"]
 atlas = ExtResource("t_muerte")
-region = Rect2(272, 114, 68, 38)
+region = Rect2(228, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_5"]
 atlas = ExtResource("t_muerte")
-region = Rect2(340, 114, 68, 38)
+region = Rect2(285, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_6"]
 atlas = ExtResource("t_muerte")
-region = Rect2(408, 114, 68, 38)
+region = Rect2(342, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_7"]
 atlas = ExtResource("t_muerte")
-region = Rect2(476, 114, 68, 38)
+region = Rect2(399, 132, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_izquierda_0"]
 atlas = ExtResource("t_muerte")
-region = Rect2(0, 152, 68, 38)
+region = Rect2(0, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_izquierda_1"]
 atlas = ExtResource("t_muerte")
-region = Rect2(68, 152, 68, 38)
+region = Rect2(57, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_izquierda_2"]
 atlas = ExtResource("t_muerte")
-region = Rect2(136, 152, 68, 38)
+region = Rect2(114, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_izquierda_3"]
 atlas = ExtResource("t_muerte")
-region = Rect2(204, 152, 68, 38)
+region = Rect2(171, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_izquierda_4"]
 atlas = ExtResource("t_muerte")
-region = Rect2(272, 152, 68, 38)
+region = Rect2(228, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_izquierda_5"]
 atlas = ExtResource("t_muerte")
-region = Rect2(340, 152, 68, 38)
+region = Rect2(285, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_izquierda_6"]
 atlas = ExtResource("t_muerte")
-region = Rect2(408, 152, 68, 38)
+region = Rect2(342, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_izquierda_7"]
 atlas = ExtResource("t_muerte")
-region = Rect2(476, 152, 68, 38)
+region = Rect2(399, 176, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_0"]
 atlas = ExtResource("t_muerte")
-region = Rect2(0, 190, 68, 38)
+region = Rect2(0, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_1"]
 atlas = ExtResource("t_muerte")
-region = Rect2(68, 190, 68, 38)
+region = Rect2(57, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_2"]
 atlas = ExtResource("t_muerte")
-region = Rect2(136, 190, 68, 38)
+region = Rect2(114, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_3"]
 atlas = ExtResource("t_muerte")
-region = Rect2(204, 190, 68, 38)
+region = Rect2(171, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_4"]
 atlas = ExtResource("t_muerte")
-region = Rect2(272, 190, 68, 38)
+region = Rect2(228, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_5"]
 atlas = ExtResource("t_muerte")
-region = Rect2(340, 190, 68, 38)
+region = Rect2(285, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_6"]
 atlas = ExtResource("t_muerte")
-region = Rect2(408, 190, 68, 38)
+region = Rect2(342, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_7"]
 atlas = ExtResource("t_muerte")
-region = Rect2(476, 190, 68, 38)
+region = Rect2(399, 220, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_0"]
 atlas = ExtResource("t_muerte")
-region = Rect2(0, 228, 68, 38)
+region = Rect2(0, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_1"]
 atlas = ExtResource("t_muerte")
-region = Rect2(68, 228, 68, 38)
+region = Rect2(57, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_2"]
 atlas = ExtResource("t_muerte")
-region = Rect2(136, 228, 68, 38)
+region = Rect2(114, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_3"]
 atlas = ExtResource("t_muerte")
-region = Rect2(204, 228, 68, 38)
+region = Rect2(171, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_4"]
 atlas = ExtResource("t_muerte")
-region = Rect2(272, 228, 68, 38)
+region = Rect2(228, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_5"]
 atlas = ExtResource("t_muerte")
-region = Rect2(340, 228, 68, 38)
+region = Rect2(285, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_6"]
 atlas = ExtResource("t_muerte")
-region = Rect2(408, 228, 68, 38)
+region = Rect2(342, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_7"]
 atlas = ExtResource("t_muerte")
-region = Rect2(476, 228, 68, 38)
+region = Rect2(399, 264, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_derecha_0"]
 atlas = ExtResource("t_muerte")
-region = Rect2(0, 266, 68, 38)
+region = Rect2(0, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_derecha_1"]
 atlas = ExtResource("t_muerte")
-region = Rect2(68, 266, 68, 38)
+region = Rect2(57, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_derecha_2"]
 atlas = ExtResource("t_muerte")
-region = Rect2(136, 266, 68, 38)
+region = Rect2(114, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_derecha_3"]
 atlas = ExtResource("t_muerte")
-region = Rect2(204, 266, 68, 38)
+region = Rect2(171, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_derecha_4"]
 atlas = ExtResource("t_muerte")
-region = Rect2(272, 266, 68, 38)
+region = Rect2(228, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_derecha_5"]
 atlas = ExtResource("t_muerte")
-region = Rect2(340, 266, 68, 38)
+region = Rect2(285, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_derecha_6"]
 atlas = ExtResource("t_muerte")
-region = Rect2(408, 266, 68, 38)
+region = Rect2(342, 308, 57, 44)
 
 [sub_resource type="AtlasTexture" id="muerte_arriba_derecha_7"]
 atlas = ExtResource("t_muerte")
-region = Rect2(476, 266, 68, 38)
+region = Rect2(399, 308, 57, 44)
 
 [resource]
 animations = [{

@@ -1,8 +1,8 @@
 # resources/enemigos_antiguos/
 
 Los once enemigos que había hasta el 2026-11-04, cuando Matías los cambió por los
-de `vacio_completo.zip`: slime verde, naranja y de magma, rata, serpiente, planta
-venenosa, murciélago, gólem de roca, cristal vivo, fantasma y planta azul. **Ya no
+de `vacio_completo.zip`: slime verde, naranja y de magma, rata (hoy un escorpión,
+`escorpion.tres`), serpiente, planta venenosa, murciélago, gólem de roca, cristal vivo, fantasma y planta azul. **Ya no
 salen**: la mecánica de enemigos solo lee `resources/enemigos/`.
 
 Se guardan aquí, con sus comportamientos en `scripts/comportamientos/`, porque

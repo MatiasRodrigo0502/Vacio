@@ -1,5 +1,5 @@
 ## Corre hacia el jugador haciendo eses, y cuesta apuntarle. Cuando ya esta
-## cerca va recto, a morder. La rata.
+## cerca va recto, a morder. La rata (en enemigos_antiguos, ya un escorpión).
 class_name ComportamientoZigzag
 extends ComportamientoEnemigo
 
