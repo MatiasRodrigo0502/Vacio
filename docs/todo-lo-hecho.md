@@ -69,6 +69,7 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
+| 06/11/2026 | Cofre nuevo en la sala secreta (dibujado en 3D, con la tapa que se abre de verdad y un tesoro dentro) y su animación: tiembla, salta el cierre, sale un haz de luz con monedas y chispas, y la ruleta entra con rayos y un destello para la ventaja que toca | — |
 | 05/11/2026 | Las ventanas del tutorial salen una sola vez, aunque se cierre el juego; la del especial, la primera vez con cada mago | — |
 | 05/11/2026 | Gacha nuevo: skins redibujadas en ocho direcciones (las S con traje propio y las S+ con alas, planetas, arcos de aurora o alas de polilla), las 13 armas redibujadas, tiradas de diez con una A o épica segura, garantía de S+ (60 tiradas) y de mítica (30), colección con siluetas y ficha de cada una, y una cinemática al abrir, con la suya para la S y la legendaria y otra aún mayor para la S+ y la mítica | — |
 | 05/11/2026 | Una skin repetida da monedas según su tier: 20 la B, 50 la A, 100 la S y 250 la S+, y el panel lo dice | `9049864` |

@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-11-05.**
+**Última actualización: 2026-11-06.**
 
 ---
 
@@ -63,6 +63,7 @@ hechos.
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 | Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
+| Cofre de la sala secreta | `herramientas/generar_cofre.py` (un cofre en 3D proyectado, con la tapa en cada ángulo de `ANGULOS`) → `assets/cofre/cofre.png`. Necesita `rsvg-convert` | editar el script y volver a ejecutarlo (si cambian `LADO` u `ORIGEN`, también `Cofre.PIES`) |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
 enemigo ni objeto concreto. `Principal.tscn` solo reacciona a sus señales.
@@ -653,12 +654,27 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   azar, bultos y adornos): el generador da los mismos números antes y
   después (medido: 36 piezas iguales en el piso 3), y lo único que delata
   la pared escondida son tres grietas finas y que ahí no crece nada. Dentro,
-  el **`Cofre`** (`scripts/cofre.gd`, dibujado por código): al pisarlo, la
-  **`Ruleta`** (`scripts/ruleta.gd`, capa 3, para el juego salvo en
-  cooperativo) gira entre las ventajas que duran y ya pueden salir en el
-  piso (`ObjetoMejora.cargar_todos`) y se para en una sacada con `randi()`
-  (la suerte, como lo que sueltan los enemigos); *Coger* la aplica con
-  `Jugador.aplicar_mejora` (HUD y registro, como un objeto). En cooperativo
+  el **`Cofre`** (`scripts/cofre.gd`). **Desde el 2026-11-06** (Matías: «el cofre
+  y su animación son muy básicos») su dibujo es una tira de 9 casillas
+  (`assets/cofre/cofre.png`, de `generar_cofre.py`): un cofre de madera y oro en
+  3D proyectado, girado para que se vean el costado y la curva de la tapa, con
+  la tapa en cada ángulo de abrirse (se pasa a 114° y vuelve a 106°) y un montón
+  de monedas y joyas dentro. Encima lo pinta el código: cerrado, un brillo que
+  late, destellos y un saltito cada 3,2 s; al pisarlo, **tiembla 0,55 s** con luz
+  por la rendija de la tapa (`cofre_traqueteo.wav`), **salta el cierre** (estirón,
+  golpe de cámara, `cofre_abre.wav`), la tapa se abre en 0,45 s, sale un **haz de
+  luz** con rayos girando detrás, una onda en el suelo, **26 monedas** que saltan y
+  botan y chispas; a los 0,8 s de abrirse, la ruleta. `abierto` ya es true desde
+  que se pisa. En cooperativo (`marcar_abierto`) se ve abrirse igual, sin ruleta.
+  La **`Ruleta`** (`scripts/ruleta.gd`, capa 3, para el juego salvo en
+  cooperativo) entra creciendo, con rayos dorados girando detrás (`FondoRuleta`);
+  la casilla que pasa por la marca crece y las de los lados se apagan; gira entre
+  las ventajas que duran y ya pueden salir en el piso (`ObjetoMejora.cargar_todos`)
+  y se para en una sacada con `randi()` (la suerte, como lo que sueltan los
+  enemigos), con un destello del color de la ganada en la marca y chispas
+  (`ChispasRuleta`); *Coger* la aplica con
+  `Jugador.aplicar_mejora` (HUD y registro, como un objeto). Probado en la sala
+  secreta del piso 2, con capturas de cada paso. **Nadie lo ha jugado ni oído.** En cooperativo
   la pared y el cofre se abren en todos y la ventaja es para todos
   (`Cooperativo.secreta_descubierta`/`cofre_abierto`); no se ha probado con
   dos juegos. El tutorial lo cuenta en la ventana de la bajada.

@@ -364,6 +364,46 @@ def gacha_smas(azar):
     return reverberacion(saturar(salida, 1.15), SR, 0.5, 0.92)
 
 
+# --- El cofre de la sala secreta (2026-11-05) ---------------------------------
+
+def cofre_traqueteo(azar):
+    """El cofre tiembla antes de abrirse: golpecitos de madera y metal, cada vez
+    mas seguidos, como si algo quisiera salir."""
+    salida = vacio(int(0.6 * SR))
+    t = 0.0
+    k = 0
+    while t < 0.5:
+        madera = golpe(paso_bajo(ruido(int(0.06 * SR), azar), SR, 1200), SR, 0.001, 45.0)
+        metal = parciales(900 + azar.random() * 500, 0.08, SR, [(1, 1.0, 40), (2.7, 0.4, 60)], ataque=0.001)
+        sumar(salida, madera, int(t * SR), 0.8)
+        sumar(salida, metal, int(t * SR), 0.25)
+        k += 1
+        t += max(0.035, 0.11 - k * 0.012)
+    return reverberacion(salida, SR, 0.2, 0.5)
+
+
+def cofre_abre(azar):
+    """Se abre: salta el cierre, cruje la tapa, sale la luz con un soplo y un acorde
+    que sube, y unas monedas tintinean."""
+    n = int(2.0 * SR)
+    salida = vacio(n)
+    sumar(salida, parciales(1800, 0.25, SR, [(1, 1.0, 30), (2.4, 0.5, 40)], ataque=0.001), 0, 0.5)
+    sumar(salida, golpe(paso_bajo(ruido(int(0.1 * SR), azar), SR, 2000), SR, 0.001, 30.0), 0, 0.6)
+    crujido = adsr(banda(ruido(int(0.45 * SR), azar), SR, lambda t: 380 + 300 * t + 120 * ((t * 23) % 1), 9.0),
+                   SR, 0.03, 0.1, 0.8, 0.15)
+    sumar(salida, crujido, int(0.04 * SR), 0.7)
+    soplo = adsr(banda(ruido(int(1.0 * SR), azar), SR, lambda t: 600 + 4000 * t, 2.5), SR, 0.1, 0.2, 0.6, 0.5)
+    sumar(salida, soplo, int(0.2 * SR), 0.35)
+    for k, nota in enumerate(("C5", "E5", "G5", "C6", "E6", "G6")):
+        sumar(salida, parciales(hz(nota), 1.3, SR, [(1, 1.0, 3), (2, 0.35, 6), (3, 0.12, 9)], ataque=0.008),
+              int((0.25 + k * 0.06) * SR), 0.3)
+    for k in range(8):
+        f = 3000 + azar.random() * 2500
+        sumar(salida, parciales(f, 0.18, SR, [(1, 1.0, 35), (1.48, 0.5, 45)], ataque=0.001),
+              int((0.45 + k * 0.09 + azar.random() * 0.04) * SR), 0.18)
+    return reverberacion(salida, SR, 0.4, 0.85)
+
+
 # Nombre del archivo -> (funcion, pico en dB). El pico es el volumen de cada
 # uno respecto a los demas.
 EFECTOS = {
@@ -404,6 +444,8 @@ EFECTOS = {
     "gacha_revelar": (gacha_revelar, -6.0),
     "gacha_s": (gacha_s, -3.0),
     "gacha_smas": (gacha_smas, -2.0),
+    "cofre_traqueteo": (cofre_traqueteo, -6.0),
+    "cofre_abre": (cofre_abre, -3.0),
 }
 
 # La semilla de cada efecto. Los 20 primeros la sacaban de su puesto en orden
