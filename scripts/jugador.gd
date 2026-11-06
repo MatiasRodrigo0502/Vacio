@@ -788,6 +788,12 @@ func escudo_centro() -> Vector2:
 ## Centro real de la forma de colision, que NO es el origen del nodo: el origen
 ## esta a los pies y el circulo esta mas arriba, sobre la base de la tunica.
 ## Lo usan los obstaculos para comprobar si un impacto es de verdad.
+## El radio de las bolas sin lo que han sumado los objetos: el del mago. Lo usa
+## Principal para las bolas cargadas de tamano fijo.
+func radio_bola_sin_objetos() -> float:
+	return _base_radio_bola
+
+
 func centro_colision() -> Vector2:
 	return $Forma.global_position
 

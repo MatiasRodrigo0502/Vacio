@@ -13,6 +13,9 @@ primero es el que se usa si nadie ha elegido (por ejemplo al abrir
 
 ## Los que hay
 
+La bola cargada crece con lo que agranda las bolas (el Orbe hinchado), salvo la del
+mago rojo, que mide siempre lo mismo (`cargada_tamano_fijo`; Matías, 2026-11-06).
+
 | Mago | Ventaja | Pega |
 |---|---|---|
 | Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |

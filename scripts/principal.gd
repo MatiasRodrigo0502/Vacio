@@ -296,8 +296,11 @@ func _bola_del_jugador(direccion: Vector2, cargada: bool) -> BolaMagica:
 			bola.velocidad *= randf_range(0.92, 1.08)
 	if cargada:
 		# El ataque cargado parte de los numeros ya mejorados y los multiplica,
-		# para que los objetos recogidos tambien se noten en el.
+		# para que los objetos recogidos tambien se noten en el. Salvo el tamano,
+		# en el mago que lo tiene fijo.
 		bola.cargada = true
+		if _jugador.mago != null and _jugador.mago.cargada_tamano_fijo:
+			bola.radio = _jugador.radio_bola_sin_objetos()
 		bola.radio *= _jugador.factor_radio_cargada
 		bola.velocidad *= _jugador.factor_velocidad_cargada
 		bola.dano = _jugador.dano_bola_cargada

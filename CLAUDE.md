@@ -455,7 +455,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   - **Meteoro del rojo**: `carga` en `CargaAtaque` (la pose la manda lo cargado,
     no el reloj: carga en 0,375 s), `vuelo` y, al apagarse,
     `Principal._explotar_especial`: `explosion` y la marca (4 s y se apaga en 2).
-    **La explosión solo se ve; el daño lo hace la bola al pasar**, como antes.
+    **La explosión solo se ve; el daño lo hace la bola al pasar**, como antes. Mide
+    siempre lo mismo (radio 23): el Orbe hinchado no lo agranda, solo a su disparo normal
+    (`PersonajeJugable.cargada_tamano_fijo`; Matías, 2026-11-06). La del oscuro sí crece.
   - **Agujero negro del oscuro**: `abrir`, `bucle` y `colapso` por debajo de los
     enemigos; se quedan el círculo de alcance y lo negro por código, encima de
     ellos, para que se les vea tragados (mide 34, lo negro de la hoja al 80 %).

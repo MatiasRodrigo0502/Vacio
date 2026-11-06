@@ -80,6 +80,10 @@ const ESPECIAL_VENENO := 2
 ## Hasta donde llega la bola cargada, en px. 0 = hasta chocar con una roca o
 ## salir de la sala, que es lo de siempre (el mago rojo).
 @export var alcance_cargado: float = 0.0
+## Si es true, la bola cargada mide siempre lo mismo: lo que agranda las bolas (el
+## Orbe hinchado) solo se nota en el disparo normal. El meteoro del mago rojo: Matias
+## lo quiso asi el 2026-11-06.
+@export var cargada_tamano_fijo: bool = false
 
 @export_group("Agujero negro")
 ## Si es true, la bola cargada abre un agujero negro (AgujeroNegro) donde se

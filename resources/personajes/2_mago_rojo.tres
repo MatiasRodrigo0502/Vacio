@@ -31,5 +31,6 @@ velocidad_bola_extra = 0.0
 radio_bola_extra = 0.0
 tiempo_carga_multiplicador = 0.5
 dano_cargado_extra = 20
+cargada_tamano_fijo = true
 quemadura_duracion = 3.0
 quemadura_dano = 3.0
