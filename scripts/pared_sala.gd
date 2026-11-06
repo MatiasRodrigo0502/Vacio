@@ -15,6 +15,18 @@
 ## PERFIL: cuanto se mete la pared en la sala a lo largo de ese lado, medido
 ## cada PASO px. De ahi sale todo: lo que se pinta, lo que choca y donde van
 ## las piezas.
+##
+## EN VERTICAL (Vista, el movil de pie) la vista gira 90 grados, y la pared que
+## queda arriba en la pantalla es la de la derecha del mundo. La cara va en esa
+## ('arriba'), y las piezas (adornos, colgantes, salientes) se pintan de pie en
+## la pantalla, giradas con la vista: si no, se veia la cara a un lado y todo
+## lo que crece en la pared, tumbado.
+##
+## LO QUE CHOCA ES SIEMPRE LO DE HORIZONTAL, en las dos vistas. De donde choca
+## la pared depende donde se reparten los peligros y los enemigos: con otra
+## pared en vertical, el piso salia distinto (y en cooperativo cada uno veria
+## el suyo). Lo que cambia es el dibujo, que se acerca a donde choca: el canto
+## de la pared de arriba del mundo y el de la cara se mueven SUBE_CARA.
 class_name ParedSala
 extends RefCounted
 
@@ -55,6 +67,12 @@ const BULTO_ANCHO := Vector2(30.0, 55.0)
 
 var estilo: EstiloBorde
 var tamano: Vector2
+## La pared que se ve arriba en la pantalla, la que tiene cara: la de arriba
+## del mundo en horizontal y la de la derecha en vertical.
+var arriba: Vector2i = Vector2i.UP
+## Lo girada que estaba la vista (Vista.giro) al levantarla. Las piezas se
+## guardan en coordenadas de la pantalla (girada) y se pintan con este giro.
+var giro: float = 0.0
 ## Las puertas que se ven: delante de ellas la pared se aparta y no choca.
 var puertas: Array[Vector2i] = []
 ## Todas, tambien la de la sala secreta mientras esta escondida
@@ -76,11 +94,16 @@ var _desde: Dictionary = {}
 var _bultos: Array = []
 ## Alto de la cara de la pared de arriba en cada punto de su perfil.
 var _alto_cara: PackedFloat32Array
+## Como va y viene ese alto (ver _trazar_cara): se guarda para poder calcularlo
+## en otra pared sin volver a tirar del generador.
+var _onda_cara := Vector2.ZERO
 ## Lo que se pinta encima de la pared: [textura, rect, abajo del todo, grande].
 ## Ordenado: primero los adornos, juntos los de la misma textura; luego los
-## salientes, de atras hacia delante (ver levantar).
+## salientes, de atras hacia delante (ver levantar). Los rect van en
+## coordenadas de la pantalla (ver en_pantalla): en horizontal son las de la
+## sala.
 var _piezas: Array = []
-## Lo que cuelga de la cara de arriba: [textura, rect].
+## Lo que cuelga de la cara de arriba: [textura, rect], tambien en la pantalla.
 var _colgantes: Array = []
 
 
@@ -96,6 +119,8 @@ func levantar(sala: Sala, estilo_pared: EstiloBorde, semilla: int, rocas: Array[
 	_puertas_todas = sala.puertas
 	origen = sala.position
 	escala = clampf(tamano.x / 1400.0, 0.75, 1.0)
+	giro = Vista.giro
+	arriba = Vector2i(Vector2(Vector2i.UP).rotated(giro).round())
 	var generador := RandomNumberGenerator.new()
 	generador.seed = semilla
 
@@ -103,9 +128,33 @@ func levantar(sala: Sala, estilo_pared: EstiloBorde, semilla: int, rocas: Array[
 		_trazar_perfil(direccion, generador, rocas)
 	_trazar_cara(generador)
 	_poner_choques(sala)
-	_poner_adornos(generador, rocas)
-	_poner_colgantes(generador)
-	_poner_salientes(sala, generador)
+	if arriba == Vector2i.UP:
+		_poner_adornos(generador, rocas)
+		_poner_colgantes(generador)
+		_poner_salientes(sala, generador)
+	else:
+		# En vertical se tira del generador como en horizontal, aunque no se
+		# use lo que sale: asi los salientes, que chocan, caen en el mismo
+		# sitio en las dos vistas (en cooperativo cada uno puede tener la
+		# suya), y la horizontal sale igual que siempre. Lo que solo se ve
+		# (adornos y colgantes) se reparte despues con otro generador.
+		var de_verdad := [arriba, giro]
+		arriba = Vector2i.UP
+		giro = 0.0
+		_calcular_alto_cara()
+		_poner_adornos(generador, rocas)
+		_poner_colgantes(generador)
+		_piezas.clear()
+		_colgantes.clear()
+		arriba = de_verdad[0]
+		giro = de_verdad[1]
+		_poner_salientes(sala, generador)
+		_ver_como_choca()
+		_calcular_alto_cara()
+		var otro := RandomNumberGenerator.new()
+		otro.seed = semilla + 1
+		_poner_adornos(otro, rocas)
+		_poner_colgantes(otro)
 	# Los adornos son pequenos y no se tapan entre ellos: se pintan agrupados
 	# por textura, que es lo que deja al motor pintarlos de una vez. Uno detras
 	# de otro alternando texturas, el juego iba casi un tercio mas lento. Los
@@ -193,13 +242,17 @@ func _elegir_bultos(direccion: Vector2i, generador: RandomNumberGenerator,
 ## Alto de la cara de arriba a lo largo de su perfil: va y viene un poco, para
 ## que el labio de arriba tampoco sea una raya.
 func _trazar_cara(generador: RandomNumberGenerator) -> void:
-	var cuantos: int = _perfiles[Vector2i.UP].size()
-	var frecuencia := TAU / generador.randf_range(90.0, 140.0)
-	var fase := generador.randf() * TAU
+	_onda_cara.x = TAU / generador.randf_range(90.0, 140.0)
+	_onda_cara.y = generador.randf() * TAU
+	_calcular_alto_cara()
+
+
+func _calcular_alto_cara() -> void:
+	var cuantos: int = _perfiles[arriba].size()
 	_alto_cara.resize(cuantos)
 	for i in cuantos:
-		var s: float = _desde[Vector2i.UP] + i * PASO
-		_alto_cara[i] = estilo.alto_cara * escala * (1.0 + 0.1 * sin(s * frecuencia + fase))
+		var s: float = _desde[arriba] + i * PASO
+		_alto_cara[i] = estilo.alto_cara * escala * (1.0 + 0.1 * sin(s * _onda_cara.x + _onda_cara.y))
 
 
 ## Cuanto se mete la pared en 's' (a lo largo del lado), interpolando.
@@ -212,7 +265,7 @@ func entrada_en(direccion: Vector2i, s: float) -> float:
 
 
 func _alto_cara_en(s: float) -> float:
-	var i: float = (s - _desde[Vector2i.UP]) / PASO
+	var i: float = (s - _desde[arriba]) / PASO
 	var a := clampi(int(floor(i)), 0, _alto_cara.size() - 1)
 	var b := mini(a + 1, _alto_cara.size() - 1)
 	return lerpf(_alto_cara[a], _alto_cara[b], clampf(i - a, 0.0, 1.0))
@@ -231,6 +284,25 @@ func punto(direccion: Vector2i, s: float, dentro: float) -> Vector2:
 			return Vector2(-medio.x + dentro, s)
 		_:
 			return Vector2(medio.x - dentro, s)
+
+
+## Un punto de la sala en coordenadas de la pantalla: las de la sala giradas
+## con la vista. En horizontal, las mismas.
+func en_pantalla(p: Vector2) -> Vector2:
+	return p.rotated(-giro)
+
+
+## Al reves: de la pantalla a la sala.
+func en_sala(p: Vector2) -> Vector2:
+	return p.rotated(giro)
+
+
+## Una caja de la pantalla, en la sala: la que la contiene (con el giro de 90
+## grados, la misma caja con los lados cambiados).
+func _caja_en_sala(caja: Rect2) -> Rect2:
+	var a := en_sala(caja.position)
+	var b := en_sala(caja.end)
+	return Rect2(a.min(b), (b - a).abs())
 
 
 ## Al reves que punto(): de un punto a (a lo largo, hacia dentro) de ese lado.
@@ -257,7 +329,7 @@ func _dentro_de_otra(p: Vector2, salvo: Vector2i) -> bool:
 			continue
 		var c := _coordenadas(direccion, p)
 		var limite := entrada_en(direccion, c.x)
-		if direccion == Vector2i.UP:
+		if direccion == arriba:
 			limite -= _alto_cara_en(c.x)
 		if c.y < limite:
 			return true
@@ -289,6 +361,7 @@ func _poner_choques(sala: Sala) -> void:
 		while s < largo * 0.5:
 			if not _es_hueco(direccion, s, radio + 4.0):
 				var dentro := entrada_en(direccion, s)
+				# La de arriba del mundo, tambien en vertical (ver arriba).
 				if direccion == Vector2i.UP:
 					dentro -= SUBE_CARA
 				if dentro > 0.0:
@@ -311,6 +384,25 @@ func _medida(textura: Texture2D, generador: RandomNumberGenerator, variacion: fl
 	return textura.get_size() * escala * generador.randf_range(1.0 - variacion, 1.0 + variacion)
 
 
+## En vertical, el canto que se pinta se lleva a donde choca (los choques son
+## los de horizontal, ver arriba): la pared de arriba del mundo, que choca
+## SUBE_CARA por fuera de su canto, se pinta asi de mas fuera; y la de la cara,
+## que en horizontal no tiene ese margen, asi de mas dentro, para que los pies
+## del mago lleguen al pie de la cara como en la de arriba. Delante de las
+## puertas no se toca: la pared no puede meterse en el hueco.
+func _ver_como_choca() -> void:
+	for direccion in [Vector2i.UP, arriba]:
+		var mover := -SUBE_CARA if direccion == Vector2i.UP else SUBE_CARA
+		var valores: PackedFloat32Array = _perfiles[direccion]
+		for i in valores.size():
+			var s: float = _desde[direccion] + i * PASO
+			var cuanto := 1.0
+			if direccion in puertas:
+				cuanto = smoothstep(LIBRE_PUERTA, LIBRE_PUERTA + RAMPA_PUERTA, absf(s))
+			valores[i] = maxf(valores[i] + mover * cuanto, 0.0)
+		_perfiles[direccion] = valores
+
+
 ## Lo que crece encima de la pared, junto al canto. En la de arriba, sobre el
 ## labio de la cara; en las demas, un poco por fuera del canto, sobre la roca.
 func _poner_adornos(generador: RandomNumberGenerator, rocas: Array[Rect2]) -> void:
@@ -324,12 +416,13 @@ func _poner_adornos(generador: RandomNumberGenerator, rocas: Array[Rect2]) -> vo
 				var textura: Texture2D = estilo.adornos[generador.randi() % estilo.adornos.size()]
 				var medida := _medida(textura, generador)
 				var pie: Vector2
-				if direccion == Vector2i.UP:
+				if direccion == arriba:
 					pie = punto(direccion, s, entrada_en(direccion, s) - _alto_cara_en(s) + 3.0)
 				else:
 					pie = punto(direccion, s, entrada_en(direccion, s) - generador.randf_range(4.0, 14.0))
-				var rect := Rect2(pie - Vector2(medida.x * 0.5, medida.y), medida)
-				if not _choca_con(rect, rocas) and not _dentro_de_otra(pie, direccion):
+				# De pie en la pantalla: el pie abajo y la pieza hacia arriba.
+				var rect := Rect2(en_pantalla(pie) - Vector2(medida.x * 0.5, medida.y), medida)
+				if not _choca_con(_caja_en_sala(rect), rocas) and not _dentro_de_otra(pie, direccion):
 					_anadir_pieza(textura, rect, generador, false)
 			s += estilo.adornos_cada * generador.randf_range(0.5, 1.5)
 
@@ -339,18 +432,18 @@ func _poner_adornos(generador: RandomNumberGenerator, rocas: Array[Rect2]) -> vo
 func _poner_colgantes(generador: RandomNumberGenerator) -> void:
 	if estilo.colgantes.is_empty():
 		return
-	var largo := tamano.x
+	var largo := _largo(arriba)
 	var s := -largo * 0.5 + generador.randf_range(20.0, estilo.colgantes_cada)
 	while s < largo * 0.5 - 20.0:
-		if not _es_puerta(Vector2i.UP, s, 70.0):
+		if not _es_puerta(arriba, s, 70.0):
 			var textura: Texture2D = estilo.colgantes[generador.randi() % estilo.colgantes.size()]
 			var medida := _medida(textura, generador)
 			var alto := _alto_cara_en(s) * 0.92
 			if medida.y > alto:
 				medida *= alto / medida.y
-			var labio := punto(Vector2i.UP, s, entrada_en(Vector2i.UP, s) - _alto_cara_en(s) + 2.0)
-			if not _dentro_de_otra(labio + Vector2(0.0, 6.0), Vector2i.UP):
-				var rect := Rect2(labio - Vector2(medida.x * 0.5, 0.0), medida)
+			var labio := punto(arriba, s, entrada_en(arriba, s) - _alto_cara_en(s) + 2.0)
+			if not _dentro_de_otra(labio + en_sala(Vector2(0.0, 6.0)), arriba):
+				var rect := Rect2(en_pantalla(labio) - Vector2(medida.x * 0.5, 0.0), medida)
 				if generador.randf() < 0.5:
 					rect = Rect2(rect.position + Vector2(rect.size.x, 0.0), Vector2(-rect.size.x, rect.size.y))
 				_colgantes.append([textura, rect])
@@ -381,9 +474,14 @@ func _poner_salientes(sala: Sala, generador: RandomNumberGenerator) -> void:
 		var medida := _medida(textura, generador, 0.12)
 		# Con el pie un poco dentro de la roca: sale de ella.
 		var pie := punto(direccion, s, entrada_en(direccion, s) - 4.0)
-		var rect := Rect2(pie - Vector2(medida.x * 0.5, medida.y), medida)
 		var radio := medida.x * 0.32
-		sala.anadir_roca_filo(pie - Vector2(0.0, radio * 0.7), radio)
+		# Choca un poco por encima del pie, en el mundo (igual en las dos
+		# vistas). En vertical el pie se pinta debajo de ese circulo en la
+		# pantalla, como en horizontal, aunque quede algo corrido del canto.
+		var centro := pie - Vector2(0.0, radio * 0.7)
+		sala.anadir_roca_filo(centro, radio)
+		var base := centro + en_sala(Vector2(0.0, radio * 0.7))
+		var rect := Rect2(en_pantalla(base) - Vector2(medida.x * 0.5, medida.y), medida)
 		_anadir_pieza(textura, rect, generador, true)
 
 
@@ -404,11 +502,16 @@ func _anadir_pieza(textura: Texture2D, rect: Rect2, generador: RandomNumberGener
 func pintar(lienzo: CanvasItem, color_muro: Color) -> void:
 	_pintar_sombras(lienzo)
 	_pintar_cara(lienzo, color_muro)
-	for direccion in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.DOWN]:
-		_pintar_entrada(lienzo, direccion, color_muro)
+	for direccion in MapaSalas.DIRECCIONES:
+		if direccion != arriba:
+			_pintar_entrada(lienzo, direccion, color_muro)
 	_pintar_cantos(lienzo)
+	# Las piezas, de pie en la pantalla: con un solo giro para todas, que no
+	# rompe los lotes de dibujo (ver levantar).
+	lienzo.draw_set_transform(Vector2.ZERO, giro)
 	for pieza in _piezas:
 		lienzo.draw_texture_rect(pieza[0], pieza[1], false)
+	lienzo.draw_set_transform(Vector2.ZERO)
 
 
 ## La roca de un lado vista desde arriba, del filo del suelo al canto. En
@@ -445,20 +548,30 @@ func _poligono_roca(lienzo: CanvasItem, filo: PackedVector2Array, canto: PackedV
 	var uvs := PackedVector2Array()
 	var colores := PackedColorArray()
 	for p in puntos:
-		uvs.append((origen + p) / tam)
+		uvs.append(uv_muro(origen + p, tam))
 		colores.append(color)
 	lienzo.draw_polygon(puntos, colores, uvs, estilo.muro)
 
 
+## Donde cae en la textura de la roca un punto del piso. Alineada con el mundo
+## y, en vertical, girada con la vista: asi la roca se ve igual en la pantalla
+## (su luz viene de arriba) en las dos vistas. La usan tambien la sala y el
+## piso para su roca, para que todo case.
+static func uv_muro(en_piso: Vector2, tam: Vector2) -> Vector2:
+	return en_piso.rotated(-Vista.giro) / tam
+
+
 ## La pared de arriba: la roca hasta el labio (donde la cara empieza por
 ## debajo del filo del suelo, en las esquinas) y la cara vertical, en franjas,
-## con lo que cuelga de ella. La textura de la cara va alineada con el mundo
-## en horizontal y de arriba (labio) a abajo (pie) en vertical.
+## con lo que cuelga de ella. La textura de la cara va alineada con el mundo a
+## lo largo (en la pantalla, de izquierda a derecha) y de arriba (labio) a
+## abajo (pie) en la cara.
 func _pintar_cara(lienzo: CanvasItem, color: Color) -> void:
-	var valores: PackedFloat32Array = _perfiles[Vector2i.UP]
-	var desde: float = _desde[Vector2i.UP]
-	var medio := tamano.x * 0.5
+	var valores: PackedFloat32Array = _perfiles[arriba]
+	var desde: float = _desde[arriba]
+	var medio := _largo(arriba) * 0.5
 	var ancho_textura := estilo.cara.get_size().x
+	var fuera := Vector2(arriba)
 	var blanco := PackedColorArray([Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE])
 	for i in range(0, valores.size() - 1, SALTO_CARA):
 		var j := mini(i + SALTO_CARA, valores.size() - 1)
@@ -468,29 +581,32 @@ func _pintar_cara(lienzo: CanvasItem, color: Color) -> void:
 			continue
 		# El hueco de la puerta se salta entero, aunque el trozo lo pise solo
 		# en parte: la cara no puede tapar el pasillo.
-		if _es_hueco(Vector2i.UP, s0) or _es_hueco(Vector2i.UP, s1):
+		if _es_hueco(arriba, s0) or _es_hueco(arriba, s1):
 			continue
-		var b0 := punto(Vector2i.UP, s0, valores[i])
-		var b1 := punto(Vector2i.UP, s1, valores[j])
-		var t0 := b0 - Vector2(0.0, _alto_cara[i])
-		var t1 := b1 - Vector2(0.0, _alto_cara[j])
+		var b0 := punto(arriba, s0, valores[i])
+		var b1 := punto(arriba, s1, valores[j])
+		var t0 := b0 + fuera * _alto_cara[i]
+		var t1 := b1 + fuera * _alto_cara[j]
 		# Si la cara empieza por debajo del filo, lo de encima es roca.
-		var filo := -tamano.y * 0.5
-		if t0.y > filo or t1.y > filo:
-			var arriba := PackedVector2Array([Vector2(s0, filo), Vector2(s1, filo),
-				Vector2(s1, maxf(t1.y, filo)), Vector2(s0, maxf(t0.y, filo))])
+		var dentro0 := valores[i] - _alto_cara[i]
+		var dentro1 := valores[j] - _alto_cara[j]
+		if dentro0 > 0.0 or dentro1 > 0.0:
+			var encima := PackedVector2Array([punto(arriba, s0, 0.0), punto(arriba, s1, 0.0),
+				punto(arriba, s1, maxf(dentro1, 0.0)), punto(arriba, s0, maxf(dentro0, 0.0))])
 			var tam := estilo.muro.get_size()
 			var uvs_r := PackedVector2Array()
-			for p in arriba:
-				uvs_r.append((origen + p) / tam)
-			lienzo.draw_polygon(arriba, PackedColorArray([color, color, color, color]), uvs_r, estilo.muro)
-		var u0 := (origen.x + s0) / ancho_textura
-		var u1 := (origen.x + s1) / ancho_textura
+			for p in encima:
+				uvs_r.append(uv_muro(origen + p, tam))
+			lienzo.draw_polygon(encima, PackedColorArray([color, color, color, color]), uvs_r, estilo.muro)
+		var u0 := en_pantalla(origen + b0).x / ancho_textura
+		var u1 := en_pantalla(origen + b1).x / ancho_textura
 		lienzo.draw_primitive(PackedVector2Array([t0, t1, b1, b0]), blanco,
 			PackedVector2Array([Vector2(u0, 0.0), Vector2(u1, 0.0), Vector2(u1, 1.0), Vector2(u0, 1.0)]),
 			estilo.cara)
+	lienzo.draw_set_transform(Vector2.ZERO, giro)
 	for colgante in _colgantes:
 		lienzo.draw_texture_rect(colgante[0], colgante[1], false)
+	lienzo.draw_set_transform(Vector2.ZERO)
 
 
 ## La sombra que echa la pared sobre el suelo, del pie hacia dentro. La de
@@ -500,8 +616,8 @@ func _pintar_sombras(lienzo: CanvasItem) -> void:
 	var nada := Color(estilo.color_sombra, 0.0)
 	for direccion in MapaSalas.DIRECCIONES:
 		var largo := _largo(direccion)
-		var ancho := SOMBRA_ANCHO * (1.3 if direccion == Vector2i.UP else 1.0)
-		var fuerte := Color(oscuro, minf(1.0, SOMBRA_FUERZA * (1.25 if direccion == Vector2i.UP else 1.0)))
+		var ancho := SOMBRA_ANCHO * (1.3 if direccion == arriba else 1.0)
+		var fuerte := Color(oscuro, minf(1.0, SOMBRA_FUERZA * (1.25 if direccion == arriba else 1.0)))
 		var colores := PackedColorArray([fuerte, fuerte, nada, nada])
 		var s := -largo * 0.5
 		while s < largo * 0.5:
@@ -535,9 +651,9 @@ func _pintar_cantos(lienzo: CanvasItem) -> void:
 			var visible := d > 0.5 or not _es_hueco(direccion, s, 2.0)
 			var p_pie := punto(direccion, s, d)
 			var p_luz := p_pie
-			if direccion == Vector2i.UP:
-				p_luz = p_pie - Vector2(0.0, _alto_cara[i] - 1.0)
-				visible = visible and absf(s) <= tamano.x * 0.5
+			if direccion == arriba:
+				p_luz = p_pie + fuera * (_alto_cara[i] - 1.0)
+				visible = visible and absf(s) <= _largo(direccion) * 0.5
 			else:
 				p_luz = p_pie + fuera * 1.5
 			visible = visible and not _dentro_de_otra(p_pie, direccion)

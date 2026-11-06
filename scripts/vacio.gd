@@ -71,22 +71,25 @@ func _crear_forma() -> Shape2D:
 func _draw() -> void:
 	# El reborde a escala, y dibujado por fuera del agujero: lo negro coincide
 	# con la zona en la que te caes.
-	var escala := clampf(minf(tamano.x, tamano.y) / TAMANO_REFERENCIA, ESCALA_MINIMA, ESCALA_MAXIMA)
-	var caja := Rect2(-tamano * 0.5, tamano).grow(LABIO * escala)
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * escala)
+	# De pie en la pantalla: la pared de dentro que se ve es siempre la de
+	# arriba, tambien en vertical.
+	var tam := tamano_en_pantalla()
+	var escala := clampf(minf(tam.x, tam.y) / TAMANO_REFERENCIA, ESCALA_MINIMA, ESCALA_MAXIMA)
+	var caja := Rect2(-tam * 0.5, tam).grow(LABIO * escala)
+	_de_pie_en_pantalla(Vector2.ZERO, Vector2.ONE * escala)
 	draw_style_box(_caja, Rect2(caja.position / escala, caja.size / escala))
-	draw_set_transform(Vector2.ZERO)
-	_pintar_chinas()
+	_de_pie_en_pantalla()
+	_pintar_chinas(tam)
 
 
 ## Chinas que se sueltan del borde de arriba y caen hacia lo negro,
 ## encogiendose y apagandose: se hunden, no llegan a ningun sitio.
-func _pintar_chinas() -> void:
+func _pintar_chinas(tam: Vector2) -> void:
 	var semilla := absf(position.x * 0.017 + position.y * 0.011)
 	for i in CHINAS:
 		var ciclo := fmod(_fase / CAIDA + i * 0.29 + semilla, 1.0)
-		var x := (fmod(semilla * 37.0 + i * 0.61, 1.0) - 0.5) * tamano.x * 0.7
-		var y := -tamano.y * 0.5 + tamano.y * 0.55 * ciclo * ciclo
+		var x := (fmod(semilla * 37.0 + i * 0.61, 1.0) - 0.5) * tam.x * 0.7
+		var y := -tam.y * 0.5 + tam.y * 0.55 * ciclo * ciclo
 		var lado := 3.0 * (1.0 - ciclo * 0.8)
 		var color := Color(tinte.r * 0.55, tinte.g * 0.5, tinte.b * 0.5, 1.0 - ciclo)
 		draw_rect(Rect2(x - lado * 0.5, y - lado * 0.5, lado, lado), color)

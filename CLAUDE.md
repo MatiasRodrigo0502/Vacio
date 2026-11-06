@@ -60,7 +60,7 @@ hechos.
 | Precios, probabilidades y garantías de los gachas | `resources/gacha/{skins,armas}.tres` (`TiradaGacha`) | editando números |
 | Monedas y diamantes de cada enemigo | `monedas` y `diamantes` en su `.tres` (`TipoEnemigo`) | editando números |
 | Arte de los magos y sus hechizos | `herramientas/generar_magos.py`, de `assets/magos_fuente/` → `assets/mago_<color>/` (atlas, retrato y `hechizos/`, con un `ArteHechizo` por hechizo), y `arte_disparo`/`arte_especial` en el `.tres` del mago | cambiar las tablas del script y volver a ejecutarlo |
-| Rocas de dentro, una por piso | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
+| Rocas de dentro, una por piso | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso; cada roca, grupo, bloque y losa con su `_v.png` para el móvil en vertical, en `*_vertical` del catálogo) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 | Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
@@ -526,6 +526,41 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     minimapa y el arco del magma también giran. Probado en una ventana
     estrecha: la cámara y los entes giran, y arrastrar el joystick hacia
     arriba lleva al mago hacia arriba en la pantalla.
+  - **El mapa en vertical, con su propio dibujo** (2026-11-06, Matías: «haz
+    unos específicos para el modo vertical, del mismo estilo que los del
+    horizontal»). Antes el escenario se veía tumbado: la cara de la pared a un
+    lado, las rocas con la luz de lado, lo que crece en la pared, los pilares,
+    los pinchos y los agujeros de lado. Ahora:
+    - **Rocas**: `generar_rocas.py` saca para cada roca, grupo, bloque y losa
+      otra del mismo piso, `<nombre>_v.png`, con los lados cambiados (choca la
+      misma caja del mundo) y la luz desde arriba de la pantalla; los grupos y
+      las losas, que son largos, se ven a lo hondo. El catálogo las lista en
+      `rocas_vertical`... en el mismo orden (`CatalogoObstaculos.vertical_de`)
+      y `Obstaculo._poner_dibujo` pinta la que toca, girada con la vista. **Las
+      de horizontal salen idénticas píxel a píxel**: el generador tira de la
+      misma semilla en el mismo orden y las de vertical van después.
+    - **Pared** (`ParedSala`): la cara va en la pared que queda arriba en la
+      pantalla (`arriba`; en vertical, la de la derecha del mundo), y adornos,
+      colgantes y salientes se pintan de pie, en coordenadas de la pantalla
+      (`en_pantalla`/`en_sala`, con el `giro` de cuando se levantó). La roca
+      del muro y del fondo gira con la vista (`ParedSala.uv_muro`). Pilares de
+      las puertas (`Sala._pintar_pilares`), pinchos, hielo, agujeros y lava
+      (`Peligro._de_pie_en_pantalla`, `tamano_en_pantalla`) y lo que crece en
+      las losas y el suelo (`Piso._de_pie`, con los dos sitios guardados), de
+      pie.
+    - **Lo que choca es siempre lo de horizontal**, en las dos vistas: de la
+      pared depende dónde se reparten peligros y enemigos, y con otra en
+      vertical el piso salía distinto (y en cooperativo cada uno vería el
+      suyo). Para eso la pared tira del generador en vertical igual que en
+      horizontal y reparte lo que solo se ve con otro (`semilla + 1`), y el
+      canto que se pinta se acerca a donde choca (`_ver_como_choca`,
+      `SUBE_CARA`). Comprobado volcando paredes, peligros, rocas y enemigos de
+      los pisos 2 a 12 en las dos vistas y contra `main`: iguales.
+    - **Al girar el móvil a mitad de partida** se vuelve a levantar la pared de
+      cada sala (`Sala._al_girar_vista`, diferido) y las rocas y plantas cambian
+      de dibujo y de sitio (`Vista.cambiada`). Probado de horizontal a vertical
+      y vuelta, y en la sala secreta, la antesala y la del jefe. Los FPS, los
+      mismos que antes en las dos vistas. **Nadie lo ha visto en un móvil.**
 - **Estadísticas** (2026-11-03, pedido por Matías: «ver los FPS y
   estadísticas, así como el ping en el modo multijugador, como el F3 de
   Minecraft o el HUD de Fortnite»): el autoload `Estadisticas`

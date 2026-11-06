@@ -30,6 +30,16 @@ extends Resource
 ## marrones y se tinen con Piso.tinte_profundidad().
 @export var colores_propios: bool = false
 
+@export_group("En vertical")
+## Las mismas piezas para el movil en vertical (Vista): cada una, la de su
+## misma posicion en la lista de arriba, con los lados cambiados y la luz desde
+## arriba de la pantalla. Las rocas se ven de lado al girar la vista; las de
+## aqui, de pie. Vacias = se usa la de siempre, girada.
+@export var rocas_vertical: Array[Texture2D] = []
+@export var bloques_vertical: Array[Texture2D] = []
+@export var grupos_vertical: Array[Texture2D] = []
+@export var plataformas_vertical: Array[Texture2D] = []
+
 
 ## Devuelve las texturas de una familia. Si el nombre no existe, cae en rocas:
 ## un piso mal configurado debe verse raro, no romper la partida.
@@ -44,6 +54,16 @@ func texturas_de(familia: String) -> Array[Texture2D]:
 		_:
 			push_warning("Familia de obstaculos desconocida: '%s'. Se usan rocas." % familia)
 			return rocas
+
+
+## El dibujo de vertical de una pieza, o null si no tiene.
+func vertical_de(textura: Texture2D) -> Texture2D:
+	for par in [[rocas, rocas_vertical], [bloques, bloques_vertical], [grupos, grupos_vertical],
+			[plataformas, plataformas_vertical]]:
+		var i: int = par[0].find(textura)
+		if i >= 0 and i < par[1].size():
+			return par[1][i]
+	return null
 
 
 ## Comprueba que el catalogo no esta vacio antes de usarlo.

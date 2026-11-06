@@ -13,6 +13,13 @@ Por piso:
 - piedra_K.png: piedrecitas del suelo, sin colision.
 - plataforma_K.png: losas anchas y bajas. Lo que crece encima son los mismos
   adornos de la pared del piso (assets/bordes/piso_NN/adorno_K.png).
+- roca_K_v.png, grupo_K_v.png, bloque_K_v.png, plataforma_K_v.png: las mismas
+  para jugar con el movil en vertical (2026-11-06, pedido por Matias). Alli la
+  vista gira 90 grados y la roca de siempre se veria tumbada, con la luz de
+  lado. Cada una mide lo mismo que la suya con los lados cambiados (choca la
+  misma caja del mundo) y es otra roca del mismo piso, con la luz desde
+  arriba de la pantalla: las largas (grupos y losas) se ven a lo hondo. El
+  juego la gira con la vista (Obstaculo._poner_dibujo).
 - catalogo.tres: el CatalogoObstaculos del piso, con colores_propios: el juego
   no las tine.
 
@@ -162,10 +169,19 @@ def forma(t, g, ancho, alto, familia):
 def pintar(t, g, mascara, objetivo, tapa=False):
     """Volumen, extras del piso, luz medida y lo que brilla encima. RGBA a 4x.
 
-    'tapa': la cara de arriba plana y mas clara, como en las losas y bloques."""
+    'tapa': la cara de arriba plana y mas clara, como en las losas y bloques.
+    Si es una mascara, esa es la cara de arriba: la losa de vertical, que se
+    ve a lo largo."""
     paleta = t["paleta"]
     color = volumen(mascara, paleta, g)
-    if tapa:
+    if isinstance(tapa, Image.Image):
+        arriba = tapa
+        # Algo mas clara al fondo, donde le da mas la luz de arriba.
+        cara = degradado(mascara.size, mezclar(paleta[1], paleta[2], 0.62), mezclar(paleta[1], paleta[2], 0.45),
+                         0, mascara.height)
+        # No del todo lisa: que se vea algo de la roca por debajo.
+        color = Image.composite(cara, color, con_alfa(arriba, 0.72))
+    elif tapa:
         arriba = ImageChops.subtract(mascara, desplazar(mascara, 0, E * g.randint(10, 15)))
         arriba = arriba.filter(ImageFilter.GaussianBlur(E)).point(lambda v: 255 if v > 120 else 0)
         color = Image.composite(plano(mascara.size, mezclar(paleta[1], paleta[2], 0.55)), color, arriba)
@@ -230,18 +246,22 @@ def con_cristales(pieza, t, g, cuantos):
     return pieza
 
 
-def roca(t, g, objetivo, familia):
+def roca(t, g, objetivo, familia, medidas=None):
+    """'medidas' (ancho, alto) en vez de las de siempre: las de vertical."""
     if t.get("cristalina"):
         # En el nucleo interno las rocas son cristal de hierro.
-        c = cristales(t["cristal"], g, ancho=g.randint(54, 70), alto=g.randint(56, 74),
-                      cuantos=g.randint(4, 6), brillo=0)
+        ancho, alto = medidas or (g.randint(54, 70), g.randint(56, 74))
+        c = cristales(t["cristal"], g, ancho=ancho, alto=alto, cuantos=g.randint(4, 6), brillo=0)
         c = ajustar_luz_rgba(c, objetivo)
         return halo_pequeno(c, t["cristal"], 4, 0.5)
     if familia == "grupo" and t.get("columnas"):
         c = columnas(t["paleta"], g)
         return ajustar_luz_rgba(c, objetivo)
-    ancho = g.randint(60, 80)
-    alto = g.randint(46, 62)
+    if medidas:
+        ancho, alto = medidas
+    else:
+        ancho = g.randint(60, 80)
+        alto = g.randint(46, 62)
     pieza = reducir(pintar(t, g, forma(t, g, ancho, alto, familia), objetivo, tapa=(familia == "bloque")))
     if "cristal" in t and g.random() < t.get("con_cristal", 0.0):
         pieza = con_cristales(pieza, t, g, g.randint(1, 2))
@@ -304,6 +324,87 @@ def plataforma(t, g, objetivo):
     return reducir(pieza)
 
 
+# --- Las de vertical -----------------------------------------------------------------
+
+def encajar(pieza, tam):
+    """A ese tamano exacto, con el alfa premultiplicado (como reducir)."""
+    if pieza.size == tam:
+        return pieza
+    return pieza.convert("RGBa").resize(tam, Image.LANCZOS).convert("RGBA")
+
+
+def grupo_vertical(t, g, objetivo, ancho, alto):
+    """Un grupo largo visto a lo largo: tres rocas, la de atras alta (arriba
+    en la pantalla) y cada vez mas bajas hacia delante, pisandose. Se lee como
+    una cresta de roca que se aleja; con rocas iguales en fila parecia una
+    torre de piedras apiladas."""
+    if t.get("columnas") or t.get("cristalina"):
+        return roca(t, g, objetivo, "grupo", (ancho, int(alto * 0.8)))
+    # (ancho, alto y donde acaba su base, de 0 arriba a 1 abajo)
+    capas = [(0.92, 0.58, 0.62), (0.86, 0.42, 0.84), (0.98, 0.3, 1.0)]
+    lienzo = Image.new("RGBA", (int(ancho * 1.2) + 8, int(alto) + 12), (0, 0, 0, 0))
+    for k, (fa, fh, base) in enumerate(capas):          # de atras hacia delante
+        p = roca(t, g, objetivo, "roca", (int(ancho * fa * g.uniform(0.9, 1.0)), int(alto * fh)))
+        lado = (1 if k % 2 else -1) * g.uniform(0.03, 0.1) * ancho
+        x = int((lienzo.width - p.width) / 2 + lado)
+        y = int(alto * base - p.height)
+        capa = Image.new("RGBA", lienzo.size, (0, 0, 0, 0))
+        capa.paste(p, (max(0, x), max(0, min(y, lienzo.height - p.height))))
+        lienzo = Image.alpha_composite(lienzo, capa)
+    return reducir_1x(lienzo)
+
+
+def plataforma_vertical(t, g, objetivo, ancho, alto):
+    """La losa vista a lo largo: la cara de arriba, larga hacia el fondo y algo
+    mas estrecha alli, y abajo la franja del frente. Hecha a mano (las dos
+    caras), porque con la forma de la de siempre puesta de pie se leia como
+    una piedra plantada."""
+    W, H = ancho + 12, alto + 12
+    grosor = g.randint(10, 13)
+    fases = [g.uniform(0, math.tau) for _ in range(2)]
+    arriba_y, pie_y = 6, H - 6
+
+    def borde(y, lado):
+        # Lo ancha que es la losa a esa altura: estrecha al fondo y con un
+        # canto que va y viene.
+        q = (y - arriba_y) / float(pie_y - arriba_y)
+        medio = ancho / 2 * (0.84 + 0.16 * q) * (1 + 0.06 * math.sin(y * 0.17 + fases[lado > 0])
+                                                + 0.03 * math.sin(y * 0.53 + fases[lado < 0]))
+        return W / 2 + lado * medio
+
+    def contorno(y0, y1, redondeo):
+        puntos = []
+        n = 28
+        for i in range(n + 1):           # el lado derecho, bajando
+            y = y0 + (y1 - y0) * i / n
+            puntos.append((borde(y, 1), y))
+        for i in range(n + 1):           # el izquierdo, subiendo
+            y = y1 - (y1 - y0) * i / n
+            puntos.append((borde(y, -1), y))
+        m = _lienzo(W, H)
+        ImageDraw.Draw(m).polygon([(x * E, y * E) for x, y in puntos], fill=255)
+        return m.filter(ImageFilter.GaussianBlur(E * redondeo)).point(lambda v: 255 if v > 128 else 0)
+
+    todo = contorno(arriba_y, pie_y, 6)
+    encima = contorno(arriba_y, pie_y - grosor, 6)
+    return reducir(pintar(t, g, todo, objetivo, tapa=encima))
+
+
+def vertical(t, g, objetivo, familia, pieza):
+    """La de vertical de 'pieza': otra del mismo piso, con los lados cambiados.
+    Las medidas que se le piden son las de la pieza girada (menos el margen
+    que deja reducir), y al final se encaja a ese tamano exacto: asi en el
+    juego llena la misma caja."""
+    ancho, alto = pieza.height, pieza.width
+    if familia == "grupo":
+        nueva = grupo_vertical(t, g, objetivo, ancho, alto)
+    elif familia == "plataforma":
+        nueva = plataforma_vertical(t, g, objetivo, max(20, ancho - 4), max(20, alto - 4))
+    else:
+        nueva = roca(t, g, objetivo, familia, (max(20, ancho - 4), max(20, alto - 4)))
+    return encajar(nueva, (ancho, alto))
+
+
 # --- Rocas de cada piso --------------------------------------------------------------
 #
 # 'contraste': luminosidad del cuerpo de la roca respecto a la del suelo.
@@ -341,7 +442,7 @@ ROCAS = {
 CUANTAS = {"roca": 6, "grupo": 4, "bloque": 4, "piedra": 5, "plataforma": 3}
 
 
-def escribir_catalogo(numero, carpeta, archivos):
+def escribir_catalogo(numero, carpeta, archivos, verticales):
     ruta = "res://assets/rocas/piso_%02d/" % numero
     adornos = "res://assets/bordes/piso_%02d/" % numero
     externos = [("Script", "res://scripts/catalogo_obstaculos.gd", "1_script")]
@@ -358,6 +459,11 @@ def escribir_catalogo(numero, carpeta, archivos):
             ident = "%d_veg_%s" % (len(externos) + 1, nombre.replace(".png", ""))
             externos.append(("Texture2D", adornos + nombre, ident))
             listas["vegetacion"].append(ident)
+    # Las de vertical, al final: cada una en la posicion de la suya.
+    for nombre in verticales:
+        ident = "%d_%s" % (len(externos) + 1, nombre.replace(".png", ""))
+        externos.append(("Texture2D", ruta + nombre, ident))
+        listas.setdefault(familia_lista[nombre.split("_")[0]] + "_vertical", []).append(ident)
     lineas = ['[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=%d format=3]'
               % (len(externos) + 1), ""]
     for tipo, camino, ident in externos:
@@ -366,7 +472,11 @@ def escribir_catalogo(numero, carpeta, archivos):
     for campo in ("piedras", "rocas", "bloques", "grupos", "vegetacion", "plataformas"):
         lineas.append("%s = Array[Texture2D]([%s])" % (
             campo, ", ".join('ExtResource("%s")' % i for i in listas[campo])))
-    lineas += ["colores_propios = true", ""]
+    lineas += ["colores_propios = true"]
+    for campo in ("rocas_vertical", "bloques_vertical", "grupos_vertical", "plataformas_vertical"):
+        lineas.append("%s = Array[Texture2D]([%s])" % (
+            campo, ", ".join('ExtResource("%s")' % i for i in listas.get(campo, []))))
+    lineas.append("")
     with open(os.path.join(carpeta, "catalogo.tres"), "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(lineas))
 
@@ -380,8 +490,11 @@ def generar_piso(numero):
         if viejo.endswith(".png"):
             os.remove(os.path.join(carpeta, viejo))
     archivos = []
+    verticales = []
     for familia, cuantas in CUANTAS.items():
         for i in range(cuantas):
+            # La semilla cuenta solo las de siempre: con las de vertical en la
+            # cuenta, cambiarian todas las de despues.
             g = random.Random(numero * 1000 + len(archivos) * 37)
             if familia == "grupo":
                 pieza = grupo(t, g, objetivo)
@@ -394,7 +507,14 @@ def generar_piso(numero):
             nombre = "%s_%d.png" % (familia, i)
             pieza.save(os.path.join(carpeta, nombre))
             archivos.append(nombre)
-    escribir_catalogo(numero, carpeta, archivos)
+            # Las piedrecitas no chocan y se giran enteras (Piso._de_pie): no
+            # les hace falta otra.
+            if familia != "piedra":
+                gv = random.Random(numero * 1000 + (len(archivos) - 1) * 37 + 500009)
+                nombre_v = "%s_%d_v.png" % (familia, i)
+                vertical(t, gv, objetivo, familia, pieza).save(os.path.join(carpeta, nombre_v))
+                verticales.append(nombre_v)
+    escribir_catalogo(numero, carpeta, archivos, verticales)
     print("piso %2d: %d piezas, luz del cuerpo %.3f (suelo %.3f x %.2f)" % (
         numero, len(archivos), objetivo, luz_suelo(numero), t["contraste"]))
 

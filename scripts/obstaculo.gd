@@ -25,6 +25,12 @@ const FACTOR_COLISION: float = 0.72
 var velocidad: float = 0.0
 
 var _tamano: Vector2 = Vector2(48, 48)
+## Su dibujo, y el de verlo con el movil en vertical (Vista): la misma caja
+## con los lados cambiados y la luz desde arriba de la pantalla. Lo hace
+## herramientas/generar_rocas.py. Sin el de vertical, se ve el de siempre
+## girado con la vista.
+var _textura: Texture2D = null
+var _textura_vertical: Texture2D = null
 
 # --- Vaiven (lo activa la mecanica de rocas moviles, a partir del piso 4) ---
 ## Punto alrededor del cual oscila. Vector2.ZERO mientras este quieta.
@@ -46,6 +52,7 @@ func _ready() -> void:
 	# Quieto hasta que alguien lo mueva: la mayoria de las rocas no se mueven y
 	# no tiene sentido gastar un _physics_process por cada una.
 	set_physics_process(false)
+	Vista.cambiada.connect(_poner_dibujo.unbind(1))
 
 
 ## Recorrido de ida y vuelta en linea recta. Lo activa la mecanica de rocas
@@ -80,18 +87,19 @@ func _physics_process(delta: float) -> void:
 ## lado_objetivo es el lado mayor que debe ocupar en el mundo: la textura se
 ## escala de forma uniforme para no deformar la roca.
 func preparar(posicion: Vector2, textura: Texture2D, lado_objetivo: float,
-		tinte: Color, velocidad_piso: float) -> void:
+		tinte: Color, velocidad_piso: float, textura_vertical: Texture2D = null) -> void:
 	_parar()
 	global_position = posicion
 	velocidad = velocidad_piso
 
-	_sprite.texture = textura
+	_textura = textura
+	_textura_vertical = textura_vertical
 	_sprite.modulate = tinte
 
 	var tam_textura := Vector2(textura.get_size())
 	var escala := lado_objetivo / maxf(tam_textura.x, tam_textura.y)
-	_sprite.scale = Vector2(escala, escala)
 	_tamano = tam_textura * escala
+	_poner_dibujo()
 
 	var rectangulo := RectangleShape2D.new()
 	rectangulo.size = _tamano * FACTOR_COLISION
@@ -135,3 +143,21 @@ func romper() -> void:
 
 func tamano() -> Vector2:
 	return _tamano
+
+
+## El dibujo que toca con la vista de ahora. La caja que choca es siempre la
+## misma (la del mundo): en vertical se pinta el dibujo de vertical, girado
+## con la vista para que salga de pie, y estirado lo justo para llenar esa
+## caja (el generador lo hace ya con los lados cambiados).
+func _poner_dibujo() -> void:
+	if _textura == null:
+		return
+	if Vista.vertical() and _textura_vertical != null:
+		var tam := Vector2(_textura_vertical.get_size())
+		_sprite.texture = _textura_vertical
+		_sprite.rotation = Vista.giro
+		_sprite.scale = Vector2(_tamano.y / tam.x, _tamano.x / tam.y)
+	else:
+		_sprite.texture = _textura
+		_sprite.rotation = 0.0
+		_sprite.scale = _tamano / Vector2(_textura.get_size())

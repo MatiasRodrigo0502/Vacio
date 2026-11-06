@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=30 format=3]
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=47 format=3]
 
 [ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/rocas/piso_01/roca_0.png" id="2_roca_0"]
@@ -29,6 +29,23 @@
 [ext_resource type="Texture2D" path="res://assets/bordes/piso_01/adorno_3.png" id="27_veg_adorno_3"]
 [ext_resource type="Texture2D" path="res://assets/bordes/piso_01/adorno_4.png" id="28_veg_adorno_4"]
 [ext_resource type="Texture2D" path="res://assets/bordes/piso_01/adorno_5.png" id="29_veg_adorno_5"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/roca_0_v.png" id="30_roca_0_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/roca_1_v.png" id="31_roca_1_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/roca_2_v.png" id="32_roca_2_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/roca_3_v.png" id="33_roca_3_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/roca_4_v.png" id="34_roca_4_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/roca_5_v.png" id="35_roca_5_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/grupo_0_v.png" id="36_grupo_0_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/grupo_1_v.png" id="37_grupo_1_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/grupo_2_v.png" id="38_grupo_2_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/grupo_3_v.png" id="39_grupo_3_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/bloque_0_v.png" id="40_bloque_0_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/bloque_1_v.png" id="41_bloque_1_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/bloque_2_v.png" id="42_bloque_2_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/bloque_3_v.png" id="43_bloque_3_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/plataforma_0_v.png" id="44_plataforma_0_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/plataforma_1_v.png" id="45_plataforma_1_v"]
+[ext_resource type="Texture2D" path="res://assets/rocas/piso_01/plataforma_2_v.png" id="46_plataforma_2_v"]
 
 [resource]
 script = ExtResource("1_script")
@@ -39,3 +56,7 @@ grupos = Array[Texture2D]([ExtResource("8_grupo_0"), ExtResource("9_grupo_1"), E
 vegetacion = Array[Texture2D]([ExtResource("24_veg_adorno_0"), ExtResource("25_veg_adorno_1"), ExtResource("26_veg_adorno_2"), ExtResource("27_veg_adorno_3"), ExtResource("28_veg_adorno_4"), ExtResource("29_veg_adorno_5")])
 plataformas = Array[Texture2D]([ExtResource("21_plataforma_0"), ExtResource("22_plataforma_1"), ExtResource("23_plataforma_2")])
 colores_propios = true
+rocas_vertical = Array[Texture2D]([ExtResource("30_roca_0_v"), ExtResource("31_roca_1_v"), ExtResource("32_roca_2_v"), ExtResource("33_roca_3_v"), ExtResource("34_roca_4_v"), ExtResource("35_roca_5_v")])
+bloques_vertical = Array[Texture2D]([ExtResource("40_bloque_0_v"), ExtResource("41_bloque_1_v"), ExtResource("42_bloque_2_v"), ExtResource("43_bloque_3_v")])
+grupos_vertical = Array[Texture2D]([ExtResource("36_grupo_0_v"), ExtResource("37_grupo_1_v"), ExtResource("38_grupo_2_v"), ExtResource("39_grupo_3_v")])
+plataformas_vertical = Array[Texture2D]([ExtResource("44_plataforma_0_v"), ExtResource("45_plataforma_1_v"), ExtResource("46_plataforma_2_v")])
