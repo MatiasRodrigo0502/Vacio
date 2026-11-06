@@ -683,9 +683,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   pausa (en la de la pelea los enemigos ya están despiertos), salvo en
   cooperativo; Escape la cierra y no llega a la pausa (`_input`). Los textos
   están en `Tutorial.PASOS`, con `{mover}`, `{disparar}` y `{especial}`
-  rellenados con las teclas de Controles y el mago. **Una vez por sesión**
-  (`Tutorial._vistas`, estático): al reiniciar no se repiten, salvo la del
-  especial con otro mago. Antes eran carteles pintados en el suelo: desde
+  rellenados con las teclas de Controles y el mago. **Cada ventana, una sola vez
+  para siempre** (Matías, 2026-11-05: «que el tutorial salga una vez solo»): las vistas
+  se guardan una a una en `user://ajustes.cfg` (`[tutorial] vistas`, `Tutorial._vistas`),
+  salvo la del especial, que va por mago: sale la primera vez con cada uno. El piso 1
+  sigue igual, sin las ventanas. **Las escenas de prueba ni leen ni guardan**
+  (`Tutorial._de_prueba`, Principal no cuelga de la raíz): si no, darían el tutorial por
+  visto en el ordenador de quien las lanza. Para probar el guardado: Principal en la raíz
+  y `Tutorial.usar_archivo`. Antes eran carteles pintados en el suelo: desde
   el 17/09, siete juntos en la sala de inicio de un piso de cuatro salas sin
   enemigos.
 - **Moverse con WASD o con las flechas** (2026-10-18, pedido por Matías): en

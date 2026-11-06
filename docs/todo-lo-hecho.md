@@ -10,7 +10,7 @@ Se baja por las capas de la Tierra, de la corteza al núcleo interno. El rumbo e
 
 - Cada piso es un mapa de salas unidas por puertas.
 - **Una sala secreta por piso:** escondida tras una pared con unas grietas finas, que se rompe con tres disparos. Dentro, un cofre: al pisarlo sale una ruleta con las ventajas y te toca una al azar.
-- **El piso 1 es un tutorial:** cinco salas en fila, y al entrar en cada una sale una ventana (con el juego parado) que explica una cosa: moverse y disparar; el ataque especial, las rocas, la vida y el mapa; matar a todos los enemigos para que se abran las puertas, con la primera pelea; los objetos; la bajada.
+- **El piso 1 es un tutorial:** cinco salas en fila, y al entrar en cada una sale una ventana (con el juego parado) que explica una cosa: moverse y disparar; el ataque especial, las rocas, la vida y el mapa; matar a todos los enemigos para que se abran las puertas, con la primera pelea; los objetos; la bajada. Cada ventana sale una sola vez, aunque se cierre el juego.
 - Al entrar en una sala con enemigos, las puertas se cierran hasta limpiarla.
 - Cada piso tiene más salas que el anterior, y con más enemigos y rocas. Todas las salas miden lo mismo en todos los pisos (la del jefe, más grande) y la cámara no se acerca al bajar: todo se ve siempre del mismo tamaño.
 
@@ -69,8 +69,9 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
+| 05/11/2026 | Las ventanas del tutorial salen una sola vez, aunque se cierre el juego; la del especial, la primera vez con cada mago | — |
 | 05/11/2026 | Gacha nuevo: skins redibujadas en ocho direcciones (las S con traje propio y las S+ con alas, planetas, arcos de aurora o alas de polilla), las 13 armas redibujadas, tiradas de diez con una A o épica segura, garantía de S+ (60 tiradas) y de mítica (30), colección con siluetas y ficha de cada una, y una cinemática al abrir, con la suya para la S y la legendaria y otra aún mayor para la S+ y la mítica | — |
-| 05/11/2026 | Una skin repetida da monedas según su tier: 20 la B, 50 la A, 100 la S y 250 la S+, y el panel lo dice | — |
+| 05/11/2026 | Una skin repetida da monedas según su tier: 20 la B, 50 la A, 100 la S y 250 la S+, y el panel lo dice | `9049864` |
 | 05/11/2026 | La burbuja del mago blanco ya no lleva el aro con el tiempo que le queda; avisa parpadeando | `1797365` |
 | 04/11/2026 | Enemigos nuevos: gólem, vigía y murciélago, en ocho direcciones y con una variante por capa, con animaciones de atacar, daño y muerte; el Corazón del Núcleo sustituye al Mago Caído como jefe, con su pelea más una nova con anillo de bolas | `6de4e0b` |
 | 04/11/2026 | Monedas y diamantes que dan los enemigos y el jefe, y dos gachas en el menú: 16 skins (B, A, S y S+) y 13 armas (raro, épico, legendario y mítico), con formas de disparar, animaciones al matar y modos con la rueda del ratón | `04364db` |

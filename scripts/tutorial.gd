@@ -12,9 +12,16 @@
 ##   5. la bajada, y lo que espera mas abajo.
 ## Antes eran carteles pintados en el suelo de la sala de inicio.
 ##
-## Cada ventana sale una vez por sesion del juego: al reiniciar o al volver
-## a empezar desde el menu no se repiten (la del especial si, si se cambia de
-## mago, porque cuenta otra cosa). Cerrar el juego las vuelve a sacar.
+## Cada ventana sale UNA SOLA VEZ, tambien si se cierra el juego (Matias,
+## 2026-11-05: «que el tutorial salga una vez solo, no cada vez que empieces una
+## partida»): las que ya han salido se guardan en user://ajustes.cfg. Una a una, al
+## salir: quien lo deja a medias ve las que le faltan cuando llegue a ellas. La del
+## especial va por mago, porque con otro cuenta otra cosa. El piso 1 sigue siendo
+## igual, con su fila de salas y su pelea: lo que deja de salir son las ventanas.
+##
+## Las escenas de prueba, que montan Principal dentro de la suya y pasan todas por
+## el piso 1, ni leen ni guardan (_de_prueba, como RegistroPartida): si no, darian
+## el tutorial por visto en el ordenador de quien las lanza.
 ##
 ## Los textos estan aqui y no en una escena porque dependen de las teclas
 ## elegidas en Controles y del mago: [k]...[/k] resalta (AvisoTutorial), y
@@ -26,6 +33,7 @@ extends Node
 ## que tarda la camara en llegar a ella. La ventana para el juego, y parado a
 ## medio camino se veria media sala de cada.
 const ESPERA: float = 0.45
+const ARCHIVO_AJUSTES := "user://ajustes.cfg"
 
 const PASOS: Array[Dictionary] = [
 	{
@@ -70,17 +78,28 @@ const PASOS: Array[Dictionary] = [
 	},
 ]
 
-## Las ventanas que ya han salido en esta sesion del juego. Estatico: el piso
-## (y este nodo con el) se rehace al reiniciar, y la lista tiene que seguir.
+## Las ventanas que ya han salido. Estatico: el piso (y este nodo con el) se rehace
+## al reiniciar, y la lista tiene que seguir sin volver a leer el archivo.
 static var _vistas: Dictionary = {}
+static var _cargadas: bool = false
+static var _archivo: String = ARCHIVO_AJUSTES
 
 var _salas: Array[Sala] = []
 var _aviso: AvisoTutorial
 
 
+## Para las pruebas que quieren ver como se guarda, sin tocar los ajustes de quien
+## las lanza. Tienen que montar Principal en la raiz (ver _de_prueba).
+static func usar_archivo(ruta: String) -> void:
+	_archivo = ruta
+	_vistas.clear()
+	_cargadas = false
+
+
 ## Lo arranca Piso al construirse, con las salas ya hechas. La primera
 ## ventana sale nada mas empezar; las demas, al entrar en su sala.
 func empezar(piso: Piso) -> void:
+	_cargar()
 	_salas = piso.salas()
 	_aviso = AvisoTutorial.new()
 	add_child(_aviso)
@@ -104,8 +123,34 @@ func _mostrar(indice: int) -> void:
 	if _vistas.has(clave):
 		return
 	_vistas[clave] = true
+	_guardar()
 	var paso: Dictionary = PASOS[indice]
 	_aviso.mostrar(paso["titulo"], _rellenar(paso["texto"]), paso["color"])
+
+
+func _cargar() -> void:
+	if _cargadas or _de_prueba():
+		return
+	_cargadas = true
+	var ajustes := ConfigFile.new()
+	# Sin archivo (la primera vez), ninguna vista.
+	ajustes.load(_archivo)
+	for clave: String in ajustes.get_value("tutorial", "vistas", PackedStringArray()):
+		_vistas[clave] = true
+
+
+func _guardar() -> void:
+	if _de_prueba():
+		return
+	var ajustes := ConfigFile.new()
+	ajustes.load(_archivo)
+	ajustes.set_value("tutorial", "vistas", PackedStringArray(_vistas.keys()))
+	ajustes.save(_archivo)
+
+
+## La partida de verdad cuelga de la raiz; la de una escena de prueba, de esa escena.
+func _de_prueba() -> bool:
+	return not get_tree().root.has_node("Principal")
 
 
 ## La del especial va por mago: con otro mago cuenta otra cosa.

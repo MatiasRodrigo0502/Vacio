@@ -181,6 +181,10 @@ se cierra con *Entendido*, Intro o Escape):
 4. Los objetos (el del piso está en el centro) y los vendajes.
 5. La bajada, y lo que espera más abajo.
 
+Cada ventana sale **una sola vez**, aunque cierres el juego: las siguientes partidas
+empiezan igual en el piso 1, pero sin parar a explicar nada. La del ataque especial sale
+la primera vez que juegas con cada mago, porque cada uno tiene el suyo.
+
 Cada ventana sale una vez cada vez que abres el juego: si reinicias, no
 vuelven a salir (la del ataque especial sí, si cambias de mago).
 
