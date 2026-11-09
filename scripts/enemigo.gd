@@ -614,6 +614,8 @@ func pelear_a_distancia(delta: float, hacia: Vector2, distancia: float) -> void:
 		if tipo.tiempo_apuntar <= 0.0:
 			_disparar()
 			_linea_disparo = DURACION_LINEA_DISPARO
+			if not tipo.jefe:
+				gesto(&"atacar", tipo.pose_disparo)
 		else:
 			_apuntando = tipo.tiempo_apuntar
 			# El jefe no: su 'atacar' es la nova, y cada disparo pareceria una.
@@ -690,8 +692,8 @@ func mirar_a(hacia: Vector2) -> void:
 
 
 ## Una animacion que se hace una vez, mirando a donde mira, y luego vuelve a
-## andar: "atacar" o "dano".
-func gesto(nombre: StringName) -> void:
+## andar: "atacar" o "dano". Desde la pose 'desde' (TipoEnemigo.pose_disparo).
+func gesto(nombre: StringName, desde: int = 0) -> void:
 	if not _ocho_direcciones:
 		return
 	# Que le den no interrumpe un ataque, ni vuelve a empezar: con el rocio del
@@ -700,6 +702,8 @@ func gesto(nombre: StringName) -> void:
 		return
 	_gesto = nombre
 	_sprite.play(StringName("%s_%s" % [nombre, _lado]))
+	if desde > 0:
+		_sprite.set_frame_and_progress(desde, 0.0)
 
 
 ## La pose por la que va su ataque, o -1 si no esta atacando. Con esto, el golpe
@@ -730,9 +734,10 @@ func _animar(nombre: StringName) -> void:
 
 
 ## Quieto, no anda en el sitio: se queda en la primera pose, la de reposo. Lo que
-## va por el aire sigue aleteando.
+## va por el aire sigue aleteando, y lo que nunca anda (el cristal, velocidad 0)
+## tiene en "caminar" su forma de estar quieto: brillar.
 func _marcar_el_paso(antes: Vector2) -> void:
-	if not _ocho_direcciones or tipo.vuela or _gesto != &"caminar":
+	if not _ocho_direcciones or tipo.vuela or tipo.velocidad <= 0.0 or _gesto != &"caminar":
 		return
 	if global_position.is_equal_approx(antes):
 		_sprite.pause()

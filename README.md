@@ -285,7 +285,9 @@ núcleo), más fuertes cuanto más abajo, y **cada una pelea a su manera**: el *
 va a por ti, levanta los brazos y golpea el suelo a dos manos; el **vigía** flota, te
 rodea y dispara esquirlas, y si te escondes tras una roca, se mueve hasta tenerte a
 tiro; los **murciélagos** van de tres en tres, dan vueltas a tu alrededor, marcan una
-línea y se lanzan en picado. Todos avisan antes de lo que pega de golpe. Lo que hace
+línea y se lanzan en picado. Desde el piso 5 sale también el **cristal vivo**: no se
+mueve, te dispara un rayo que quita 50 **sin avisar** y luego se teletransporta a otro
+sitio de la sala. Todos los demás avisan antes de lo que pega de golpe. Lo que hace
 cada uno está en [`resources/enemigos/`](resources/enemigos/README.md).
 
 Disparas bolas mágicas para matarlos, con las flechas en las cuatro direcciones

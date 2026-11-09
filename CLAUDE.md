@@ -47,7 +47,7 @@ hechos.
 | Arte de un piso | `assets/<pack>/catalogo_*.tres` + `catalogo_arte` del piso | otro `.tres` |
 | Mecánicas | `resources/mecanicas/*.tres` (+ script que herede de `Mecanica`) | otro `.tres` |
 | Tipos de enemigo | `resources/enemigos/*.tres` (`TipoEnemigo`) | otro `.tres` |
-| Arte de los enemigos y el jefe | `herramientas/generar_enemigos.py`, de `_assets_origen/vacio_completo/enemigos/` (fuera del repositorio) → `assets/criaturas/` | cambiar sus tablas y volver a ejecutarlo |
+| Arte de los enemigos y el jefe | `herramientas/generar_enemigos.py`, de `_assets_origen/vacio_completo/enemigos/` (fuera del repositorio) → `assets/criaturas/`; el del cristal vivo, `herramientas/generar_antiguos.py` → `assets/criaturas/antiguo_cristal_vivo/` | cambiar sus tablas y volver a ejecutarlo |
 | Proyectiles enemigos | `resources/proyectiles/*.tres` (`TipoProyectil`) | otro `.tres` |
 | Cómo se mueve y ataca cada enemigo | `scripts/comportamientos/*.gd` (`ComportamientoEnemigo`), dentro del `.tres` del enemigo como `comportamiento` | números en el `.tres`; uno nuevo, otro script en esa carpeta |
 | Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
@@ -926,6 +926,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     `ComportamientoPicado`, de **tres en tres** (`TipoEnemigo.grupo`, que cuentan como un
     sitio al repartir: `MecanicaEnemigos._colocar`). `atacar` al lanzarse, mirando a
     donde se lanza.
+  - **Cristal vivo** (2026-11-09, Matías: «añade como enemigos el cristal con sus nuevos
+    assets»; a distancia, 30 de vida, quieto, pisos 5 a 12): el de antes, con su
+    `ComportamientoTeletransporte` y su rayo de 50 sin avisar, y el dibujo de la rama
+    `enemigos-antiguos-8-direcciones`, donde otra sesión redibujó los antiguos
+    (`herramientas/generar_antiguos.py` → `assets/criaturas/antiguo_cristal_vivo/`; de
+    esa rama solo se trajeron el cristal y el generador). Su `atacar` carga y echa el
+    rayo en la pose 3: como no avisa, el gesto empieza ahí (`TipoEnemigo.pose_disparo`),
+    con el disparo. Y quieto no se para en la primera pose (`_marcar_el_paso` deja en
+    paz a los de velocidad 0): su `caminar` es brillar.
   - **El dibujo** (`Enemigo`): una animación por dirección (`caminar_`, `atacar_`, `dano_`,
     `muerte_` + `Jugador.LADOS`), elegida por dónde se ve en la pantalla (`mirar_a`, con
     `Vista.en_pantalla`). `gesto` hace una vez `atacar` o `dano` y vuelve a andar; un
@@ -942,7 +951,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     los espejos, con la dirección sacada del nombre de la animación.
   - **Proyectiles con dibujo**: `TipoProyectil.arte` (`ArteHechizo`, como los hechizos):
     `vuelo` girado en `ProyectilEnemigo._dibujo` e `impacto` al acabarse.
-  - **Los once de antes están en `resources/enemigos_antiguos/`** (el arte, en
+  - **Los otros diez de antes están en `resources/enemigos_antiguos/`** (el arte, en
     `assets/enemigos/`, y sus comportamientos siguen): para que uno vuelva basta con
     moverlo a `resources/enemigos/`. Con ellos se fue lo que tenían de especial: los
     slimes y sus cuatro crías que heredan estados (`division`, `heredar_estados`, que

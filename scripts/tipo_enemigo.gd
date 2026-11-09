@@ -72,6 +72,10 @@ enum Ataque { CUERPO_A_CUERPO, DISTANCIA }
 ## avisar; si es un rayo, su linea sale a la vez que el disparo (el cristal,
 ## desde el 2026-10-09).
 @export var tiempo_apuntar: float = 0.5
+## La pose de su "atacar" en la que sale el disparo en el dibujo. Solo cuenta si
+## dispara sin avisar (tiempo_apuntar 0): el gesto empieza ahi, con el disparo, y lo
+## de antes (cargar) no se ve, porque seria un aviso. El rayo del cristal.
+@export var pose_disparo: int = 0
 ## A que distancia del jugador intenta quedarse. Si te acercas, retrocede.
 @export var distancia_preferida: float = 320.0
 

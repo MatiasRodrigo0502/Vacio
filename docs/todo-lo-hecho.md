@@ -69,9 +69,10 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
+| 09/11/2026 | Vuelve el cristal vivo, con su dibujo nuevo en ocho direcciones: quieto, rayo de 50 sin avisar y se teletransporta (pisos 5 a 12) | — |
 | 09/11/2026 | Dibujo para la carga de la ulti del mago oscuro: el agujero negro se va formando delante de él, con hilos de energía que se enroscan, motas que caen y el disco que aparece | — |
 | 09/11/2026 | La vista en vertical, solo en el móvil: en el ordenador, una ventana más alta que ancha ya no gira el juego | — |
-| 06/11/2026 | Versión web en GitHub Pages: se juega desde el navegador del móvil (también iPhone) o del ordenador, sin instalar nada; solo un jugador, y lo ganado se guarda en ese navegador | — |
+| 06/11/2026 | Versión web en GitHub Pages: se juega desde el navegador del móvil (también iPhone) o del ordenador, sin instalar nada; solo un jugador, y lo ganado se guarda en ese navegador | `bac6b9c` |
 | 06/11/2026 | El mapa en vertical (el móvil de pie) con su propio dibujo: la cara de la pared arriba de la pantalla, rocas y losas nuevas con la luz desde arriba, y pilares, pinchos, agujeros, lava y plantas de pie. Lo que choca es lo mismo que en horizontal, y en horizontal no cambia nada | — |
 | 06/11/2026 | La bola cargada del mago oscuro también mide siempre lo mismo | `b188493` |
 | 06/11/2026 | La ulti del mago rojo mide siempre lo mismo: el Orbe hinchado solo agranda su disparo normal | `752c587` |

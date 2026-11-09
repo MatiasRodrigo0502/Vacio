@@ -35,6 +35,7 @@ quitan al tocarte (tú tienes 100). Los números van **a ojo: nadie lo ha jugado
 | **Gólem** | 60 / 80 / 100 | 25 / 30 / 35 | 95 / 105 / 115 | 6 / 8 / 10 | `golpe.gd`: va a por ti y, a tu lado, se para, levanta los brazos (un aro marca hasta dónde llega) y golpea el suelo a dos manos. Quita lo mismo que al tocarle; es una onda de 130 / 140 / 150 de radio. Si algo le corta el paso, va de lado un rato |
 | **Vigía** | 30 / 40 / 50 | 25 / 25 / 30 | 60 / 65 / 70 | 3 / 4 / 5 | `abanico.gd`: te rodea de lado y dispara 1 / 3 / 3 esquirlas, cada 2,2 / 2 / 1,8 s, que quitan 20 / 30 / 40. **Busca tenerte a tiro**: si hay una roca en medio, va al sitio más cercano desde el que no la haya. **Flota** (`vuela`) |
 | **Murciélago** | 10 / 10 / 20 | 20 / 25 / 30 | 150 / 170 / 190 | 1 / 1 / 2 | `picado.gd`: da vueltas a tu alrededor, marca una línea y se lanza por ella, pasando de largo. **Vuela** (`vuela`). Salen **de tres en tres** (`grupo`) |
+| **Cristal vivo** (uno solo, del piso 5 al 12) | 30 | 25 | 0 | 3 | `teletransporte.gd`: no se mueve; te dispara un **rayo que quita 50, sin avisar**, cada 2,6 s, y poco después se desvanece y aparece en otro sitio de la sala, lejos de ti. Volvió el 2026-11-09 (Matías), con el dibujo de los antiguos redibujados |
 
 **Salen al azar.** Cada sala elige entre los tipos cuyo piso está entre
 `piso_minimo` y `piso_maximo`. Como mucho **la mitad** de una sala son de
@@ -83,11 +84,18 @@ y disparar.
 | `golpe.gd` | gólem | va a por ti y golpea a dos manos (`alcance`, `pose_golpe`, `radio_golpe`, `dano_golpe`, `recarga`, `rodeo`) |
 | `abanico.gd` | vigía | se mueve de lado y dispara en abanico (`disparos`, `apertura`); sin tiro, busca alrededor un sitio con tiro y va allí (`cada_busqueda`, `radio_busqueda`) |
 | `picado.gd` | murciélago | órbita, aviso con línea y picado |
+| `teletransporte.gd` | cristal vivo | dispara y salta a otro sitio |
 | `corazon_nucleo.gd` | el jefe | ver [`resources/jefes/`](../jefes/README.md) |
 
-`saltos.gd`, `zigzag.gd`, `rebote.gd`, `fantasma.gd`, `excavar.gd`, `anillo.gd`,
-`pisoton.gd` y `teletransporte.gd` son de los enemigos de antes: no los usa ninguno
-de los de ahora, pero sirven para cualquiera nuevo.
+`saltos.gd`, `zigzag.gd`, `rebote.gd`, `fantasma.gd`, `excavar.gd`, `anillo.gd` y
+`pisoton.gd` son de los enemigos de antes: no los usa ninguno de los de ahora, pero
+sirven para cualquiera nuevo.
+
+**El cristal dispara sin avisar** (Matías, 2026-10-09), pero su dibujo de atacar se
+carga antes de echar el rayo. Por eso su gesto empieza en la pose del rayo
+(`TipoEnemigo.pose_disparo`, 3): si empezara desde el principio, el rayo dibujado
+saldría 0,3 s después del de verdad. Y como nunca anda, quieto sigue brillando: los
+que no se mueven no se quedan en la primera pose (`Enemigo._marcar_el_paso`).
 
 Todos avisan antes de lo que pega fuerte o de golpe (un aro, una línea, el brillo,
 lo que hace el dibujo). Un comportamiento nuevo es un script más en esa carpeta:

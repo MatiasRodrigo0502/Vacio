@@ -1,0 +1,1345 @@
+[gd_resource type="SpriteFrames" load_steps=173 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_cristal_vivo/caminar.png" id="t_caminar"]
+[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_cristal_vivo/atacar.png" id="t_atacar"]
+[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_cristal_vivo/dano.png" id="t_dano"]
+[ext_resource type="Texture2D" path="res://assets/criaturas/antiguo_cristal_vivo/muerte.png" id="t_muerte"]
+
+[sub_resource type="AtlasTexture" id="caminar_derecha_0"]
+atlas = ExtResource("t_caminar")
+region = Rect2(0, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_derecha_1"]
+atlas = ExtResource("t_caminar")
+region = Rect2(132, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_derecha_2"]
+atlas = ExtResource("t_caminar")
+region = Rect2(264, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_derecha_3"]
+atlas = ExtResource("t_caminar")
+region = Rect2(396, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_derecha_0"]
+atlas = ExtResource("t_caminar")
+region = Rect2(0, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_derecha_1"]
+atlas = ExtResource("t_caminar")
+region = Rect2(132, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_derecha_2"]
+atlas = ExtResource("t_caminar")
+region = Rect2(264, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_derecha_3"]
+atlas = ExtResource("t_caminar")
+region = Rect2(396, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_0"]
+atlas = ExtResource("t_caminar")
+region = Rect2(0, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_1"]
+atlas = ExtResource("t_caminar")
+region = Rect2(132, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_2"]
+atlas = ExtResource("t_caminar")
+region = Rect2(264, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_3"]
+atlas = ExtResource("t_caminar")
+region = Rect2(396, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_izquierda_0"]
+atlas = ExtResource("t_caminar")
+region = Rect2(0, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_izquierda_1"]
+atlas = ExtResource("t_caminar")
+region = Rect2(132, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_izquierda_2"]
+atlas = ExtResource("t_caminar")
+region = Rect2(264, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_abajo_izquierda_3"]
+atlas = ExtResource("t_caminar")
+region = Rect2(396, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_izquierda_0"]
+atlas = ExtResource("t_caminar")
+region = Rect2(0, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_izquierda_1"]
+atlas = ExtResource("t_caminar")
+region = Rect2(132, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_izquierda_2"]
+atlas = ExtResource("t_caminar")
+region = Rect2(264, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_izquierda_3"]
+atlas = ExtResource("t_caminar")
+region = Rect2(396, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_izquierda_0"]
+atlas = ExtResource("t_caminar")
+region = Rect2(0, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_izquierda_1"]
+atlas = ExtResource("t_caminar")
+region = Rect2(132, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_izquierda_2"]
+atlas = ExtResource("t_caminar")
+region = Rect2(264, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_izquierda_3"]
+atlas = ExtResource("t_caminar")
+region = Rect2(396, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_0"]
+atlas = ExtResource("t_caminar")
+region = Rect2(0, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_1"]
+atlas = ExtResource("t_caminar")
+region = Rect2(132, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_2"]
+atlas = ExtResource("t_caminar")
+region = Rect2(264, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_3"]
+atlas = ExtResource("t_caminar")
+region = Rect2(396, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_derecha_0"]
+atlas = ExtResource("t_caminar")
+region = Rect2(0, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_derecha_1"]
+atlas = ExtResource("t_caminar")
+region = Rect2(132, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_derecha_2"]
+atlas = ExtResource("t_caminar")
+region = Rect2(264, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="caminar_arriba_derecha_3"]
+atlas = ExtResource("t_caminar")
+region = Rect2(396, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_derecha_0"]
+atlas = ExtResource("t_atacar")
+region = Rect2(0, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_derecha_1"]
+atlas = ExtResource("t_atacar")
+region = Rect2(132, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_derecha_2"]
+atlas = ExtResource("t_atacar")
+region = Rect2(264, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_derecha_3"]
+atlas = ExtResource("t_atacar")
+region = Rect2(396, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_derecha_4"]
+atlas = ExtResource("t_atacar")
+region = Rect2(528, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_derecha_5"]
+atlas = ExtResource("t_atacar")
+region = Rect2(660, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_derecha_0"]
+atlas = ExtResource("t_atacar")
+region = Rect2(0, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_derecha_1"]
+atlas = ExtResource("t_atacar")
+region = Rect2(132, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_derecha_2"]
+atlas = ExtResource("t_atacar")
+region = Rect2(264, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_derecha_3"]
+atlas = ExtResource("t_atacar")
+region = Rect2(396, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_derecha_4"]
+atlas = ExtResource("t_atacar")
+region = Rect2(528, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_derecha_5"]
+atlas = ExtResource("t_atacar")
+region = Rect2(660, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_0"]
+atlas = ExtResource("t_atacar")
+region = Rect2(0, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_1"]
+atlas = ExtResource("t_atacar")
+region = Rect2(132, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_2"]
+atlas = ExtResource("t_atacar")
+region = Rect2(264, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_3"]
+atlas = ExtResource("t_atacar")
+region = Rect2(396, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_4"]
+atlas = ExtResource("t_atacar")
+region = Rect2(528, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_5"]
+atlas = ExtResource("t_atacar")
+region = Rect2(660, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_0"]
+atlas = ExtResource("t_atacar")
+region = Rect2(0, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_1"]
+atlas = ExtResource("t_atacar")
+region = Rect2(132, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_2"]
+atlas = ExtResource("t_atacar")
+region = Rect2(264, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_3"]
+atlas = ExtResource("t_atacar")
+region = Rect2(396, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_4"]
+atlas = ExtResource("t_atacar")
+region = Rect2(528, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_abajo_izquierda_5"]
+atlas = ExtResource("t_atacar")
+region = Rect2(660, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_izquierda_0"]
+atlas = ExtResource("t_atacar")
+region = Rect2(0, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_izquierda_1"]
+atlas = ExtResource("t_atacar")
+region = Rect2(132, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_izquierda_2"]
+atlas = ExtResource("t_atacar")
+region = Rect2(264, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_izquierda_3"]
+atlas = ExtResource("t_atacar")
+region = Rect2(396, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_izquierda_4"]
+atlas = ExtResource("t_atacar")
+region = Rect2(528, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_izquierda_5"]
+atlas = ExtResource("t_atacar")
+region = Rect2(660, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_0"]
+atlas = ExtResource("t_atacar")
+region = Rect2(0, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_1"]
+atlas = ExtResource("t_atacar")
+region = Rect2(132, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_2"]
+atlas = ExtResource("t_atacar")
+region = Rect2(264, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_3"]
+atlas = ExtResource("t_atacar")
+region = Rect2(396, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_4"]
+atlas = ExtResource("t_atacar")
+region = Rect2(528, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_izquierda_5"]
+atlas = ExtResource("t_atacar")
+region = Rect2(660, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_0"]
+atlas = ExtResource("t_atacar")
+region = Rect2(0, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_1"]
+atlas = ExtResource("t_atacar")
+region = Rect2(132, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_2"]
+atlas = ExtResource("t_atacar")
+region = Rect2(264, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_3"]
+atlas = ExtResource("t_atacar")
+region = Rect2(396, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_4"]
+atlas = ExtResource("t_atacar")
+region = Rect2(528, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_5"]
+atlas = ExtResource("t_atacar")
+region = Rect2(660, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_derecha_0"]
+atlas = ExtResource("t_atacar")
+region = Rect2(0, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_derecha_1"]
+atlas = ExtResource("t_atacar")
+region = Rect2(132, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_derecha_2"]
+atlas = ExtResource("t_atacar")
+region = Rect2(264, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_derecha_3"]
+atlas = ExtResource("t_atacar")
+region = Rect2(396, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_derecha_4"]
+atlas = ExtResource("t_atacar")
+region = Rect2(528, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="atacar_arriba_derecha_5"]
+atlas = ExtResource("t_atacar")
+region = Rect2(660, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_derecha_0"]
+atlas = ExtResource("t_dano")
+region = Rect2(0, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_derecha_1"]
+atlas = ExtResource("t_dano")
+region = Rect2(132, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_derecha_2"]
+atlas = ExtResource("t_dano")
+region = Rect2(264, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_derecha_0"]
+atlas = ExtResource("t_dano")
+region = Rect2(0, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_derecha_1"]
+atlas = ExtResource("t_dano")
+region = Rect2(132, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_derecha_2"]
+atlas = ExtResource("t_dano")
+region = Rect2(264, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_0"]
+atlas = ExtResource("t_dano")
+region = Rect2(0, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_1"]
+atlas = ExtResource("t_dano")
+region = Rect2(132, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_2"]
+atlas = ExtResource("t_dano")
+region = Rect2(264, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_izquierda_0"]
+atlas = ExtResource("t_dano")
+region = Rect2(0, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_izquierda_1"]
+atlas = ExtResource("t_dano")
+region = Rect2(132, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_abajo_izquierda_2"]
+atlas = ExtResource("t_dano")
+region = Rect2(264, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_izquierda_0"]
+atlas = ExtResource("t_dano")
+region = Rect2(0, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_izquierda_1"]
+atlas = ExtResource("t_dano")
+region = Rect2(132, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_izquierda_2"]
+atlas = ExtResource("t_dano")
+region = Rect2(264, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_izquierda_0"]
+atlas = ExtResource("t_dano")
+region = Rect2(0, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_izquierda_1"]
+atlas = ExtResource("t_dano")
+region = Rect2(132, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_izquierda_2"]
+atlas = ExtResource("t_dano")
+region = Rect2(264, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_0"]
+atlas = ExtResource("t_dano")
+region = Rect2(0, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_1"]
+atlas = ExtResource("t_dano")
+region = Rect2(132, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_2"]
+atlas = ExtResource("t_dano")
+region = Rect2(264, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_derecha_0"]
+atlas = ExtResource("t_dano")
+region = Rect2(0, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_derecha_1"]
+atlas = ExtResource("t_dano")
+region = Rect2(132, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="dano_arriba_derecha_2"]
+atlas = ExtResource("t_dano")
+region = Rect2(264, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_derecha_0"]
+atlas = ExtResource("t_muerte")
+region = Rect2(0, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_derecha_1"]
+atlas = ExtResource("t_muerte")
+region = Rect2(132, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_derecha_2"]
+atlas = ExtResource("t_muerte")
+region = Rect2(264, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_derecha_3"]
+atlas = ExtResource("t_muerte")
+region = Rect2(396, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_derecha_4"]
+atlas = ExtResource("t_muerte")
+region = Rect2(528, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_derecha_5"]
+atlas = ExtResource("t_muerte")
+region = Rect2(660, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_derecha_6"]
+atlas = ExtResource("t_muerte")
+region = Rect2(792, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_derecha_7"]
+atlas = ExtResource("t_muerte")
+region = Rect2(924, 0, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_derecha_0"]
+atlas = ExtResource("t_muerte")
+region = Rect2(0, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_derecha_1"]
+atlas = ExtResource("t_muerte")
+region = Rect2(132, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_derecha_2"]
+atlas = ExtResource("t_muerte")
+region = Rect2(264, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_derecha_3"]
+atlas = ExtResource("t_muerte")
+region = Rect2(396, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_derecha_4"]
+atlas = ExtResource("t_muerte")
+region = Rect2(528, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_derecha_5"]
+atlas = ExtResource("t_muerte")
+region = Rect2(660, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_derecha_6"]
+atlas = ExtResource("t_muerte")
+region = Rect2(792, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_derecha_7"]
+atlas = ExtResource("t_muerte")
+region = Rect2(924, 88, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_0"]
+atlas = ExtResource("t_muerte")
+region = Rect2(0, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_1"]
+atlas = ExtResource("t_muerte")
+region = Rect2(132, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_2"]
+atlas = ExtResource("t_muerte")
+region = Rect2(264, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_3"]
+atlas = ExtResource("t_muerte")
+region = Rect2(396, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_4"]
+atlas = ExtResource("t_muerte")
+region = Rect2(528, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_5"]
+atlas = ExtResource("t_muerte")
+region = Rect2(660, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_6"]
+atlas = ExtResource("t_muerte")
+region = Rect2(792, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_7"]
+atlas = ExtResource("t_muerte")
+region = Rect2(924, 176, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_0"]
+atlas = ExtResource("t_muerte")
+region = Rect2(0, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_1"]
+atlas = ExtResource("t_muerte")
+region = Rect2(132, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_2"]
+atlas = ExtResource("t_muerte")
+region = Rect2(264, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_3"]
+atlas = ExtResource("t_muerte")
+region = Rect2(396, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_4"]
+atlas = ExtResource("t_muerte")
+region = Rect2(528, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_5"]
+atlas = ExtResource("t_muerte")
+region = Rect2(660, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_6"]
+atlas = ExtResource("t_muerte")
+region = Rect2(792, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_abajo_izquierda_7"]
+atlas = ExtResource("t_muerte")
+region = Rect2(924, 264, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_izquierda_0"]
+atlas = ExtResource("t_muerte")
+region = Rect2(0, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_izquierda_1"]
+atlas = ExtResource("t_muerte")
+region = Rect2(132, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_izquierda_2"]
+atlas = ExtResource("t_muerte")
+region = Rect2(264, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_izquierda_3"]
+atlas = ExtResource("t_muerte")
+region = Rect2(396, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_izquierda_4"]
+atlas = ExtResource("t_muerte")
+region = Rect2(528, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_izquierda_5"]
+atlas = ExtResource("t_muerte")
+region = Rect2(660, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_izquierda_6"]
+atlas = ExtResource("t_muerte")
+region = Rect2(792, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_izquierda_7"]
+atlas = ExtResource("t_muerte")
+region = Rect2(924, 352, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_0"]
+atlas = ExtResource("t_muerte")
+region = Rect2(0, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_1"]
+atlas = ExtResource("t_muerte")
+region = Rect2(132, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_2"]
+atlas = ExtResource("t_muerte")
+region = Rect2(264, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_3"]
+atlas = ExtResource("t_muerte")
+region = Rect2(396, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_4"]
+atlas = ExtResource("t_muerte")
+region = Rect2(528, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_5"]
+atlas = ExtResource("t_muerte")
+region = Rect2(660, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_6"]
+atlas = ExtResource("t_muerte")
+region = Rect2(792, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_izquierda_7"]
+atlas = ExtResource("t_muerte")
+region = Rect2(924, 440, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_0"]
+atlas = ExtResource("t_muerte")
+region = Rect2(0, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_1"]
+atlas = ExtResource("t_muerte")
+region = Rect2(132, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_2"]
+atlas = ExtResource("t_muerte")
+region = Rect2(264, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_3"]
+atlas = ExtResource("t_muerte")
+region = Rect2(396, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_4"]
+atlas = ExtResource("t_muerte")
+region = Rect2(528, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_5"]
+atlas = ExtResource("t_muerte")
+region = Rect2(660, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_6"]
+atlas = ExtResource("t_muerte")
+region = Rect2(792, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_7"]
+atlas = ExtResource("t_muerte")
+region = Rect2(924, 528, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_derecha_0"]
+atlas = ExtResource("t_muerte")
+region = Rect2(0, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_derecha_1"]
+atlas = ExtResource("t_muerte")
+region = Rect2(132, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_derecha_2"]
+atlas = ExtResource("t_muerte")
+region = Rect2(264, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_derecha_3"]
+atlas = ExtResource("t_muerte")
+region = Rect2(396, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_derecha_4"]
+atlas = ExtResource("t_muerte")
+region = Rect2(528, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_derecha_5"]
+atlas = ExtResource("t_muerte")
+region = Rect2(660, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_derecha_6"]
+atlas = ExtResource("t_muerte")
+region = Rect2(792, 616, 132, 88)
+
+[sub_resource type="AtlasTexture" id="muerte_arriba_derecha_7"]
+atlas = ExtResource("t_muerte")
+region = Rect2(924, 616, 132, 88)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("caminar_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_derecha_3")
+}],
+"loop": true,
+"name": &"caminar_derecha",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_derecha_3")
+}],
+"loop": true,
+"name": &"caminar_abajo_derecha",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_3")
+}],
+"loop": true,
+"name": &"caminar_abajo",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_abajo_izquierda_3")
+}],
+"loop": true,
+"name": &"caminar_abajo_izquierda",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("caminar_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_izquierda_3")
+}],
+"loop": true,
+"name": &"caminar_izquierda",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_izquierda_3")
+}],
+"loop": true,
+"name": &"caminar_arriba_izquierda",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_3")
+}],
+"loop": true,
+"name": &"caminar_arriba",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("caminar_arriba_derecha_3")
+}],
+"loop": true,
+"name": &"caminar_arriba_derecha",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atacar_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_derecha_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_derecha_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_derecha_5")
+}],
+"loop": false,
+"name": &"atacar_derecha",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_derecha_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_derecha_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_derecha_5")
+}],
+"loop": false,
+"name": &"atacar_abajo_derecha",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_5")
+}],
+"loop": false,
+"name": &"atacar_abajo",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_izquierda_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_izquierda_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_abajo_izquierda_5")
+}],
+"loop": false,
+"name": &"atacar_abajo_izquierda",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atacar_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_izquierda_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_izquierda_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_izquierda_5")
+}],
+"loop": false,
+"name": &"atacar_izquierda",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_izquierda_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_izquierda_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_izquierda_5")
+}],
+"loop": false,
+"name": &"atacar_arriba_izquierda",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_5")
+}],
+"loop": false,
+"name": &"atacar_arriba",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_derecha_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_derecha_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atacar_arriba_derecha_5")
+}],
+"loop": false,
+"name": &"atacar_arriba_derecha",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dano_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_derecha_2")
+}],
+"loop": false,
+"name": &"dano_derecha",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dano_abajo_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_abajo_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_abajo_derecha_2")
+}],
+"loop": false,
+"name": &"dano_abajo_derecha",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dano_abajo_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_abajo_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_abajo_2")
+}],
+"loop": false,
+"name": &"dano_abajo",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dano_abajo_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_abajo_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_abajo_izquierda_2")
+}],
+"loop": false,
+"name": &"dano_abajo_izquierda",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dano_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_izquierda_2")
+}],
+"loop": false,
+"name": &"dano_izquierda",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dano_arriba_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_arriba_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_arriba_izquierda_2")
+}],
+"loop": false,
+"name": &"dano_arriba_izquierda",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dano_arriba_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_arriba_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_arriba_2")
+}],
+"loop": false,
+"name": &"dano_arriba",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dano_arriba_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_arriba_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dano_arriba_derecha_2")
+}],
+"loop": false,
+"name": &"dano_arriba_derecha",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("muerte_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_derecha_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_derecha_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_derecha_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_derecha_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_derecha_7")
+}],
+"loop": false,
+"name": &"muerte_derecha",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_derecha_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_derecha_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_derecha_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_derecha_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_derecha_7")
+}],
+"loop": false,
+"name": &"muerte_abajo_derecha",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_7")
+}],
+"loop": false,
+"name": &"muerte_abajo",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_izquierda_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_izquierda_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_izquierda_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_izquierda_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_abajo_izquierda_7")
+}],
+"loop": false,
+"name": &"muerte_abajo_izquierda",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("muerte_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_izquierda_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_izquierda_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_izquierda_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_izquierda_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_izquierda_7")
+}],
+"loop": false,
+"name": &"muerte_izquierda",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_izquierda_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_izquierda_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_izquierda_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_izquierda_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_izquierda_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_izquierda_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_izquierda_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_izquierda_7")
+}],
+"loop": false,
+"name": &"muerte_arriba_izquierda",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_7")
+}],
+"loop": false,
+"name": &"muerte_arriba",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_derecha_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_derecha_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_derecha_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_derecha_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_derecha_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_derecha_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_derecha_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("muerte_arriba_derecha_7")
+}],
+"loop": false,
+"name": &"muerte_arriba_derecha",
+"speed": 10.0
+}]
