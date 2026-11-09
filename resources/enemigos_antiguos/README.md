@@ -1,11 +1,13 @@
 # resources/enemigos_antiguos/
 
 Los enemigos que había hasta el 2026-11-04, cuando Matías los cambió por los de
-`vacio_completo.zip`: slime verde, naranja y de magma, rata, serpiente, planta
-venenosa, murciélago, gólem de roca, fantasma y planta azul. **Ya no salen**: la
-mecánica de enemigos solo lee `resources/enemigos/`. El **cristal vivo** ha vuelto
-(2026-11-09, Matías): está en `resources/enemigos/cristal_vivo.tres`, con su dibujo
-nuevo de la rama `enemigos-antiguos-8-direcciones`.
+`vacio_completo.zip`: slime verde, naranja y de magma, serpiente, planta venenosa,
+murciélago, gólem de roca, fantasma y planta azul. **Ya no salen**: la mecánica de
+enemigos solo lee `resources/enemigos/`. Han vuelto (2026-11-09, Matías) el **cristal
+vivo** y la **rata, hecha escorpión**: están en `resources/enemigos/`
+(`cristal_vivo.tres` y `escorpion.tres`), con su dibujo nuevo de la rama
+`enemigos-antiguos-8-direcciones`. El dibujo viejo de la rata sigue en
+`assets/enemigos/`, sin usar.
 
 Se guardan aquí, con su arte en `assets/enemigos/` y sus comportamientos en
 `scripts/comportamientos/`, porque siguen funcionando: **para que uno vuelva a

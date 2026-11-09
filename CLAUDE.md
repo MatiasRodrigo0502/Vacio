@@ -47,7 +47,7 @@ hechos.
 | Arte de un piso | `assets/<pack>/catalogo_*.tres` + `catalogo_arte` del piso | otro `.tres` |
 | Mecánicas | `resources/mecanicas/*.tres` (+ script que herede de `Mecanica`) | otro `.tres` |
 | Tipos de enemigo | `resources/enemigos/*.tres` (`TipoEnemigo`) | otro `.tres` |
-| Arte de los enemigos y el jefe | `herramientas/generar_enemigos.py`, de `_assets_origen/vacio_completo/enemigos/` (fuera del repositorio) → `assets/criaturas/`; el del cristal vivo, `herramientas/generar_antiguos.py` → `assets/criaturas/antiguo_cristal_vivo/` | cambiar sus tablas y volver a ejecutarlo |
+| Arte de los enemigos y el jefe | `herramientas/generar_enemigos.py`, de `_assets_origen/vacio_completo/enemigos/` (fuera del repositorio) → `assets/criaturas/`; el del cristal vivo y el escorpión, `herramientas/generar_antiguos.py` → `assets/criaturas/antiguo_cristal_vivo/` y `antiguo_escorpion/` | cambiar sus tablas y volver a ejecutarlo |
 | Proyectiles enemigos | `resources/proyectiles/*.tres` (`TipoProyectil`) | otro `.tres` |
 | Cómo se mueve y ataca cada enemigo | `scripts/comportamientos/*.gd` (`ComportamientoEnemigo`), dentro del `.tres` del enemigo como `comportamiento` | números en el `.tres`; uno nuevo, otro script en esa carpeta |
 | Peligros del suelo | `resources/mecanicas/peligros.tres` + `scripts/{pinchos,lava,vacio}.gd` | números en el `.tres`; un peligro nuevo, un script que herede de `Peligro` |
@@ -931,10 +931,20 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     `ComportamientoTeletransporte` y su rayo de 50 sin avisar, y el dibujo de la rama
     `enemigos-antiguos-8-direcciones`, donde otra sesión redibujó los antiguos
     (`herramientas/generar_antiguos.py` → `assets/criaturas/antiguo_cristal_vivo/`; de
-    esa rama solo se trajeron el cristal y el generador). Su `atacar` carga y echa el
+    esa rama solo se trajeron el cristal, el escorpión y el generador). Su `atacar` carga y echa el
     rayo en la pose 3: como no avisa, el gesto empieza ahí (`TipoEnemigo.pose_disparo`),
     con el disparo. Y quieto no se para en la primera pose (`_marcar_el_paso` deja en
     paz a los de velocidad 0): su `caminar` es brillar.
+  - **Escorpión** (2026-11-09, Matías: «si, añadelo puede aparecer a partir del segundo
+    piso»; cuerpo a cuerpo, 10 de vida, velocidad 160, del piso 2 al final): la rata de
+    antes (`rata.tres` → `escorpion.tres`, mismos números y `ComportamientoZigzag`) con el
+    dibujo que le hizo la otra sesión en la misma rama (Matías se lo pidió allí: «cambia
+    el asset de la rata por un escorpion»). Ocupa lo que la rata, así que es pequeño.
+    El zigzag no hacía `atacar`: ahora pica al llegar (`alcance_picar`, 75 px) sin
+    pararse, solo como dibujo; quita el contacto, como antes. El aguijón clava en la pose
+    3 (0,3 s) y el golpe llega a los 0,27-0,28 s. **Ojo al probarlo**: con el disparo
+    automático de los ajustes, el mago lo mata de un tiro antes de que llegue
+    (`Controles.disparo_automatico = false` en la prueba, sin guardarlo).
   - **El dibujo** (`Enemigo`): una animación por dirección (`caminar_`, `atacar_`, `dano_`,
     `muerte_` + `Jugador.LADOS`), elegida por dónde se ve en la pantalla (`mirar_a`, con
     `Vista.en_pantalla`). `gesto` hace una vez `atacar` o `dano` y vuelve a andar; un
@@ -951,13 +961,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     los espejos, con la dirección sacada del nombre de la animación.
   - **Proyectiles con dibujo**: `TipoProyectil.arte` (`ArteHechizo`, como los hechizos):
     `vuelo` girado en `ProyectilEnemigo._dibujo` e `impacto` al acabarse.
-  - **Los otros diez de antes están en `resources/enemigos_antiguos/`** (el arte, en
+  - **Los otros nueve de antes están en `resources/enemigos_antiguos/`** (el arte, en
     `assets/enemigos/`, y sus comportamientos siguen): para que uno vuelva basta con
     moverlo a `resources/enemigos/`. Con ellos se fue lo que tenían de especial: los
     slimes y sus cuatro crías que heredan estados (`division`, `heredar_estados`, que
-    siguen en el código), la explosión al morir, saltos, zigzag, rebotes, el fantasma, la
-    planta que excava, la que persigue cada vez más rápido, el teletransporte y el veneno
-    que frena. **Si Matías echa de menos algo, se recupera de ahí.** `Enemigo` sigue
+    siguen en el código), la explosión al morir, saltos, rebotes, el fantasma, la
+    planta que excava, la que persigue cada vez más rápido y el veneno que frena. **Si Matías echa de menos algo, se recupera de ahí.** `Enemigo` sigue
     pintando los de una animación (`moverse`, volteándose): probado con el slime verde.
   **Probado** sin ventana (recursos, qué sale en cada piso, el golpe y apartarse, morir y
   los restos, el arma, esquirlas, picado, tutorial) y con capturas de las tres capas, las

@@ -9,7 +9,7 @@ extends CharacterBody2D
 
 signal vida_cambiada(vida_actual: int, vida_maxima: int)
 signal dano_recibido
-## Cada golpe que quita vida: cuanta y quien lo ha dado ("Rata", "Lava"...).
+## Cada golpe que quita vida: cuanta y quien lo ha dado ("Escorpión", "Lava"...).
 ## Lo apunta el registro de partidas (RegistroPartida). Va aparte de
 ## dano_recibido porque a esa la escucha la camara con un valor ya atado, y un
 ## argumento mas se lo descolocaria.
