@@ -1,8 +1,8 @@
-## Autoload Vista: si la pantalla esta en vertical, el mundo se ve girado 90
-## grados. Pedido por Matias el 2026-11-03 para el movil: «si el jugador pone
-## el movil en vertical, que todas las entes giren 90º y listo, que no cambie
-## nada de posicion, pero que cambie el POV, que cambie la vista de las
-## paredes».
+## Autoload Vista: si la pantalla del movil esta en vertical, el mundo se ve
+## girado 90 grados (en el ordenador, nunca: ver puede_girar). Pedido por
+## Matias el 2026-11-03 para el movil: «si el jugador pone el movil en
+## vertical, que todas las entes giren 90º y listo, que no cambie nada de
+## posicion, pero que cambie el POV, que cambie la vista de las paredes».
 ##
 ## COMO: en vertical, la camara gira 90 grados (CamaraJuego) y la sala, que es
 ## mas ancha que alta, queda a lo largo de la pantalla. Nada se mueve en el
@@ -56,9 +56,19 @@ func poner_de_pie(nodo: Node2D, base: Vector2, pivote: Vector2) -> void:
 	nodo.position = pivote + (base - pivote).rotated(giro)
 
 
+## Solo la version del movil gira (Matias, 2026-11-09: «lo de vertical era
+## para la version de movil»). En el ordenador una ventana tambien puede quedar
+## mas alta que ancha (pegada a media pantalla, un monitor de pie) y entonces
+## se giraba todo; ahi se sigue viendo en horizontal, con mas suelo por arriba
+## y por abajo. Para probarlo en el ordenador vale lo mismo que para los mandos
+## tactiles: -- --tactil (ControlesTactiles.hace_falta).
+func puede_girar() -> bool:
+	return ControlesTactiles.hace_falta()
+
+
 func _mirar() -> void:
 	var tamano := get_viewport().get_visible_rect().size
-	var nuevo := PI * 0.5 if tamano.y > tamano.x else 0.0
+	var nuevo := PI * 0.5 if tamano.y > tamano.x and puede_girar() else 0.0
 	if nuevo == giro:
 		return
 	giro = nuevo

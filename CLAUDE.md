@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-11-06.**
+**Última actualización: 2026-11-09.**
 
 ---
 
@@ -509,7 +509,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     (`activos`) el jugador no hace caso al clic izquierdo: cada dedo es
     también un clic. Al pausar se sueltan todos.
   - **`Vista`** (autoload, `scripts/vista.gd`): con la pantalla más alta que
-    ancha, `giro` = 90°. `CamaraJuego` gira (`ignore_rotation = false`) y
+    ancha, `giro` = 90°. **Solo en el móvil** (`Vista.puede_girar`, que es
+    `ControlesTactiles.hace_falta()`: el `.apk` y la web en el navegador
+    de un móvil; Matías, 2026-11-09: «lo de vertical era
+    para la versión de móvil»): en el ordenador, una ventana más alta que
+    ancha se sigue viendo en horizontal, con más suelo arriba y abajo. Para
+    probar el vertical en el ordenador, `-- --tactil` y una ventana estrecha. `CamaraJuego` gira (`ignore_rotation = false`) y
     calcula el zoom y el encaje con la pantalla girada
     (`_pantalla_en_mundo`): el mundo se ve al mismo tamaño en las dos
     posiciones. Paredes, rocas y suelo giran con la vista; lo que está en
@@ -524,7 +529,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     que mira, a la pantalla para elegir el dibujo (`_lado`, `_vector_de`),
     igual que el jefe (`MagoCaido._mirar`) y el volteo de los enemigos. El
     minimapa y el arco del magma también giran. Probado en una ventana
-    estrecha: la cámara y los entes giran, y arrastrar el joystick hacia
+    estrecha con `--tactil`: la cámara y los entes giran (sin `--tactil`, no), y arrastrar el joystick hacia
     arriba lleva al mago hacia arriba en la pantalla.
   - **El mapa en vertical, con su propio dibujo** (2026-11-06, Matías: «haz
     unos específicos para el modo vertical, del mismo estilo que los del
