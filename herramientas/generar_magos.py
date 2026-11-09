@@ -86,6 +86,9 @@ HECHIZOS = {
         "especial": (17.0, {
             # Sin reducir: la bola cargada (radio 23) es mas gorda que la hoja.
             "vuelo": ("agujero_orbe_vuelo", BOLA_VUELO, 1.0),
+            # No es del paquete: la dibuja generar_carga_vacio.py (Matias,
+            # 2026-11-09). Con las medidas de la del rojo, para que mida igual.
+            "carga": ("agujero_carga", (256, 256, 8, 4, 12.0, False, (0, 0)), 0.42),
             # Lo negro mide 42 de radio en la hoja, y el centro del agujero, 34.
             "abrir": ("agujero_abrir", AGUJERO, 0.8),
             "bucle": ("agujero_bucle", AGUJERO[:5] + (True,) + AGUJERO[6:], 0.8),

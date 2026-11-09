@@ -63,6 +63,10 @@ func actualizar(nuevo_progreso: float, nueva_direccion: Vector2) -> void:
 		direccion = nueva_direccion
 	if _dibujo != null:
 		_dibujo.position = _centro()
+		# De pie en la pantalla aunque la vista este girada (el movil en
+		# vertical, Vista): el disco del agujero del mago oscuro va inclinado, y
+		# girado con el mundo se veria de canto.
+		_dibujo.rotation = Vista.giro
 		var poses := _dibujo.sprite_frames.get_frame_count(_dibujo.animation)
 		_dibujo.frame = int(progreso * (poses - 1))
 	if not visible:

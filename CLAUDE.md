@@ -58,7 +58,7 @@ hechos.
 | Armas (gacha de diamantes) | `herramientas/generar_armas.py` (la tabla `ARMAS` y un dibujo SVG por `forma`) → `assets/armas/` (icono y `_grande`) + `resources/armas/*.tres` (`ArmaMago`, con sus `ModoArma`). Necesita `rsvg-convert` | una entrada más en la tabla |
 | Precios, probabilidades y garantías de los gachas | `resources/gacha/{skins,armas}.tres` (`TiradaGacha`) | editando números |
 | Monedas y diamantes de cada enemigo | `monedas` y `diamantes` en su `.tres` (`TipoEnemigo`) | editando números |
-| Arte de los magos y sus hechizos | `herramientas/generar_magos.py`, de `assets/magos_fuente/` → `assets/mago_<color>/` (atlas, retrato y `hechizos/`, con un `ArteHechizo` por hechizo), y `arte_disparo`/`arte_especial` en el `.tres` del mago | cambiar las tablas del script y volver a ejecutarlo |
+| Arte de los magos y sus hechizos | `herramientas/generar_magos.py`, de `assets/magos_fuente/` → `assets/mago_<color>/` (atlas, retrato y `hechizos/`, con un `ArteHechizo` por hechizo), y `arte_disparo`/`arte_especial` en el `.tres` del mago. La carga de la ulti del oscuro no es del paquete: la dibuja `generar_carga_vacio.py` (SVG, necesita `rsvg-convert`) en `magos_fuente/hechizos/vacio/agujero_carga.png` | cambiar las tablas del script y volver a ejecutarlo (la carga del oscuro, antes `generar_carga_vacio.py`) |
 | Rocas de dentro, una por piso | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso; cada roca, grupo, bloque y losa con su `_v.png` para el móvil en vertical, en `*_vertical` del catálogo) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 | Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
@@ -463,6 +463,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     enemigos; se quedan el círculo de alcance y lo negro por código, encima de
     ellos, para que se les vea tragados (mide 34, lo negro de la hoja al 80 %).
     Al acabarse el tiempo deja de tirar y se va al acabar `colapso`.
+  - **Carga del oscuro** (2026-11-09, Matías: «un asset del mago oscuro para
+    cuando carga la ulti»; hasta entonces, una bola lila por código): `carga`,
+    8 poses como la del rojo y en `CargaAtaque` igual. Hilos morados que se
+    enroscan hacia el centro y motas que caen; desde la pose 3 se abre el
+    núcleo negro con su disco, y en la última es el agujero entero con
+    destellos (el aro de «lista» lo sigue pintando `CargaAtaque`, por eso el
+    dibujo no lleva uno). El paquete no la traía: la dibuja
+    `generar_carga_vacio.py` con los colores medidos en sus hojas del agujero.
+    `CargaAtaque` pone el dibujo de pie en vertical (`rotation = Vista.giro`):
+    el disco va inclinado y se vería de canto.
   - **Burbuja del blanco**: dos capas (`_detras` con z −1 y `_delante` con z +1,
     con el mago en medio), `aparece`, `bucle` y `rompe`. Mientras se rompe ya no
     protege. Al cambiar de piso se va sin romperse. Sin aro del tiempo desde el 2026-11-05 (Matías):
