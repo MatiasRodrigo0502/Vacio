@@ -491,8 +491,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   firmaría como nosotros): la toma de los secretos del repositorio
   `ANDROID_CLAVE_BASE64`, `ANDROID_CLAVE_ALIAS` y `ANDROID_CLAVE_CONTRASENA`,
   que tiene que poner Matías. Sin ellos firma con una clave nueva en cada
-  versión, y para actualizar hay que desinstalar antes. iPhone no: sin cuenta de
-  desarrollador de Apple no se puede instalar. En Android el aviso de versión
+  versión, y para actualizar hay que desinstalar antes. iPhone, con la versión web
+  (abajo): instalar una app pide firmarla (gratis con un Apple ID, pero caduca a los
+  7 días, o 99 $ al año). En Android el aviso de versión
   nueva lleva a la web (`Actualizacion.por_que_no`). **Nadie lo ha probado en
   un móvil.** Piezas:
   - **`ControlesTactiles`** (`scripts/controles_tactiles.gd`, capa 2, lo crea
@@ -560,6 +561,39 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
       de dibujo y de sitio (`Vista.cambiada`). Probado de horizontal a vertical
       y vuelta, y en la sala secreta, la antesala y la del jefe. Los FPS, los
       mismos que antes en las dos vistas. **Nadie lo ha visto en un móvil.**
+- **Versión web** (2026-11-06, Matías: «para poder jugar desde el móvil a través de
+  una URL e internet», «de momento para jugar solo»): <https://matiasrodrigo0502.github.io/Vacio/>,
+  en GitHub Pages (activado por Claude con la extensión de Chrome: *Settings → Pages →
+  Source: GitHub Actions*). La saca el trabajo `web` de `publicar.yml`
+  (`herramientas/exportar_web.sh`, preset «Web», plantilla `web_nothreads_release.zip`
+  con `instalar_plantillas.py --web`) y la sube con `upload-pages-artifact` y
+  `deploy-pages`; va aparte, como el `.apk`: ni para la versión si falla ni espera a
+  que haya un Mac libre. **Sin hilos**: con hilos el servidor tendría que mandar unas
+  cabeceras (COOP y COEP) que Pages no deja poner. Descarga: 42 MB de `.pck` y 38 de
+  `.wasm` (10 con gzip, que Pages pone solo). Lo que cambia en el navegador:
+  - `OS.has_feature("mobile")` es **falso** en el navegador de un móvil (lo dice la
+    documentación de Godot): el móvil se mira con `ControlesTactiles.en_el_movil()`
+    (`web_android`, `web_ios`), que es lo que saca los joysticks.
+  - No hay **cooperativo** (ENet va por UDP; en la web solo WebSocket o WebRTC, con un
+    servidor: la fase 3 pendiente), ni **Salir** (dejaría la página en negro), ni
+    **Abrir la carpeta de partidas**: los tres botones se esconden con
+    `OS.has_feature("web")`. Tampoco busca versiones nuevas (`Actualizacion`: la web
+    siempre es la última) ni se pone a pantalla completa al arrancar (`Pantalla`: el
+    navegador solo deja hacerlo al pulsar algo; F11 sí).
+  - `user://` es el almacenamiento del navegador (IndexedDB, `/userfs`): monedas,
+    skins, ajustes y el tutorial visto se guardan, pero solo en ese navegador.
+  - En el `<head>` lleva las etiquetas para abrirse **a pantalla completa desde la
+    pantalla de inicio** del iPhone y de Android (`html/head_include`).
+  **Probado** en el navegador de este ordenador, exportado aquí: arranca sin errores
+  del juego, la portada sin Salir y la elección sin Cooperativo, el tutorial, el
+  guardado (se recarga la página y la bienvenida ya no sale), y como móvil Android en
+  vertical (375 × 812): la vista girada, los botones de pausa y especial, y un dedo
+  simulado con eventos táctiles saca el joystick azul y mueve al mago. Memoria en la
+  partida: 96 MB del motor y 107 de JavaScript, más los gráficos (unos 250 MB medidos
+  en el ordenador). **Nadie la ha probado en un iPhone ni en un móvil de verdad**, y
+  es el mayor riesgo: en los foros de Godot hay cuelgues en Safari de iPhone. Los
+  menús en vertical (la portada, la elección de mago) se ven pequeños, como en el
+  `.apk`.
 - **Estadísticas** (2026-11-03, pedido por Matías: «ver los FPS y
   estadísticas, así como el ping en el modo multijugador, como el F3 de
   Minecraft o el HUD de Fortnite»): el autoload `Estadisticas`

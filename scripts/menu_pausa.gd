@@ -29,6 +29,8 @@ func _ready() -> void:
 	$Centro/Caja/BotonReiniciar.pressed.connect(_al_reiniciar)
 	$Centro/Caja/BotonMenu.pressed.connect(_al_ir_al_menu)
 	$Centro/Caja/BotonPartidas.pressed.connect(func() -> void: RegistroPartida.abrir_carpeta())
+	# En el navegador no hay carpeta que abrir.
+	$Centro/Caja/BotonPartidas.visible = not OS.has_feature("web")
 	# El disparo automatico tambien aqui, para cambiarlo sin salir de la
 	# partida. Encima del volumen.
 	var automatico := Controles.boton_disparo_automatico()

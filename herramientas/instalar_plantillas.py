@@ -15,11 +15,12 @@ descarga llega mal, no se instala.
     python herramientas/instalar_plantillas.py
     python herramientas/instalar_plantillas.py --mac
     python herramientas/instalar_plantillas.py --android
+    python herramientas/instalar_plantillas.py --web
 
-Con --mac instala tambien la de Mac (macos.zip), y con --android las de
-Android (android_release.apk y android_debug.apk). Las usa GitHub, que es
-quien saca esas versiones (.github/workflows/publicar.yml); en los
-ordenadores del equipo no hacen falta.
+Con --mac instala tambien la de Mac (macos.zip), con --android las de
+Android (android_release.apk y android_debug.apk) y con --web la del navegador
+(web_nothreads_release.zip). Las usa GitHub, que es quien saca esas versiones
+(.github/workflows/publicar.yml); en los ordenadores del equipo no hacen falta.
 
 Solo hace falta una vez por ordenador y por version de Godot. Lo que ya esta
 instalado y entero no se vuelve a bajar. Si se cambia
@@ -47,6 +48,9 @@ PLANTILLA_MAC = "templates/macos.zip"
 # release; la de debug se instala tambien porque Godot da el preset por malo
 # si le falta alguna de las dos.
 PLANTILLAS_ANDROID = ["templates/android_release.apk", "templates/android_debug.apk"]
+# La del navegador, solo con --web. Sin hilos: con hilos, el servidor tendria que
+# mandar unas cabeceras que GitHub Pages no deja poner.
+PLANTILLA_WEB = "templates/web_nothreads_release.zip"
 
 def carpeta_godot():
     """Donde guarda Godot sus datos en cada sistema. Ademas de Windows, Linux:
@@ -147,7 +151,8 @@ def main():
     os.makedirs(DESTINO, exist_ok=True)
     print("Leyendo el indice de", URL)
     entradas = leer_indice()
-    queremos = QUEREMOS + ([PLANTILLA_MAC] if "--mac" in sys.argv[1:] else [])         + (PLANTILLAS_ANDROID if "--android" in sys.argv[1:] else [])
+    queremos = QUEREMOS + ([PLANTILLA_MAC] if "--mac" in sys.argv[1:] else [])         + (PLANTILLAS_ANDROID if "--android" in sys.argv[1:] else []) \
+        + ([PLANTILLA_WEB] if "--web" in sys.argv[1:] else [])
     for nombre in queremos:
         if nombre not in entradas:
             sys.exit("El .tpz no trae %s." % nombre)

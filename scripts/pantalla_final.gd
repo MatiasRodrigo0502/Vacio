@@ -28,6 +28,8 @@ func _ready() -> void:
 	_boton_cambiar.pressed.connect(_ver_eleccion.bind(true))
 	_boton_menu.pressed.connect(func() -> void: menu_solicitado.emit())
 	$Centro/Caja/BotonPartidas.pressed.connect(func() -> void: RegistroPartida.abrir_carpeta())
+	# En el navegador no hay carpeta que abrir.
+	$Centro/Caja/BotonPartidas.visible = not OS.has_feature("web")
 	$Centro/Eleccion/BotonVolver.pressed.connect(_ver_eleccion.bind(false))
 
 

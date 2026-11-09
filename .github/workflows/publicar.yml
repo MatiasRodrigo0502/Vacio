@@ -207,6 +207,47 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  # La version para el navegador, en GitHub Pages (desde la 0.62, pedido por Matias
+  # el 2026-11-06): https://matiasrodrigo0502.github.io/Vacio/. Va por su cuenta,
+  # como el .apk: ni para la version si falla, ni espera a que haya un Mac libre.
+  # No se puede arrancar aqui (haria falta un navegador con graficos).
+  web:
+    needs: exportar
+    runs-on: ubuntu-latest
+    # Subir a Pages pide estos permisos, solo aqui. El token lo pone GitHub.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.desplegar.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Bajar Godot
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/godot.zip" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          echo "GODOT=$RUNNER_TEMP/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" >> "$GITHUB_ENV"
+
+      - name: Instalar la plantilla del navegador
+        run: python3 herramientas/instalar_plantillas.py --web
+
+      - name: Exportar para el navegador
+        env:
+          VERSION_JUEGO: ${{ needs.exportar.outputs.version }}
+        run: bash herramientas/exportar_web.sh
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/web
+
+      - name: Publicar en GitHub Pages
+        id: desplegar
+        uses: actions/deploy-pages@v4
+
   publicar:
     needs: [exportar, probar-mac, android]
     # Aunque falle el de Android: los otros tres se publican igual.
@@ -249,6 +290,7 @@ jobs:
             if [ -f build/Vacio-android.apk ]; then
               echo "- **Android:** descarga \`Vacio-android.apk\` desde el móvil y ábrelo. La primera vez Android pide permiso para instalar apps de esa fuente (el navegador): dáselo. Si al actualizar dice que no se puede instalar, desinstala antes la versión que tienes."
             fi
+            echo "- **Desde el navegador, sin instalar nada** (móvil u ordenador): abre <https://matiasrodrigo0502.github.io/Vacio/>. Solo para un jugador, y lo que ganas se guarda en ese navegador."
             echo
             echo "Desde la 0.18, el juego avisa al abrirlo si hay una versión más nueva y, en Windows, se actualiza con un botón."
             echo

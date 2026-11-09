@@ -101,9 +101,15 @@ var _lienzo: Control
 var _con_raton: bool = false
 
 
+## Si se juega en un movil, con la app o en su navegador. Aparte, porque en el
+## navegador "mobile" es falso aunque sea un movil: lo dicen web_android y web_ios.
+static func en_el_movil() -> bool:
+	return OS.has_feature("mobile") or OS.has_feature("web_android") or OS.has_feature("web_ios")
+
+
 ## Solo en el movil, o en el ordenador si se pide con --tactil.
 static func hace_falta() -> bool:
-	return OS.has_feature("mobile") or "--tactil" in OS.get_cmdline_user_args()
+	return en_el_movil() or "--tactil" in OS.get_cmdline_user_args()
 
 
 func _init(jugador: Jugador) -> void:
@@ -115,7 +121,7 @@ func _init(jugador: Jugador) -> void:
 
 func _ready() -> void:
 	activos = true
-	_con_raton = not OS.has_feature("mobile")
+	_con_raton = not en_el_movil()
 	_lienzo = Control.new()
 	_lienzo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_lienzo.mouse_filter = Control.MOUSE_FILTER_IGNORE

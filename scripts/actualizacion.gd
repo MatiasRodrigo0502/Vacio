@@ -119,7 +119,8 @@ func _ready() -> void:
 	_bajador.request_completed.connect(_al_bajar)
 	add_child(_bajador)
 
-	if OS.has_feature("editor") or DisplayServer.get_name() == "headless":
+	# En el navegador no hay nada que actualizar: la web siempre es la ultima.
+	if OS.has_feature("editor") or OS.has_feature("web") or DisplayServer.get_name() == "headless":
 		return
 	version_local = GestorProgreso.version_juego()
 	match OS.get_name():

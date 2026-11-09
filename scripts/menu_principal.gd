@@ -46,6 +46,9 @@ func _ready() -> void:
 	$Botones/BotonJugar.pressed.connect(_mostrar_personajes.bind(true))
 	$Botones/BotonControles.pressed.connect(_mostrar_controles.bind(true))
 	$Botones/BotonSalir.pressed.connect(_al_salir)
+	# En el navegador se sale cerrando la pestana: cerrar el juego dejaria la
+	# pagina en negro.
+	$Botones/BotonSalir.visible = not OS.has_feature("web")
 	$PanelControles/Centro/Caja/BotonVolver.pressed.connect(_mostrar_controles.bind(false))
 	$PanelPersonajes/Centro/Caja/BotonVolver.pressed.connect(_mostrar_personajes.bind(false))
 
@@ -187,6 +190,9 @@ func _montar_cooperativo() -> void:
 	_boton_cooperativo.custom_minimum_size = Vector2(300, 46)
 	_boton_cooperativo.add_theme_font_size_override("font_size", 20)
 	_boton_cooperativo.pressed.connect(_mostrar_cooperativo.bind(true))
+	# Va por ENet, y un navegador no puede usar UDP. Jugar juntos desde la web
+	# pediria un servidor (docs/mejoras-futuras/multijugador.md).
+	_boton_cooperativo.visible = not OS.has_feature("web")
 	volver.reparent(fila)
 	fila.add_child(_boton_cooperativo)
 

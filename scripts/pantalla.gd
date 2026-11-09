@@ -33,7 +33,8 @@ func _ready() -> void:
 	if not _se_puede():
 		completa = false
 		return
-	if OS.has_feature("editor"):
+	# El navegador solo deja ponerla al pulsar algo (F11 si), no al arrancar.
+	if OS.has_feature("editor") or OS.has_feature("web"):
 		completa = false
 		return
 	var ajustes := ConfigFile.new()

@@ -47,9 +47,16 @@ La última versión, lista para jugar sin instalar nada ni tener Godot:
   clave, que GitHub guarda como secreto (ver
   `herramientas/exportar_android.sh`); sin ella, cada versión lleva una clave
   nueva y para actualizar hay que desinstalar antes la anterior. **Nadie lo
-  ha probado todavía en un móvil.** iPhone no hay:
-  para instalar algo en un iPhone sin pasar por la App Store hace falta una
-  cuenta de desarrollador de Apple (99 € al año).
+  ha probado todavía en un móvil.**
+- **Desde el navegador, sin instalar nada:** <https://matiasrodrigo0502.github.io/Vacio/>
+  (desde la 0.62). En el móvil (también en **iPhone**, donde instalar una app sin
+  la App Store pide firmarla) o en el ordenador. Sale sola con cada versión. Es
+  **solo para un jugador** (el cooperativo usa UDP, y un navegador no puede), y lo
+  que ganas (monedas, skins, armas) se guarda **en ese navegador**: en otro móvil o
+  en el `.exe` empiezas de cero, y si borras los datos del navegador o usas el
+  modo privado, se pierde. En el iPhone, mejor añadirla a la pantalla de inicio
+  (*Compartir → Añadir a pantalla de inicio*): se abre sin las barras del
+  navegador. **Nadie la ha probado todavía en un iPhone.**
 
 Página de la release:
 [releases/latest](https://github.com/MatiasRodrigo0502/Vacio/releases/latest).
