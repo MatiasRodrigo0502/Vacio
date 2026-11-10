@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="SkinMago" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="SkinMago" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/skin_mago.gd" id="1_script"]
 [ext_resource type="SpriteFrames" path="res://assets/skins/rojo_a/animaciones.tres" id="2_animaciones"]
+[ext_resource type="SpriteFrames" path="res://assets/skins/rojo_a/animaciones_sin_arma.tres" id="5_sin_arma"]
 [ext_resource type="Texture2D" path="res://assets/skins/rojo_a/retrato.png" id="3_retrato"]
 [ext_resource type="Texture2D" path="res://assets/skins/rojo_a/giro.png" id="4_giro"]
 
@@ -12,6 +13,7 @@ mago = "Mago rojo"
 tier = 1
 descripcion = "Lo que queda cuando todo ha ardido. Las brasas siguen vivas."
 animaciones = ExtResource("2_animaciones")
+animaciones_sin_arma = ExtResource("5_sin_arma")
 retrato = ExtResource("3_retrato")
 giro = ExtResource("4_giro")
 aura = Color(0, 0, 0, 0)

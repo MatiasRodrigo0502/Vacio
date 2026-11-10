@@ -1059,17 +1059,18 @@ class MagoVacio:
 
 
 # ================================================== MONTAJE DE CAPAS ===
-def construir(pj, theta, f):
+def construir(pj, theta, f, con_baston=True):
+    """Las capas de una pose. Sin bastón (con_baston=False), la mano se queda
+    cerrada y vacía: es la que sujeta el arma del gacha (Matías, 2026-11-10: «cuando
+    usas una varita con el mago, debe quitarse el arma default»)."""
     P = Pose(theta, f, getattr(pj, "flota", False))
     # Manos: la derecha (phi=-100) lleva el bastón; la izquierda (phi=+70), el hechizo
-    # De perfil adelantamos más el bastón para que no tape la cara; de espaldas, menos
-    avance = 48 * (0.55 + 0.45 * max(P.cos, 0)) + 36 * abs(P.sin) ** 6
-    xs, ys, zs = P.mano(-100, 60, avance=avance)
+    xs, ys, zs = _mano_del_baston(P)
     xo, yo, zo = P.mano(70, 60, avance=20)
     hd = P.punto(-90, 24, 140)[:2]
     hi = P.punto(90, 24, 140)[:2]
     manga_d, manga_i = manga(P, hd, (xs, ys), 4, pj), manga(P, hi, (xo, yo), 5, pj)
-    baston = pj.baston(xs, ys, f)
+    baston = pj.baston(xs, ys, f) if con_baston else ""
     puno_d = pj.puno(xs, ys)
     hechizo = pj.mano_hechizo(xo, yo, f)
 
@@ -1111,12 +1112,27 @@ def construir(pj, theta, f):
             + f'<g transform="translate(0 {P.rebote:.1f})">{cuerpo}</g>' + niebla(P, True))
 
 
-def svg(pj, theta, f):
+def svg(pj, theta, f, con_baston=True):
     texto = (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
              f'viewBox="0 0 256 256" width="256" height="256">'
-             f'<defs>{DEFS_COMUN}{pj.defs}{getattr(pj, "defs_extra", "")}</defs>{construir(pj, theta, f)}</svg>')
+             f'<defs>{DEFS_COMUN}{pj.defs}{getattr(pj, "defs_extra", "")}</defs>{construir(pj, theta, f, con_baston)}</svg>')
     # Las skins cambian los colores del dibujo de serie (ver generar_skins.py).
     return pj.colorear(texto) if hasattr(pj, "colorear") else texto
+
+
+def mano_baston(pj, theta, f):
+    """Donde está la mano del bastón en esa pose, en el lienzo de 256: (x, y, z),
+    con el rebote del paso ya puesto, y z < -0.3 si queda detrás del cuerpo (lo
+    mismo que mira construir). Ahí se pinta el arma del gacha en el juego."""
+    P = Pose(theta, f, getattr(pj, "flota", False))
+    xs, ys, zs = _mano_del_baston(P)
+    return xs, ys + P.rebote, zs
+
+
+def _mano_del_baston(P):
+    # De perfil adelantamos más el bastón para que no tape la cara; de espaldas, menos
+    avance = 48 * (0.55 + 0.45 * max(P.cos, 0)) + 36 * abs(P.sin) ** 6
+    return P.mano(-100, 60, avance=avance)
 
 
 def render(texto, ruta_svg, ruta_png, px):

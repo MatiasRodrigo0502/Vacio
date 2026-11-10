@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="PersonajeJugable" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="PersonajeJugable" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/personaje_jugable.gd" id="1_script"]
 [ext_resource type="SpriteFrames" path="res://assets/mago_rojo/animaciones_mago_rojo.tres" id="2_animaciones"]
+[ext_resource type="SpriteFrames" path="res://assets/mago_rojo/animaciones_mago_rojo_sin_arma.tres" id="2_sin_arma"]
 [ext_resource type="Texture2D" path="res://assets/mago_rojo/retrato.png" id="3_retrato"]
 [ext_resource type="Texture2D" path="res://assets/mago_rojo/giro.png" id="9_giro"]
 [ext_resource type="Resource" path="res://assets/mago_rojo/hechizos/especial.tres" id="5_especial"]
@@ -14,6 +15,7 @@ nombre = "Mago rojo"
 ventaja = "30 de vida más, y el ataque cargado sale en medio tiempo y quita 50 (mata de un golpe a cualquier enemigo). Sus disparos queman: 3 de vida por segundo durante 3 s."
 pega = "Anda un 9% más lento."
 animaciones = ExtResource("2_animaciones")
+animaciones_sin_arma = ExtResource("2_sin_arma")
 retrato = ExtResource("3_retrato")
 giro = ExtResource("9_giro")
 arte_disparo = ExtResource("4_disparo")

@@ -13,6 +13,8 @@ extends Resource
 ## Una frase, la que se lee en la ficha y al sacarla.
 @export var descripcion: String = ""
 @export var animaciones: SpriteFrames
+## Sin el baston, para llevar un arma del gacha (ver PersonajeJugable).
+@export var animaciones_sin_arma: SpriteFrames
 @export var retrato: Texture2D
 ## Las 8 direcciones en grande, en una tira (una casilla cuadrada por
 ## direccion, en el orden de Jugador.LADOS): la ficha y la cinematica del gacha

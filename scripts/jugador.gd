@@ -291,8 +291,18 @@ func usar_personaje(personaje: PersonajeJugable) -> void:
 ## La skin de ese mago y el arma, lo que se haya elegido en el gacha (Coleccion).
 func _ponerse_coleccion(personaje: PersonajeJugable) -> void:
 	var skin := Coleccion.skin_puesta(personaje.nombre)
-	if skin != null:
-		_sprite.sprite_frames = skin.animaciones
+	arma = Coleccion.arma_puesta()
+	# Con un arma, el dibujo sin su baston: el arma va en esa mano (Matias,
+	# 2026-11-10: «cuando usas una varita con el mago, debe quitarse el arma
+	# default»). Sin ese dibujo, el de siempre, y el arma flota al lado.
+	var dibujo: SpriteFrames = skin.animaciones if skin != null else personaje.animaciones
+	var sin_baston: SpriteFrames = skin.animaciones_sin_arma if skin != null else personaje.animaciones_sin_arma
+	if arma != null and sin_baston != null:
+		dibujo = sin_baston
+	if dibujo != null and _sprite.sprite_frames != dibujo:
+		var animacion := _sprite.animation
+		_sprite.sprite_frames = dibujo
+		_sprite.play(animacion)
 	if _aura != null:
 		_aura.queue_free()
 		_aura = null
@@ -302,13 +312,12 @@ func _ponerse_coleccion(personaje: PersonajeJugable) -> void:
 		# La primera: por debajo de su dibujo.
 		move_child(_aura, 0)
 		_poner_de_pie()
-	arma = Coleccion.arma_puesta()
 	modo_arma = 0
 	if _arma_flotante != null:
 		_arma_flotante.queue_free()
 		_arma_flotante = null
 	if arma != null:
-		_arma_flotante = ArmaFlotante.new(arma)
+		_arma_flotante = ArmaFlotante.new(arma, _sprite)
 		add_child(_arma_flotante)
 	modo_arma_cambiado.emit(arma, modo_actual())
 

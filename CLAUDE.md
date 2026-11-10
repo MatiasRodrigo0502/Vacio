@@ -55,6 +55,7 @@ hechos.
 | Magos elegibles | `resources/personajes/*.tres` (`PersonajeJugable`) | otro `.tres` |
 | Skins (gacha de monedas) | `herramientas/generar_skins.py` (una clase por skin, sobre el dibujo vectorial de `magos_vectorial.py`) → `assets/skins/<id>/` (atlas, `animaciones.tres`, retrato y `giro.png`) + `resources/skins/<id>.tres` (`SkinMago`); también el `giro.png` de los magos de serie | otro `.tres`, o una clase más en el script |
 | Dibujo vectorial de los magos | `herramientas/magos_vectorial.py` (el código de las hojas de `assets/magos_fuente/`, con ganchos para las skins). Necesita `rsvg-convert` | cambiar el dibujo y volver a ejecutarlo (y luego `generar_magos.py`) |
+| Magos y skins sin bastón (para llevar un arma del gacha) | `herramientas/generar_sin_baston.py`, después de `generar_magos.py` o `generar_skins.py` → `atlas_8dir_sin_arma.png` / `atlas_sin_arma.png` y su SpriteFrames junto a cada atlas, con la mano de cada pose en el metadato `manos`. Necesita `resvg-py` (pip), no `rsvg-convert` | volver a ejecutarlo |
 | Armas (gacha de diamantes) | `herramientas/generar_armas.py` (la tabla `ARMAS` y un dibujo SVG por `forma`) → `assets/armas/` (icono y `_grande`) + `resources/armas/*.tres` (`ArmaMago`, con sus `ModoArma`). Necesita `rsvg-convert` | una entrada más en la tabla |
 | Precios, probabilidades y garantías de los gachas | `resources/gacha/{skins,armas}.tres` (`TiradaGacha`) | editando números |
 | Monedas y diamantes de cada enemigo | `monedas` y `diamantes` en su `.tres` (`TipoEnemigo`) | editando números |
@@ -424,8 +425,27 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     siguen en las bolas. `BolaMagica.usar_arma` pone lo que mueve la bola (`onda`,
     `rebotes`, `busca`, `explosion`) y cómo se pinta (`Estilo`); dano y cadencia
     parten de un mago normal (`ArmaMago.DANO_BASE`, `Jugador._cadencia_con_arma`),
-    para que el rocío del verde no los multiplique. `ArmaFlotante` la enseña junto
-    al mago. Principal: `_disparar_arma`. En cooperativo la bola lleva su arma y
+    para que el rocío del verde no los multiplique. **Con un arma, el mago va sin su
+    bastón y la lleva en esa mano** (2026-11-10, Matías: «cuando usas una varita con
+    el mago, debe quitarse el arma default. Hay que separar los assets»): cada mago y
+    cada skin tiene un dibujo sin bastón (`animaciones_sin_arma` en
+    `PersonajeJugable` y `SkinMago`; lo pone `Jugador._ponerse_coleccion`), y
+    `ArmaFlotante` se coloca en la mano de la pose de ahora (metadato `manos` del
+    SpriteFrames: x, y en píxeles de la pose y z; con z < -0,3 va detrás del dibujo,
+    por orden de hijos), apuntando hacia donde dispara, cogida a un cuarto de su
+    largo y a 0,45 (43 px). Sin ese dibujo, flota al lado como antes. **Cómo se
+    sacaron las hojas** (`generar_sin_baston.py`): las de siempre las pintó
+    `rsvg-convert`, que en este ordenador no está; cada pose se pinta con resvg
+    (`resvg-py`, de PyPI, instalado aparte con permiso de Matías) con bastón y sin él
+    (`magos_vectorial.construir(..., con_baston=False)`, que deja la mano cerrada), y
+    en la hoja de siempre solo se cambian los píxeles que difieren, que son el bastón
+    y su brillo. resvg pinta casi igual (de 0,4 a 1,2 de 255 de diferencia media con
+    las hojas de siempre, contando el alfa). En las S+ con brillo iridiscente la
+    mezcla de color no sale igual, y se iguala el tono con el cuerpo de alrededor
+    (`_al_tono`): sin eso quedaba una franja verde donde iba el bastón. La mano sale
+    de `magos_vectorial.mano_baston`, la misma cuenta que usa el dibujo. El giro y el
+    retrato del gacha siguen con bastón. En cooperativo, los demás magos se ven como
+    siempre (`MagoRemoto` no enseña armas). Principal: `_disparar_arma`. En cooperativo la bola lleva su arma y
     modo por índice, y `MundoRed.anunciar_muerte_arma` la animación. Desde el
     2026-11-05 se dibujan en SVG con el trazo de los magos (`generar_armas.py`, una
     función por `forma`): `icono` (96 px, recto) e `ilustracion` (256 px, inclinada,

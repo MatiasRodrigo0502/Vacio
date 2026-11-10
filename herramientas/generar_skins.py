@@ -26,7 +26,8 @@ grande, para la ficha y la cinematica). Y resources/skins/<id>.tres, que es lo
 que lee el gacha. Tambien el giro.png de los cuatro magos de serie, en
 assets/mago_<color>/.
 
-Necesita rsvg-convert, como magos_vectorial.py. Unos 40 s con 8 hilos.
+Necesita rsvg-convert, como magos_vectorial.py. Unos 40 s con 8 hilos. Despues,
+generar_sin_baston.py saca cada skin sin el baston (para llevar un arma del gacha).
 
     python herramientas/generar_skins.py [rojo_smas ...]
 """
@@ -713,15 +714,18 @@ def hacer_skin(clase, tmp):
 
     color_aura = "Color(%.3f, %.3f, %.3f, 1)" % c(skin.aura) if skin.aura else "Color(0, 0, 0, 0)"
     guardar_texto(os.path.join(RECURSOS, skin.id + ".tres"), [
-        '[gd_resource type="Resource" script_class="SkinMago" load_steps=5 format=3]', "",
+        '[gd_resource type="Resource" script_class="SkinMago" load_steps=6 format=3]', "",
         '[ext_resource type="Script" path="res://scripts/skin_mago.gd" id="1_script"]',
         '[ext_resource type="SpriteFrames" path="%sanimaciones.tres" id="2_animaciones"]' % ruta,
+        # La saca generar_sin_baston.py, que hay que ejecutar despues de este.
+        '[ext_resource type="SpriteFrames" path="%sanimaciones_sin_arma.tres" id="5_sin_arma"]' % ruta,
         '[ext_resource type="Texture2D" path="%sretrato.png" id="3_retrato"]' % ruta,
         '[ext_resource type="Texture2D" path="%sgiro.png" id="4_giro"]' % ruta, "",
         "[resource]", 'script = ExtResource("1_script")',
         'nombre = "%s"' % skin.titulo, 'mago = "%s"' % skin.mago, "tier = %d" % skin.tier,
         'descripcion = "%s"' % skin.descripcion,
-        'animaciones = ExtResource("2_animaciones")', 'retrato = ExtResource("3_retrato")', 'giro = ExtResource("4_giro")',
+        'animaciones = ExtResource("2_animaciones")', 'animaciones_sin_arma = ExtResource("5_sin_arma")',
+        'retrato = ExtResource("3_retrato")', 'giro = ExtResource("4_giro")',
         "aura = %s" % color_aura, "arcoiris = %s" % ("true" if skin.arcoiris else "false"),
     ])
 

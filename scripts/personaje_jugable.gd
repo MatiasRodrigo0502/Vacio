@@ -26,6 +26,11 @@ const ESPECIAL_VENENO := 2
 
 @export_group("Arte")
 @export var animaciones: SpriteFrames
+## El mismo dibujo sin su baston, con la mano vacia: el que se pone al llevar un arma
+## del gacha, que va en esa mano (ArmaFlotante). Lo saca
+## herramientas/generar_sin_baston.py, con la mano de cada pose en su metadato
+## "manos". Sin el, el baston se queda y el arma flota al lado.
+@export var animaciones_sin_arma: SpriteFrames
 ## Solo para el menu: un TextureRect necesita una textura suelta, no animacion.
 @export var retrato: Texture2D
 ## Las 8 direcciones en grande, como SkinMago.giro: para la ficha del gacha,
