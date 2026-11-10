@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-11-09.**
+**Última actualización: 2026-11-10.**
 
 ---
 
@@ -431,6 +431,21 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     función por `forma`): `icono` (96 px, recto) e `ilustracion` (256 px, inclinada,
     con resplandor desde las épicas, destellos desde las legendarias y un anillo de
     runas en las míticas).
+  - **La ficha explica cada arma sola** (2026-11-10, Matías: «mejora las explicaciones
+    de las armas del gacha, ya que ahora mismo cuesta de entender»):
+    `DetalleGacha.describir_arma` lo saca de sus `ModoArma`, así que un arma nueva no
+    necesita texto aparte. Dice qué sale en cada disparo, con el nombre de lo que
+    dispara según su `estilo` («tres filos seguidos», «una runa»), y cuánto quita en
+    números de verdad, con «unos» por la variación del 30 % («de unos 5 cada uno, unos
+    14 si dan los tres»). Añade el ritmo, si cambia más de un 10 %, y lo que hacen por
+    el camino, en singular si sale una sola. Al matar, dice que solo se ve. En las
+    míticas explica cómo se cambia de forma (rueda, Q o el botón del móvil) y cada
+    forma en una línea. Debajo del nombre, «Para cualquier mago: ...», y al final el
+    disparo sin arma para comparar. Antes eran los multiplicadores tal cual («daño
+    ×0,45, más lento»): las dagas parecían peores aunque quitan más.
+    `descripcion` es la frase corta, que sale también en la cinemática: se
+    cambia en `generar_armas.py` y en el `.tres`. La columna de texto mide 470
+    (`ANCHO_TEXTO`); con 400, la ficha de una mítica no cabía de alto.
   **Probado** con una prueba de todo (reparto, tiradas, guardado, botín, cada arma
   y cada modo, formas, animaciones, rueda) y capturas. **El cooperativo no se ha
   probado con dos juegos. Los precios y los daños son a ojo: nadie lo ha jugado.**

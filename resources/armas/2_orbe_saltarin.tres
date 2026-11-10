@@ -15,7 +15,7 @@ velocidad = 0.95
 [resource]
 script = ExtResource("1_arma")
 nombre = "Orbe saltarín"
-descripcion = "Sus bolas rebotan tres veces en muros y rocas."
+descripcion = "Bolas que rebotan tres veces en muros y rocas."
 tier = 1
 icono = ExtResource("3_icono")
 ilustracion = ExtResource("4_ilustracion")

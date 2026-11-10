@@ -33,7 +33,7 @@ estilo = 5
 [resource]
 script = ExtResource("1_arma")
 nombre = "Cetro del abismo"
-descripcion = "Tres modos (rueda del ratón). Al matar, se lo traga un torbellino."
+descripcion = "Tres formas de disparar: ráfaga, abanico y una lanza que atraviesa."
 tier = 3
 icono = ExtResource("3_icono")
 ilustracion = ExtResource("4_ilustracion")

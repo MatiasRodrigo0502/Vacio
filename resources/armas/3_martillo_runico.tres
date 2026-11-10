@@ -17,7 +17,7 @@ cadencia = 1.5
 [resource]
 script = ExtResource("1_arma")
 nombre = "Martillo rúnico"
-descripcion = "Runas lentas que explotan. Al matar, lo hace añicos."
+descripcion = "Runas lentas y fuertes que explotan al chocar."
 tier = 2
 icono = ExtResource("3_icono")
 ilustracion = ExtResource("4_ilustracion")

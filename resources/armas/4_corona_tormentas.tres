@@ -35,7 +35,7 @@ velocidad = 1.3
 [resource]
 script = ExtResource("1_arma")
 nombre = "Corona de tormentas"
-descripcion = "Tres modos (rueda del ratón). Al matar, lo fulmina un rayo."
+descripcion = "Tres formas de disparar: chispas que persiguen, un trueno que explota y una cadena que rebota."
 tier = 3
 icono = ExtResource("3_icono")
 ilustracion = ExtResource("4_ilustracion")

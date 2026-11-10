@@ -15,7 +15,7 @@ dano = 0.45
 [resource]
 script = ExtResource("1_arma")
 nombre = "Varita bifurcada"
-descripcion = "Tres flechas en abanico."
+descripcion = "Tres flechas a la vez, en abanico: más fácil acertar."
 tier = 1
 icono = ExtResource("3_icono")
 ilustracion = ExtResource("4_ilustracion")
