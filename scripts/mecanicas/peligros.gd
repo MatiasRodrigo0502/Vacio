@@ -58,15 +58,46 @@ extends Mecanica
 @export var trampas_hielo: int = 5
 @export var pisos_hielo: Vector2i = Vector2i(9, 12)
 
+@export_group("Pinchos alrededor del cofre")
+## En algunos pisos el cofre de la sala secreta esta rodeado de pinchos (Matias,
+## 2026-11-10: «pon trampas de pinchos alrededor de algunos cofres»). Un anillo de
+## placas que salen todas a la vez: para llegar al cofre, y para irse con la
+## ventaja, hay que esperar a que bajen.
+@export_range(1, 12) var piso_pinchos_cofre: int = 2
+## De cada piso desde 'piso_pinchos_cofre', la probabilidad de que su cofre los tenga.
+@export_range(0.0, 1.0) var probabilidad_cofre: float = 0.5
+
+@export_group("Pasillo de pinchos")
+## En una sala de pelea de cada piso, un pasillo con una fila de pinchos a cada lado
+## (Matias, 2026-11-10: «haz un pasillo entre trampas de pinchos en una sala»): de
+## una puerta a la de enfrente o, si no hay, de una puerta al centro. Por el pasillo
+## no se pisa nada; salirse de el, a destiempo, si.
+@export_range(1, 12) var piso_pasillo: int = 3
+## Ancho del paso libre entre las dos filas. El mago mide 30.
+@export var ancho_pasillo: float = 120.0
+
 ## Lado de la placa de una puerta: casi el ancho del hueco, para que no se
 ## pueda pasar por un lado. Con el jugador midiendo 30 px, los 5 de cada lado
 ## no le dejan colarse.
 const LADO_PUERTA: float = Sala.ANCHO_PUERTA - 10.0
+## Lado de cada placa del anillo del cofre: cuatro por lado, con un hueco de
+## 200 x 200 en medio, donde cabe el cofre (146 de ancho) y se pisa sin tocarlas.
+const LADO_ANILLO: float = 100.0
+## Lado de cada placa de las filas del pasillo.
+const LADO_PASILLO: float = 90.0
+## Lo que se aparta de la pared el pasillo al empezar: la placa de la puerta,
+## cuando la hay, llega a 120 de la pared, pero va en medio y las filas a los lados.
+const MARGEN_PASILLO: float = 70.0
+## Lo que tarda la onda de los pinchos en ir de una punta del pasillo a la otra.
+const ONDA_PASILLO: float = 1.2
 
 
 func aplicar_a_piso(piso: Node) -> void:
 	_pinchos_en_puertas(piso)
+	# Antes que los de al azar, que asi lo esquivan.
+	_pasillo(piso)
 	_repartir(piso)
+	_pinchos_del_cofre(piso)
 	# Al final, con todos los pinchos ya puestos (los de las puertas tambien).
 	_poner_hielo(piso)
 
@@ -199,6 +230,116 @@ func _pinchos_en_puertas(piso: Node) -> void:
 			sala.anadir_trampa_puerta(puerta, LADO_PUERTA)
 
 
+## Rodea el cofre de la sala secreta con un anillo de pinchos, en algunos pisos.
+## Todas las placas con el mismo ritmo: es una sola trampa, y lo que se ve es
+## cuando se puede pasar.
+func _pinchos_del_cofre(piso: Node) -> void:
+	var secreta: Sala = piso.sala_secreta()
+	if secreta == null or piso.numero_piso < piso_pinchos_cofre:
+		return
+	var generador := RandomNumberGenerator.new()
+	generador.seed = hash(nombre_mecanica + " cofre") + piso.numero_piso * 7727
+	if generador.randf() >= probabilidad_cofre:
+		return
+	var sitios: Array[Vector2] = []
+	for i in 4:
+		for j in 4:
+			if i == 0 or i == 3 or j == 0 or j == 3:
+				sitios.append(Vector2(i - 1.5, j - 1.5) * LADO_ANILLO)
+	var desfase := generador.randf() * (Pinchos.DENTRO + Pinchos.AVISO + Pinchos.FUERA)
+	for sitio in sitios:
+		var pinchos := _colocar(piso, secreta, "pinchos", sitio, Vector2.ONE * LADO_ANILLO, generador) as Pinchos
+		pinchos.desfase = desfase
+
+
+## El pasillo entre pinchos de una sala del piso, elegida al azar (con su semilla).
+## Mejor una con dos puertas enfrente: ahi el pasillo cruza la sala entera; si no
+## hay ninguna, va de una puerta al centro. Quita las rocas que tenga en medio y
+## salta las placas que caerian en un bulto de la pared o en otro peligro (la placa
+## de la puerta).
+func _pasillo(piso: Node) -> void:
+	if piso.numero_piso < piso_pasillo:
+		return
+	var generador := RandomNumberGenerator.new()
+	generador.seed = hash(nombre_mecanica + " pasillo") + piso.numero_piso * 7727
+	var cruzan: Array = []
+	var al_centro: Array = []
+	for sala in piso.salas():
+		if not sala.admite_enemigos() or sala.tiene_bajada():
+			continue
+		var puertas: Array[Vector2i] = sala.puertas_visibles()
+		for direccion in [Vector2i.LEFT, Vector2i.UP]:
+			if direccion in puertas and -direccion in puertas:
+				cruzan.append([sala, sala.punto_puerta(direccion) - Vector2(direccion) * MARGEN_PASILLO,
+					sala.punto_puerta(-direccion) + Vector2(direccion) * MARGEN_PASILLO])
+		for direccion in puertas:
+			al_centro.append([sala, sala.punto_puerta(direccion) - Vector2(direccion) * MARGEN_PASILLO, Vector2.ZERO])
+	_barajar(cruzan, generador)
+	_barajar(al_centro, generador)
+	var opciones := cruzan + al_centro
+	if opciones.is_empty():
+		return
+	var sala: Sala = opciones[0][0]
+	var desde: Vector2 = opciones[0][1]
+	var hasta: Vector2 = opciones[0][2]
+	var lado := (hasta - desde).normalized().orthogonal() * (ancho_pasillo * 0.5 + LADO_PASILLO)
+	var zona := Rect2(sala.to_global(desde + lado), Vector2.ZERO).expand(sala.to_global(desde - lado)) \
+			.expand(sala.to_global(hasta + lado)).expand(sala.to_global(hasta - lado))
+	piso.quitar_rocas_en(zona)
+	# Una onda que recorre el pasillo: las placas salen una detras de otra, de una
+	# punta a la otra, en vez de todas a la vez o cada una a su aire.
+	var largo := desde.distance_to(hasta)
+	# Primero se miran todas y luego se ponen: puesta una, la de al lado ya no
+	# estaria libre (lugar_libre mira tambien los peligros).
+	var libres: Array[Vector2] = []
+	for sitio in _sitios_pasillo(sala, desde, hasta):
+		# Sin mirar a los enemigos: ya estan repartidos, y en cuanto entras se mueven.
+		if piso.lugar_libre(sala.to_global(sitio), LADO_PASILLO * 0.5, false):
+			libres.append(sitio)
+	for sitio in libres:
+		var pinchos := _colocar(piso, sala, "pinchos", sitio, Vector2.ONE * LADO_PASILLO, generador) as Pinchos
+		pinchos.desfase = desde.distance_to(sitio) / largo * ONDA_PASILLO
+
+
+## Los centros de las placas de las dos filas de un pasillo que va de 'desde' a
+## 'hasta' (en la sala): una a cada lado del paso libre, pegadas unas a otras. Con
+## un hueco donde sale el paso del centro a otra puerta de la sala, de lado: si no,
+## para ir a ella habria que cruzar los pinchos.
+func _sitios_pasillo(sala: Sala, desde: Vector2, hasta: Vector2) -> Array[Vector2]:
+	var eje := (hasta - desde).normalized()
+	var cuantas := int(desde.distance_to(hasta) / LADO_PASILLO)
+	var lado := eje.orthogonal() * (ancho_pasillo + LADO_PASILLO) * 0.5
+	var sitios: Array[Vector2] = []
+	for i in cuantas:
+		var centro := desde + eje * LADO_PASILLO * (i + 0.5)
+		for sitio in [centro + lado, centro - lado]:
+			if not _tapa_otro_paso(sala, eje, sitio):
+				sitios.append(sitio)
+	return sitios
+
+
+## True si la placa en 'sitio' queda en el paso del centro a una puerta que sale de
+## lado del pasillo (que va a lo largo de 'eje').
+func _tapa_otro_paso(sala: Sala, eje: Vector2, sitio: Vector2) -> bool:
+	for puerta in sala.puertas_visibles():
+		var hacia := Vector2(puerta)
+		if absf(hacia.dot(eje)) > 0.5 or sitio.dot(hacia) <= 0.0:
+			continue
+		if absf(sitio.dot(eje)) < (ancho_paso + LADO_PASILLO) * 0.5:
+			return true
+	return false
+
+
+## Fisher-Yates con el generador del piso: shuffle() tira de la suerte global y
+## los pisos tienen que salir siempre iguales.
+func _barajar(lista: Array, generador: RandomNumberGenerator) -> void:
+	for i in range(lista.size() - 1, 0, -1):
+		var j := generador.randi() % (i + 1)
+		var otro: Variant = lista[i]
+		lista[i] = lista[j]
+		lista[j] = otro
+
+
 ## Medidas segun el peligro y el tamano de la sala: en las salas pequenas del
 ## fondo, un agujero del tamano de los de arriba ocuparia media sala.
 func _tamano(clase: String, sala: Sala, generador: RandomNumberGenerator) -> Vector2:
@@ -228,7 +369,7 @@ func _sitio_valido(piso: Node, sala: Sala, sitio: Vector2, tamano: Vector2) -> b
 
 
 func _colocar(piso: Node, sala: Sala, clase: String, sitio: Vector2, tamano: Vector2,
-		generador: RandomNumberGenerator) -> void:
+		generador: RandomNumberGenerator) -> Peligro:
 	var peligro: Peligro
 	match clase:
 		"pinchos":
@@ -255,3 +396,4 @@ func _colocar(piso: Node, sala: Sala, clase: String, sitio: Vector2, tamano: Vec
 	sala.move_child(peligro, 0)
 	# Con un margen: una china pegada al borde tambien se veria encima.
 	piso.despejar_decoracion(Rect2(sala.to_global(sitio) - tamano * 0.5, tamano).grow(14.0))
+	return peligro

@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_peligros")
 nombre_mecanica = "Peligros"
-descripcion = "Pinchos que salen a ratos (desde el piso 2), agujeros por los que caerse (desde el 3) y lava (desde el 4), de 1 a 3 por sala de pelea. Desde el piso 3, algunas puertas tienen pinchos al entrar."
+descripcion = "Pinchos que salen a ratos (desde el piso 2), agujeros por los que caerse (desde el 3) y lava (desde el 4), de 1 a 3 por sala de pelea. Desde el piso 3, algunas puertas tienen pinchos al entrar y una sala de cada piso, un pasillo entre pinchos. En la mitad de los pisos, el cofre secreto está rodeado de pinchos."
 piso_desbloqueo = 2
 activa = true
 piso_pinchos = 2

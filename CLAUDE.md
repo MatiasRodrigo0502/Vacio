@@ -1036,6 +1036,24 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   pinchos justo al cruzarlas, de lado a lado del hueco (26 en una partida).
   Se cruzan esperando a que bajen. Quien cae a un agujero reaparece por
   detrás de la placa (`Sala.fondo_trampa`, `Piso.MARGEN_TRAMPA`).
+- **Pinchos alrededor del cofre y pasillo de pinchos** (2026-11-10, Matías: «pon
+  trampas de pinchos alrededor de algunos cofres» y «haz un pasillo entre trampas de
+  pinchos en una sala»), en `MecanicaPeligros`:
+  - **Anillo del cofre** (`_pinchos_del_cofre`): desde el piso 2, la mitad de los
+    pisos (`probabilidad_cofre`, con su semilla: salen 2, 3, 4, 6 y 9) rodean el cofre
+    de la sala secreta con 12 placas de 100 (`LADO_ANILLO`, 4 por lado) y un hueco de
+    200 × 200 en medio, donde cabe el cofre. **Todas con el mismo ritmo**: es una sola
+    trampa, y se ve cuándo se puede pasar (para llegar y para irse con la ventaja).
+  - **Pasillo** (`_pasillo`): desde el piso 3, en una sala de pelea por piso sin
+    bajada, dos filas de placas de 90 (`LADO_PASILLO`) a los lados de un paso libre de
+    120 (`ancho_pasillo`; el mago mide 30). Mejor en una sala con dos puertas enfrente,
+    de una a otra; si no, de una puerta al centro. **Quita las rocas que tenga en
+    medio** (`Piso.quitar_rocas_en`, que las devuelve al pool y las olvida en la sala):
+    eligiendo solo salas donde cupiera entre las rocas al azar, salían pasillos de 4 a
+    6 placas. Las placas salen en onda de una punta a la otra (`ONDA_PASILLO`, 1,2 s),
+    y se deja un hueco donde sale de lado el paso del centro a otra puerta
+    (`_tapa_otro_paso`). Va antes que los peligros al azar, que así lo esquivan. Medido:
+    de 10 a 26 placas por piso.
 - **Veneno**: 3 s en los que el jugador va al 60 % de velocidad, en verde, y
   pierde 2 de vida poco a poco (uno cada segundo y medio, en verde encima del
   mago). Lo de la vida se pidió el 2026-10-14 (Matías: «un punto o 2 como

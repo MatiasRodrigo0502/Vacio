@@ -273,6 +273,22 @@ func sitio_libre_cerca(donde: Vector2, sala: Sala, radio: float = 30.0) -> Varia
 	return null
 
 
+## Quita las rocas y plataformas de dentro que toquen esa zona (global), con lo que
+## crezca encima. Lo usa el pasillo de pinchos (MecanicaPeligros._pasillo): es una
+## pieza pensada, y entre rocas puestas al azar casi nunca cabia entero.
+func quitar_rocas_en(zona: Rect2) -> void:
+	for obstaculo in _obstaculos.duplicate():
+		var caja := Rect2(obstaculo.global_position - obstaculo.tamano() * 0.5, obstaculo.tamano())
+		if not caja.intersects(zona):
+			continue
+		var sala := sala_en(obstaculo.global_position)
+		if sala != null:
+			sala.olvidar_roca(obstaculo.global_position)
+		despejar_decoracion(caja.grow(8.0))
+		_obstaculos.erase(obstaculo)
+		_pool.liberar(obstaculo)
+
+
 ## Quita las piedrecitas de decoracion que caigan dentro de esa zona (global).
 ## Las usan los peligros: una china pintada encima de la lava o flotando
 ## sobre un agujero delataria que el suelo es un dibujo.
