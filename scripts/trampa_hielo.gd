@@ -1,8 +1,9 @@
 ## Trampa de hielo: como los pinchos (el mismo ciclo: dentro, aviso temblando,
-## fuera), pero lo que sale son cristales de hielo, que te frenan y apenas
-## quitan vida. Pedida por Matias el 2026-11-03: «tendra el mismo
+## fuera), pero lo que sale son cristales de hielo, que te frenan mucho y
+## quitan algo de vida. Pedida por Matias el 2026-11-03: «tendra el mismo
 ## funcionamiento que los pinchos, pero en vez de hacer dano te da efecto de
-## ralentizacion»; al verla, quiso que quitara 1 (de 100; los pinchos, 25).
+## ralentizacion»; al verla, quiso que quitara 1 (de 100), y el 2026-11-10, que
+## quitara 20 y frenara mas (Jugador.FACTOR_FRIO, de 0,5 a 0,35). Los pinchos, 25.
 ##
 ## Hereda de Pinchos para no repetir el ciclo ni donde van los agujeros: aqui
 ## solo cambia lo que hace al pisarla y como se pinta. La placa es la de los
@@ -20,7 +21,7 @@ extends Pinchos
 const FRIO: float = 2.0
 ## Lo que quita al pisarla fuera. Como con los pinchos, el parpadeo tras el
 ## golpe hace que no quite en cada paso de fisica.
-const DANO_HIELO: int = 1
+const DANO_HIELO: int = 20
 const COLOR_PLACA := Color(0.72, 0.86, 1.08)
 const HIELO := Color(0.78, 0.94, 1.0, 0.93)
 const HIELO_SOMBRA := Color(0.5, 0.76, 1.0, 0.95)

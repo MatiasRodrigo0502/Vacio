@@ -56,10 +56,12 @@ const VARIACION: float = 1.3
 ## sirve para saber que bola es cual sin mirar su tamano.
 @export var cargada: bool = false
 ## Una gota del rocio del mago verde (PersonajeJugable.rocio): se pinta como
-## una nubecilla de veneno y no como una bola de luz, y al dar no suena ni
-## saca su numero: lo junta el enemigo (Enemigo.TIC_ROCIO). Salen 18 por
-## segundo.
+## una gota de veneno con su estela y no como una bola de luz, y al dar no suena
+## ni saca su numero: lo junta el enemigo (Enemigo.TIC_ROCIO). Salen 9 por
+## segundo (18 hasta el 2026-11-10).
 @export var rocio: bool = false
+## Lo largo de la estela de una gota del rocio, en radios.
+const LARGO_ESTELA_ROCIO: float = 3.2
 
 ## Color del centro de la bola y de su resplandor. Los pone Principal con los
 ## del mago que dispara, asi que cada mago tiene sus bolas sin que la bola sepa
@@ -121,12 +123,19 @@ const LARGO_ONDA: float = 220.0
 ## Hasta donde llega una que rebota: con el alcance normal se apagaria en el
 ## segundo rebote.
 const ALCANCE_REBOTANDO: float = 4000.0
+const SHADER_RECORTE := preload("res://shaders/recorte_bola.gdshader")
+## Lo que tiene que pasar la bola de la linea del recorte, en radios, para quitarlo:
+## lo mas largo que deja detras es la lanza de hielo del blanco (8,1 radios: su
+## casilla mide 96 px y va 41 px atras, con radio_base 11).
+const FIN_RECORTE_RADIOS: float = 9.0
 
 var _recorrido: float = 0.0
 var _fase: float = 0.0
 ## El dibujo, si tiene arte. Mirando hacia donde va: las hojas estan dibujadas
 ## mirando a la derecha. A la escala de su radio: el orbe hinchado la agranda.
 var _dibujo: AnimatedSprite2D = null
+## Hasta donde (en '_recorrido') lleva el recorte de recortar_desde; -1, sin el.
+var _recorte_hasta: float = -1.0
 
 @onready var _forma: CollisionShape2D = $Forma
 
@@ -145,6 +154,22 @@ func _ready() -> void:
 		_dibujo.rotation = direccion.angle()
 		_dibujo.scale = Vector2.ONE * radio / arte.radio_base
 		arte.poner(_dibujo, &"vuelo")
+
+
+## Que no se vea lo que queda detras de 'punto' mirando hacia donde va. La bola del
+## mago nace en su centro y, si es grande (la lanza de hielo del blanco, el orbe
+## hinchado), asomaba por detras de el (Matias, 2026-11-10: «que solo se vea a partir
+## de la parte delantera del mago»). Se quita cuando ya ha salido entera: con un
+## material propio, su dibujo no se junta con el de las demas.
+func recortar_desde(punto: Vector2) -> void:
+	var recorte := ShaderMaterial.new()
+	recorte.shader = SHADER_RECORTE
+	recorte.set_shader_parameter("punto", punto)
+	recorte.set_shader_parameter("delante", direccion)
+	material = recorte
+	if _dibujo != null:
+		_dibujo.use_parent_material = true
+	_recorte_hasta = global_position.distance_to(punto) + radio * FIN_RECORTE_RADIOS
 
 
 ## Lo que tiene del arma que la dispara. Solo el aspecto, si es rara. Lo demas,
@@ -180,6 +205,9 @@ func _physics_process(delta: float) -> void:
 		var k := TAU / LARGO_ONDA
 		position += direccion.orthogonal() * (sin((_recorrido + paso) * k) - sin(_recorrido * k)) * onda * signo_onda
 	_recorrido += paso
+	if _recorte_hasta >= 0.0 and _recorrido > _recorte_hasta:
+		_recorte_hasta = -1.0
+		material = null
 	var roca := Terreno.choque(get_world_2d(), antes, global_position,
 		minf(radio, RADIO_CONTRA_ROCAS), Terreno.CAPA_ROCAS)
 	if roca != null:
@@ -391,16 +419,15 @@ func _pintar_estilo() -> void:
 			draw_line(atras * radio * 3.0, direccion * radio, Color.WHITE, radio * 0.25, true)
 
 
-## Una nubecilla de veneno: unas bolitas de vapor que se abren al alejarse
-## del mago, sin nucleo blanco. Como salen tan seguidas, juntas se ven como
-## un chorro que se va ensanchando, que es lo que es un spray.
+## Una gota de veneno con su estela: una cola que se afina y se apaga detras,
+## siempre igual. Hasta el 2026-11-10 era una nubecilla de vapor que cambiaba en
+## cada fotograma (bolitas que giraban a los lados) y, con tantas seguidas, mareaba
+## (Matias: «cambia esa niebla por una estela»).
 func _pintar_rocio() -> void:
-	# Nace pequena y crece en los primeros 150 px, como la boca de un spray.
-	var abierto := 0.55 + 0.6 * clampf(_recorrido / 150.0, 0.0, 1.0)
-	var lado := direccion.orthogonal()
-	for i in 4:
-		var giro := _fase * 6.0 + i * 1.7
-		var sitio := lado * sin(giro) * radio * 0.45 * abierto - direccion * i * radio * 0.35
-		draw_circle(sitio, radio * (0.75 - i * 0.12) * abierto,
-			Color(color_halo.r, color_halo.g, color_halo.b, 0.32 - i * 0.05))
-	draw_circle(Vector2.ZERO, radio * 0.5 * abierto, Color(color.r, color.g, color.b, 0.7))
+	var atras := -direccion
+	var lado := direccion.orthogonal() * radio * 0.45
+	var cola := atras * radio * LARGO_ESTELA_ROCIO
+	var halo := Color(color_halo, 0.55)
+	draw_polygon(PackedVector2Array([lado, cola, -lado]),
+		PackedColorArray([halo, Color(color_halo, 0.0), halo]))
+	draw_circle(Vector2.ZERO, radio * 0.5, Color(color, 0.9))

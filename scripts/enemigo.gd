@@ -41,7 +41,7 @@ const COLOR_FRENADO := Escarcha.COLOR
 const TIC_QUEMADURA: float = 1.0
 ## El veneno del mago verde, igual: un golpe cada segundo.
 const TIC_VENENO: float = 1.0
-## El rocio del mago verde le da 18 gotas de 1 por segundo. Lo que quitan se
+## El rocio del mago verde le da 9 gotas de 1 por segundo. Lo que quitan se
 ## suma y sale en un numero (y un parpadeo) cada esto: uno por gota taparia al
 ## enemigo, y con el parpadeo de cada una se quedaba blanco sin parar.
 const TIC_ROCIO: float = 0.25

@@ -12,6 +12,9 @@ const ESCENA_BOLA := preload("res://scenes/BolaMagica.tscn")
 ## Cada cuanto suena el soplo del rocio del mago verde, como mucho. Dura un
 ## poco mas que esto, asi que seguidos no dejan hueco.
 const SEPARACION_ROCIO_MS: int = 130
+## Del centro del mago (de donde salen sus bolas) a su parte delantera: su
+## circulo de choque. Lo de la bola que queda detras no se ve (BolaMagica.recortar_desde).
+const FRENTE_MAGO: float = 16.0
 
 @onready var _contenedor_piso: Node2D = $ContenedorPiso
 @onready var _pool: PoolObstaculos = $PoolObstaculos
@@ -256,8 +259,10 @@ func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 func _soltar_bola(bola: BolaMagica, desde: Vector2, cargada: bool) -> void:
 	_piso_actual.add_child(bola)
 	bola.global_position = desde
+	# Nace en el centro del mago, pero solo se ve desde su parte delantera.
+	bola.recortar_desde(desde + bola.direccion * FRENTE_MAGO)
 	if bola.rocio:
-		# Un soplo largo cada poco, no uno por gota: 18 "fiu" por segundo
+		# Un soplo largo cada poco, no uno por gota: 9 "fiu" por segundo
 		# serian una sirena. Seguidos, suenan a un chorro.
 		Sonido.tocar(&"rocio", SEPARACION_ROCIO_MS)
 	else:

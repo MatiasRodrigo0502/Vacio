@@ -467,6 +467,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   marca del suelo. Lo que usa cada cosa:
   - `BolaMagica`: `vuelo` (girada hacia donde va, a la escala de su radio entre
     `radio_base`) e `impacto` al acabarse. Fuego, lanza de hielo, bola morada.
+    **Solo se ve desde delante del mago** (2026-11-10, Matías: la lanza del blanco,
+    grande, «se ve cómo nace detrás del mago»): sale de su centro, y
+    `BolaMagica.recortar_desde` le pone `shaders/recorte_bola.gdshader`, que no pinta
+    lo que queda detrás de una línea a `Principal.FRENTE_MAGO` (16 px) hacia donde va.
+    Se quita al pasar la bola entera (`FIN_RECORTE_RADIOS`, 9: la lanza llega 8,1
+    radios atrás), porque un material por bola no deja juntar los dibujos.
   - **Meteoro del rojo**: `carga` en `CargaAtaque` (la pose la manda lo cargado,
     no el reloj: carga en 0,375 s), `vuelo` y, al apagarse,
     `Principal._explotar_especial`: `explosion` y la marca (4 s y se apaga en 2).
@@ -701,12 +707,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `duracion_escudo`). No tiene bola cargada. Antes fue un arco pequeño
   delante, primero como pasiva siempre puesta y luego como especial: lo
   cambió Matías las dos veces.
-- **Mago verde** (2026-11-03, pedido por Matías). **Disparo en rocío**: `cadencia_multiplicador` 1/9 (18 por
-  segundo) y `dano_disparo` 1. El tope de cadencia baja con él
+- **Mago verde** (2026-11-03, pedido por Matías). **Disparo en rocío**: `cadencia_multiplicador` 2/9 (9 por
+  segundo; era 1/9, 18 por segundo, hasta que Matías lo dejó en la mitad el 2026-11-10)
+  y `dano_disparo` 1. El tope de cadencia baja con él
   (`Jugador._cadencia_minima`) y la espera entre disparos guarda lo que
   sobra del paso de física (sin eso salían 15 por segundo). Cada gota es una
-  `BolaMagica` con `rocio` (nubecilla verde, un poco torcida al azar,
-  `dispersion_disparo` 5°), que no suena al dar: el enemigo junta lo que le
+  `BolaMagica` con `rocio` (una gota con su estela, `_pintar_rocio`, un poco torcida
+  al azar, `dispersion_disparo` 5°; hasta el 2026-11-10 era una nubecilla que cambiaba
+  en cada fotograma, y Matías dijo que mareaba), que no suena al dar: el enemigo junta lo que le
   quitan y lo enseña en un número cada 0,25 s (`Enemigo.TIC_ROCIO`, estilo
   `ROCIO`), con un parpadeo y un golpe; el escudo del jefe también bloquea
   al mismo ritmo. Al disparar suena un soplo (`rocio.wav`) como mucho cada
@@ -730,7 +738,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve (o las
-  flechas, ver «Moverse con» más abajo).
+  flechas, ver «Moverse con» más abajo). **Con Shift anda un tercio más lento**
+  (acción `andar_despacio`, `Jugador.FACTOR_DESPACIO` 0,67; Matías, 2026-11-10).
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
   aunque te estés alejando.
 - **Una sala secreta en cada piso** (2026-10-29, pedido por Matías: «una
@@ -1001,11 +1010,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   `_pintar_pincho` y `_pintar_encima` para que pinte lo suyo): placa teñida
   de frío, cristales de hielo en vez de pinchos, los agujeros brillan al
   avisar y una neblina con destellos fuera. Pisada fuera, `Jugador.congelar`
-  2 s: va a la mitad (`FACTOR_FRIO`), anima a la mitad, su sprite se tiñe de
+  2 s: va al 35 % (`FACTOR_FRIO`; a la mitad hasta el 2026-11-10), anima igual de lento, su sprite se tiñe de
   `Escarcha.COLOR` y lleva la escarcha a los pies, la misma de los enemigos
   frenados por el mago blanco (`Escarcha.pintar`, que ahora usan los dos).
-  Quita 1 de vida (`DANO_HIELO`; Matías la quiso así al verla; los pinchos
-  quitan 25). `MecanicaPeligros._poner_hielo` cambia por ellas
+  Quita 20 de vida (`DANO_HIELO`; Matías la quiso en 1 al verla y el 2026-11-10 la
+  subió a 20 y la quiso más lenta; los pinchos quitan 25). `MecanicaPeligros._poner_hielo` cambia por ellas
   `trampas_hielo` (5) de los pinchos de `pisos_hielo` (9 a 12), al final del
   piso y con los de las puertas incluidos: una por piso y la que sobra en
   uno al azar (`hielo_en_piso`; al azar del todo salían 1, 0, 0 y 4).

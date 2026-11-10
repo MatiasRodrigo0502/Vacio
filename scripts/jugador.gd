@@ -124,9 +124,12 @@ const VELOCIDAD_MINIMA_ANDAR: float = 12.0
 ## pesa del veneno: te deja a tiro del siguiente. Desde el 2026-10-14 (Matias)
 ## ademas quita un poco de vida mientras dura (TipoProyectil.veneno_vida).
 const FACTOR_VENENO: float = 0.6
-## Lo que va con frio (la trampa de hielo): a la mitad, como los enemigos que
-## frena el disparo del mago blanco (Enemigo.RITMO_FRENADO).
-const FACTOR_FRIO: float = 0.5
+## Lo que va con frio (la trampa de hielo). Era la mitad, como los enemigos que
+## frena el disparo del mago blanco; el 2026-11-10 Matias la quiso mas fuerte.
+const FACTOR_FRIO: float = 0.35
+## Con Shift (la accion andar_despacio) anda un tercio mas lento (Matias,
+## 2026-11-10): para colarse entre pinchos o rodear un agujero sin pasarse.
+const FACTOR_DESPACIO: float = 0.67
 const COLOR_VENENO := Color(0.6, 1.0, 0.55)
 ## Lo que tarda la animacion de caer por un agujero.
 const DURACION_CAIDA: float = 0.4
@@ -388,7 +391,8 @@ func _physics_process(delta: float) -> void:
 
 	if direccion != Vector2.ZERO:
 		var punta := velocidad_maxima * (FACTOR_VENENO if esta_envenenado() else 1.0) \
-			* (FACTOR_FRIO if tiene_frio() else 1.0)
+			* (FACTOR_FRIO if tiene_frio() else 1.0) \
+			* (FACTOR_DESPACIO if _control_activo and Input.is_action_pressed("andar_despacio") else 1.0)
 		velocity = velocity.move_toward(direccion * punta, aceleracion * delta)
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, friccion * delta)
@@ -849,8 +853,8 @@ func envenenar(segundos: float, vida: int = 0, origen: String = "") -> void:
 
 
 ## Lo frena 'segundos' (la trampa de hielo): no se suma, se rellena. Como los
-## enemigos que frena el disparo del mago blanco: a la mitad, azulado y con
-## escarcha a los pies (Escarcha). No quita vida.
+## enemigos que frena el disparo del mago blanco: azulado y con escarcha a los pies
+## (Escarcha), pero mas lento (FACTOR_FRIO). La vida la quita la trampa.
 func congelar(segundos: float) -> void:
 	if vida_actual <= 0:
 		return

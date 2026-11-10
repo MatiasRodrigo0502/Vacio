@@ -14,7 +14,7 @@ class_name ArmaMago
 extends Resource
 
 ## Lo que quita una bola de un arma con el multiplicador a 1. Es lo de un mago
-## normal: el rocio del verde (1 por gota, 18 por segundo) se cambia por el arma.
+## normal: el rocio del verde (1 por gota, 9 por segundo) se cambia por el arma.
 const DANO_BASE: float = 10.0
 
 const RARO: int = 0

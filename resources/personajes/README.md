@@ -22,7 +22,7 @@ bolas (el Orbe hinchado) solo se nota en el disparo normal (`cargada_tamano_fijo
 | Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
 | Mago rojo | +30 de vida, tiempo de carga ×0,5, +20 de daño cargado (50); sus disparos queman 3 por segundo durante 3 s | −25 px/s de velocidad |
 | Mago blanco | ataque especial: escudo burbuja (5 s; parpadea cuando se va a acabar); su disparo frena 1,5 s | no tiene bola cargada |
-| Mago verde | rocía 9 veces más rápido; ataque especial: 8 proyectiles de veneno que persiguen al enemigo más cercano (5 por segundo durante 5 s, y se suman) | cada gota quita 1; los proyectiles giran tan poco que muchos se estrellan |
+| Mago verde | rocía 4,5 veces más rápido; ataque especial: 8 proyectiles de veneno que persiguen al enemigo más cercano (5 por segundo durante 5 s, y se suman) | cada gota quita 1; los proyectiles giran tan poco que muchos se estrellan |
 
 ## Cómo añadir uno
 
@@ -45,10 +45,10 @@ bolas (el Orbe hinchado) solo se nota en el disparo normal (`cargada_tamano_fijo
   anda, apunta y recarga a la mitad, y lleva un aro de escarcha a los pies.
 - El oscuro, el rojo y el blanco disparan una bola cada 0,5 s
   (`cadencia_disparo` del jugador; `cadencia_multiplicador` a 1). El verde
-  va a 1/9 y quita 1 (`dano_disparo`): rocía. Los objetos la siguen
+  va a 2/9 (1/9 hasta el 2026-11-10) y quita 1 (`dano_disparo`): rocía. Los objetos la siguen
   bajando, y su tope baja en la misma proporción que la del mago.
-- `rocio` y `dispersion_disparo`: el disparo se ve como una nubecilla de
-  veneno y no como una bola, cada una torcida al azar hasta esos grados, y
+- `rocio` y `dispersion_disparo`: el disparo se ve como una gota de veneno
+  con su estela y no como una bola, cada una torcida al azar hasta esos grados, y
   lo que quita se junta en el enemigo en un número cada 0,25 s
   (`Enemigo.TIC_ROCIO`).
 - `ataque_especial`: lo que sale con el clic derecho o el espacio. **Bola

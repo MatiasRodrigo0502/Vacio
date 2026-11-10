@@ -245,7 +245,7 @@ Antes de empezar eliges **con qué mago juegas**, y no es solo el color:
 | **Mago oscuro** | Anda un 13 % más rápido, y su bola cargada abre un **agujero negro** donde se acaba, que atrae a los enemigos y quita vida a los del centro | Su bola cargada llega menos lejos que la del rojo |
 | **Mago rojo** | 30 de vida más, y el ataque cargado sale en medio tiempo y quita 50: mata de un golpe a cualquier enemigo. Sus disparos **queman**: 3 de vida por segundo durante 3 s | Anda un 9 % más lento |
 | **Mago blanco** | Su ataque especial es una burbuja que lo cubre entero durante 5 s: los disparos rebotan en ella (y los rebotados dañan a los enemigos) y los enemigos que la tocan salen despedidos. Sus disparos frenan a los enemigos a la mitad durante 1,5 s | No tiene bola cargada: su ataque especial protege, pero no hace daño |
-| **Mago verde** | **Rocía veneno**: dispara 9 veces más rápido. Su ataque especial son 8 proyectiles lentos que salen a su alrededor y luego persiguen al enemigo más cercano; el que da lo **envenena** (5 por segundo durante 5 s), y si le dan varios, los venenos se suman | Cada gota quita 1, diez veces menos. Los proyectiles giran tan poco que muchos se estrellan contra rocas y paredes |
+| **Mago verde** | **Rocía veneno**: dispara 4,5 veces más rápido. Su ataque especial son 8 proyectiles lentos que salen a su alrededor y luego persiguen al enemigo más cercano; el que da lo **envenena** (5 por segundo durante 5 s), y si le dan varios, los venenos se suman | Cada gota quita 1, diez veces menos. Los proyectiles giran tan poco que muchos se estrellan contra rocas y paredes |
 
 Cada mago tiene su arte: su figura en ocho direcciones y sus hechizos (la bola
 de fuego y el meteoro del rojo, la bola morada y el agujero negro del oscuro,
