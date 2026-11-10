@@ -148,6 +148,7 @@ En la colección (lo que no tienes sale en silueta) pulsas una para verla en gra
 | Acción | Tecla |
 |---|---|
 | Moverse | WASD (o las flechas: se elige en **Controles**) |
+| Andar despacio | Shift: un tercio más lento, para pasar entre pinchos |
 | Disparar | Flechas (o WASD, si te mueves con las flechas), o clic izquierdo apuntando con el ratón |
 | Ataque especial | Clic derecho o espacio, **una vez por piso**. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o, sin ninguna, hacia donde mira el mago (para jugar sin ratón). Mago blanco: saca el escudo |
 | Pausa (continuar, reiniciar o volver al menú) | Esc |
@@ -167,10 +168,15 @@ siguen de pie, nada cambia de sitio y arriba en la pantalla sigue siendo
 arriba. En el ordenador se pueden probar los joysticks arrancando el juego
 con `-- --tactil` (el ratón hace de dedo).
 
-En el panel **Controles** del menú se elige **moverse con WASD o con las
-flechas**. Con las flechas, se dispara con WASD: son las mismas dos manos al
-revés. Se acuerda para la próxima vez, y las ventanas del tutorial dicen las
-teclas que hayas elegido.
+En el panel **Controles** del menú, la pestaña **Teclas** tiene una tabla con
+cada acción, su **tecla principal** y su **tecla secundaria**. Para cambiar una,
+púlsala y luego la tecla o el botón del ratón que quieras (Esc la deja como
+estaba); la **×** de al lado la quita, y *Restablecer* las deja como de fábrica.
+Una tecla solo hace una cosa: si la pones en otra acción, se le quita a la que la
+tenía. Encima hay un atajo para **moverse con WASD o con las flechas** (con las
+flechas, se dispara con WASD). Todo se acuerda para la próxima vez, y el tutorial
+dice las teclas que hayas elegido. Las reglas están en la otra pestaña, **Cómo
+se juega**.
 
 Al lado está el **disparo automático** (también en la pausa): encendido, el
 mago dispara sin parar al enemigo más cercano de la sala, antes a los que

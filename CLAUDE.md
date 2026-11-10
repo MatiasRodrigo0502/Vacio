@@ -820,15 +820,28 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   y `Tutorial.usar_archivo`. Antes eran carteles pintados en el suelo: desde
   el 17/09, siete juntos en la sala de inicio de un piso de cuatro salas sin
   enemigos.
-- **Moverse con WASD o con las flechas** (2026-10-18, pedido por Matías): en
-  el panel Controles del menú (`MenuPrincipal._montar_eleccion_teclas`). El
-  autoload `Controles` (`scripts/controles.gd`) **intercambia las teclas** de
-  `mover_*` y `disparar_*` en el mapa de teclas (las acciones no cambian de
-  nombre, así que el jugador no sabe nada) y lo guarda en
-  `user://ajustes.cfg` (`[controles] mover`). Con las flechas para moverse,
-  se dispara con WASD. Los textos con teclas (el panel del menú, con
-  `Controles.teclas_mover()` / `teclas_disparar()`, y las ventanas del
-  tutorial, `Tutorial._rellenar`) dicen las elegidas.
+- **Tabla de teclas** (2026-11-10, Matías: «en controles debe haber la columna de
+  funciones, la columna de tecla principal y la columna de tecla secundaria. Debes
+  poder activar y desactivar a voluntad»). El panel Controles del menú tiene dos
+  pestañas (`MenuPrincipal._montar_eleccion_teclas`): **Teclas**, con
+  `TablaControles` (`scripts/tabla_controles.gd`: una fila por acción de
+  `Controles.ACCIONES`, catorce, en una lista con desplazamiento porque no cabían en
+  648 de alto), y **Cómo se juega**, con las reglas que antes iban debajo. Cada tecla
+  se cambia pulsándola y luego la tecla o el botón del ratón que se quiera (Esc deja
+  la que había, en `_input` para que no cierre el panel); la × la quita. **Una tecla
+  solo hace una cosa**: puesta en otra acción, se le quita a la que la tenía, y la
+  tabla la enseña vacía. *Restablecer* vuelve a las de fábrica (las de
+  `project.godot`). El autoload `Controles` guarda cada acción como `[principal,
+  secundaria]` (`"tecla:<código físico>"`, `"raton:<botón>"` o `""`) en
+  `user://ajustes.cfg`, `[teclas]`, y las pone en el mapa de teclas partiendo de las
+  del proyecto (`_aplicar`): las acciones no cambian de nombre, así que el jugador no
+  sabe nada. Las pruebas, con `Controles.usar_archivo`. **Lo de antes** (2026-10-18:
+  moverse con WASD o con las flechas, `[controles] mover`) sigue como atajo encima
+  de la tabla (`Controles.elegir`): cambia las principales de moverse y disparar, y
+  quien lo tenía guardado con flechas pasa a la tabla igual. Los textos con teclas
+  dicen las elegidas: las reglas (`teclas_disparar()`), las ventanas del tutorial
+  (`Tutorial._rellenar`, `{mover}`, `{disparar}`, `{raton}`, `{pausa}` y las del
+  especial) y el HUD del arma («rueda o Q»). F11 y F3 no se cambian.
 - **Disparo automático** (2026-11-03, pedido por Matías: «disparando sin
   parar mientras tenga a un enemigo a tiro, en la misma sala»): un
   interruptor en el panel Controles del menú (en la fila de «Moverse con»;

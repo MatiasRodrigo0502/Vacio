@@ -179,6 +179,7 @@ theme_override_font_sizes/font_size = 17
 text = "Cada piso es un mapa de salas: busca la del agujero para bajar al siguiente.
 Al entrar en una sala con enemigos se cierran las puertas hasta que acabes con ellos.
 Disparas con las flechas o apuntando con el ratón: matan enemigos.
+Con Shift andas un tercio más despacio: para pasar entre pinchos sin tocarlos.
 Mantén el clic derecho o el espacio para cargar un ataque: cuando el aro se cierre, suéltalo.
 Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas.
 El cargado atraviesa enemigos y pega más fuerte; el del mago oscuro abre un agujero negro.

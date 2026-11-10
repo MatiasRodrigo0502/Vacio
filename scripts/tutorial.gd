@@ -25,7 +25,8 @@
 ##
 ## Los textos estan aqui y no en una escena porque dependen de las teclas
 ## elegidas en Controles y del mago: [k]...[/k] resalta (AvisoTutorial), y
-## {mover}, {disparar} y {especial} se rellenan al abrir la ventana.
+## {mover}, {disparar}, {raton}, {pausa} y {especial} se rellenan al abrir la
+## ventana, con las teclas que haya en la tabla de controles.
 class_name Tutorial
 extends Node
 
@@ -41,8 +42,8 @@ const PASOS: Array[Dictionary] = [
 		"color": Color(1.0, 0.85, 0.55),
 		"texto": "Tienes que bajar los 12 pisos, hasta el núcleo de la Tierra.\n"
 			+ "[k]{mover}[/k] para moverte.\n"
-			+ "[k]{disparar}[/k] o [k]clic izquierdo[/k] para disparar.\n"
-			+ "[k]Esc[/k]: pausa, reiniciar o volver al menú.\n"
+			+ "[k]{disparar}[/k] o [k]{raton}[/k] para disparar.\n"
+			+ "[k]{pausa}[/k]: pausa, reiniciar o volver al menú.\n"
 			+ "Cuando quieras, cruza la puerta: cada sala te enseña algo nuevo.",
 	},
 	{
@@ -161,21 +162,40 @@ func _clave(indice: int) -> String:
 
 
 func _rellenar(texto: String) -> String:
-	var mover := "Flechas" if Controles.flechas_para_mover else "W A S D"
-	var disparar := "W A S D" if Controles.flechas_para_mover else "Flechas"
 	return texto.format({
-		"mover": mover,
-		"disparar": disparar,
+		"mover": _mayuscula(Controles.teclas_mover()),
+		"disparar": _mayuscula(Controles.teclas_disparar()),
+		"raton": _tecla("disparar_raton"),
+		"pausa": _tecla("pausar"),
 		"especial": _linea_especial(),
 	})
+
+
+## La primera tecla que tenga esa accion, en minuscula si es una palabra («clic
+## derecho», «espacio») y tal cual si es una letra («Q»).
+static func _tecla(accion: String) -> String:
+	for evento in Controles.teclas_de(accion):
+		if evento != null:
+			var nombre: String = Controles.nombre_de(evento)
+			return nombre.to_lower() if nombre.length() > 1 else nombre
+	return "sin tecla"
+
+
+static func _mayuscula(texto: String) -> String:
+	return texto.left(1).to_upper() + texto.substr(1)
+
+
+## «[k]clic derecho[/k] o [k]espacio[/k]»: las dos formas de sacar el especial.
+static func _teclas_especial() -> String:
+	return "[k]%s[/k] o [k]%s[/k]" % [_tecla("cargar_ataque"), _tecla("cargar_ataque_teclado")]
 
 
 ## Lo que hace el especial del mago con el que se juega, y como se saca.
 func _linea_especial() -> String:
 	var mago := GestorProgreso.personaje_elegido
 	if mago != null and mago.ataque_especial == PersonajeJugable.ESPECIAL_ESCUDO:
-		return "Pulsa [k]clic derecho[/k] o [k]espacio[/k]: sale tu [k]escudo burbuja[/k], que te cubre unos segundos."
+		return "Pulsa %s: sale tu [k]escudo burbuja[/k], que te cubre unos segundos." % _teclas_especial()
 	if mago != null and mago.ataque_especial == PersonajeJugable.ESPECIAL_VENENO:
-		return "Pulsa [k]clic derecho[/k] o [k]espacio[/k]: salen tus [k]proyectiles de veneno[/k], que persiguen a los enemigos y los envenenan. Giran poco: mejor de cerca."
+		return "Pulsa %s: salen tus [k]proyectiles de veneno[/k], que persiguen a los enemigos y los envenenan. Giran poco: mejor de cerca." % _teclas_especial()
 	var nombre := mago.nombre_especial() if mago != null else "bola cargada"
-	return "Mantén [k]clic derecho[/k] o [k]espacio[/k] y suéltalo: sale tu [k]%s[/k]." % nombre
+	return "Mantén %s y suéltalo: sale tu [k]%s[/k]." % [_teclas_especial(), nombre]

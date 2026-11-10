@@ -48,7 +48,7 @@ func actualizar_arma(arma: ArmaMago, modo: ModoArma) -> void:
 	_etiqueta_arma.modulate = arma.color
 	_etiqueta_arma.text = arma.nombre.to_upper()
 	if arma.tiene_modos():
-		_etiqueta_arma.text += "  ·  MODO %s  (rueda o Q)" % modo.nombre.to_upper()
+		_etiqueta_arma.text += "  ·  MODO %s  (rueda o %s)" % [modo.nombre.to_upper(), Controles.nombres("cambiar_modo_arma")]
 
 
 func actualizar_piso(numero_piso: int, total: int, nombre_capa: String) -> void:
