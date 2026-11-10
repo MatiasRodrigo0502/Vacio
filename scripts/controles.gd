@@ -132,8 +132,10 @@ func nombre_de(evento: InputEvent) -> String:
 		var codigo: Key = evento.physical_keycode if evento.physical_keycode != KEY_NONE else evento.keycode
 		if NOMBRES_TECLA.has(codigo):
 			return NOMBRES_TECLA[codigo]
-		# La letra que pone en la tecla con la distribucion de este teclado.
-		return OS.get_keycode_string(DisplayServer.keyboard_get_keycode_from_physical(codigo))
+		# La letra de esa tecla en un teclado QWERTY, como el espanol. La de la
+		# distribucion de cada teclado (keyboard_get_keycode_from_physical) da error
+		# sin ventana y en el navegador: lo pillo la prueba de arranque de la release.
+		return OS.get_keycode_string(codigo)
 	if evento is InputEventMouseButton:
 		return NOMBRES_RATON.get(evento.button_index, "Botón %d del ratón" % evento.button_index)
 	return ""

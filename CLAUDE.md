@@ -1385,6 +1385,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 
 ## Trampas ya pisadas (no repetirlas)
 
+- **`DisplayServer.keyboard_get_keycode_from_physical` da error sin ventana** (y no
+  esta en el navegador): la tabla de controles nombraba las teclas con ella y la
+  prueba de arranque de la release (`--headless`) paro la version del 2026-11-10.
+  Se nombran con `OS.get_keycode_string` del codigo fisico (la letra en QWERTY).
+  Antes de subir algo que se ejecute al arrancar, `--headless --quit-after 300`
+  aqui, y buscar `ERROR` en lo que sale.
 - **Un `Label` con autowrap y sin ancho se parte letra a letra.** Las del rincón
   de las tarjetas del gacha («PUESTA») salían en vertical: estaban sueltas dentro
   de un botón, sin contenedor que les diera ancho (2026-11-05). Para un rótulo
