@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 10/11/2026 | Con un arma del gacha, el mago va sin su bastón y la lleva en esa mano, en las ocho direcciones y con todas las skins | — |
+| 12/11/2026 | La portada del menú es un vídeo en bucle (el mago oscuro en el bosque morado), en lugar de la ilustración de los tres magos | — |
+| 10/11/2026 | Con un arma del gacha, el mago va sin su bastón y la lleva en esa mano, en las ocho direcciones y con todas las skins | `1af9eea` |
 | 10/11/2026 | Tabla de controles con tecla principal y secundaria para cada acción: se cambian pulsándolas y se quitan con la ×; las reglas, en otra pestaña | `2f000b3`, `7308980` |
 | 10/11/2026 | Pinchos alrededor del cofre de la sala secreta en la mitad de los pisos, y desde el 3, un pasillo entre dos filas de pinchos en una sala de cada piso | `0b9bd7b` |
 | 10/11/2026 | Shift para andar un tercio más lento; la trampa de hielo quita 20 y frena más (al 35 %); el rocío del verde va a la mitad (9 gotas por segundo) y cada gota lleva una estela en vez de la niebla que mareaba; la bola del mago solo se ve desde delante de él; nueva descripción del mago oscuro | `29f5789` |

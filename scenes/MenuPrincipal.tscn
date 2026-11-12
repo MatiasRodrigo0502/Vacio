@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/menu_principal.gd" id="1_menu"]
-[ext_resource type="Texture2D" path="res://assets/portada/portada.jpg" id="2_portada"]
+[ext_resource type="Texture2D" path="res://assets/portada/portada_quieta.jpg" id="2_portada"]
+[ext_resource type="VideoStream" path="res://assets/portada/portada.ogv" id="6_video"]
 [ext_resource type="Script" path="res://scripts/control_volumen.gd" id="4_volumen"]
 [ext_resource type="PackedScene" path="res://scenes/AvisoActualizacion.tscn" id="5_aviso"]
 
@@ -41,6 +42,25 @@ mouse_filter = 2
 texture = ExtResource("2_portada")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="EncajeVideo" type="AspectRatioContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+ratio = 1.7778
+stretch_mode = 3
+
+[node name="Video" type="VideoStreamPlayer" parent="EncajeVideo"]
+layout_mode = 2
+mouse_filter = 2
+stream = ExtResource("6_video")
+autoplay = true
+expand = true
+loop = true
 
 [node name="Sombra" type="TextureRect" parent="."]
 layout_mode = 1

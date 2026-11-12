@@ -1,13 +1,16 @@
 ## Menu principal: lo primero que se ve al abrir el juego.
 ##
-## LA PORTADA (2026-10-14, la trajo Matias): la ilustracion de los tres magos
-## (assets/portada/portada.jpg) ocupa toda la pantalla, recortada para
-## cubrirla sin deformarse (si la ventana es mas ancha o mas alta que el
-## dibujo, se recorta por los lados o por arriba y abajo). Ya trae el titulo y
-## los tres magos, asi que el titulo de piedra y los magos en pixel art de
-## antes (assets/titulo/) ya no salen: dos titulos uno encima de otro no se
-## leerian. Los botones van abajo, en fila, sobre una sombra que los separa del
-## dibujo, para no tapar a los magos; el volumen, abajo a la izquierda.
+## LA PORTADA (2026-11-12, la trajo Matias: «cambia el menu principal por este
+## mp4»): un video de 8 s en bucle, el mago oscuro en un bosque morado con el
+## titulo arriba (assets/portada/portada.ogv, de herramientas/convertir_portada.py:
+## Godot no reproduce MP4, solo Ogg Theora). Ocupa toda la pantalla, recortado para
+## cubrirla sin deformarse: un VideoStreamPlayer no sabe recortar, y lo hace el
+## AspectRatioContainer que lo lleva dentro (EncajeVideo, en modo cubrir). Debajo
+## va su primera imagen quieta (Portada), encajada igual: es lo que se ve hasta
+## que el video da la primera, y si no cargara. Ya trae el titulo, asi que los
+## botones van abajo, en fila, sobre una sombra que los separa del dibujo; el
+## volumen, abajo a la izquierda. Hasta entonces la portada era la ilustracion de
+## los tres magos (portada.jpg, del 2026-10-14, que sigue ahi sin usar).
 ##
 ## POR QUE ES LA ESCENA PRINCIPAL Y NO UNA CAPA DENTRO DE Principal.tscn:
 ## el menu no necesita nada del juego (ni gestor, ni pool, ni pisos) y el juego

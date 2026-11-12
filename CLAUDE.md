@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-11-10.**
+**Última actualización: 2026-11-12.**
 
 ---
 
@@ -64,6 +64,7 @@ hechos.
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 | Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
+| Vídeo de la portada del menú | `herramientas/convertir_portada.py <vídeo>` → `assets/portada/portada.ogv` (Ogg Theora, 1024 × 576, sin sonido) y `portada_quieta.jpg` (su primera imagen). Necesita `ffmpeg` en el PATH o `imageio-ffmpeg` (pip) | volver a ejecutarlo con otro vídeo |
 | Cofre de la sala secreta | `herramientas/generar_cofre.py` (un cofre en 3D proyectado, con la tapa en cada ángulo de `ANGULOS`) → `assets/cofre/cofre.png`. Necesita `rsvg-convert` | editar el script y volver a ejecutarlo (si cambian `LADO` u `ORIGEN`, también `Cofre.PIES`) |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
@@ -268,17 +269,31 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   todavía en un Linux ni en un Mac.** Ojo: GDScript no tiene números en
   octal (`0o755` no compila): el permiso va en binario.
 
-- **Portada del menú** (2026-10-14, la trajo Matías): la ilustración
-  «Los tres Magos de Vacío: El Bosque Ancestral»
-  (`assets/portada/portada.jpg`, 1416 × 752) a pantalla completa, recortada
-  para cubrirla sin deformarse (`stretch_mode` 6). Ya trae el título y los
-  tres magos, así que los botones van abajo en fila, sobre una sombra
-  degradada, el volumen abajo a la izquierda (barras más estrechas,
-  `ControlVolumen.ancho_barra = 150`) y la versión abajo a la derecha. El
-  aviso de versión nueva sube encima de los botones. **Sustituye** al título
-  de piedra en pixel art y a los magos flotando del 2026-10-09
-  (`assets/titulo/` y `generar_titulo.py` siguen ahí, sin usar; el código que
-  los montaba está en el historial de git).
+- **Portada del menú: un vídeo** (2026-11-12, lo trajo Matías: «cambia el menú
+  principal por este mp4», `vacio_animado.mp4`, que no está en el repositorio): el
+  mago oscuro en un bosque morado, con el título «VACÍO» arriba, 8 s en bucle (empieza
+  y acaba igual) y sin sonido. **Godot no reproduce MP4**, solo Ogg Theora:
+  `herramientas/convertir_portada.py` lo pasa a `assets/portada/portada.ogv`
+  (1024 × 576, calidad 9, 4,8 MB) con `ffmpeg` (el del paquete `imageio-ffmpeg`,
+  instalado aparte con permiso de Matías) y saca su primera imagen,
+  `portada_quieta.jpg`. En `MenuPrincipal.tscn`: `Portada` (la quieta, `stretch_mode`
+  6) y encima `EncajeVideo/Video`, un `VideoStreamPlayer` (`autoplay`, `loop`,
+  `expand`) dentro de un `AspectRatioContainer` en modo cubrir (`stretch_mode` 3,
+  `ratio` 1,7778): el reproductor no sabe recortar, y así cubre la pantalla sin
+  deformarse en cualquier ventana. La quieta es lo que se ve hasta la primera imagen
+  del vídeo y si no cargara. Los botones siguen abajo en fila, sobre la sombra
+  degradada, el volumen abajo a la izquierda (`ControlVolumen.ancho_barra = 150`) y
+  la versión abajo a la derecha; la música de la portada, la de siempre. **Probado**:
+  se reproduce, cubre (1152 × 648 y una ventana alta), se mueve (6 de 255 entre dos
+  capturas a 1,5 s), vuelve a empezar solo y arranca sin errores sin ventana; y en la
+  versión web exportada aquí, en el navegador: se mueve igual (5 de 255) y va a 60
+  FPS. **En un móvil en vertical el título se corta por los lados** (se ve el 26 % del
+  ancho del vídeo y el título ocupa el 30 %): ya pasaba con la portada de antes.
+  **Nadie lo ha visto en un móvil de verdad**, que es donde más puede pesar
+  descodificar el vídeo. **Sustituye** a la ilustración «Los tres Magos de Vacío: El
+  Bosque Ancestral» del 2026-10-14 (`assets/portada/portada.jpg`, que sigue ahí sin
+  usar), que a su vez sustituyó al título de piedra en pixel art y a los magos
+  flotando del 2026-10-09 (`assets/titulo/` y `generar_titulo.py`, también sin usar).
 
 - **Sonido y música** (2026-10-09, pedido por Matías), todo generado por
   síntesis: `herramientas/sintesis.py` (osciladores, filtros, eco,
@@ -527,8 +542,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   verde allí dispara 3 dardos en abanico y su ultimate es una lluvia de veneno
   (`lluvia_*`, sin usar); la explosión del meteoro y el colapso del agujero
   hacen daño, y el escudo aguanta 3 golpes. Aquí se dejó lo que había pedido
-  Matías; **falta que diga si quiere cambiar algo de eso**. La portada sigue
-  enseñando los tres magos de antes. Probado con los cuatro: cada hechizo sale,
+  Matías; **falta que diga si quiere cambiar algo de eso**. La portada es, desde el
+  2026-11-12, un vídeo del mago oscuro. Probado con los cuatro: cada hechizo sale,
   se ve en su sitio y se va, también en vertical. **Nadie lo ha jugado.**
 - **Versión para móvil** (2026-11-03, pedido por Matías: «un joystick a
   cada lado, como en Brawl Stars; si pone el móvil en vertical, que todas

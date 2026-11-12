@@ -33,10 +33,19 @@ Propias, generadas por script: las skins salen del arte de los cuatro magos camb
 sus colores (`herramientas/generar_skins.py`), y los iconos de las armas se dibujan a
 código (`herramientas/generar_armas.py`).
 
-### Portada — «Los tres Magos de Vacío: El Bosque Ancestral»
+### Portada — vídeo del mago oscuro
+
+- **Archivos**: `assets/portada/portada.ogv` y `portada_quieta.jpg` (su primera
+  imagen), el fondo del menú principal desde el 2026-11-12. Salen de
+  `vacio_animado.mp4` con `herramientas/convertir_portada.py`.
+- **Origen**: lo trajo Matías el 2026-11-12. **Hay que apuntar aquí de dónde
+  sale y con qué licencia** (quién lo hizo o con qué herramienta) antes de
+  entregar o publicar.
+
+### Portada de antes — «Los tres Magos de Vacío: El Bosque Ancestral»
 
 - **Archivo**: `assets/portada/portada.jpg` (1416 × 752), el fondo del menú
-  principal.
+  principal hasta el 2026-11-12. Ya no se usa.
 - **Origen**: la trajo Matías el 2026-10-14. **Hay que apuntar aquí de dónde
   sale y con qué licencia** (quién la hizo o con qué herramienta) antes de
   entregar o publicar.
