@@ -10,7 +10,7 @@
 [resource]
 script = ExtResource("1_script")
 nombre = "Mago verde"
-ventaja = "Rocía veneno: dispara 4,5 veces más rápido. Ataque especial: 8 proyectiles que persiguen al enemigo más cercano y lo envenenan, 5 por segundo durante 5 s; los venenos se suman."
+ventaja = "Rocía veneno: dispara 4,5 veces más rápido y cada gota envenena, 3 por segundo durante 3 s. Ataque especial: 8 proyectiles rápidos que persiguen al enemigo más cercano y lo envenenan, 5 por segundo durante 5 s; los venenos del especial se suman."
 pega = "Cada gota quita 10 veces menos (1). Los proyectiles giran muy poco y muchos se estrellan contra rocas y paredes."
 animaciones = ExtResource("2_animaciones")
 animaciones_sin_arma = ExtResource("2_sin_arma")
@@ -30,4 +30,9 @@ radio_bola_extra = 0.0
 dano_disparo = 1.0
 rocio = true
 dispersion_disparo = 5.0
+veneno_disparo_duracion = 3.0
+veneno_disparo_dano = 3.0
+velocidad_veneno = 360.0
+salida_veneno = 0.3
+giro_veneno = 137.0
 ataque_especial = 2

@@ -126,6 +126,16 @@ const ESPECIAL_VENENO := 2
 ## Vida que quita la quemadura cada segundo.
 @export var quemadura_dano: float = 3.0
 
+@export_group("Veneno del disparo")
+## Segundos que deja envenenado a un enemigo cada disparo normal que le da (el
+## rocio del verde, desde el 2026-11-12, Matias: «que sus ataques basicos
+## envenenen»). 0 = no envenena. Como la quemadura, no se suma: otra gota vuelve a
+## poner la cuenta en estos segundos. Con 9 gotas por segundo, sumandose como los
+## venenos del especial, serian 9 venenos mas cada segundo.
+@export var veneno_disparo_duracion: float = 0.0
+## Vida que quita ese veneno cada segundo.
+@export var veneno_disparo_dano: float = 3.0
+
 @export_group("Ataque especial")
 ## Lo que sale con el clic derecho o el espacio.
 ##
@@ -148,11 +158,15 @@ const ESPECIAL_VENENO := 2
 
 @export_group("Proyectiles de veneno")
 ## El ataque especial "Veneno" (el mago verde, 2026-11-03): al pulsar salen
-## 'proyectiles_veneno' bolas lentas, repartidas en circulo alrededor del mago.
+## 'proyectiles_veneno' bolas, repartidas en circulo alrededor del mago.
 ## Van rectas 'salida_veneno' segundos y luego persiguen al enemigo mas cercano,
 ## girando como mucho 'giro_veneno' grados por segundo: giran tan poco que
 ## muchas se estrellan contra una roca o el muro, y ahi se acaban. La que da a
 ## un enemigo lo envenena (ver Enemigo.envenenar). Ver BolaVenenosa.
+## El verde las tenia a 210 px/s; el 2026-11-12 Matias las quiso mas rapidas y van a
+## 360. Con ellas suben el giro (137) y bajan la salida (0,3 s), en la misma
+## proporcion: asi siguen trazando la misma curva y abriendose lo mismo antes de
+## buscar; mas rapidas con el mismo giro, se estrellarian aun mas.
 @export var proyectiles_veneno: int = 8
 @export var velocidad_veneno: float = 210.0
 @export var salida_veneno: float = 0.5

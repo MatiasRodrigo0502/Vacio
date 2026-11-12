@@ -51,6 +51,9 @@ const VARIACION: float = 1.3
 ## quemadura cada segundo. 0 segundos = no quema.
 @export var quema: float = 0.0
 @export var dano_quema: float = 0.0
+## Lo mismo con el veneno del disparo (PersonajeJugable.veneno_disparo_duracion).
+@export var envenena: float = 0.0
+@export var dano_veneno: float = 0.0
 
 ## Marca el disparo cargado. Ya no decide el color (eso lo hace `color`), pero
 ## sirve para saber que bola es cual sin mirar su tamano.
@@ -307,6 +310,8 @@ func _al_tocar(area: Area2D) -> void:
 			Sonido.tocar(&"golpe_enemigo")
 		if quema > 0.0 and area.has_method("quemar"):
 			area.quemar(quema, dano_quema)
+		if envenena > 0.0 and area.has_method("envenenar"):
+			area.envenenar(envenena, dano_veneno, false)
 	elif area.has_method("romper"):
 		# romper() es un golpe de un disparo normal (10).
 		for i in int(ceil(dano / 10.0)):

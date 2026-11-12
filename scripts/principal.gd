@@ -236,6 +236,8 @@ func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 	bola.frena = datos.get("frena", 0.0)
 	bola.quema = datos.get("quema", 0.0)
 	bola.dano_quema = datos.get("dano_quema", 0.0)
+	bola.envenena = datos.get("envenena", 0.0)
+	bola.dano_veneno = datos.get("dano_veneno", 0.0)
 	bola.cargada = datos.cargada
 	bola.rocio = datos.get("rocio", false)
 	bola.atraviesa = datos.atraviesa
@@ -291,6 +293,10 @@ func _bola_del_jugador(direccion: Vector2, cargada: bool) -> BolaMagica:
 		bola.arte = _jugador.mago.arte_especial if cargada else _jugador.mago.arte_disparo
 		bola.quema = _jugador.mago.quemadura_duracion
 		bola.dano_quema = _jugador.mago.quemadura_dano
+		# El veneno del disparo, solo en el normal: el especial del verde ya envenena.
+		if not cargada:
+			bola.envenena = _jugador.mago.veneno_disparo_duracion
+			bola.dano_veneno = _jugador.mago.veneno_disparo_dano
 		# El rocio del mago verde: cada gota un poco torcida y a su
 		# velocidad, para que el chorro se abra como un spray y no sea una
 		# fila de bolas.

@@ -188,6 +188,8 @@ func mandar_disparo(bola: BolaMagica, desde: Vector2, mago: PersonajeJugable) ->
 		"frena": bola.frena,
 		"quema": bola.quema,
 		"dano_quema": bola.dano_quema,
+		"envenena": bola.envenena,
+		"dano_veneno": bola.dano_veneno,
 		"cargada": bola.cargada,
 		"rocio": bola.rocio,
 		"arma": Coleccion.indice_de_arma(bola.arma) if bola.arma != null else -1,

@@ -756,8 +756,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   0,13 s (`Sonido.tocar(nombre, separacion_ms)`). **Especial «Veneno»**
   (`ESPECIAL_VENENO`): al pulsar (no se carga) salen 8 `BolaVenenosa`
   (`scripts/bola_venenosa.gd`) a 45° una de otra, la primera hacia donde
-  apunta: 0,5 s rectas a 210 px/s y luego hacia el enemigo más cercano a
-  cada una, girando como mucho 80°/s. Se acaban al chocar con roca o muro,
+  apunta: 0,3 s rectas a 360 px/s y luego hacia el enemigo más cercano a
+  cada una, girando como mucho 137°/s (hasta el 2026-11-12, 0,5 s, 210 px/s y 80°/s;
+  Matías las quiso más rápidas, y el giro y la salida van en la misma proporción para
+  que tracen la misma curva: medido, de 8 dan 7 a un gólem, antes 5). Se acaban al chocar con roca o muro,
   al salir del suelo de la sala o a los 8 s. La que da envenena
   (`Enemigo.envenenar`): 5 cada segundo durante 5 s, y **los venenos se
   suman** (`_venenos`, cada uno con su reloj), con burbujas verdes a los
@@ -902,13 +904,24 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   dispara nada. Atraviesa enemigos y hace 3 de daño; las rocas lo paran igual.
   Mientras cargas, el disparo normal se calla. El aviso visual lo dibuja
   `scripts/carga_ataque.gd` en un nodo aparte del jugador.
-- **Quemadura del mago rojo** (2026-10-09, pedido por Matías): cada bola
-  suya que da a un enemigo lo deja quemándose 3 s, 0,25 de vida por segundo
+- **Quemadura del mago rojo, y del oscuro desde el 2026-11-12** (pedido por
+  Matías: «el mago oscuro que tenga quemaduras»; la del rojo, del 2026-10-09): cada
+  bola suya que da a un enemigo lo deja quemándose 3 s, 3 de vida por segundo
   (`PersonajeJugable.quemadura_duracion`/`quemadura_dano`,
   `Enemigo.quemar()`). Va a golpes de 1 s, a tiempo real (el frenado no la
   frena). Un golpe nuevo rellena la cuenta a 3 golpes pero **no reinicia el
   tic**: dispara cada 0,5 s, y si cada bola reiniciara la espera, disparándole
-  sin parar no le quemaría nunca. Tampoco se suman dos quemaduras.
+  sin parar no le quemaría nunca. Tampoco se suman dos quemaduras. La ficha del
+  oscuro no lo dice: su descripción es la que escribió Matías (2026-11-10).
+- **Las gotas del verde envenenan** (2026-11-12, Matías: «que sus ataques básicos
+  envenenen»): `PersonajeJugable.veneno_disparo_duracion`/`veneno_disparo_dano` (3 s
+  y 3 por segundo), que Principal pone en la bola normal (`BolaMagica.envenena`) y
+  la bola deja al dar. **No se suma**, como la quemadura: con 9 gotas por segundo,
+  sumándose como los del especial serían 9 venenos más cada segundo.
+  `Enemigo.envenenar(..., se_suma = false)` rellena el único veneno «del disparo» sin
+  reiniciar su tic; los del especial siguen sumándose aparte. Va también en las bolas
+  de un arma del gacha, como la quemadura y el frío, y en cooperativo
+  (`envenena` en los datos del disparo).
 - **El ataque especial es uno por piso** (pedido por Matías el 2026-10-09),
   sea la bola cargada o el escudo: `Jugador.especial_disponible`, que se gasta
   al soltar la bola o sacar el escudo y vuelve en `reubicar()` (piso nuevo) y

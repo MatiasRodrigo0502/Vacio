@@ -462,10 +462,21 @@ func _arder(delta: float) -> void:
 ## Al reves que la quemadura, otro veneno no rellena el que lleva: se anade,
 ## y los dos quitan a la vez (Matias, 2026-11-03). Cada uno lleva su cuenta
 ## desde que llega: su primer golpe, un segundo despues.
-func envenenar(segundos: float, dano: float) -> void:
+##
+## Con 'se_suma' a false (el del disparo normal, BolaMagica.envenena) va como la
+## quemadura: hay uno solo de ese tipo, y otro golpe le vuelve a poner la cuenta sin
+## reiniciar su tic. Los del especial se siguen sumando aparte.
+func envenenar(segundos: float, dano: float, se_suma: bool = true) -> void:
 	if _espejo or _vida <= 0 or segundos <= 0.0 or es_invulnerable():
 		return
-	_venenos.append({"golpes": ceili(segundos / TIC_VENENO), "reloj": TIC_VENENO, "dano": dano})
+	var golpes := ceili(segundos / TIC_VENENO)
+	if not se_suma:
+		for veneno in _venenos:
+			if veneno.get("del_disparo", false):
+				veneno["golpes"] = maxi(veneno["golpes"], golpes)
+				veneno["dano"] = dano
+				return
+	_venenos.append({"golpes": golpes, "reloj": TIC_VENENO, "dano": dano, "del_disparo": not se_suma})
 
 
 func esta_envenenado() -> bool:

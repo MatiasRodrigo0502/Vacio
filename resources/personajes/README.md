@@ -19,10 +19,10 @@ bolas (el Orbe hinchado) solo se nota en el disparo normal (`cargada_tamano_fijo
 
 | Mago | Ventaja | Pega |
 |---|---|---|
-| Mago oscuro | +35 px/s de velocidad; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
+| Mago oscuro | +35 px/s de velocidad; sus disparos queman 3 por segundo durante 3 s; su bola cargada abre un agujero negro | su bola cargada llega a 320 px |
 | Mago rojo | +30 de vida, tiempo de carga ×0,5, +20 de daño cargado (50); sus disparos queman 3 por segundo durante 3 s | −25 px/s de velocidad |
 | Mago blanco | ataque especial: escudo burbuja (5 s; parpadea cuando se va a acabar); su disparo frena 1,5 s | no tiene bola cargada |
-| Mago verde | rocía 4,5 veces más rápido; ataque especial: 8 proyectiles de veneno que persiguen al enemigo más cercano (5 por segundo durante 5 s, y se suman) | cada gota quita 1; los proyectiles giran tan poco que muchos se estrellan |
+| Mago verde | rocía 4,5 veces más rápido y cada gota envenena 3 por segundo durante 3 s (no se suma); ataque especial: 8 proyectiles de veneno rápidos que persiguen al enemigo más cercano (5 por segundo durante 5 s, y se suman) | cada gota quita 1; los proyectiles giran tan poco que muchos se estrellan |
 
 ## Cómo añadir uno
 
@@ -67,9 +67,13 @@ bolas (el Orbe hinchado) solo se nota en el disparo normal (`cargada_tamano_fijo
   `scripts/escudo_burbuja.gd`.
 - `quemadura_duracion` y `quemadura_dano`: cada bola que da (la normal y la
   cargada) deja al enemigo quemándose esos segundos, quitándole `dano` cada
-  segundo (el rojo: 3 s y 0,25). Otro golpe mientras arde vuelve a poner la
-  cuenta en 3 golpes, pero no se suman dos quemaduras ni se reinicia el tic.
-  Se ve con llamas a los pies (`Enemigo.quemar()`).
+  segundo (el rojo y, desde el 2026-11-12, el oscuro: 3 s y 3). Otro golpe
+  mientras arde vuelve a poner la cuenta en 3 golpes, pero no se suman dos
+  quemaduras ni se reinicia el tic. Se ve con llamas a los pies (`Enemigo.quemar()`).
+- `veneno_disparo_duracion` y `veneno_disparo_dano`: lo mismo con veneno, en el
+  disparo normal (el verde, desde el 2026-11-12: 3 s y 3). Va como la quemadura:
+  un solo veneno de ese tipo, que otra gota rellena (`Enemigo.envenenar(...,
+  se_suma = false)`); los del especial se siguen sumando aparte.
 - `alcance_cargado`: hasta dónde llega la bola cargada, en px (0 = hasta
   chocar, como la del rojo; 320 la del oscuro).
 - `agujero_negro`: la bola cargada abre un agujero negro donde se acaba (al
