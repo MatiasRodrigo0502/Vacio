@@ -29,6 +29,7 @@ velocidad_extra = 35.0
 cadencia_multiplicador = 1.0
 quemadura_duracion = 3.0
 quemadura_dano = 3.0
+quemadura_de_su_color = true
 velocidad_bola_extra = 0.0
 radio_bola_extra = 0.0
 tiempo_carga_multiplicador = 1.0

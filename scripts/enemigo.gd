@@ -84,6 +84,10 @@ var _frenado: float = 0.0
 var _quemaduras: int = 0
 var _dano_quemadura: float = 0.0
 var _tic_quemadura: float = 0.0
+## De que color arde (Llamas): fuera y dentro. Transparentes, de fuego. Tambien es
+## el color de los numeros de la quemadura.
+var _color_quemadura: Color = Color(0.0, 0.0, 0.0, 0.0)
+var _dentro_quemadura: Color = Color(0.0, 0.0, 0.0, 0.0)
 ## Los venenos que lleva (los proyectiles del mago verde). Cada uno va por su
 ## cuenta, con sus golpes, su reloj y lo que quita: dos que le dan quitan los
 ## dos a la vez (Matias, 2026-11-03: «los efectos de veneno se solapan»).
@@ -390,8 +394,16 @@ func _quitar_vida(cantidad: float, frena: float, estilo: NumeroDano.Estilo = Num
 ## ordenadores.
 func _ensenar_golpe(cantidad: float, estilo: NumeroDano.Estilo) -> void:
 	NumeroDano.soltar(get_parent(), global_position + Vector2(0.0, -tipo.alto * 0.55),
-		cantidad, estilo)
+		cantidad, estilo, color_numero(estilo))
 	MundoRed.anunciar_herido(self, cantidad, estilo)
+
+
+## El color de un numero suyo, si no es el de su estilo: el de la quemadura, si
+## arde de un color propio (el centro de sus llamas, que es lo claro y se lee).
+func color_numero(estilo: NumeroDano.Estilo) -> Color:
+	if estilo == NumeroDano.Estilo.FUEGO and _color_quemadura.a > 0.0:
+		return _dentro_quemadura
+	return Color(0.0, 0.0, 0.0, 0.0)
 
 
 ## Parpadeo blanco para que se vea que ha entrado el disparo.
@@ -429,13 +441,19 @@ func _soltar_rocio() -> void:
 ## reinicia el tic: el mago dispara cada medio segundo, y si cada bola
 ## reiniciara la espera del primer golpe, disparandole sin parar no le
 ## quemaria nunca.
-func quemar(segundos: float, dano: float) -> void:
+##
+## 'fuera' y 'dentro' son su color (la del mago oscuro, lila); transparentes, fuego.
+## Arde del color del ultimo que le quema.
+func quemar(segundos: float, dano: float, fuera: Color = Color(0.0, 0.0, 0.0, 0.0),
+		dentro: Color = Color(0.0, 0.0, 0.0, 0.0)) -> void:
 	if _espejo or _vida <= 0 or segundos <= 0.0 or es_invulnerable():
 		return
 	if _quemaduras == 0:
 		_tic_quemadura = TIC_QUEMADURA
 	_quemaduras = maxi(_quemaduras, ceili(segundos / TIC_QUEMADURA))
 	_dano_quemadura = dano
+	_color_quemadura = fuera
+	_dentro_quemadura = dentro
 
 
 func esta_quemado() -> bool:
@@ -512,6 +530,8 @@ func heredar_estados(madre: Enemigo) -> void:
 		_quemaduras = madre._quemaduras
 		_dano_quemadura = madre._dano_quemadura
 		_tic_quemadura = madre._tic_quemadura
+		_color_quemadura = madre._color_quemadura
+		_dentro_quemadura = madre._dentro_quemadura
 	for veneno in madre._venenos:
 		_venenos.append(veneno.duplicate())
 
@@ -542,7 +562,11 @@ func _dejar_de_frenar() -> void:
 ## sprite se pinta encima de esto, asi que en el cuerpo quedarian tapadas. Suben
 ## y bajan cada una a su ritmo, para que se vea que arden.
 func _pintar_llamas() -> void:
-	Llamas.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.62, tipo.alto, _fase)
+	if _color_quemadura.a > 0.0:
+		Llamas.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.62, tipo.alto, _fase,
+			_color_quemadura, _dentro_quemadura)
+	else:
+		Llamas.pintar(self, Vector2(0.0, tipo.alto * 0.42), tipo.alto * 0.62, tipo.alto, _fase)
 
 
 ## Frenado y envenenado, con el arte de sus magos (Escarcha y Burbujas), ENCIMA
@@ -995,7 +1019,7 @@ func estado_red() -> Array:
 	return [id_red, global_position, _sprite.position, _sprite.scale / _escala_base,
 		_sprite.self_modulate.a, _sprite.modulate, modulate, _sprite.flip_h, _sprite.animation,
 		_frenado > 0.0, _quemaduras > 0, apuntando, _linea_disparo, _mira, _largo_mira,
-		limpio, fraccion_vida(), visible, esta_envenenado()]
+		limpio, fraccion_vida(), visible, esta_envenenado(), _color_quemadura, _dentro_quemadura]
 
 
 ## Lo contrario, en el espejo: se pone como esta en el anfitrion. El sitio
@@ -1025,6 +1049,9 @@ func aplicar_red(datos: Array) -> void:
 	_fraccion_red = datos[16]
 	visible = datos[17]
 	_envenenado_red = datos[18]
+	if datos.size() >= 21:
+		_color_quemadura = datos[19]
+		_dentro_quemadura = datos[20]
 	queue_redraw()
 
 

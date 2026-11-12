@@ -125,6 +125,10 @@ const ESPECIAL_VENENO := 2
 @export var quemadura_duracion: float = 0.0
 ## Vida que quita la quemadura cada segundo.
 @export var quemadura_dano: float = 3.0
+## Si su quemadura es del color de sus disparos normales ('halo_disparo' fuera,
+## 'color_disparo' dentro) y no de fuego. El oscuro (Matias, 2026-11-12): sus bolas
+## son lilas, y unas llamas naranjas parecian de otro mago.
+@export var quemadura_de_su_color: bool = false
 
 @export_group("Veneno del disparo")
 ## Segundos que deja envenenado a un enemigo cada disparo normal que le da (el

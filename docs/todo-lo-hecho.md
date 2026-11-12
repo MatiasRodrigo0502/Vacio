@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 12/11/2026 | Las gotas del mago verde envenenan (3 por segundo durante 3 s, sin sumarse), su especial va más rápido (360 px/s) y los disparos del mago oscuro queman | — |
+| 12/11/2026 | La quemadura del mago oscuro es morada, del color de sus disparos, con los números en lila; la del rojo sigue de fuego | — |
+| 12/11/2026 | Las gotas del mago verde envenenan (3 por segundo durante 3 s, sin sumarse), su especial va más rápido (360 px/s) y los disparos del mago oscuro queman | `fc4e634` |
 | 12/11/2026 | La portada del menú es un vídeo en bucle (el mago oscuro en el bosque morado), en lugar de la ilustración de los tres magos | `acea90c` |
 | 10/11/2026 | Con un arma del gacha, el mago va sin su bastón y la lleva en esa mano, en las ocho direcciones y con todas las skins | `1af9eea` |
 | 10/11/2026 | Tabla de controles con tecla principal y secundaria para cada acción: se cambian pulsándolas y se quitan con la ×; las reglas, en otra pestaña | `2f000b3`, `7308980` |

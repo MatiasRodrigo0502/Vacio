@@ -912,7 +912,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   frena). Un golpe nuevo rellena la cuenta a 3 golpes pero **no reinicia el
   tic**: dispara cada 0,5 s, y si cada bola reiniciara la espera, disparándole
   sin parar no le quemaría nunca. Tampoco se suman dos quemaduras. La ficha del
-  oscuro no lo dice: su descripción es la que escribió Matías (2026-11-10).
+  oscuro no lo dice: su descripción es la que escribió Matías (2026-11-10). **La del
+  oscuro es de su color** (2026-11-12, Matías: «que se vea como el color de sus ataques
+  básicos»): con `PersonajeJugable.quemadura_de_su_color`, la bola lleva `halo_disparo`
+  y `color_disparo` del mago (`BolaMagica.color_quema`/`dentro_quema`, aunque lleve un
+  arma de otro color), `Enemigo.quemar` los guarda y `Llamas.pintar` los usa (fuera y
+  dentro; sin ellos, el fuego de siempre). Los números de esa quemadura salen del lila
+  claro (`Enemigo.color_numero`, `NumeroDano.soltar(..., color)`). En cooperativo, los
+  colores van en los datos del disparo y al final del estado del enemigo (posiciones
+  19 y 20). El aliento del jefe sigue quemando al mago con fuego.
 - **Las gotas del verde envenenan** (2026-11-12, Matías: «que sus ataques básicos
   envenenen»): `PersonajeJugable.veneno_disparo_duracion`/`veneno_disparo_dano` (3 s
   y 3 por segundo), que Principal pone en la bola normal (`BolaMagica.envenena`) y

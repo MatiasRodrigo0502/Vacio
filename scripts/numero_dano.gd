@@ -49,11 +49,14 @@ var _texto: String = ""
 var _estilo: Estilo = Estilo.NORMAL
 var _tiempo: float = 0.0
 var _deriva: float = 0.0
+## Su color, si no es el de su estilo (la quemadura lila del mago oscuro).
+var _color: Color = Color(0.0, 0.0, 0.0, 0.0)
 
 
 ## Suelta un numero en 'posicion' (global), colgado de 'padre'. 'cantidad' se
 ## redondea: medio punto de quemadura no se lee bien.
-static func soltar(padre: Node, posicion: Vector2, cantidad: float, estilo: Estilo) -> void:
+static func soltar(padre: Node, posicion: Vector2, cantidad: float, estilo: Estilo,
+		color: Color = Color(0.0, 0.0, 0.0, 0.0)) -> void:
 	if padre == null or cantidad <= 0.0:
 		return
 	var numero := NumeroDano.new()
@@ -61,6 +64,7 @@ static func soltar(padre: Node, posicion: Vector2, cantidad: float, estilo: Esti
 	var ganado := estilo == Estilo.MONEDA or estilo == Estilo.DIAMANTE
 	numero._texto = ("-" if al_jugador else ("+" if ganado else "")) + str(maxi(1, roundi(cantidad)))
 	numero._estilo = estilo
+	numero._color = color
 	# Un poco a un lado o a otro: si llegan varios seguidos (el agujero negro,
 	# la quemadura), no se pintan uno encima de otro.
 	numero._deriva = randf_range(-14.0, 14.0)
@@ -106,4 +110,4 @@ func _draw() -> void:
 	draw_string_outline(fuente, sitio, _texto, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano, 5,
 		Color(0.0, 0.0, 0.0, 0.85 * alfa))
 	draw_string(fuente, sitio, _texto, HORIZONTAL_ALIGNMENT_LEFT, -1, tamano,
-		Color(COLORES[_estilo], alfa))
+		Color(_color if _color.a > 0.0 else COLORES[_estilo], alfa))

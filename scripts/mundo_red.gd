@@ -341,7 +341,8 @@ func _herido(id: String, cantidad: float, estilo: int) -> void:
 	var enemigo := _enemigo(id)
 	if enemigo != null and enemigo.tipo != null:
 		NumeroDano.soltar(enemigo.get_parent(),
-			enemigo.global_position + Vector2(0.0, -enemigo.tipo.alto * 0.55), cantidad, estilo)
+			enemigo.global_position + Vector2(0.0, -enemigo.tipo.alto * 0.55), cantidad, estilo,
+			enemigo.color_numero(estilo))
 
 
 @rpc("authority", "call_remote", "reliable")

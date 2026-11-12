@@ -188,6 +188,8 @@ func mandar_disparo(bola: BolaMagica, desde: Vector2, mago: PersonajeJugable) ->
 		"frena": bola.frena,
 		"quema": bola.quema,
 		"dano_quema": bola.dano_quema,
+		"color_quema": bola.color_quema,
+		"dentro_quema": bola.dentro_quema,
 		"envenena": bola.envenena,
 		"dano_veneno": bola.dano_veneno,
 		"cargada": bola.cargada,

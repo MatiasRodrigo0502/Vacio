@@ -51,6 +51,9 @@ const VARIACION: float = 1.3
 ## quemadura cada segundo. 0 segundos = no quema.
 @export var quema: float = 0.0
 @export var dano_quema: float = 0.0
+## De que color es esa quemadura (Llamas): fuera y dentro. Transparentes, de fuego.
+@export var color_quema: Color = Color(0.0, 0.0, 0.0, 0.0)
+@export var dentro_quema: Color = Color(0.0, 0.0, 0.0, 0.0)
 ## Lo mismo con el veneno del disparo (PersonajeJugable.veneno_disparo_duracion).
 @export var envenena: float = 0.0
 @export var dano_veneno: float = 0.0
@@ -309,7 +312,7 @@ func _al_tocar(area: Area2D) -> void:
 		if not rocio:
 			Sonido.tocar(&"golpe_enemigo")
 		if quema > 0.0 and area.has_method("quemar"):
-			area.quemar(quema, dano_quema)
+			area.quemar(quema, dano_quema, color_quema, dentro_quema)
 		if envenena > 0.0 and area.has_method("envenenar"):
 			area.envenenar(envenena, dano_veneno, false)
 	elif area.has_method("romper"):

@@ -236,6 +236,8 @@ func lanzar_bola_remota(datos: Dictionary, mago: PersonajeJugable) -> void:
 	bola.frena = datos.get("frena", 0.0)
 	bola.quema = datos.get("quema", 0.0)
 	bola.dano_quema = datos.get("dano_quema", 0.0)
+	bola.color_quema = datos.get("color_quema", Color(0.0, 0.0, 0.0, 0.0))
+	bola.dentro_quema = datos.get("dentro_quema", Color(0.0, 0.0, 0.0, 0.0))
 	bola.envenena = datos.get("envenena", 0.0)
 	bola.dano_veneno = datos.get("dano_veneno", 0.0)
 	bola.cargada = datos.cargada
@@ -293,6 +295,10 @@ func _bola_del_jugador(direccion: Vector2, cargada: bool) -> BolaMagica:
 		bola.arte = _jugador.mago.arte_especial if cargada else _jugador.mago.arte_disparo
 		bola.quema = _jugador.mago.quemadura_duracion
 		bola.dano_quema = _jugador.mago.quemadura_dano
+		# Del color de sus disparos normales, aunque lleve un arma que los pinte de otro.
+		if _jugador.mago.quemadura_de_su_color:
+			bola.color_quema = _jugador.halo_disparo
+			bola.dentro_quema = _jugador.color_disparo
 		# El veneno del disparo, solo en el normal: el especial del verde ya envenena.
 		if not cargada:
 			bola.envenena = _jugador.mago.veneno_disparo_duracion
