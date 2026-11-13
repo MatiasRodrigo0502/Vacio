@@ -992,6 +992,11 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   Se vacía al reiniciar.
 - **Minimapa** arriba a la derecha (`scripts/minimapa.gd`): visitadas
   rellenas, vecinas en contorno, objeto y bajada marcados en cuanto se conocen.
+  Desde el 2026-11-13 (Matías): el rombo del objeto se va al cogerlo
+  (`_queda_objeto`: si en su sala queda un `Objeto`), como ya se iba el cofre de la
+  secreta al abrirlo; y **la sala secreta, una vez descubierta, se pinta morada y con
+  borde** (`COLOR_SECRETA`, `COLOR_BORDE_SECRETA`), también con el cofre abierto:
+  se veía igual que las demás y Matías la buscaba después de haber entrado.
 - **Rocas y plataformas**: `StaticBody2D` sólidos. Se choca con ellas, **no
   hacen daño** y paran los disparos, así que sirven de parapeto.
 - **El límite de cada sala es una pared de roca**, distinta en cada piso

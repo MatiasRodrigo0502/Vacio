@@ -12,7 +12,9 @@
 ##   explorar tenga sentido;
 ## - la sala en la que estas, resaltada;
 ## - el objeto y la bajada, con su marca en cuanto se conoce su sala: saber
-##   donde estan es justo para lo que sirve un mapa.
+##   donde estan es justo para lo que sirve un mapa. La del objeto se va al
+##   cogerlo, y la del cofre de la secreta al abrirlo;
+## - la sala secreta, una vez descubierta, morada y con borde.
 class_name Minimapa
 extends Control
 
@@ -28,6 +30,11 @@ const COLOR_CONOCIDA := Color(0.55, 0.49, 0.44, 0.6)
 const COLOR_OBJETO := Color(1.0, 0.8, 0.3)
 ## El jefe: rojo, que no se confunda con lo que se recoge.
 const COLOR_JEFE := Color(1.0, 0.36, 0.24)
+## La sala secreta, en cuanto se descubre: morada y con borde, distinta de las
+## demas (Matias, 2026-11-13: «se ven igual que el resto y muchas veces me pongo a
+## buscarla cuando ya he entrado en ella»). Sigue morada con el cofre ya abierto.
+const COLOR_SECRETA := Color(0.42, 0.26, 0.62)
+const COLOR_BORDE_SECRETA := Color(0.78, 0.55, 1.0)
 
 var _piso: Piso = null
 
@@ -98,12 +105,17 @@ func _draw() -> void:
 		var caja: Rect2 = cajas[sala]
 		var rect := Rect2(origen + (caja.position - todo.position) * paso * escala,
 			(caja.size * paso - Vector2(HUECO, HUECO)) * escala)
+		var secreta := sala.tipo == MapaSalas.Tipo.SECRETA
 		if sala == _piso.sala_actual():
 			draw_rect(rect, COLOR_ACTUAL)
 		elif visitadas.has(sala.celda):
-			draw_rect(rect, COLOR_VISITADA)
+			draw_rect(rect, COLOR_SECRETA if secreta else COLOR_VISITADA)
 		else:
-			draw_rect(rect, COLOR_CONOCIDA, false, 1.5)
+			draw_rect(rect, COLOR_SECRETA if secreta else COLOR_CONOCIDA, false, 1.5)
+		# La secreta lleva ademas un borde suyo, tambien siendo la actual: es lo que
+		# dice que ya se ha encontrado.
+		if secreta:
+			draw_rect(rect.grow(1.0), COLOR_BORDE_SECRETA, false, 2.0)
 		_pintar_marca(sala, rect)
 
 
@@ -112,7 +124,11 @@ func _pintar_marca(sala: Sala, rect: Rect2) -> void:
 	var radio := minf(rect.size.x, rect.size.y) * 0.3
 	match sala.tipo:
 		MapaSalas.Tipo.OBJETO:
-			# Un rombo dorado: el color que el juego usa para lo que se recoge.
+			# Un rombo dorado: el color que el juego usa para lo que se recoge. Solo
+			# mientras la ventaja sigue en el suelo: cogida, ahi ya no queda nada
+			# (Matias, 2026-11-13), como el cofre abierto.
+			if not _queda_objeto(sala):
+				return
 			var puntos := PackedVector2Array([
 				centro + Vector2(0.0, -radio), centro + Vector2(radio, 0.0),
 				centro + Vector2(0.0, radio), centro + Vector2(-radio, 0.0)])
@@ -136,6 +152,15 @@ func _pintar_marca(sala: Sala, rect: Rect2) -> void:
 			draw_colored_polygon(puntos, COLOR_JEFE)
 			if sala.esta_despejada():
 				_pintar_bajada(sala, centro, radio * 0.55)
+
+
+## True si en la sala queda una ventaja sin coger. En la del objeto solo esta la
+## suya: no tiene enemigos, asi que nadie suelta otra ahi.
+func _queda_objeto(sala: Sala) -> bool:
+	for hijo in sala.get_children():
+		if hijo is Objeto and not hijo.is_queued_for_deletion():
+			return true
+	return false
 
 
 ## El agujero: oscuro, con aro. El aro se enciende cuando la sala esta limpia
