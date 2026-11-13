@@ -11,7 +11,7 @@
 [resource]
 script = ExtResource("1_script")
 nombre = "Mago oscuro"
-ventaja = "Él domina la magia negra, la usa para desplazarse entre las sombras e invoca agujeros negros para acabar con sus enemigos."
+ventaja = "Él domina la magia negra, la usa para desplazarse entre las sombras e invoca agujeros negros para acabar con sus enemigos. Sus disparos queman: 3 de vida por segundo durante 3 s."
 pega = "Su bola cargada llega menos lejos que la del mago rojo."
 animaciones = ExtResource("2_animaciones")
 animaciones_sin_arma = ExtResource("2_sin_arma")

@@ -3,7 +3,7 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-11-12.**
+**Última actualización: 2026-11-13.**
 
 ---
 
@@ -283,7 +283,12 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   deformarse en cualquier ventana. La quieta es lo que se ve hasta la primera imagen
   del vídeo y si no cargara. Los botones siguen abajo en fila, sobre la sombra
   degradada, el volumen abajo a la izquierda (`ControlVolumen.ancho_barra = 150`) y
-  la versión abajo a la derecha; la música de la portada, la de siempre. **Probado**:
+  la versión abajo a la derecha. **La fila de botones no pisa el volumen**
+  (2026-11-13, Matías: «se solapa el volumen con los botones»): con los cuatro mide
+  702 y, centrada en 1152, empezaba en 225, con las barras hasta 240 por debajo de
+  «Jugar»; `MenuPrincipal._apartar_botones_del_volumen` la corre a la derecha lo
+  justo para dejar 24 px (`HUECO_VOLUMEN`), y en una pantalla ancha o en la web (sin
+  «Salir») sigue centrada; se vuelve a mirar al cambiar el tamaño de la ventana; la música de la portada, la de siempre. **Probado**:
   se reproduce, cubre (1152 × 648 y una ventana alta), se mueve (6 de 255 entre dos
   capturas a 1,5 s), vuelve a empezar solo y arranca sin errores sin ventana; y en la
   versión web exportada aquí, en el navegador: se mueve igual (5 de 255) y va a 60
@@ -771,7 +776,13 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   disparos en 2 s, dos venenos quitan 10 por segundo, las cuatro crías
   heredan, y de 8 proyectiles 5 dieron a un gólem quieto. **Nadie lo ha
   jugado.** Con cuatro magos, las fichas del menú miden 250 de ancho
-  (`FichaMago.ANCHO`; con 300 no cabían).
+  (`FichaMago.ANCHO`; con 300 no cabían). **Y no caben de alto con cualquier texto**:
+  con las descripciones del 2026-11-12, el panel de elegir mago medía 817 en una
+  pantalla de 648 (los botones de jugar cortados y «Volver» fuera). Desde el
+  2026-11-13 el retrato mide 130 (`ALTO_RETRATO`, antes 170), la ventaja va a 15 y la
+  pega a 14 (`LETRA_VENTAJA`, `LETRA_PEGA`, antes 17 y 15), la caja del panel separa
+  16 (antes 26) y el texto del verde es más corto: 621 de alto. Un texto nuevo más
+  largo puede volver a sacarlo: medirlo.
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve (o las
@@ -912,7 +923,8 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   frena). Un golpe nuevo rellena la cuenta a 3 golpes pero **no reinicia el
   tic**: dispara cada 0,5 s, y si cada bola reiniciara la espera, disparándole
   sin parar no le quemaría nunca. Tampoco se suman dos quemaduras. La ficha del
-  oscuro no lo dice: su descripción es la que escribió Matías (2026-11-10). **La del
+  oscuro lo dice desde el 2026-11-13, a continuación de la descripción que escribió
+  Matías (2026-11-10). **La del
   oscuro es de su color** (2026-11-12, Matías: «que se vea como el color de sus ataques
   básicos»): con `PersonajeJugable.quemadura_de_su_color`, la bola lleva `halo_disparo`
   y `color_disparo` del mago (`BolaMagica.color_quema`/`dentro_quema`, aunque lleve un

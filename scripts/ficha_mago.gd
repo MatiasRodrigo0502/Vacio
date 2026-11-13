@@ -15,6 +15,13 @@ signal elegido(personaje: PersonajeJugable)
 ## ventaja mas larga. 250 desde que hay cuatro magos (2026-11-03): con 300,
 ## cuatro fichas y sus huecos median 1320 y la ventana 1152.
 const ANCHO: float = 250.0
+## Lo alto del retrato y el tamano de la letra de la ventaja y la pega. Con 170 y 17,
+## y las descripciones del 2026-11-12 (la del oscuro con su quemadura, la del verde
+## con su veneno), el panel de elegir mago medía 817 de alto en una pantalla de 648:
+## los botones de jugar se cortaban y «Volver» quedaba fuera (Matias, 2026-11-13).
+const ALTO_RETRATO: float = 130.0
+const LETRA_VENTAJA: int = 15
+const LETRA_PEGA: int = 14
 
 var personaje: PersonajeJugable
 ## Para dejarle el foco a la primera ficha al abrir el panel.
@@ -24,19 +31,19 @@ var boton: Button
 func _init(de: PersonajeJugable, texto_boton: String) -> void:
 	personaje = de
 	custom_minimum_size = Vector2(ANCHO, 0.0)
-	add_theme_constant_override("separation", 10)
+	add_theme_constant_override("separation", 8)
 
 	var retrato := TextureRect.new()
 	# Con la skin que lleva puesta, si lleva (Coleccion).
 	retrato.texture = Coleccion.retrato_de(personaje)
-	retrato.custom_minimum_size = Vector2(0.0, 170.0)
+	retrato.custom_minimum_size = Vector2(0.0, ALTO_RETRATO)
 	retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	add_child(retrato)
 
 	add_child(_etiqueta(personaje.nombre, 26, personaje.color))
-	add_child(_etiqueta(personaje.ventaja, 17, Color(0.85, 0.82, 0.78)))
-	add_child(_etiqueta(personaje.pega, 15, Color(0.62, 0.58, 0.55)))
+	add_child(_etiqueta(personaje.ventaja, LETRA_VENTAJA, Color(0.85, 0.82, 0.78)))
+	add_child(_etiqueta(personaje.pega, LETRA_PEGA, Color(0.62, 0.58, 0.55)))
 
 	# Relleno elastico: las ventajas no miden lo mismo, y sin esto el boton
 	# de cada ficha quedaria a una altura distinta.

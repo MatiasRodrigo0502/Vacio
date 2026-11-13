@@ -22,6 +22,8 @@ extends Control
 const ESCENA_JUEGO := "res://scenes/Principal.tscn"
 ## La musica de la portada. La del juego la pone cada piso (DatosPiso.musica).
 const MUSICA := preload("res://assets/sonido/musica/portada.wav")
+## Lo que se deja entre el volumen y el primer boton (_apartar_botones_del_volumen).
+const HUECO_VOLUMEN: float = 24.0
 
 @onready var _panel_controles: Control = $PanelControles
 @onready var _panel_personajes: Control = $PanelPersonajes
@@ -63,6 +65,10 @@ func _ready() -> void:
 	_montar_eleccion_teclas()
 	_poner_version()
 	Sonido.poner_musica(MUSICA)
+	# Despues de montarlo todo y con el tamano ya puesto: hasta el primer fotograma
+	# los botones no saben cuanto miden.
+	_apartar_botones_del_volumen.call_deferred()
+	get_viewport().size_changed.connect(_apartar_botones_del_volumen)
 	_panel_controles.hide()
 	_panel_personajes.hide()
 	_boton_jugar.grab_focus()
@@ -304,6 +310,25 @@ func _unhandled_input(evento: InputEvent) -> void:
 	elif _panel_personajes.visible:
 		_mostrar_personajes(false)
 		get_viewport().set_input_as_handled()
+
+
+## La fila de botones va centrada abajo, pero no puede pisar el volumen, que va a
+## su izquierda. Con los cuatro (Gacha se anade por codigo, _montar_gacha) mide 702
+## y, centrada en 1152 de ancho, empezaba en 225, con las barras del volumen hasta
+## 240 por debajo de «Jugar» (Matias, 2026-11-13: «se solapa el volumen con los
+## botones»). Si centrada no cabe, se corre a la derecha lo justo; en una pantalla
+## ancha, o en la web sin «Salir», sigue centrada. A la derecha queda sitio: la
+## version es un texto corto pegado al borde.
+func _apartar_botones_del_volumen() -> void:
+	var botones: Control = $Botones
+	var volumen: Control = $Volumen
+	var ancho_pantalla := get_viewport_rect().size.x
+	var ancho_fila := botones.get_combined_minimum_size().x
+	var centrada := (ancho_pantalla - ancho_fila) * 0.5
+	var izquierda := maxf(centrada, volumen.get_global_rect().end.x + HUECO_VOLUMEN)
+	# Las anclas estan en el centro de la pantalla: el desfase cuenta desde ahi.
+	botones.offset_left = izquierda - ancho_pantalla * 0.5
+	botones.offset_right = botones.offset_left + ancho_fila
 
 
 func _al_jugar() -> void:
