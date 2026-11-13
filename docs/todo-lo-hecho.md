@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/11/2026 | En el minimapa, la marca de la ventaja se va al cogerla y la sala secreta descubierta se ve morada y con borde | — |
+| 13/11/2026 | La actualización desde el juego vuelve a funcionar en Windows: se baja fuera de la carpeta del juego (OneDrive la tenía ocupada) y espera hasta un minuto al antivirus | — |
+| 13/11/2026 | En el minimapa, la marca de la ventaja se va al cogerla y la sala secreta descubierta se ve morada y con borde | `2afb964` |
 | 13/11/2026 | El vídeo de la portada se ve más nítido: agrandado a 1280 × 720 y enfocado antes de convertirlo (el original solo mide 1014 × 566) | `d8f35eb` |
 | 13/11/2026 | Los botones de la portada ya no pisan el volumen; el panel de elegir mago vuelve a caber en la pantalla (retrato y letra algo más pequeños, texto del verde más corto), y la ficha del oscuro dice que sus disparos queman | `48c398d` |
 | 12/11/2026 | La quemadura del mago oscuro es morada, del color de sus disparos, con los números en lila; la del rojo sigue de fuego | `2afb3cc` |

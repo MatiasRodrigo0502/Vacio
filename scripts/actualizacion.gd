@@ -67,9 +67,18 @@ const ESPERA_BUSCAR: float = 10.0
 ## (64 KB) la descarga va bastante mas lenta.
 const TROZO_DESCARGA: int = 1 << 20
 ## Recien bajado, el antivirus suele abrir el .exe nuevo para mirarlo, y
-## mientras tanto no se puede renombrar. Se reintenta un rato.
-const INTENTOS_RENOMBRAR: int = 20
-const PAUSA_RENOMBRAR: float = 0.25
+## mientras tanto no se puede renombrar. Se reintenta un rato: hasta un minuto.
+## Eran 5 s (20 de 0,25), y desde la 0.71 no bastaban (Matias, 2026-11-13: «no se
+## ha podido cambiar el juego por el nuevo»): con el video de la portada el .exe
+## paso de 166 a 170 MB, y revisarlo le cuesta mas al antivirus. Mientras, el
+## aviso dice «Instalando...».
+const INTENTOS_RENOMBRAR: int = 120
+const PAUSA_RENOMBRAR: float = 0.5
+## Donde se baja la version nueva antes de ponerla junto al juego, dentro de la
+## carpeta de datos (user://). Al lado del juego, si esta en una carpeta de
+## OneDrive (el Escritorio de Matias lo esta), OneDrive se pone a subir los 170 MB
+## en cuanto aparecen y los tiene ocupados mientras: no se pueden mover.
+const CARPETA_DESCARGA := "user://actualizacion"
 ## Al abrir la version nueva, la vieja tarda un momento en cerrarse y su .exe
 ## no se puede borrar hasta entonces: se vuelve a intentar pasado esto.
 const ESPERA_LIMPIAR: float = 3.0
@@ -99,8 +108,9 @@ var aviso_cerrado: bool = false
 
 var _buscador: HTTPRequest
 var _bajador: HTTPRequest
-## Donde se va bajando la version nueva: al lado de la de ahora, para que
-## cambiarlas sea renombrar (entre carpetas de discos distintos no se puede).
+## Donde se va bajando la version nueva: en CARPETA_DESCARGA si esta en el mismo
+## disco que el juego, y si no al lado de la de ahora. Cambiarlas es renombrar, y
+## entre discos distintos no se puede.
 var _descarga: String = ""
 
 
@@ -164,8 +174,8 @@ func descargar() -> void:
 	if not se_puede_instalar():
 		abrir_pagina()
 		return
-	_descarga = ruta_exe + ".descarga"
-	# Antes de bajar 115 MB, que se pueda escribir ahi.
+	_descarga = _donde_bajar()
+	# Antes de bajar 170 MB, que se pueda escribir ahi.
 	var prueba := FileAccess.open(_descarga, FileAccess.WRITE)
 	if prueba == null:
 		_fallar("No se puede escribir en la carpeta del juego. Bájala desde la web y cámbiala tú.")
@@ -350,8 +360,10 @@ func _comienzo_esperado() -> PackedByteArray:
 ## falla, deja lo de ahora como estaba.
 func _instalar() -> void:
 	var nuevo := _descarga
+	# En Windows tambien: poner el nuevo en su sitio puede tardar hasta un minuto si
+	# el antivirus lo esta revisando (INTENTOS_RENOMBRAR).
+	_poner(Estado.INSTALANDO)
 	if OS.get_name() != "Windows":
-		_poner(Estado.INSTALANDO)
 		nuevo = ruta_exe + ".nuevo"
 		var error: Error = await _sacar(_descarga, nuevo, OS.get_name() == "macOS")
 		_borrar_descarga()
@@ -362,7 +374,10 @@ func _instalar() -> void:
 	if not await poner_en_su_sitio(nuevo, ruta_exe):
 		_borrar(nuevo)
 		_borrar_descarga()
-		_fallar("No se ha podido cambiar el juego por el nuevo. Bájalo desde la web.")
+		if ruta_exe.containsn("onedrive"):
+			_fallar("No se ha podido cambiar el juego por el nuevo: OneDrive o el antivirus lo tenían ocupado. Pon el juego en una carpeta fuera de OneDrive (por ejemplo, C:\\Juegos) o bájalo desde la web.")
+		else:
+			_fallar("No se ha podido cambiar el juego por el nuevo: el antivirus o algún programa lo tenía ocupado. Vuelve a intentarlo o bájalo desde la web.")
 		return
 	_poner(Estado.LISTA)
 
@@ -404,11 +419,31 @@ func _borrar(ruta: String) -> void:
 
 
 func _renombrar(desde: String, hasta: String) -> bool:
+	var error := OK
 	for intento in INTENTOS_RENOMBRAR:
-		if DirAccess.rename_absolute(desde, hasta) == OK:
+		error = DirAccess.rename_absolute(desde, hasta)
+		if error == OK:
 			return true
 		await get_tree().create_timer(PAUSA_RENOMBRAR, true, false, true).timeout
+	# Al registro (logs/godot.log de la carpeta de datos): que se sepa cual de los
+	# dos no se dejo mover y por que.
+	push_warning("Actualizacion: no se ha podido mover %s a %s (error %d)" % [desde, hasta, error])
 	return false
+
+
+## Donde bajar la version nueva: en CARPETA_DESCARGA, fuera de la carpeta del juego
+## (ver arriba, OneDrive), si esta en el mismo disco que el juego; si no, al lado,
+## como antes.
+func _donde_bajar() -> String:
+	var carpeta := ProjectSettings.globalize_path(CARPETA_DESCARGA)
+	if _disco(carpeta) == _disco(ruta_exe) and DirAccess.make_dir_recursive_absolute(carpeta) == OK:
+		return carpeta.path_join(ruta_exe.get_file() + ".descarga")
+	return ruta_exe + ".descarga"
+
+
+## La letra de la unidad en Windows ("C:"); en Linux y Mac, lo mismo para todo.
+func _disco(ruta: String) -> String:
+	return ruta.substr(0, 2).to_upper() if OS.get_name() == "Windows" else "/"
 
 
 ## Borra lo que quede de otras veces junto al juego: los viejos que aparto
@@ -429,6 +464,11 @@ func _limpiar() -> void:
 		if (dentro.begins_with(viejos) and dentro.get_extension() == extension) \
 				or dentro == nombre + ".nuevo":
 			Desempaquetar.borrar_carpeta(carpeta.path_join(dentro))
+	# Y lo que quedara a medias en la carpeta de las descargas.
+	var descargas := ProjectSettings.globalize_path(CARPETA_DESCARGA)
+	for archivo in DirAccess.get_files_at(descargas):
+		if archivo.ends_with(".descarga"):
+			DirAccess.remove_absolute(descargas.path_join(archivo))
 
 
 func _borrar_descarga() -> void:

@@ -245,7 +245,18 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   (`Vacio.exe.descarga`), comprueba tamaño y que empiece por `MZ`, renombra el
   abierto a `Vacio.viejo.<hora>.exe` y pone el nuevo en su sitio; *Abrirla
   ahora* lo lanza (`OS.create_process`) y cierra por `Sonido.salir()`. El
-  siguiente arranque borra los viejos. Probado de punta a punta con un `.exe` exportado que decía ser la
+  siguiente arranque borra los viejos. **Desde el 2026-11-13** (Matías: en la 0.71 y la
+  0.72, «No se ha podido cambiar el juego por el nuevo») se baja en
+  `user://actualizacion/` (`CARPETA_DESCARGA`, `_donde_bajar`) si está en el mismo
+  disco que el juego, y no al lado: el `.exe` de Matías está en el Escritorio de
+  OneDrive, que se pone a subir lo que aparece ahí y lo tiene ocupado. Y se espera
+  hasta un minuto a poder moverlo (`INTENTOS_RENOMBRAR` 120 de 0,5 s; eran 5 s): con el
+  vídeo de la portada el `.exe` pasó de 166 a 170 MB y el antivirus tarda más en
+  revisarlo. Mientras, el aviso dice «Instalando…». Si aun así falla, deja en el
+  registro qué no se dejó mover y con qué error, y en OneDrive dice que se mueva el
+  juego fuera. Probado con el archivo nuevo ocupado 8 s por otro programa: espera y
+  lo pone. **Esto solo vale desde la versión que lo trae**: para pasar a ella desde
+  la 0.71 o la 0.72 hay que bajarla a mano. Probado de punta a punta con un `.exe` exportado que decía ser la
   0.16: encontró la 0.17, la bajó (48 s, lo mismo que `curl` con esta
   conexión), se cambió y se abrió. **Desde el 2026-11-03 también en Linux y
   en Mac** (Matías: «que le pudiese dar a Actualizar en vez de un botón que

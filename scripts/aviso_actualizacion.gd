@@ -70,9 +70,11 @@ func _mostrar() -> void:
 			_secundario.visible = false
 			_process(0.0)
 		Actualizacion.Estado.INSTALANDO:
-			# Sacandola del .tar.gz o del .zip: unos segundos, sin botones.
+			# Sacandola del .tar.gz o del .zip, o en Windows esperando a que el
+			# antivirus suelte el .exe nuevo (hasta un minuto). Sin botones.
 			_titulo.text = "Instalando la %s..." % version
-			_texto.text = "Sacándola de lo que se ha bajado. Son unos segundos."
+			_texto.text = "Poniéndola en su sitio. Si el antivirus la está revisando, puede tardar hasta un minuto." \
+				if OS.get_name() == "Windows" else "Sacándola de lo que se ha bajado. Son unos segundos."
 			_principal.visible = false
 			_secundario.visible = false
 		Actualizacion.Estado.LISTA:
