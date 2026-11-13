@@ -69,7 +69,7 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/11/2026 | Cooperativo: el aviso del cortafuegos pide permiso también en redes públicas (con el de antes solo se podía entrar en la sala de Matías), botón *Abrir el cortafuegos* en la sala, y el código ya no sale de la red de VirtualBox | — |
+| 13/11/2026 | Cooperativo: el aviso del cortafuegos pide permiso también en redes públicas (con el de antes solo se podía entrar en la sala de Matías), botón *Abrir el cortafuegos* en la sala, y el código ya no sale de la red de VirtualBox | `8c2355a` |
 | 13/11/2026 | La actualización desde el juego vuelve a funcionar en Windows: se baja fuera de la carpeta del juego (OneDrive la tenía ocupada) y espera hasta un minuto al antivirus | `ef3d4dd` |
 | 13/11/2026 | En el minimapa, la marca de la ventaja se va al cogerla y la sala secreta descubierta se ve morada y con borde | `2afb964` |
 | 13/11/2026 | El vídeo de la portada se ve más nítido: agrandado a 1280 × 720 y enfocado antes de convertirlo (el original solo mide 1014 × 566) | `d8f35eb` |
