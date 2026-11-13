@@ -27,6 +27,7 @@ var _mensaje: Label
 var _dentro: VBoxContainer
 var _titulo_sala: Label
 var _direccion: Label
+var _cortafuegos: VBoxContainer
 var _lista: VBoxContainer
 var _magos: HBoxContainer
 var _boton_empezar: Button
@@ -87,8 +88,12 @@ func _montar_fuera(caja: VBoxContainer) -> void:
 
 	_mensaje = _etiqueta("", 16, COLOR_AVISO)
 	_fuera.add_child(_mensaje)
+	# Antes decia «dale permiso en redes privadas», y con eso no entraba nadie:
+	# Windows da por pública casi cualquier red nueva (la de Matias lo es,
+	# 2026-11-13). Hacen falta las dos.
 	_fuera.add_child(_etiqueta(
-		"Si Windows pregunta por el cortafuegos al crear la sala, dale permiso en redes privadas.",
+		"Si Windows pregunta por el cortafuegos al crear la sala, marca «Redes públicas» y «Redes privadas»\n" +
+		"y pulsa Permitir: si no, los demás no podrán entrar.",
 		14, COLOR_FLOJO))
 	var volver := _boton("Volver", 240)
 	volver.pressed.connect(func() -> void: cerrado.emit())
@@ -103,6 +108,17 @@ func _montar_dentro(caja: VBoxContainer) -> void:
 	_dentro.add_child(_titulo_sala)
 	_direccion = _etiqueta("", 14, COLOR_FLOJO)
 	_dentro.add_child(_direccion)
+	# Solo para el que crea la sala y en Windows: es su cortafuegos el que deja
+	# entrar o no (Red.SIN_RESPUESTA).
+	_cortafuegos = VBoxContainer.new()
+	_cortafuegos.add_theme_constant_override("separation", 6)
+	_cortafuegos.add_child(_etiqueta(
+		"¿No consiguen entrar? Pulsa «Cambiar la configuración» y marca «Privada» y «Pública» en vacio.exe.",
+		14, COLOR_FLOJO))
+	var abrir := _boton("Abrir el cortafuegos", 260)
+	abrir.pressed.connect(Red.abrir_cortafuegos)
+	_cortafuegos.add_child(_centrado(abrir))
+	_dentro.add_child(_cortafuegos)
 	_lista = VBoxContainer.new()
 	_lista.add_theme_constant_override("separation", 4)
 	_dentro.add_child(_lista)
@@ -148,6 +164,14 @@ func _actualizar() -> void:
 
 	_titulo_sala.text = "SALA  %s" % Red.codigo
 	_direccion.text = "Pasa el código a los demás: entran con «Unirse». (Dirección: %s)" % Red.direccion
+	# Si este ordenador esta en mas de una red, puede que el codigo sea el de la
+	# que no es (Red.ips_locales): las otras, por si acaso.
+	if not Red.otras_direcciones.is_empty():
+		var otras := PackedStringArray()
+		for ip in Red.otras_direcciones.slice(0, 2):
+			otras.append("%s (%s)" % [Red.codigo_de_ip(ip), ip])
+		_direccion.text += "\nSi no os encuentra, probad con: " + ", ".join(otras)
+	_cortafuegos.visible = Red.es_anfitrion() and OS.get_name() == "Windows"
 
 	for hijo in _lista.get_children():
 		hijo.queue_free()

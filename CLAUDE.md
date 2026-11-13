@@ -346,6 +346,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     tal cual). El anfitrión reparte la lista (`jugadores`: id → número y
     mago) y decide quién entra (`_presentarse`: versión, sala llena,
     partida empezada). `Red.cooperativo()` es lo que pregunta el juego.
+  - **Entrar depende del cortafuegos del que crea la sala** (2026-11-13: solo
+    funcionaba creándola Matías). Windows da por **pública** casi cualquier red
+    nueva (la de Matías lo es), así que Vacío necesita permiso en redes
+    públicas, no solo en privadas como decía el aviso antes. El anfitrión en
+    Windows tiene el botón *Abrir el cortafuegos* (`Red.abrir_cortafuegos`:
+    abre «Aplicaciones permitidas»; el juego no cambia el ajuste, que es de
+    seguridad y pide administrador), y al que no entra se le explica
+    (`Red.SIN_RESPUESTA`). El código sale de `Red.ips_locales()`, que pone
+    detrás las redes de máquinas virtuales (192.168.56.x de VirtualBox y las
+    `.1`); las demás direcciones salen en la sala por si acaso.
   - **`Cooperativo`** (`scripts/cooperativo.gd`), que crea Principal solo en
     cooperativo: **cada uno manda en su mago** y avisa de dónde está unas 20
     veces por segundo; los de los demás se enseñan con **`MagoRemoto`**

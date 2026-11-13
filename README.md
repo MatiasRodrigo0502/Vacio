@@ -384,8 +384,14 @@ Hasta **3 jugadores en la misma red** (la wifi de clase o de casa), cada uno
 en su ordenador. En **Jugar → Cooperativo en red local**:
 
 1. Uno pulsa **Crear sala** y le sale un código de 7 letras y números
-   (`30AG-R1N`). Si Windows pregunta por el cortafuegos, hay que darle permiso
-   en redes privadas, o los demás no podrán entrar.
+   (`30AG-R1N`). Si Windows pregunta por el cortafuegos, hay que marcar
+   **«Redes públicas» y «Redes privadas»** y pulsar Permitir, o los demás no
+   podrán entrar: Windows da por pública casi cualquier red, también la de
+   casa.
+   Si ya se contestó otra cosa, en la sala está el botón **Abrir el
+   cortafuegos**: ahí, *Cambiar la configuración* y marcar *Privada* y
+   *Pública* en `vacio.exe`. Si aun así no entra nadie, que cree la sala otro
+   ordenador.
 2. Los demás escriben ese código y pulsan **Unirse**. También vale la
    dirección que sale debajo (`192.168.1.37`).
 3. Cada uno elige un mago **distinto**, y quien creó la sala pulsa

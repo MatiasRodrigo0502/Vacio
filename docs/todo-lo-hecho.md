@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 13/11/2026 | La actualización desde el juego vuelve a funcionar en Windows: se baja fuera de la carpeta del juego (OneDrive la tenía ocupada) y espera hasta un minuto al antivirus | — |
+| 13/11/2026 | Cooperativo: el aviso del cortafuegos pide permiso también en redes públicas (con el de antes solo se podía entrar en la sala de Matías), botón *Abrir el cortafuegos* en la sala, y el código ya no sale de la red de VirtualBox | — |
+| 13/11/2026 | La actualización desde el juego vuelve a funcionar en Windows: se baja fuera de la carpeta del juego (OneDrive la tenía ocupada) y espera hasta un minuto al antivirus | `ef3d4dd` |
 | 13/11/2026 | En el minimapa, la marca de la ventaja se va al cogerla y la sala secreta descubierta se ve morada y con borde | `2afb964` |
 | 13/11/2026 | El vídeo de la portada se ve más nítido: agrandado a 1280 × 720 y enfocado antes de convertirlo (el original solo mide 1014 × 566) | `d8f35eb` |
 | 13/11/2026 | Los botones de la portada ya no pisan el volumen; el panel de elegir mago vuelve a caber en la pantalla (retrato y letra algo más pequeños, texto del verde más corto), y la ficha del oscuro dice que sus disparos queman | `48c398d` |
@@ -306,6 +307,7 @@ Las revisiones encontraron fallos que no se veían jugando un rato. Estos son lo
 | La lava pintaba la textura dos veces | El borde salía negro y el resplandor desaparecía | El color se coge en el `vertex()` del *shader* |
 | Cortes rectos en la roca del borde | Las salas en diagonal pintaban su roca encima de la de la otra | Toda la roca se pinta alineada con el mundo, con un fondo único |
 | El mago andaba de espaldas | La hoja de sprites rotulaba mal la izquierda y la derecha. Lo pilló Matías jugando | Se midió dónde cae la cara en cada pose |
+| El cooperativo solo funcionaba si creaba la sala Matías | El juego decía que se diera permiso en redes privadas, pero Windows da por pública casi cualquier red. Su ordenador tenía permiso en públicas; los demás, no | El aviso pide las dos, y el que crea la sala tiene un botón que abre el cortafuegos |
 
 **Lecciones que se repiten:**
 

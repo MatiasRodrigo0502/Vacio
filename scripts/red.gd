@@ -46,6 +46,12 @@ const MAXIMO_JUGADORES: int = 3
 ## Lo que se espera a que conteste una sala antes de darla por perdida. ENet
 ## por su cuenta tarda casi medio minuto en rendirse.
 const ESPERA_CONEXION: float = 6.0
+## Lo que se le dice al que no consigue entrar. Lo normal es que, en la misma
+## red, el cortafuegos del que crea la sala no deje entrar a nadie: entrar en
+## una sala es llamar a ese ordenador, y lo que se para es esa llamada. Por eso
+## funcionaba creandola Matias y no otro (2026-11-13): su Windows tiene
+## permiso para Vacío en redes públicas, y en el del otro no.
+const SIN_RESPUESTA := "Si sí, el cortafuegos del que la ha creado no deja entrar: que pulse «Abrir el cortafuegos» en su sala, o creadla en otro ordenador."
 ## Las letras del codigo (base 32 de Crockford): sin I, L, O ni U, que se
 ## confunden con 1, 0 y V al dictarlo.
 const ALFABETO := "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
@@ -59,6 +65,9 @@ var jugadores: Dictionary = {}
 var codigo: String = ""
 ## La direccion de la red local del anfitrion, por si el codigo no sirve.
 var direccion: String = ""
+## En el anfitrion, sus otras direcciones de red local (ips_locales): si el
+## codigo no lleva a nadie, puede que sea una de estas.
+var otras_direcciones: Array[String] = []
 ## Donde escucha el anfitrion. "*" son todas las redes del ordenador; las
 ## pruebas usan "127.0.0.1" para que Windows no pregunte por el cortafuegos.
 var ip_escucha: String = "*"
@@ -178,6 +187,8 @@ func crear_sala() -> Error:
 		return error
 	multiplayer.multiplayer_peer = peer
 	direccion = ip_local()
+	otras_direcciones = ips_locales()
+	otras_direcciones.erase(direccion)
 	codigo = codigo_de_ip(direccion)
 	jugadores = {1: {"numero": 1, "mago": -1}}
 	lista_cambiada.emit()
@@ -214,6 +225,7 @@ func salir() -> void:
 	jugadores = {}
 	codigo = ""
 	direccion = ""
+	otras_direcciones = []
 	en_partida = false
 	_listos = {}
 	_estoy_listo = false
@@ -234,6 +246,17 @@ func elegir_mago(indice: int) -> void:
 func empezar() -> void:
 	if es_anfitrion() and falta_para_empezar() == "":
 		_empezar.rpc()
+
+
+## Abre en Windows la lista de lo que deja pasar el cortafuegos («Aplicaciones
+## permitidas»). Ahi se le da a Vacío permiso en redes públicas, que es lo que
+## suele faltar: Windows da por pública casi cualquier red nueva, la de casa
+## tambien, y al preguntar la primera vez se puede marcar solo «privadas». El
+## juego no lo cambia por su cuenta: es un ajuste de seguridad del ordenador, y
+## pide permiso de administrador.
+func abrir_cortafuegos() -> void:
+	if OS.get_name() == "Windows":
+		OS.create_process("control.exe", ["/name", "Microsoft.WindowsFirewall", "/page", "pageConfigureApps"])
 
 
 ## Lo llama Cooperativo cuando la partida ya esta montada en este ordenador.
@@ -339,14 +362,15 @@ func _al_entrar() -> void:
 
 func _al_fallar() -> void:
 	salir()
-	fallo.emit("No se encuentra la sala. ¿Estáis en la misma red?")
+	fallo.emit("No se encuentra la sala. ¿Estáis en la misma red?\n" + SIN_RESPUESTA)
 
 
 func _al_no_contestar(peer: MultiplayerPeer) -> void:
 	# Solo si sigue siendo el mismo intento y no ha entrado.
 	if multiplayer.multiplayer_peer == peer and not en_sala():
 		salir()
-		fallo.emit("No contesta nadie con ese código. ¿Estáis en la misma red y la sala sigue abierta?")
+		fallo.emit("No contesta nadie con ese código. ¿Estáis en la misma red y la sala sigue abierta?\n"
+			+ SIN_RESPUESTA)
 
 
 func _al_conectar_otro(_id: int) -> void:
@@ -399,27 +423,51 @@ func _echar(id: int, mensaje: String) -> void:
 	(multiplayer.multiplayer_peer as ENetMultiplayerPeer).get_peer(id).peer_disconnect_later()
 
 
-## La direccion de este ordenador en la red local. Entre varias (cable, wifi,
-## maquinas virtuales), la de una red de casa o de clase: 192.168, 10 o 172.16
-## a 172.31. Sin ninguna, la del propio ordenador, que solo sirve para probar
-## con dos ventanas.
+## La direccion de este ordenador en la red local: la primera de ips_locales.
+## Sin ninguna, la del propio ordenador, que solo sirve para probar con dos
+## ventanas.
 static func ip_local() -> String:
-	var mejor := ""
-	var nota_mejor := 0
+	var ips := ips_locales()
+	return ips[0] if not ips.is_empty() else "127.0.0.1"
+
+
+## Las direcciones de este ordenador en redes de casa o de clase (192.168, 10 o
+## 172.16 a 172.31), de la mas probable a la menos. La sala ensena las demas por
+## si la primera no es la buena.
+##
+## POR QUE NO VALE CON LA PRIMERA QUE SALGA: VirtualBox, VMware y Hyper-V
+## anaden redes falsas para sus maquinas virtuales, que tambien son 192.168 o 172.
+## En el de Matias (2026-11-13) estan la de verdad, 192.168.96.66, y la de
+## VirtualBox, 192.168.56.1; si salia esa, el codigo llevaba a los demas a
+## ninguna parte.
+static func ips_locales() -> Array[String]:
+	var ips: Array[String] = []
 	for ip: String in IP.get_local_addresses():
-		var nota := 0
-		if ip.begins_with("192.168."):
-			nota = 3
-		elif ip.begins_with("10."):
-			nota = 2
-		elif ip.begins_with("172."):
-			var segundo := ip.get_slice(".", 1).to_int()
-			if segundo >= 16 and segundo <= 31:
-				nota = 1
-		if nota > nota_mejor:
-			mejor = ip
-			nota_mejor = nota
-	return mejor if mejor != "" else "127.0.0.1"
+		if _nota_ip(ip) > 0:
+			ips.append(ip)
+	ips.sort_custom(func(a: String, b: String) -> bool: return _nota_ip(a) > _nota_ip(b))
+	return ips
+
+
+## Cuanto se parece a la direccion de la red local de verdad. 0: no es de una
+## red local (la del propio ordenador, IPv6...).
+static func _nota_ip(ip: String) -> int:
+	var nota := 0
+	if ip.begins_with("192.168."):
+		nota = 3
+	elif ip.begins_with("10."):
+		nota = 2
+	elif ip.begins_with("172."):
+		var segundo := ip.get_slice(".", 1).to_int()
+		if segundo >= 16 and segundo <= 31:
+			nota = 1
+	# Las de las maquinas virtuales, detras de cualquier otra: la red de
+	# VirtualBox es la 192.168.56, y los programas de maquinas virtuales se dan
+	# a si mismos la .1 de la suya. Un ordenador en una red de verdad no la
+	# tiene: la .1 es la del router.
+	if nota > 0 and not ip.begins_with("192.168.56.") and not ip.ends_with(".1"):
+		nota += 10
+	return nota
 
 
 ## 192.168.1.37 -> "60L8-0X5". Los 4 numeros de la direccion son 32 bits, y
