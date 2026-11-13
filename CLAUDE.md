@@ -64,7 +64,7 @@ hechos.
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 | Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
-| Vídeo de la portada del menú | `herramientas/convertir_portada.py <vídeo>` → `assets/portada/portada.ogv` (Ogg Theora, 1024 × 576, sin sonido) y `portada_quieta.jpg` (su primera imagen). Necesita `ffmpeg` en el PATH o `imageio-ffmpeg` (pip) | volver a ejecutarlo con otro vídeo |
+| Vídeo de la portada del menú | `herramientas/convertir_portada.py <vídeo>` → `assets/portada/portada.ogv` (Ogg Theora, 1280 × 720 agrandado y enfocado, sin sonido) y `portada_quieta.jpg` (su primera imagen). Necesita `ffmpeg` en el PATH o `imageio-ffmpeg` (pip) | volver a ejecutarlo con otro vídeo |
 | Cofre de la sala secreta | `herramientas/generar_cofre.py` (un cofre en 3D proyectado, con la tapa en cada ángulo de `ANGULOS`) → `assets/cofre/cofre.png`. Necesita `rsvg-convert` | editar el script y volver a ejecutarlo (si cambian `LADO` u `ORIGEN`, también `Cofre.PIES`) |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
@@ -274,9 +274,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   mago oscuro en un bosque morado, con el título «VACÍO» arriba, 8 s en bucle (empieza
   y acaba igual) y sin sonido. **Godot no reproduce MP4**, solo Ogg Theora:
   `herramientas/convertir_portada.py` lo pasa a `assets/portada/portada.ogv`
-  (1024 × 576, calidad 9, 4,8 MB) con `ffmpeg` (el del paquete `imageio-ffmpeg`,
+  (1280 × 720, calidad 9, 8,1 MB) con `ffmpeg` (el del paquete `imageio-ffmpeg`,
   instalado aparte con permiso de Matías) y saca su primera imagen,
-  `portada_quieta.jpg`. En `MenuPrincipal.tscn`: `Portada` (la quieta, `stretch_mode`
+  `portada_quieta.jpg`. **El original solo mide 1014 × 566** y no lo hay más grande
+  (Matías, 2026-11-13): en Full HD se estiraba casi al doble y se veía borroso; desde
+  ese día se agranda con lanczos y un enfoque suave (`ENFOQUE`) antes de convertirlo,
+  y los bordes salen más nítidos (detalle nuevo no hay; hasta entonces, 1024 × 576 y
+  4,8 MB). La conversión casi no pierde: 43 dB de PSNR con el original. A 1920 × 1080
+  se veía casi igual y pesaba 13 MB. En la web exportada aquí, el menú tarda lo mismo
+  por fotograma con el de 720 que con el de antes (9,8 ms). En `MenuPrincipal.tscn`: `Portada` (la quieta, `stretch_mode`
   6) y encima `EncajeVideo/Video`, un `VideoStreamPlayer` (`autoplay`, `loop`,
   `expand`) dentro de un `AspectRatioContainer` en modo cubrir (`stretch_mode` 3,
   `ratio` 1,7778): el reproductor no sabe recortar, y así cubre la pantalla sin
