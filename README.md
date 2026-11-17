@@ -148,7 +148,7 @@ En la colección (lo que no tienes sale en silueta) pulsas una para verla en gra
 | Acción | Tecla |
 |---|---|
 | Moverse | WASD (o las flechas: se elige en **Controles**) |
-| Andar despacio | Shift: un tercio más lento, para pasar entre pinchos |
+| Andar despacio | Shift: a un tercio de la velocidad, para pasar entre pinchos |
 | Disparar | Flechas (o WASD, si te mueves con las flechas), o clic izquierdo apuntando con el ratón |
 | Ataque especial | Clic derecho o espacio, **una vez por piso**. Mago oscuro y rojo: **mantenido**, carga una bola que se suelta cuando el aro se cierra. Con el clic derecho sale hacia el ratón; con el espacio, hacia donde apuntan las flechas o, sin ninguna, hacia donde mira el mago (para jugar sin ratón). Mago blanco: saca el escudo |
 | Pausa (continuar, reiniciar o volver al menú) | Esc |

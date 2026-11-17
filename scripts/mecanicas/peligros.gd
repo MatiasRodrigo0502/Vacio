@@ -71,8 +71,10 @@ extends Mecanica
 ## En una sala de pelea de cada piso, un pasillo con una fila de pinchos a cada lado
 ## (Matias, 2026-11-10: «haz un pasillo entre trampas de pinchos en una sala»): de
 ## una puerta a la de enfrente o, si no hay, de una puerta al centro. Por el pasillo
-## no se pisa nada; salirse de el, a destiempo, si.
-@export_range(1, 12) var piso_pasillo: int = 3
+## no se pisa nada; salirse de el, a destiempo, si. Desde el piso 2, el primero con
+## pinchos: era desde el 3, y Matias lo volvio a pedir el 2026-11-17 sin haberlo
+## visto. El tutorial dice que los pinchos salen «más abajo», asi que en el 1 no.
+@export_range(1, 12) var piso_pasillo: int = 2
 ## Ancho del paso libre entre las dos filas. El mago mide 30.
 @export var ancho_pasillo: float = 120.0
 

@@ -12,7 +12,7 @@
 [resource]
 script = ExtResource("1_script")
 nombre = "Mago rojo"
-ventaja = "30 de vida más, y el ataque cargado sale en medio tiempo y quita 50 (mata de un golpe a cualquier enemigo). Sus disparos queman: 3 de vida por segundo durante 3 s."
+ventaja = "Domina el fuego: sus bolas queman a los enemigos y su meteoro arrasa lo que encuentra. Aguanta más que nadie, aunque es más lento."
 pega = "Anda un 9% más lento."
 animaciones = ExtResource("2_animaciones")
 animaciones_sin_arma = ExtResource("2_sin_arma")

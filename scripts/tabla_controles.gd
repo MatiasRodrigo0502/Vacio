@@ -13,9 +13,10 @@ const ALTO_FILA: float = 32.0
 ## Lo que se ve de la lista sin desplazarse: con las catorce, el panel no cabia
 ## en 648 de alto.
 const ALTO_LISTA: float = 300.0
-const COLOR_TEXTO := Color(0.85, 0.82, 0.78)
-const COLOR_TITULO := Color(1.0, 0.74, 0.36)
-const COLOR_VACIA := Color(0.55, 0.52, 0.5)
+## Los de la portada (PaletaPortada), como el resto del panel de controles.
+const COLOR_TEXTO := PaletaPortada.TEXTO
+const COLOR_TITULO := PaletaPortada.TITULO
+const COLOR_VACIA := PaletaPortada.FLOJO
 
 ## Accion -> [boton de la principal, boton de la secundaria].
 var _botones: Dictionary = {}

@@ -38,5 +38,5 @@ alcance_cargado = 320.0
 cargada_tamano_fijo = true
 agujero_negro = true
 duracion_agujero = 2.5
-radio_agujero = 150.0
+radio_agujero = 300.0
 dano_agujero = 20.0

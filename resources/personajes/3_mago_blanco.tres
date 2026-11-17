@@ -11,7 +11,7 @@
 [resource]
 script = ExtResource("1_script")
 nombre = "Mago blanco"
-ventaja = "Ataque especial: una burbuja que lo cubre entero 5 s; los disparos rebotan y los enemigos salen despedidos. Sus disparos frenan a los enemigos a la mitad 1,5 s."
+ventaja = "Domina el hielo: sus lanzas congelan a los enemigos y se protege con una burbuja que devuelve los disparos."
 pega = "No tiene bola cargada: su ataque especial no hace daño."
 animaciones = ExtResource("2_animaciones")
 animaciones_sin_arma = ExtResource("2_sin_arma")

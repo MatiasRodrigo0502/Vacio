@@ -123,6 +123,12 @@ func _mostrar_gacha(visible_ahora: bool) -> void:
 ## las estadisticas. Lo que se elige lo guarda y lo aplica el autoload Controles.
 func _montar_eleccion_teclas() -> void:
 	var caja := $PanelControles/Centro/Caja
+	# Con los morados de la portada (PaletaPortada): todo lo de dentro los hereda.
+	_panel_controles.theme = PaletaPortada.tema()
+	$PanelControles/Fondo.color = PaletaPortada.FONDO
+	# El naranja del titulo venia de su modulate (el de los demas paneles): se quita.
+	$PanelControles/Centro/Caja/Titulo.modulate = Color.WHITE
+	$PanelControles/Centro/Caja/Titulo.add_theme_color_override("font_color", PaletaPortada.TITULO)
 	# Un poco mas juntos: con la fila nueva, el panel no cabia en 648 de alto.
 	caja.add_theme_constant_override("separation", 8)
 	# La lista de teclas de texto de la escena la sustituye la tabla.
@@ -147,7 +153,7 @@ func _montar_eleccion_teclas() -> void:
 	var etiqueta := Label.new()
 	etiqueta.text = "Moverse con:"
 	etiqueta.add_theme_font_size_override("font_size", 20)
-	etiqueta.add_theme_color_override("font_color", Color(0.85, 0.82, 0.78))
+	etiqueta.add_theme_color_override("font_color", PaletaPortada.TEXTO)
 	fila.add_child(etiqueta)
 	var grupo := ButtonGroup.new()
 	_boton_wasd = _boton_teclas("W A S D", false, grupo)

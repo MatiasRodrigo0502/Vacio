@@ -10,7 +10,7 @@
 [resource]
 script = ExtResource("1_script")
 nombre = "Mago verde"
-ventaja = "Rocía veneno: dispara 4,5 veces más rápido y cada gota envenena (3 por segundo, 3 s). Ataque especial: 8 proyectiles rápidos que persiguen al enemigo más cercano y lo envenenan (5 por segundo, 5 s; se suman)."
+ventaja = "Domina el veneno: rocía a sus enemigos sin descanso e invoca proyectiles que los persiguen hasta envenenarlos."
 pega = "Cada gota quita 1, diez veces menos. Los proyectiles giran poco y muchos se estrellan."
 animaciones = ExtResource("2_animaciones")
 animaciones_sin_arma = ExtResource("2_sin_arma")

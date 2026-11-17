@@ -79,7 +79,7 @@ bolas (el Orbe hinchado) solo se nota en el disparo normal (`cargada_tamano_fijo
 - `agujero_negro`: la bola cargada abre un agujero negro donde se acaba (al
   llegar a su alcance, en una roca o en el muro). Dura `duracion_agujero`
   (2,5 s), atrae a los enemigos de su sala que están a `radio_agujero`
-  (150 px) y a los del centro les quita `dano_agujero` (2) por segundo. Ver
+  (300 px; eran 150 hasta el 2026-11-17) y a los del centro les quita `dano_agujero` por segundo. Ver
   `scripts/agujero_negro.gd`.
 
 ## El arte de los hechizos

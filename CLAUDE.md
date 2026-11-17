@@ -64,7 +64,7 @@ hechos.
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
 | Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
-| Vídeo de la portada del menú | `herramientas/convertir_portada.py <vídeo>` → `assets/portada/portada.ogv` (Ogg Theora, 1280 × 720 agrandado y enfocado, sin sonido) y `portada_quieta.jpg` (su primera imagen). Necesita `ffmpeg` en el PATH o `imageio-ffmpeg` (pip) | volver a ejecutarlo con otro vídeo |
+| Vídeo de la portada del menú | `herramientas/convertir_portada.py <vídeo>` → `assets/portada/portada.ogv` (Ogg Theora, 1920 × 1080 agrandado y enfocado, sin sonido) y `portada_quieta.jpg` (su primera imagen). Necesita `ffmpeg` en el PATH o `imageio-ffmpeg` (pip) | volver a ejecutarlo con otro vídeo |
 | Cofre de la sala secreta | `herramientas/generar_cofre.py` (un cofre en 3D proyectado, con la tapa en cada ángulo de `ANGULOS`) → `assets/cofre/cofre.png`. Necesita `rsvg-convert` | editar el script y volver a ejecutarlo (si cambian `LADO` u `ORIGEN`, también `Cofre.PIES`) |
 
 `GestorProgreso` (autoload) lee las carpetas y no conoce ninguna mecánica,
@@ -285,7 +285,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   mago oscuro en un bosque morado, con el título «VACÍO» arriba, 8 s en bucle (empieza
   y acaba igual) y sin sonido. **Godot no reproduce MP4**, solo Ogg Theora:
   `herramientas/convertir_portada.py` lo pasa a `assets/portada/portada.ogv`
-  (1280 × 720, calidad 9, 8,1 MB) con `ffmpeg` (el del paquete `imageio-ffmpeg`,
+  (1920 × 1080 desde el 2026-11-17, antes 1280 × 720; calidad 9, 13 MB) con `ffmpeg` (el del paquete `imageio-ffmpeg`,
   instalado aparte con permiso de Matías) y saca su primera imagen,
   `portada_quieta.jpg`. **El original solo mide 1014 × 566** y no lo hay más grande
   (Matías, 2026-11-13): en Full HD se estiraba casi al doble y se veía borroso; desde
@@ -537,7 +537,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     **Solo se ve desde delante del mago** (2026-11-10, Matías: la lanza del blanco,
     grande, «se ve cómo nace detrás del mago»): sale de su centro, y
     `BolaMagica.recortar_desde` le pone `shaders/recorte_bola.gdshader`, que no pinta
-    lo que queda detrás de una línea a `Principal.FRENTE_MAGO` (16 px) hacia donde va.
+    lo que queda detrás de una curva en «C» con la punta a `Principal.FRENTE_MAGO`
+    (16 px) hacia donde va y los brazos hacia delante (una parábola, `radio_curva`
+    40), con el borde desvanecido en 6 px. Era una recta y el corte se veía demasiado
+    (Matías, 2026-11-17: «·C»).
     Se quita al pasar la bola entera (`FIN_RECORTE_RADIOS`, 9: la lanza llega 8,1
     radios atrás), porque un material por bola no deja juntar los dibujos.
   - **Meteoro del rojo**: `carga` en `CargaAtaque` (la pose la manda lo cargado,
@@ -813,7 +816,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Jugador**: mago animado **en las ocho direcciones** (las cuatro
   cardinales y las cuatro diagonales), con `caminar_` y `quieto_` por cada una:
   16 animaciones recortadas de un atlas con `AtlasTexture`. WASD mueve (o las
-  flechas, ver «Moverse con» más abajo). **Con Shift anda un tercio más lento**
+  flechas, ver «Moverse con» más abajo). **Con Shift anda a un tercio de su velocidad** (`FACTOR_DESPACIO` 0.33, desde el 2026-11-17)
   (acción `andar_despacio`, `Jugador.FACTOR_DESPACIO` 0,67; Matías, 2026-11-10).
   Apuntar manda sobre moverse: si disparas a un enemigo, el mago lo mira
   aunque te estés alejando.
@@ -898,7 +901,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Tabla de teclas** (2026-11-10, Matías: «en controles debe haber la columna de
   funciones, la columna de tecla principal y la columna de tecla secundaria. Debes
   poder activar y desactivar a voluntad»). El panel Controles del menú tiene dos
-  pestañas (`MenuPrincipal._montar_eleccion_teclas`): **Teclas**, con
+  pestañas (`MenuPrincipal._montar_eleccion_teclas`), con los morados de la portada
+  (`PaletaPortada`, `scripts/paleta_portada.gd`: un `Theme` que heredan todos los
+  botones del panel, también los que montan `Controles` y `Estadisticas`; 2026-11-17):
+  **Teclas**, con
   `TablaControles` (`scripts/tabla_controles.gd`: una fila por acción de
   `Controles.ACCIONES`, catorce, en una lista con desplazamiento porque no cabían en
   648 de alto), y **Cómo se juega**, con las reglas que antes iban debajo. Cada tecla
@@ -978,7 +984,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   320 px (`alcance_cargado`; la del rojo, hasta chocar) y donde se apaga
   (`BolaMagica.apagada`) Principal abre un `AgujeroNegro`
   (`scripts/agujero_negro.gd`): 2,5 s atrayendo a los enemigos de su sala a
-  150 px y quitando 2 por segundo, a tics de 0,5 s, a los del centro. El
+  300 px (150 hasta el 2026-11-17, Matías lo dobló) y quitando 2 por segundo, a tics de 0,5 s, a los del centro. El
   centro negro va en un nodo hijo con z 8, encima de los enemigos (z 5), para
   que lo que llega se vea tragado; el resto, debajo.
 - **Salas**: cada piso es un mapa de 4 a 10 salas en cuadrícula, con forma de
@@ -1157,7 +1163,7 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     de la sala secreta con 12 placas de 100 (`LADO_ANILLO`, 4 por lado) y un hueco de
     200 × 200 en medio, donde cabe el cofre. **Todas con el mismo ritmo**: es una sola
     trampa, y se ve cuándo se puede pasar (para llegar y para irse con la ventaja).
-  - **Pasillo** (`_pasillo`): desde el piso 3, en una sala de pelea por piso sin
+  - **Pasillo** (`_pasillo`): desde el piso 2 (era el 3 hasta el 2026-11-17), en una sala de pelea por piso sin
     bajada, dos filas de placas de 90 (`LADO_PASILLO`) a los lados de un paso libre de
     120 (`ancho_pasillo`; el mago mide 30). Mejor en una sala con dos puertas enfrente,
     de una a otra; si no, de una puerta al centro. **Quita las rocas que tenga en

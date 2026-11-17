@@ -24,8 +24,11 @@ signal apagada(punto: Vector2)
 
 @export var velocidad: float = 620.0
 @export var radio: float = 11.0
-## Si no choca con nada, se apaga sola despues de recorrer esto.
-@export var alcance: float = 1200.0
+## Si no choca con nada, se apaga sola despues de recorrer esto. Era 1200, lo
+## que mide de ancho una sala: en recto llegaba de pared a pared, pero en
+## diagonal (1390) y en la sala del jefe (1600 x 860) se apagaba antes. Matias
+## lo quiso con mas alcance (2026-11-17): 1800 cruza cualquier sala.
+@export var alcance: float = 1800.0
 ## Si es true atraviesa y rompe todo lo que pilla. En false, rompe lo primero
 ## que toca y se apaga.
 @export var atraviesa: bool = false

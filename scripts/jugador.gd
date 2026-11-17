@@ -127,9 +127,11 @@ const FACTOR_VENENO: float = 0.6
 ## Lo que va con frio (la trampa de hielo). Era la mitad, como los enemigos que
 ## frena el disparo del mago blanco; el 2026-11-10 Matias la quiso mas fuerte.
 const FACTOR_FRIO: float = 0.35
-## Con Shift (la accion andar_despacio) anda un tercio mas lento (Matias,
-## 2026-11-10): para colarse entre pinchos o rodear un agujero sin pasarse.
-const FACTOR_DESPACIO: float = 0.67
+## Con Shift (la accion andar_despacio) anda a un tercio de su velocidad: un
+## 67 % mas lento. Para colarse entre pinchos o rodear un agujero sin pasarse.
+## Era un tercio mas lento (0.67, Matias 2026-11-10), y el 2026-11-17 lo quiso
+## asi: con 0.67 casi no se notaba la diferencia.
+const FACTOR_DESPACIO: float = 0.33
 const COLOR_VENENO := Color(0.6, 1.0, 0.55)
 ## Lo que tarda la animacion de caer por un agujero.
 const DURACION_CAIDA: float = 0.4
