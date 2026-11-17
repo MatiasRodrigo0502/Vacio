@@ -24,6 +24,16 @@
 ## y en Mac igual: tambien dejan renombrar lo que esta abierto. En Mac lo que
 ## se cambia es la carpeta Vacio.app entera.
 ##
+## LINUX, SOLO LO QUE CAMBIA (Matias, 2026-11-17: «que la actualización se integre
+## en el archivo que ya hay, realizando sólo los cambios necesarios»): cada version
+## trae un parche desde la anterior (PARCHE_LINUX, de herramientas/parche_juego.py).
+## Si se tiene justo esa, se baja el parche, unos MB en vez de 140, y Parche monta
+## con el y con el juego de ahora el nuevo. Si no hay parche para la nuestra (se ha
+## saltado alguna version) o no sale bien, se baja entero, como antes. Y el viejo
+## se borra en cuanto el nuevo esta en su sitio: Linux deja borrar un programa
+## abierto (sigue funcionando hasta que se cierra), asi que no queda otro archivo
+## al lado. En Windows no se puede: lo borra _limpiar al abrir la nueva.
+##
 ## MAC, SI SE ABRE DESDE DESCARGAS: una app bajada de internet que no se ha
 ## movido de donde se descomprimio, macOS la abre desde una copia escondida y
 ## de solo lectura (App Translocation, en una ruta con "/AppTranslocation/").
@@ -60,6 +70,9 @@ const ARCHIVO_LINUX := "Vacio-linux.tar.gz"
 const ARCHIVO_MAC := "Vacio-mac.zip"
 const ARCHIVO_ANDROID := "Vacio-android.apk"
 const EJECUTABLE_LINUX := "Vacio.x86_64"
+## El parche de Linux desde una version (la que se tiene): lo cuelga cada version
+## para la anterior (.github/workflows/publicar.yml).
+const PARCHE_LINUX := "Vacio-linux-desde-%s.parche"
 ## Lo que se espera a la lista de versiones. Sin internet, mejor rendirse
 ## pronto: es un aviso, no algo que haga falta para jugar.
 const ESPERA_BUSCAR: float = 10.0
@@ -112,6 +125,14 @@ var _bajador: HTTPRequest
 ## disco que el juego, y si no al lado de la de ahora. Cambiarlas es renombrar, y
 ## entre discos distintos no se puede.
 var _descarga: String = ""
+## Si lo que se baja es el parche (ver arriba, LINUX) y no el juego entero.
+var _con_parche: bool = false
+## El parche fallo: se baja entero, hasta que se cierre el juego.
+var _sin_parche: bool = false
+## Lo que tiene que medir lo que se baja.
+var _tamano_esperado: int = 0
+## Donde quedo el juego de antes al poner el nuevo (poner_en_su_sitio).
+var _viejo: String = ""
 
 
 func _ready() -> void:
@@ -182,7 +203,10 @@ func descargar() -> void:
 		return
 	prueba.close()
 	_bajador.download_file = _descarga
-	var error := _bajador.request(String(nueva.url), ["User-Agent: Vacio"])
+	_con_parche = not _sin_parche and String(nueva.get("parche_url", "")) != ""
+	var url := String(nueva.parche_url if _con_parche else nueva.url)
+	_tamano_esperado = int(nueva.parche_tamano if _con_parche else nueva.tamano)
+	var error := _bajador.request(url, ["User-Agent: Vacio"])
 	if error != OK:
 		_borrar_descarga()
 		_fallar("No se ha podido empezar la descarga.")
@@ -207,7 +231,7 @@ func bajado() -> int:
 
 func total() -> int:
 	var tamano := _bajador.get_body_size()
-	return tamano if tamano > 0 else int(nueva.get("tamano", 0))
+	return tamano if tamano > 0 else _tamano_esperado
 
 
 ## Abre la version nueva y cierra esta. Solo con la nueva ya en su sitio. En
@@ -291,11 +315,19 @@ func elegir_nueva(versiones: Array, local: String, archivo: String = ARCHIVO_WIN
 		por_version.append([numeros, _cambios(String(publicada.get("body", "")))])
 		if not elegida.is_empty() and not _mas_nueva(numeros, elegida.numeros):
 			continue
-		elegida = {"numeros": numeros, "version": etiqueta.trim_prefix("v"), "url": "", "tamano": 0}
+		elegida = {"numeros": numeros, "version": etiqueta.trim_prefix("v"), "url": "", "tamano": 0,
+			"parche_url": "", "parche_tamano": 0}
+		# El parche, solo en Linux y desde la version que se tiene (ver arriba).
+		var parche := PARCHE_LINUX % local if archivo == ARCHIVO_LINUX else ""
 		for subido: Variant in publicada.get("assets", []):
-			if subido is Dictionary and subido.get("name", "") == archivo:
+			if not subido is Dictionary:
+				continue
+			if subido.get("name", "") == archivo:
 				elegida.url = String(subido.get("browser_download_url", ""))
 				elegida.tamano = int(subido.get("size", 0))
+			elif parche != "" and subido.get("name", "") == parche:
+				elegida.parche_url = String(subido.get("browser_download_url", ""))
+				elegida.parche_tamano = int(subido.get("size", 0))
 	if elegida.is_empty():
 		return {}
 	por_version.sort_custom(func(a: Array, b: Array) -> bool: return _mas_nueva(a[0], b[0]))
@@ -333,7 +365,7 @@ func _al_bajar(resultado: int, codigo: int, _cabeceras: PackedStringArray, _cuer
 	# Windows empieza por "MZ", un .gz por 1F 8B y un .zip por "PK"), no una
 	# pagina de error: si no, el juego no volveria a abrirse.
 	var archivo := FileAccess.open(_descarga, FileAccess.READ)
-	var entero := archivo != null and archivo.get_length() == int(nueva.tamano) \
+	var entero := archivo != null and archivo.get_length() == _tamano_esperado \
 		and archivo.get_buffer(2) == _comienzo_esperado()
 	if archivo != null:
 		archivo.close()
@@ -345,6 +377,8 @@ func _al_bajar(resultado: int, codigo: int, _cabeceras: PackedStringArray, _cuer
 
 
 func _comienzo_esperado() -> PackedByteArray:
+	if _con_parche:
+		return Parche.MAGIA.substr(0, 2).to_ascii_buffer()
 	match OS.get_name():
 		"Linux":
 			return PackedByteArray([0x1f, 0x8b])
@@ -363,7 +397,19 @@ func _instalar() -> void:
 	# En Windows tambien: poner el nuevo en su sitio puede tardar hasta un minuto si
 	# el antivirus lo esta revisando (INTENTOS_RENOMBRAR).
 	_poner(Estado.INSTALANDO)
-	if OS.get_name() != "Windows":
+	if _con_parche:
+		nuevo = ruta_exe + ".nuevo"
+		var error_parche: Error = await _en_otro_hilo(Parche.aplicar.bind(_descarga, ruta_exe, nuevo))
+		_borrar_descarga()
+		if error_parche != OK:
+			# Se baja entero, como si no hubiera parche.
+			push_warning("Actualizacion: el parche no ha servido (error %d); se baja entera" % error_parche)
+			_borrar(nuevo)
+			_sin_parche = true
+			_poner(Estado.HAY_NUEVA)
+			descargar()
+			return
+	elif OS.get_name() != "Windows":
 		nuevo = ruta_exe + ".nuevo"
 		var error: Error = await _sacar(_descarga, nuevo, OS.get_name() == "macOS")
 		_borrar_descarga()
@@ -379,6 +425,9 @@ func _instalar() -> void:
 		else:
 			_fallar("No se ha podido cambiar el juego por el nuevo: el antivirus o algún programa lo tenía ocupado. Vuelve a intentarlo o bájalo desde la web.")
 		return
+	# En Linux el de antes se va ya, aunque siga abierto (ver arriba, LINUX).
+	if OS.get_name() == "Linux":
+		DirAccess.remove_absolute(_viejo)
 	_poner(Estado.LISTA)
 
 
@@ -386,11 +435,15 @@ func _instalar() -> void:
 ## si 'es_mac') y lo deja en 'destino', en otro hilo.
 func _sacar(paquete: String, destino: String, es_mac: bool) -> Error:
 	_borrar(destino)
-	var hilo := Thread.new()
 	if es_mac:
-		hilo.start(Desempaquetar.sacar_app_de_zip.bind(paquete, destino))
-	else:
-		hilo.start(Desempaquetar.sacar_de_tar_gz.bind(paquete, EJECUTABLE_LINUX, destino))
+		return await _en_otro_hilo(Desempaquetar.sacar_app_de_zip.bind(paquete, destino))
+	return await _en_otro_hilo(Desempaquetar.sacar_de_tar_gz.bind(paquete, EJECUTABLE_LINUX, destino))
+
+
+## Lo hace en otro hilo y espera sin parar el juego: son 140 MB que leer y escribir.
+func _en_otro_hilo(tarea: Callable) -> Error:
+	var hilo := Thread.new()
+	hilo.start(tarea)
 	while hilo.is_alive():
 		await get_tree().process_frame
 	return hilo.wait_to_finish()
@@ -402,6 +455,7 @@ func _sacar(paquete: String, destino: String, es_mac: bool) -> Error:
 func poner_en_su_sitio(nuevo: String, actual: String) -> bool:
 	var viejo := "%s.viejo.%d.%s" % [actual.get_basename(), int(Time.get_unix_time_from_system()),
 		actual.get_extension()]
+	_viejo = viejo
 	if not await _renombrar(actual, viejo):
 		return false
 	if not await _renombrar(nuevo, actual):

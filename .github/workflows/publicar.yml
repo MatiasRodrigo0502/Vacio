@@ -293,6 +293,23 @@ jobs:
           name: web
           path: build
 
+      # El parche de Linux desde la version anterior: con el, quien tiene la anterior
+      # baja solo lo que cambia (herramientas/parche_juego.py y Actualizacion; Matias,
+      # 2026-11-17). Si algo falla, la version sale sin el y se baja entera.
+      - name: Parche de Linux
+        if: needs.exportar.outputs.anterior != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ANTERIOR: ${{ needs.exportar.outputs.anterior }}
+        run: |
+          d="$RUNNER_TEMP/parche"
+          mkdir -p "$d/viejo" "$d/nuevo"
+          if gh release download "$ANTERIOR" -p Vacio-linux.tar.gz -D "$d/viejo"               && tar -xzf "$d/viejo/Vacio-linux.tar.gz" -C "$d/viejo"               && tar -xzf build/Vacio-linux.tar.gz -C "$d/nuevo"               && python3 herramientas/parche_juego.py crear "$d/viejo/Vacio.x86_64" "$d/nuevo/Vacio.x86_64"                 "build/Vacio-linux-desde-${ANTERIOR#v}.parche"; then
+            echo "Parche de Linux desde la ${ANTERIOR#v} listo"
+          else
+            echo "Sin parche de Linux: quien actualice se la bajará entera"
+          fi
+
       - name: Publicar
         env:
           GH_TOKEN: ${{ github.token }}
@@ -332,6 +349,9 @@ jobs:
           archivos=(build/Vacio.exe build/Vacio-linux.tar.gz build/Vacio-mac.zip)
           [ -f build/Vacio-android.apk ] && archivos+=(build/Vacio-android.apk)
           [ -f build/Vacio-web.tar.gz ] && archivos+=(build/Vacio-web.tar.gz)
+          for parche in build/Vacio-linux-desde-*.parche; do
+            [ -f "$parche" ] && archivos+=("$parche")
+          done
           gh release create "v$VERSION" "${archivos[@]}" --target "$GITHUB_SHA" \
             --title "Versión $VERSION" --notes-file "$RUNNER_TEMP/notas.md" --latest
 

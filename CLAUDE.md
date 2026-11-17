@@ -268,7 +268,19 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   mano) con permiso 755; en Mac, la `Vacio.app` entera del `.zip` con
   `ZIPReader`, dando permiso de ejecutarse a `Contents/MacOS/`. Luego lo
   mismo que en Windows (`poner_en_su_sitio`: renombrar lo abierto a
-  `.viejo.<hora>` y lo nuevo a su sitio); en Mac lo que se cambia es la
+  `.viejo.<hora>` y lo nuevo a su sitio).
+  **En Linux, solo lo que cambia** (2026-11-17, Matías: «que la actualización se
+  integre en el archivo que ya hay, realizando sólo los cambios necesarios»): cada
+  versión lleva `Vacio-linux-desde-<anterior>.parche`, que crea `publicar.yml` con
+  `herramientas/parche_juego.py` (motor por bloques de 64 KB: Godot apunta en él el
+  tamaño del paquete; y del `.pck`, los archivos con el mismo md5 y tamaño se copian
+  del viejo). Quien tiene justo la anterior baja el parche (153 KB con un cambio de
+  scripts, en vez de 137 MB) y `Parche` (`scripts/parche.gd`) monta el nuevo en otro
+  hilo, comprobando su sha256; si falla o no hay parche para su versión, baja el
+  `.tar.gz` entero. Y el viejo se borra en cuanto el nuevo está en su sitio (Linux
+  deja borrar un programa abierto): no queda otro archivo al lado. Probado aquí
+  (Windows) crear y aplicar con dos exportaciones de Linux; **en un Linux de verdad,
+  no**. En Mac lo que se cambia es la
   carpeta `.app` y se abre con `open -n`. **En Mac, abierta sin moverla de
   donde se descomprimió**, macOS la abre desde una copia de solo lectura
   (ruta con `/AppTranslocation/`): ahí no se puede, y el aviso dice que se

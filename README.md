@@ -84,7 +84,10 @@ ya la versión nueva. Si no, será la que se abra la próxima vez. **Desde la
 0.50, igual en Linux y en Mac**: baja el `.tar.gz` o el `.zip` y saca de ahí
 el juego nuevo. En Mac solo si `Vacio.app` se ha movido antes de donde se
 descomprimió (por ejemplo, a *Aplicaciones*): si no, macOS la abre desde una
-copia que no se puede cambiar, y el aviso lo dice. Sin internet no sale nada y se juega
+copia que no se puede cambiar, y el aviso lo dice. **En Linux, desde la 0.76, solo
+baja lo que cambia** (un parche de unos KB o pocos MB, en vez de todo el juego) y lo
+mete en el mismo `Vacio.x86_64`, sin dejar otro archivo al lado; si te has saltado
+alguna versión, baja el juego entero. Sin internet no sale nada y se juega
 igual. Las versiones de antes de la 0.18 no saben avisar: quien tenga una de
 esas tiene que bajar la última a mano una vez.
 
