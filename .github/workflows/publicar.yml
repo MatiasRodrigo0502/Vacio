@@ -244,13 +244,28 @@ jobs:
         with:
           path: build/web
 
+      # Tambien empaquetada, para la version: de ahi la baja Vercel
+      # (herramientas/vercel_web.sh, Matias 2026-11-17: «usa Vercel para el juego
+      # en navegador»). Vercel gratis no deja subirle mas de 100 MB desde fuera, y
+      # esto pasa de 100; bajandola el mismo al construir, no hay limite.
+      - name: Empaquetar para Vercel
+        run: tar -czf build/Vacio-web.tar.gz -C build/web .
+
+      - name: Guardar la version web
+        uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/Vacio-web.tar.gz
+          retention-days: 1
+          if-no-files-found: error
+
       - name: Publicar en GitHub Pages
         id: desplegar
         uses: actions/deploy-pages@v4
 
   publicar:
-    needs: [exportar, probar-mac, android]
-    # Aunque falle el de Android: los otros tres se publican igual.
+    needs: [exportar, probar-mac, android, web]
+    # Aunque fallen el de Android o el del navegador: los otros tres se publican igual.
     if: >-
       always() && needs.exportar.result == 'success' && needs.probar-mac.result == 'success'
       && needs.exportar.outputs.publicar == 'si'
@@ -270,6 +285,12 @@ jobs:
         if: needs.android.result == 'success'
         with:
           name: android
+          path: build
+
+      - uses: actions/download-artifact@v4
+        if: needs.web.result == 'success'
+        with:
+          name: web
           path: build
 
       - name: Publicar
@@ -310,5 +331,20 @@ jobs:
           # (releases/latest/download/Vacio.exe) lleva a ella.
           archivos=(build/Vacio.exe build/Vacio-linux.tar.gz build/Vacio-mac.zip)
           [ -f build/Vacio-android.apk ] && archivos+=(build/Vacio-android.apk)
+          [ -f build/Vacio-web.tar.gz ] && archivos+=(build/Vacio-web.tar.gz)
           gh release create "v$VERSION" "${archivos[@]}" --target "$GITHUB_SHA" \
             --title "Versión $VERSION" --notes-file "$RUNNER_TEMP/notas.md" --latest
+
+      # Vercel se rehace con la version nueva: su enlace para rehacerlo (un «Deploy
+      # Hook»), en los secretos del repositorio como VERCEL_DEPLOY_HOOK. Quien tiene
+      # el enlace puede rehacerla, por eso va en secreto. Sin el, nada.
+      - name: Avisar a Vercel
+        if: needs.web.result == 'success'
+        env:
+          GANCHO: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$GANCHO" ]; then
+            curl -fsS -X POST "$GANCHO" > /dev/null && echo "Vercel avisado"
+          else
+            echo "Sin VERCEL_DEPLOY_HOOK: Vercel no se rehace"
+          fi

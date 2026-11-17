@@ -675,7 +675,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   con `instalar_plantillas.py --web`) y la sube con `upload-pages-artifact` y
   `deploy-pages`; va aparte, como el `.apk`: ni para la versión si falla ni espera a
   que haya un Mac libre. **Sin hilos**: con hilos el servidor tendría que mandar unas
-  cabeceras (COOP y COEP) que Pages no deja poner. Descarga: 42 MB de `.pck` y 38 de
+  cabeceras (COOP y COEP) que Pages no deja poner.
+  **También en Vercel** (2026-11-17, Matías: «usa Vercel para el juego en navegador.
+  No vamos a gastar dinero»), plan gratis (Hobby). Vercel gratis no deja subirle más
+  de 100 MB desde fuera y la web pasa de 100, así que la construye él: `vercel.json`
+  → `herramientas/vercel_web.sh` baja `Vacio-web.tar.gz` de la última versión (lo
+  empaqueta el trabajo `web` y lo cuelga `publicar`). Los push no la rehacen
+  (`git.deploymentEnabled: false`: aún no estaría la versión nueva); `publicar` llama
+  a su *Deploy Hook*, guardado por Matías en el secreto `VERCEL_DEPLOY_HOOK` (sin él,
+  no hace nada). La cuenta y el proyecto de Vercel los crea Matías.
+  Descarga: 42 MB de `.pck` y 38 de
   `.wasm` (10 con gzip, que Pages pone solo). Lo que cambia en el navegador:
   - `OS.has_feature("mobile")` es **falso** en el navegador de un móvil (lo dice la
     documentación de Godot): el móvil se mira con `ControlesTactiles.en_el_movil()`
