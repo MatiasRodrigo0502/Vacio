@@ -626,7 +626,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   «Cerrar el juego», y al abrirla ya es la nueva. Probado en el ordenador
   (`--main-pack` con un `.pck` base y `-- --probar-parches`): un paquete de 84 KB con
   un script nuevo con `class_name` usado por un autoload se carga y funciona.
-  **Nadie lo ha probado en un móvil.** Piezas:
+  **Nadie lo ha probado en un móvil.**
+  **Instalador de Windows** (2026-11-18, Matías eligió Inno Setup): `instalador/vacio.iss`
+  (con `.gdignore`: Godot no lo mira), lo compila el trabajo `instalador` de
+  `publicar.yml` en una máquina Windows con el `Vacio.exe` de la versión →
+  `Vacio-instalador.exe`. Acceso directo en el escritorio (tarea marcada), menú
+  Inicio con «Desinstalar Vacío», icono `instalador/vacio.ico` (sacado de `icon.svg`).
+  **Se instala en `%LOCALAPPDATA%\Programs\Vacio`, sin administrador**: en Archivos de
+  programa el actualizador del juego no podría cambiar el `.exe`. No borra lo
+  guardado al desinstalar. No se ha probado aquí (no hay Inno Setup en este
+  ordenador): lo compila GitHub. Piezas:
   - **`ControlesTactiles`** (`scripts/controles_tactiles.gd`, capa 2, lo crea
     Principal si `hace_falta()`: en el móvil, o con `-- --tactil` en el
     ordenador, donde el ratón hace de dedo): **tres joysticks** (2026-11-18): azul

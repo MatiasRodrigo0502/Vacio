@@ -243,6 +243,42 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  # El instalador de Windows (Inno Setup, instalador/vacio.iss; Matias, 2026-11-18),
+  # con el Vacio.exe que acaba de salir. En una maquina Windows de GitHub, que trae
+  # Inno Setup (si no, se instala). Va aparte, como el .apk: si falla, la version
+  # sale sin el.
+  instalador:
+    needs: exportar
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: juego
+          path: build
+
+      - name: Hacer el instalador
+        shell: pwsh
+        env:
+          VERSION: ${{ needs.exportar.outputs.version }}
+        run: |
+          $iscc = Join-Path ${env:ProgramFiles(x86)} "Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup -y --no-progress
+          }
+          & $iscc "/DVersion=$env:VERSION" "/DOrigen=$((Resolve-Path build).Path)" instalador\vacio.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Get-Item build\Vacio-instalador.exe
+
+      - name: Guardar el instalador
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador
+          path: build/Vacio-instalador.exe
+          retention-days: 1
+          if-no-files-found: error
+
   # La version para el navegador, en GitHub Pages (desde la 0.62, pedido por Matias
   # el 2026-11-06): https://matiasrodrigo0502.github.io/Vacio/. Va por su cuenta,
   # como el .apk: ni para la version si falla, ni espera a que haya un Mac libre.
@@ -300,8 +336,9 @@ jobs:
         uses: actions/deploy-pages@v4
 
   publicar:
-    needs: [exportar, probar-mac, android, web]
-    # Aunque fallen el de Android o el del navegador: los otros tres se publican igual.
+    needs: [exportar, probar-mac, android, web, instalador]
+    # Aunque fallen el de Android, el del navegador o el instalador: los otros tres se
+    # publican igual.
     if: >-
       always() && needs.exportar.result == 'success' && needs.probar-mac.result == 'success'
       && needs.exportar.outputs.publicar == 'si'
@@ -327,6 +364,12 @@ jobs:
         if: needs.web.result == 'success'
         with:
           name: web
+          path: build
+
+      - uses: actions/download-artifact@v4
+        if: needs.instalador.result == 'success'
+        with:
+          name: instalador
           path: build
 
       # El parche de Linux desde la version anterior: con el, quien tiene la anterior
@@ -359,6 +402,9 @@ jobs:
             echo "**Para jugar** no hace falta instalar nada ni tener Godot:"
             echo
             echo "- **Windows:** descarga \`Vacio.exe\` y ábrelo. Puede avisar de que es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*."
+            if [ -f build/Vacio-instalador.exe ]; then
+              echo "  O, si lo prefieres instalado (con acceso directo en el escritorio y en el menú Inicio, y desinstalador), descarga \`Vacio-instalador.exe\` y ábrelo."
+            fi
             echo "- **Linux:** descarga \`Vacio-linux.tar.gz\`, extráelo (clic derecho → *Extraer aquí*) y abre \`Vacio.x86_64\` con doble clic."
             echo "- **Mac:** descarga \`Vacio-mac.zip\`, ábrelo y abre \`Vacio.app\` (si quieres, arrástrala antes a *Aplicaciones*). La primera vez macOS avisa de que no puede comprobar si es segura, porque no está verificada por Apple: ve a *Ajustes del Sistema → Privacidad y seguridad* y pulsa *Abrir igualmente*. Solo hace falta una vez."
             if [ -f build/Vacio-android.apk ]; then
@@ -388,6 +434,7 @@ jobs:
             [ -f "$paquete" ] && archivos+=("$paquete")
           done
           [ -f build/Vacio-web.tar.gz ] && archivos+=(build/Vacio-web.tar.gz)
+          [ -f build/Vacio-instalador.exe ] && archivos+=(build/Vacio-instalador.exe)
           for parche in build/Vacio-linux-desde-*.parche; do
             [ -f "$parche" ] && archivos+=("$parche")
           done

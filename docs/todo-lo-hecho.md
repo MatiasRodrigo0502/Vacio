@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 18/11/2026 | Android: el `.apk` se firma siempre con la misma clave (por eso no se instalaba encima), y el juego se actualiza desde dentro bajando solo lo que cambia (paquetes `.pck`); el `.apk` entero solo cuando cambian el motor o los ajustes del proyecto | — |
+| 18/11/2026 | Instalador de Windows (Inno Setup): acceso directo en el escritorio y en el menú Inicio, desinstalador e icono | — |
+| 18/11/2026 | Android: el `.apk` se firma siempre con la misma clave (por eso no se instalaba encima), y el juego se actualiza desde dentro bajando solo lo que cambia (paquetes `.pck`); el `.apk` entero solo cuando cambian el motor o los ajustes del proyecto | `fd4df43` |
 | 18/11/2026 | Editor de controles para Android y el navegador: sobre la primera sala, se mueve cada joystick, se cambia su tamaño y se marca si va oculto o estático; se guarda y se puede restablecer | `07f5f7e` |
 | 18/11/2026 | Tres joysticks táctiles (moverse, apuntar y ulti) fijos en las esquinas de abajo, translúcidos hasta que se toca la pantalla; el de moverse sigue al dedo | `c37e0a8` |
 | 18/11/2026 | Navegador: mandos táctiles también en tabletas, y se ocultan al usar teclado o ratón | `a36e9a9` |

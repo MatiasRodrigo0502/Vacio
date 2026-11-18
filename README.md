@@ -24,7 +24,11 @@ La última versión, lista para jugar sin instalar nada ni tener Godot:
 
 - **Windows:** [Vacio.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe).
   Puede avisar de que es de un editor desconocido (no está firmado):
-  *Más información → Ejecutar de todas formas*.
+  *Más información → Ejecutar de todas formas*. O instalado, con acceso directo en
+  el escritorio y en el menú Inicio y desinstalador:
+  [Vacio-instalador.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-instalador.exe)
+  (se instala en tu carpeta de usuario, sin pedir administrador, para que el juego
+  pueda seguir actualizándose solo).
 - **Linux:** [Vacio-linux.tar.gz](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-linux.tar.gz).
   Se extrae (clic derecho → *Extraer aquí*) y se abre `Vacio.x86_64` con
   doble clic. Va comprimido porque un programa suelto bajado con el navegador
@@ -45,8 +49,10 @@ La última versión, lista para jugar sin instalar nada ni tener Godot:
   pide permiso para instalar apps del navegador. Para que las versiones
   siguientes se instalen encima, todas tienen que ir firmadas con la misma
   clave, que GitHub guarda como secreto (ver
-  `herramientas/exportar_android.sh`); sin ella, cada versión lleva una clave
-  nueva y para actualizar hay que desinstalar antes la anterior. **Nadie lo
+  `herramientas/exportar_android.sh`). Hasta la 0.82 no estaba y cada versión
+  llevaba una clave nueva: quien tenga una de esas tiene que desinstalarla una vez.
+  Desde entonces, el juego se actualiza desde dentro bajando solo lo que cambia;
+  cuando cambia el motor, avisa de que hay que bajar el `.apk` entero. **Nadie lo
   ha probado todavía en un móvil.**
 - **Desde el navegador, sin instalar nada:** <https://matiasrodrigo0502.github.io/Vacio/>
   (desde la 0.62). En el móvil (también en **iPhone**, donde instalar una app sin
