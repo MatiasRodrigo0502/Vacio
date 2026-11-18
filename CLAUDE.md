@@ -626,6 +626,19 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     de pantalla (`movimiento`, `apuntado`, `especial`). Con ellos puestos
     (`activos`) el jugador no hace caso al clic izquierdo: cada dedo es
     también un clic. Al pausar se sueltan todos.
+  - **Editor de controles** (`EditorMandos`, `scripts/editor_mandos.gd`; 2026-11-18):
+    botón «Editar controles» del panel de controles (`MenuPrincipal._montar_boton_editor`):
+    en Android en lugar de la tabla de teclas y de «Moverse con», en el navegador
+    encima de ellos (y con `--tactil`, para probarlo). Fondo: una captura de la
+    primera sala (`assets/editor_mandos/primera_sala.jpg`, hecha desde el juego sin el
+    HUD; en vertical se tumba). Se arrastra cada joystick; al pulsarlo sale su
+    tirador (o pellizco con dos dedos, o rueda del ratón) y arriba en el centro sus
+    interruptores *Oculto* y *Estático*, cada uno con la palabra a la derecha (un
+    `CheckButton` sin texto y un `Label`, porque el `CheckButton` pinta el texto a la
+    izquierda). Cada cambio se guarda al momento en `user://mandos.cfg`
+    (`AjustesMandos.guardar`); *Restablecer* vuelve a los de fábrica. El primer dedo
+    llega como ratón (emulación del sistema), así que arrastrar va por `_gui_input`;
+    los dedos de verdad, solo para el pellizco.
   - **`Vista`** (autoload, `scripts/vista.gd`): con la pantalla más alta que
     ancha, `giro` = 90°. **Solo en el móvil** (`Vista.puede_girar`, que es
     `ControlesTactiles.hace_falta()`: el `.apk` y la web en el navegador

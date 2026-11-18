@@ -11,8 +11,9 @@ const ANCHO_FUNCION: float = 330.0
 const ANCHO_TECLA: float = 190.0
 const ALTO_FILA: float = 32.0
 ## Lo que se ve de la lista sin desplazarse: con las catorce, el panel no cabia
-## en 648 de alto.
-const ALTO_LISTA: float = 300.0
+## en 648 de alto. Con el boton de «Editar controles» encima (en el navegador), lo
+## pone menos quien la monta, antes de meterla en el arbol.
+var alto_lista: float = 300.0
 ## Los de la portada (PaletaPortada), como el resto del panel de controles.
 const COLOR_TEXTO := PaletaPortada.TEXTO
 const COLOR_TITULO := PaletaPortada.TITULO
@@ -34,7 +35,7 @@ func _ready() -> void:
 	cabecera.add_child(_celda("Tecla secundaria", ANCHO_TECLA + 38.0, COLOR_TITULO))
 	add_child(cabecera)
 	var desplazar := ScrollContainer.new()
-	desplazar.custom_minimum_size = Vector2(0.0, ALTO_LISTA)
+	desplazar.custom_minimum_size = Vector2(0.0, alto_lista)
 	desplazar.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(desplazar)
 	var filas := VBoxContainer.new()

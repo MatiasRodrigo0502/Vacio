@@ -46,6 +46,9 @@ var _boton_flechas: Button
 var _reglas_base: String = ""
 ## La tabla de teclas y la fila de encima, que solo salen en la pestana «Teclas».
 var _tabla: TablaControles
+## La etiqueta «Moverse con:» y la fila de «Editar controles» (null si no hay).
+var _etiqueta_mover: Label
+var _fila_editor: HBoxContainer
 var _fila_teclas: HBoxContainer
 
 
@@ -145,12 +148,16 @@ func _montar_eleccion_teclas() -> void:
 	caja.add_child(pestanas)
 	caja.move_child(pestanas, 1)
 	_tabla = TablaControles.new()
+	# Con «Editar controles» encima, la lista un poco mas corta: si no, no cabe.
+	if _hay_editor_mandos():
+		_tabla.alto_lista = 250.0
 	caja.add_child(_tabla)
 	caja.move_child(_tabla, _reglas.get_index())
 	var fila := HBoxContainer.new()
 	fila.alignment = BoxContainer.ALIGNMENT_CENTER
 	fila.add_theme_constant_override("separation", 12)
 	var etiqueta := Label.new()
+	_etiqueta_mover = etiqueta
 	etiqueta.text = "Moverse con:"
 	etiqueta.add_theme_font_size_override("font_size", 20)
 	etiqueta.add_theme_color_override("font_color", PaletaPortada.TEXTO)
@@ -177,6 +184,7 @@ func _montar_eleccion_teclas() -> void:
 	# Debajo de las pestanas, encima de la tabla: es lo primero que se mira.
 	caja.move_child(fila, 2)
 	_fila_teclas = fila
+	_montar_boton_editor(caja)
 	_reglas_base = _reglas.text
 	de_teclas.toggled.connect(_ver_pestana_teclas)
 	_ver_pestana_teclas(true)
@@ -195,9 +203,54 @@ func _boton_pestana(texto: String, grupo: ButtonGroup) -> Button:
 
 
 func _ver_pestana_teclas(teclas: bool) -> void:
-	_tabla.visible = teclas
+	# En el movil no hay teclas que cambiar: ni la tabla ni lo de moverse con WASD
+	# o con las flechas. Queda «Editar controles» (_montar_boton_editor).
+	var con_teclas := not _solo_tactil()
+	_tabla.visible = teclas and con_teclas
 	_fila_teclas.visible = teclas
+	for de_teclado in [_etiqueta_mover, _boton_wasd, _boton_flechas]:
+		de_teclado.visible = con_teclas
+	if _fila_editor != null:
+		_fila_editor.visible = teclas
 	_reglas.visible = not teclas
+
+
+## «Editar controles»: los joysticks de la pantalla tactil (EditorMandos; Matias,
+## 2026-11-18). En Android en lugar de la tabla de teclas; en el navegador, encima
+## de ella (puede ser un movil o un ordenador). Con --tactil, para probarlo.
+func _montar_boton_editor(caja: Control) -> void:
+	if not _hay_editor_mandos():
+		return
+	_fila_editor = HBoxContainer.new()
+	_fila_editor.alignment = BoxContainer.ALIGNMENT_CENTER
+	var boton := Button.new()
+	boton.text = "Editar controles"
+	boton.custom_minimum_size = Vector2(260, 40)
+	boton.add_theme_font_size_override("font_size", 18)
+	boton.pressed.connect(_abrir_editor_mandos)
+	_fila_editor.add_child(boton)
+	caja.add_child(_fila_editor)
+	# Debajo de las pestanas y encima de todo lo demas.
+	caja.move_child(_fila_editor, 2)
+
+
+func _hay_editor_mandos() -> bool:
+	return OS.has_feature("android") or OS.has_feature("web") or "--tactil" in OS.get_cmdline_user_args()
+
+
+## En la app del movil: ahi no hay teclado.
+func _solo_tactil() -> bool:
+	return OS.has_feature("android") or OS.has_feature("ios")
+
+
+func _abrir_editor_mandos() -> void:
+	var editor := EditorMandos.new()
+	# Con los morados de la portada, como el panel de controles.
+	editor.theme = PaletaPortada.tema()
+	add_child(editor)
+	editor.cerrado.connect(func() -> void:
+		editor.queue_free()
+		$PanelControles/Centro/Caja/BotonVolver.grab_focus())
 
 
 func _boton_teclas(texto: String, con_flechas: bool, grupo: ButtonGroup) -> Button:

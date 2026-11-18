@@ -13,7 +13,8 @@
 ## horizontal y en vertical (Vista) y en pantallas de cualquier tamano.
 ##
 ## Todo estatico, como Controles: lo leen los mandos de la partida
-## (ControlesTactiles) y lo cambia el editor de controles.
+## (ControlesTactiles) y lo cambia el editor de controles (EditorMandos), que lo
+## guarda en ARCHIVO con cada cambio. Se lee la primera vez que hace falta.
 class_name AjustesMandos
 extends RefCounted
 
@@ -37,19 +38,24 @@ const DE_FABRICA := {
 	ULTI: {"sitio": Vector2(0.70, 0.84), "tamano": 1.0, "oculto": false, "estatico": true},
 }
 
+## Donde se guardan: aparte de los ajustes de siempre (ajustes.cfg), que son de
+## Controles y del tutorial.
+const ARCHIVO := "user://mandos.cfg"
+
 static var _mandos: Dictionary = {}
+static var _archivo: String = ARCHIVO
 
 
 ## Lo de un mando: "sitio", "tamano", "oculto" o "estatico".
 static func dato(mando: StringName, clave: String) -> Variant:
 	if _mandos.is_empty():
-		_mandos = DE_FABRICA.duplicate(true)
+		_cargar()
 	return _mandos[mando][clave]
 
 
 static func poner(mando: StringName, clave: String, valor: Variant) -> void:
 	if _mandos.is_empty():
-		_mandos = DE_FABRICA.duplicate(true)
+		_cargar()
 	if clave == "tamano":
 		valor = clampf(valor, TAMANO_MINIMO, TAMANO_MAXIMO)
 	elif clave == "sitio":
@@ -60,3 +66,37 @@ static func poner(mando: StringName, clave: String, valor: Variant) -> void:
 ## Donde esta, en pixeles de una pantalla de ese tamano.
 static func sitio_en(mando: StringName, pantalla: Vector2) -> Vector2:
 	return pantalla * (dato(mando, "sitio") as Vector2)
+
+
+static func guardar() -> void:
+	var archivo := ConfigFile.new()
+	for mando in MANDOS:
+		for clave: String in _mandos[mando]:
+			archivo.set_value(mando, clave, _mandos[mando][clave])
+	archivo.save(_archivo)
+
+
+## Los de fabrica, y guardados.
+static func restablecer() -> void:
+	_mandos = DE_FABRICA.duplicate(true)
+	guardar()
+
+
+## Para las pruebas: lee y guarda en otro archivo, sin tocar el de quien las lanza.
+static func usar_archivo(ruta: String) -> void:
+	_archivo = ruta
+	_mandos.clear()
+
+
+## Lo guardado encima de lo de fabrica: lo que falte (un mando o una clave nuevos)
+## se queda como viene.
+static func _cargar() -> void:
+	_mandos = DE_FABRICA.duplicate(true)
+	var archivo := ConfigFile.new()
+	if archivo.load(_archivo) != OK:
+		return
+	for mando in MANDOS:
+		for clave: String in _mandos[mando]:
+			var guardado: Variant = archivo.get_value(mando, clave, null)
+			if guardado != null and typeof(guardado) == typeof(_mandos[mando][clave]):
+				_mandos[mando][clave] = guardado

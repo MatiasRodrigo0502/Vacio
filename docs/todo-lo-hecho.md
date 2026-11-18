@@ -69,7 +69,8 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 18/11/2026 | Tres joysticks táctiles (moverse, apuntar y ulti) fijos en las esquinas de abajo, translúcidos hasta que se toca la pantalla; el de moverse sigue al dedo | — |
+| 18/11/2026 | Editor de controles para Android y el navegador: sobre la primera sala, se mueve cada joystick, se cambia su tamaño y se marca si va oculto o estático; se guarda y se puede restablecer | — |
+| 18/11/2026 | Tres joysticks táctiles (moverse, apuntar y ulti) fijos en las esquinas de abajo, translúcidos hasta que se toca la pantalla; el de moverse sigue al dedo | `c37e0a8` |
 | 18/11/2026 | Navegador: mandos táctiles también en tabletas, y se ocultan al usar teclado o ratón | `a36e9a9` |
 | 18/11/2026 | Los pasillos de trampas son enteros de pinchos o enteros de hielo: de pinchos hasta el piso 6 y, desde el 7, por turnos | — |
 | 18/11/2026 | Cada proyectil de la ulti del mago verde quita 70 al dar, además de envenenar | — |
