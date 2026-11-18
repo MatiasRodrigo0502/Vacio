@@ -603,12 +603,30 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   el repositorio** (`*.keystore` en `.gitignore`: con ella cualquiera
   firmaría como nosotros): la toma de los secretos del repositorio
   `ANDROID_CLAVE_BASE64`, `ANDROID_CLAVE_ALIAS` y `ANDROID_CLAVE_CONTRASENA`,
-  que tiene que poner Matías. Sin ellos firma con una clave nueva en cada
-  versión, y para actualizar hay que desinstalar antes. iPhone, con la versión web
+  que puso Claude con permiso de Matías el 2026-11-18 (la clave, PKCS12 con alias
+  `vacio`, y su contraseña, guardadas también en `Documentos\Vacio-firma-android`
+  del ordenador de Matías; **si se pierde, para la siguiente hay que desinstalar**).
+  Hasta entonces no estaban, cada `.apk` salía con una clave nueva y Android no lo
+  instalaba encima («la actualización falla»). iPhone, con la versión web
   (abajo): instalar una app pide firmarla (gratis con un Apple ID, pero caduca a los
-  7 días, o 99 $ al año). En Android el aviso de versión
-  nueva lleva a la web (`Actualizacion.por_que_no`). **Nadie lo ha probado en
-  un móvil.** Piezas:
+  7 días, o 99 $ al año).
+  **Actualizar desde el juego, por paquetes** (2026-11-18, Matías eligió el sistema
+  mixto): el trabajo `android` exporta también el juego en un `.pck`
+  (`Vacio-android.pck`, solo para comparar) y, si desde la anterior no ha cambiado
+  el motor (`GODOT_VERSION`), `project.godot`, `export_presets.cfg` ni
+  `scripts/parches.gd`, `Vacio-android-desde-<anterior>.pck` con solo lo que cambia
+  (`--export-patch --patches`). El juego (`Actualizacion._cadena_de_paquetes`) baja
+  la cadena desde su versión hasta la última, comprobando tamaño, `GDPC` y el sha256
+  que da GitHub (`digest`), a `user://parches/`; el autoload **`Parches`**
+  (`scripts/parches.gd`, **el primero de la lista**: en su `_init`, antes de que se
+  cree el siguiente) los carga al arrancar con `load_resource_pack`, así que los
+  demás autoloads y todo lo demás ya salen de ellos. Si el `.apk` cambia (otra
+  versión instalada), los paquetes se tiran. Sin cadena completa, el aviso manda a
+  bajar el `.apk` entero de la web. Android no deja reabrir la app desde dentro:
+  «Cerrar el juego», y al abrirla ya es la nueva. Probado en el ordenador
+  (`--main-pack` con un `.pck` base y `-- --probar-parches`): un paquete de 84 KB con
+  un script nuevo con `class_name` usado por un autoload se carga y funciona.
+  **Nadie lo ha probado en un móvil.** Piezas:
   - **`ControlesTactiles`** (`scripts/controles_tactiles.gd`, capa 2, lo crea
     Principal si `hace_falta()`: en el móvil, o con `-- --tactil` en el
     ordenador, donde el ratón hace de dedo): **tres joysticks** (2026-11-18): azul

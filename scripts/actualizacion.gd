@@ -34,6 +34,15 @@
 ## abierto (sigue funcionando hasta que se cierra), asi que no queda otro archivo
 ## al lado. En Windows no se puede: lo borra _limpiar al abrir la nueva.
 ##
+## ANDROID, POR PAQUETES (Matias, 2026-11-18): un .apk no se puede cambiar desde
+## dentro sin un plugin de Android, pero el juego si puede bajarse los paquetes (.pck)
+## con lo que cambia de version a version (PAQUETE_ANDROID, unos KB o MB) y cargarlos
+## al arrancar (Parches). Se baja la cadena desde la version que se tiene hasta la
+## ultima, uno detras de otro, y quedan para la proxima vez que se abra. Si falta un
+## eslabon (la version cambio el motor o los ajustes del proyecto, que un paquete no
+## puede cambiar), hay que bajar el .apk entero desde la web, como antes; con la
+## clave de firma fija (secretos de GitHub, desde el 2026-11-18) se instala encima.
+##
 ## MAC, SI SE ABRE DESDE DESCARGAS: una app bajada de internet que no se ha
 ## movido de donde se descomprimio, macOS la abre desde una copia escondida y
 ## de solo lectura (App Translocation, en una ruta con "/AppTranslocation/").
@@ -73,6 +82,9 @@ const EJECUTABLE_LINUX := "Vacio.x86_64"
 ## El parche de Linux desde una version (la que se tiene): lo cuelga cada version
 ## para la anterior (.github/workflows/publicar.yml).
 const PARCHE_LINUX := "Vacio-linux-desde-%s.parche"
+## El paquete de Android desde una version: lo cuelga cada version para la anterior,
+## salvo si necesita el .apk entero (ver arriba, ANDROID).
+const PAQUETE_ANDROID := "Vacio-android-desde-%s.pck"
 ## Lo que se espera a la lista de versiones. Sin internet, mejor rendirse
 ## pronto: es un aviso, no algo que haga falta para jugar.
 const ESPERA_BUSCAR: float = 10.0
@@ -133,6 +145,10 @@ var _sin_parche: bool = false
 var _tamano_esperado: int = 0
 ## Donde quedo el juego de antes al poner el nuevo (poner_en_su_sitio).
 var _viejo: String = ""
+## En Android, los paquetes que quedan por bajar (los de nueva.paquetes) y lo que
+## ya se ha bajado de los anteriores, para la barra.
+var _paquetes: Array = []
+var _bajado_antes: int = 0
 
 
 func _ready() -> void:
@@ -160,9 +176,8 @@ func _ready() -> void:
 		"macOS":
 			ruta_exe = _app_de_mac(OS.get_executable_path())
 		"Android":
-			# Un .apk no se puede cambiar desde dentro sin pedir permiso para
-			# instalar apps: se baja de la web y lo instala Android.
-			por_que_no = "En el móvil se baja desde la web: descarga Vacio-android.apk y ábrelo para instalarla."
+			# Por paquetes (ver arriba, ANDROID). Si no los hay, lo dice _al_buscar.
+			pass
 	if ruta_exe != "":
 		_limpiar()
 		get_tree().create_timer(ESPERA_LIMPIAR, true, false, true).timeout.connect(_limpiar)
@@ -185,7 +200,14 @@ func buscar() -> void:
 ## True si la version nueva se puede bajar e instalar desde aqui. Si no, el
 ## aviso manda a la pagina de descarga.
 func se_puede_instalar() -> bool:
+	if _por_paquetes():
+		return not nueva.get("paquetes", []).is_empty()
 	return ruta_exe != "" and String(nueva.get("url", "")) != ""
+
+
+## En Android: se actualiza bajando paquetes (Parches).
+func _por_paquetes() -> bool:
+	return Parches.activo()
 
 
 ## Empieza a bajar el .exe de la version nueva, al lado del de ahora.
@@ -194,6 +216,14 @@ func descargar() -> void:
 		return
 	if not se_puede_instalar():
 		abrir_pagina()
+		return
+	if _por_paquetes():
+		_paquetes = (nueva.paquetes as Array).duplicate()
+		_bajado_antes = 0
+		_tamano_esperado = 0
+		for paquete: Dictionary in _paquetes:
+			_tamano_esperado += int(paquete.tamano)
+		_bajar_paquete()
 		return
 	_descarga = _donde_bajar()
 	# Antes de bajar 170 MB, que se pueda escribir ahi.
@@ -226,10 +256,12 @@ func cancelar() -> void:
 ## Bytes bajados y total, para la barra. El total, el que dice la descarga; si
 ## aun no lo ha dicho, el que dice la lista de versiones.
 func bajado() -> int:
-	return _bajador.get_downloaded_bytes()
+	return _bajado_antes + _bajador.get_downloaded_bytes()
 
 
 func total() -> int:
+	if _por_paquetes():
+		return _tamano_esperado
 	var tamano := _bajador.get_body_size()
 	return tamano if tamano > 0 else _tamano_esperado
 
@@ -238,6 +270,11 @@ func total() -> int:
 ## Mac una .app se abre con "open" (-n: otra aunque esta siga abierta).
 func reiniciar() -> void:
 	if estado != Estado.LISTA:
+		return
+	# Android no deja abrir otra vez la app desde ella misma: se cierra, y al
+	# abrirla se cargan los paquetes nuevos (Parches).
+	if _por_paquetes():
+		Sonido.salir()
 		return
 	if OS.get_name() == "macOS":
 		OS.create_process("open", ["-n", ruta_exe])
@@ -288,6 +325,8 @@ func _al_buscar(resultado: int, codigo: int, _cabeceras: PackedStringArray, cuer
 		return
 	var versiones: Variant = JSON.parse_string(cuerpo.get_string_from_utf8())
 	nueva = elegir_nueva(versiones, version_local, archivo_de_aqui()) if versiones is Array else {}
+	if _por_paquetes() and not nueva.is_empty() and nueva.paquetes.is_empty():
+		por_que_no = "Esta versión necesita el juego entero: descarga Vacio-android.apk desde la web y ábrelo para instalarla."
 	_poner(Estado.HAY_NUEVA if not nueva.is_empty() else Estado.NADA)
 
 
@@ -330,12 +369,80 @@ func elegir_nueva(versiones: Array, local: String, archivo: String = ARCHIVO_WIN
 				elegida.parche_tamano = int(subido.get("size", 0))
 	if elegida.is_empty():
 		return {}
+	elegida.paquetes = _cadena_de_paquetes(versiones, local, elegida.version) if archivo == ARCHIVO_ANDROID else []
 	por_version.sort_custom(func(a: Array, b: Array) -> bool: return _mas_nueva(a[0], b[0]))
 	var cambios := PackedStringArray()
 	for una: Array in por_version:
 		cambios.append_array(una[1])
 	elegida.cambios = cambios
 	return elegida
+
+
+## Los paquetes de Android para ir de 'local' a 'ultima', en orden: cada version
+## cuelga el suyo desde la anterior (PAQUETE_ANDROID). Vacio si falta alguno: entonces
+## hace falta el .apk entero.
+func _cadena_de_paquetes(versiones: Array, local: String, ultima: String) -> Array:
+	var desde_cada: Dictionary = {}
+	var prefijo := PAQUETE_ANDROID.get_slice("%s", 0)
+	for publicada: Variant in versiones:
+		if not publicada is Dictionary or publicada.get("draft", false):
+			continue
+		var version := String(publicada.get("tag_name", "")).trim_prefix("v")
+		for subido: Variant in publicada.get("assets", []):
+			if not subido is Dictionary:
+				continue
+			var nombre := String(subido.get("name", ""))
+			if nombre.begins_with(prefijo) and nombre.ends_with(".pck"):
+				desde_cada[nombre.trim_prefix(prefijo).trim_suffix(".pck")] = {"version": version,
+					"nombre": nombre, "url": String(subido.get("browser_download_url", "")),
+					"tamano": int(subido.get("size", 0)),
+					# GitHub da el sha256 de cada archivo ("sha256:..."): se comprueba al bajarlo.
+					"huella": String(subido.get("digest", "")).trim_prefix("sha256:")}
+	var cadena: Array = []
+	var version := local
+	while desde_cada.has(version) and cadena.size() < versiones.size():
+		var paquete: Dictionary = desde_cada[version]
+		cadena.append(paquete)
+		version = paquete.version
+	return cadena if version == ultima else []
+
+
+## Baja el primero de los paquetes que quedan. Va a la carpeta de Parches con otro
+## nombre hasta que esta entero y comprobado.
+func _bajar_paquete() -> void:
+	var paquete: Dictionary = _paquetes[0]
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(Parches.CARPETA))
+	_descarga = ProjectSettings.globalize_path(Parches.CARPETA.path_join(paquete.nombre + ".descarga"))
+	_bajador.download_file = _descarga
+	if _bajador.request(String(paquete.url), ["User-Agent: Vacio"]) != OK:
+		_borrar_descarga()
+		_fallar("No se ha podido empezar la descarga.")
+		return
+	_poner(Estado.DESCARGANDO)
+
+
+## Uno bajado: si es el que tiene que ser, se apunta en Parches y se baja el siguiente.
+func _paquete_bajado() -> void:
+	var paquete: Dictionary = _paquetes[0]
+	var archivo := FileAccess.open(_descarga, FileAccess.READ)
+	var bien := archivo != null and archivo.get_length() == int(paquete.tamano) \
+		and archivo.get_buffer(4) == "GDPC".to_ascii_buffer()
+	if archivo != null:
+		archivo.close()
+	if bien and String(paquete.huella) != "":
+		bien = FileAccess.get_sha256(_descarga) == String(paquete.huella)
+	var destino := ProjectSettings.globalize_path(Parches.CARPETA.path_join(paquete.nombre))
+	if not bien or DirAccess.rename_absolute(_descarga, destino) != OK:
+		_borrar_descarga()
+		_fallar("La descarga ha llegado incompleta. Vuelve a intentarlo.")
+		return
+	Parches.anadir(paquete.nombre)
+	_bajado_antes += int(paquete.tamano)
+	_paquetes.pop_front()
+	if _paquetes.is_empty():
+		_poner(Estado.LISTA)
+	else:
+		_bajar_paquete()
 
 
 ## Lo que cambia en una version: la lista de debajo de "### Qué cambia..." en
@@ -360,6 +467,9 @@ func _al_bajar(resultado: int, codigo: int, _cabeceras: PackedStringArray, _cuer
 	if resultado != HTTPRequest.RESULT_SUCCESS or codigo != 200:
 		_borrar_descarga()
 		_fallar("Se ha cortado la descarga. Comprueba la conexión y vuelve a intentarlo.")
+		return
+	if _por_paquetes():
+		_paquete_bajado()
 		return
 	# Que haya llegado entero y sea lo que tiene que ser (un programa de
 	# Windows empieza por "MZ", un .gz por 1F 8B y un .zip por "PK"), no una

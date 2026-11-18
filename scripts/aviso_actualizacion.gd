@@ -81,6 +81,10 @@ func _mostrar() -> void:
 			_titulo.text = "¡Versión %s lista!" % version
 			_texto.text = "Ya está instalada: la próxima vez que abras el juego será esta. También puedes abrirla ya."
 			_principal.text = "Abrirla ahora"
+			# En Android no se puede volver a abrir sola (Actualizacion.reiniciar).
+			if Parches.activo():
+				_texto.text = "Ya está bajada: la próxima vez que abras el juego será esta."
+				_principal.text = "Cerrar el juego"
 			_secundario.text = "Luego"
 		Actualizacion.Estado.FALLO:
 			_titulo.text = "No se ha podido actualizar"

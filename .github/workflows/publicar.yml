@@ -171,7 +171,11 @@ jobs:
     needs: exportar
     runs-on: ubuntu-latest
     steps:
+      # Con la historia y las etiquetas: para saber si desde la anterior ha cambiado
+      # algo que un paquete no puede cambiar (ver «Paquete de Android»).
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-java@v4
         with:
@@ -199,11 +203,43 @@ jobs:
           ANDROID_CLAVE_CONTRASENA: ${{ secrets.ANDROID_CLAVE_CONTRASENA }}
         run: bash herramientas/exportar_android.sh
 
+      # El juego de Android en un paquete (.pck), y el paquete con lo que cambia desde
+      # la version anterior: con el, quien tiene la anterior actualiza desde dentro del
+      # juego bajandose solo eso (scripts/parches.gd y Actualizacion; Matias,
+      # 2026-11-18). El entero no lo usa nadie para jugar: es con lo que se compara la
+      # siguiente version.
+      #
+      # SIN PAQUETE (hace falta el .apk entero) si ha cambiado lo que un paquete no
+      # puede cambiar: el motor (GODOT_VERSION), los ajustes del proyecto
+      # (project.godot: se leen antes de cargar nada), lo de exportar y el script que
+      # carga los paquetes. O si la anterior no tiene su .pck entero.
+      - name: Paquete de Android
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ANTERIOR: ${{ needs.exportar.outputs.anterior }}
+        run: |
+          "$GODOT" --headless --path . --export-pack "Android" build/Vacio-android.pck > build/paquete_android.log 2>&1
+          [ -s build/Vacio-android.pck ] || { echo "No ha salido el .pck"; tail -n 40 build/paquete_android.log; exit 1; }
+          if [ -z "$ANTERIOR" ]; then
+            echo "Sin version anterior: sin paquete"
+          elif ! git diff --quiet "$ANTERIOR" HEAD -- project.godot export_presets.cfg scripts/parches.gd \
+              || git diff "$ANTERIOR" HEAD -- .github/workflows/publicar.yml | grep -q '^[-+] *GODOT_VERSION'; then
+            echo "Desde la ${ANTERIOR#v} ha cambiado el motor o los ajustes del proyecto: hace falta el .apk entero"
+          elif gh release download "$ANTERIOR" -p Vacio-android.pck -D "$RUNNER_TEMP/anterior"; then
+            "$GODOT" --headless --path . --export-patch "Android" "build/Vacio-android-desde-${ANTERIOR#v}.pck" \
+              --patches "$RUNNER_TEMP/anterior/Vacio-android.pck" >> build/paquete_android.log 2>&1 || true
+            ls -la build/*.pck
+          else
+            echo "La ${ANTERIOR#v} no tiene su .pck entero: sin paquete"
+          fi
+
       - name: Guardar el .apk
         uses: actions/upload-artifact@v4
         with:
           name: android
-          path: build/Vacio-android.apk
+          path: |
+            build/Vacio-android.apk
+            build/Vacio-android*.pck
           retention-days: 1
           if-no-files-found: error
 
@@ -348,6 +384,9 @@ jobs:
           # (releases/latest/download/Vacio.exe) lleva a ella.
           archivos=(build/Vacio.exe build/Vacio-linux.tar.gz build/Vacio-mac.zip)
           [ -f build/Vacio-android.apk ] && archivos+=(build/Vacio-android.apk)
+          for paquete in build/Vacio-android*.pck; do
+            [ -f "$paquete" ] && archivos+=("$paquete")
+          done
           [ -f build/Vacio-web.tar.gz ] && archivos+=(build/Vacio-web.tar.gz)
           for parche in build/Vacio-linux-desde-*.parche; do
             [ -f "$parche" ] && archivos+=("$parche")

@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+Parches="*res://scripts/parches.gd"
 GestorProgreso="*res://scripts/gestor_progreso.gd"
 Sonido="*res://scripts/sonido.gd"
 Actualizacion="*res://scripts/actualizacion.gd"
