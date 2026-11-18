@@ -374,6 +374,7 @@ func _soltar_veneno(desde: Vector2, direccion: Vector2, mago: PersonajeJugable, 
 		bola.giro = deg_to_rad(mago.giro_veneno)
 		bola.veneno_duracion = mago.veneno_duracion
 		bola.veneno_dano = mago.veneno_dano
+		bola.dano_impacto = mago.dano_impacto_veneno
 		bola.sala = sala
 		bola.solo_ver = solo_ver
 		_piso_actual.add_child(bola)

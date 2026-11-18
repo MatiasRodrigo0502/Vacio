@@ -5,8 +5,8 @@
 ## Va recto un momento ('salida') y luego persigue al enemigo mas cercano a
 ## el, pero gira muy poco ('giro'): muchos no llegan a doblar y se estrellan
 ## contra una roca o el muro, y ahi se acaban. El que da a un enemigo lo
-## envenena (Enemigo.envenenar) y se acaba. No quita vida al dar: lo que hace
-## es el veneno.
+## quita 'dano_impacto' (70 desde el 2026-11-18; antes nada), lo envenena
+## (Enemigo.envenenar) y se acaba.
 ##
 ## POR QUE NO ES UNA BolaMagica: la bola va recta y solo sabe chocar; esta
 ## decide cada paso hacia donde girar. Lo que comparten (chocar con rocas,
@@ -34,6 +34,8 @@ var salida: float = 0.5
 var giro: float = deg_to_rad(80.0)
 var veneno_duracion: float = 5.0
 var veneno_dano: float = 5.0
+## Lo que quita al dar. Lo pone Principal desde PersonajeJugable.dano_impacto_veneno.
+var dano_impacto: float = 0.0
 ## La sala de la que sale: persigue a sus enemigos y se acaba al salir de su
 ## suelo (al tocar el muro o cruzar una puerta).
 var sala: Sala = null
@@ -123,6 +125,7 @@ func _al_tocar(area: Area2D) -> void:
 			# El escudo del jefe: no le entra, pero que se note el golpe.
 			area.herir(0.0)
 		else:
+			area.herir(dano_impacto)
 			area.envenenar(veneno_duracion, veneno_dano)
 			Sonido.tocar(&"golpe_enemigo")
 	_acabar(true)

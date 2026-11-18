@@ -179,6 +179,11 @@ const ESPECIAL_VENENO := 2
 ## 'veneno_duracion'. Dos que dan al mismo enemigo quitan las dos a la vez.
 @export var veneno_duracion: float = 5.0
 @export var veneno_dano: float = 5.0
+## Vida que quita cada una al dar, ademas del veneno (Matias, 2026-11-18: «cada
+## proyectil de la ulti del mago de veneno debe hacer 70 de daño»). Antes no
+## quitaba nada al dar: solo el veneno. Es el unico sitio donde esta: la bola lo
+## recibe de aqui (Principal._soltar_veneno), tambien la de otro jugador.
+@export var dano_impacto_veneno: float = 70.0
 
 
 ## Como se llama su ataque especial, para el HUD.
