@@ -1,15 +1,23 @@
-## Los mandos del movil (pedido por Matias el 2026-11-03): un joystick a cada
-## lado de la pantalla, como en Brawl Stars. Cada uno sale donde se pone el
-## dedo y se va al levantarlo: el de la izquierda (azul) mueve al mago, y el
-## de la derecha (rojo) apunta y dispara mientras se aparta del centro.
+## Los mandos del movil (pedido por Matias el 2026-11-03), como en Brawl Stars: el
+## joystick de la izquierda (azul) mueve al mago, el de la derecha (rojo) apunta y
+## dispara mientras se aparta del centro, y el del ataque especial (del color del
+## mago) se arrastra para apuntarlo, como el super.
 ##
 ## Cada joystick es una bola pequena opaca (donde esta el dedo), un circulo
 ## grande translucido (hasta donde llega) y la circunferencia de ese circulo,
 ## entre opaca y translucida.
 ##
-## Ademas, dos botones fijos que el teclado tenia y la pantalla no: el ataque
-## especial (abajo a la derecha, del color del mago; se arrastra para
-## apuntarlo, como el super de Brawl Stars) y la pausa (arriba en el centro).
+## DONDE ESTAN Y COMO SE PORTAN (Matias, 2026-11-18): cada uno tiene su sitio, su
+## tamano y dos interruptores, oculto y estatico (AjustesMandos, que explica cada
+## cosa y los cambia el editor de controles). Por defecto se ven en las esquinas de
+## abajo, translucidos (ALFA_REPOSO, un 75 % transparentes) hasta que se toca la
+## pantalla. Un dedo coge el joystick de la ulti si cae en su boton; si no, el de
+## moverse o el de apuntar, el que tenga mas cerca. El centro es donde cae el dedo;
+## el que no es estatico (el de moverse, por defecto) sigue al dedo si se sale del
+## circulo grande.
+##
+## Ademas, dos botones que el teclado tenia y la pantalla no: la pausa (arriba en el
+## centro) y, con un arma mitica, el de cambiar de modo (al lado de la ulti).
 ##
 ## COMO LLEGA AL JUGADOR: por tres vectores estaticos, en la pantalla
 ## (movimiento, apuntado, especial), que el jugador lee y pasa al mundo con
@@ -42,7 +50,8 @@ static var especial: Vector2 = Vector2.ZERO
 static var activos: bool = false
 
 ## Hasta donde llega la bola, del centro al borde del circulo grande, y lo
-## que mide ella. En pixeles de la pantalla del juego (1152 x 648 o mas).
+## que mide ella, con el tamano normal (AjustesMandos "tamano" lo multiplica). En
+## pixeles de la pantalla del juego (1152 x 648 o mas).
 const RADIO: float = 95.0
 const RADIO_BOLA: float = 38.0
 ## Por debajo de esto (en parte del radio) no pide nada: un dedo apoyado
@@ -55,17 +64,20 @@ const ALFA_BOLA: float = 1.0
 const ALFA_CIRCULO: float = 0.22
 const ALFA_BORDE: float = 0.6
 const GROSOR_BORDE: float = 4.0
-## El boton del especial: su radio y su sitio, desde la esquina de abajo a
-## la derecha.
+## Lo opaco que se ven sin ningun dedo en la pantalla: un 75 % transparentes
+## (Matias, 2026-11-18). Con un dedo, del todo. Va pasando de uno a otro en
+## CAMBIO_ALFA segundos, sin saltos.
+const ALFA_REPOSO: float = 0.25
+const CAMBIO_ALFA: float = 0.15
+## El boton de la ulti en reposo: su radio con el tamano normal.
 const RADIO_ESPECIAL: float = 54.0
-const SITIO_ESPECIAL := Vector2(-130.0, -230.0)
 ## El de la pausa, arriba en el centro.
 const RADIO_PAUSA: float = 30.0
 const SITIO_PAUSA_ALTO: float = 44.0
-## El de cambiar de modo, con un arma mitica, a la izquierda del especial: sin
+## El de cambiar de modo, con un arma mitica, al lado de la ulti (desde ella): sin
 ## rueda ni tecla, es la unica forma.
 const RADIO_MODO: float = 36.0
-const SITIO_MODO := Vector2(-250.0, -190.0)
+const SITIO_MODO := Vector2(-120.0, 40.0)
 ## El dedo que hace el raton al probarlos en el ordenador.
 const DEDO_RATON: int = 99
 ## Lo que se ignora el raton de verdad despues de tocar la pantalla: algunos
@@ -73,19 +85,35 @@ const DEDO_RATON: int = 99
 const RATON_TRAS_TOQUE_MS: int = 600
 
 
-## Un joystick: el dedo que lo lleva, donde se puso y donde esta ahora.
+## Un joystick: de que mando es, el dedo que lo lleva, donde esta su centro y donde
+## esta el dedo.
 class Palanca:
+	var mando: StringName
 	var dedo: int = -1
 	var centro: Vector2 = Vector2.ZERO
 	var punta: Vector2 = Vector2.ZERO
 
+	func _init(cual: StringName) -> void:
+		mando = cual
+
 	func activa() -> bool:
 		return dedo >= 0
+
+	func radio() -> float:
+		return RADIO * AjustesMandos.dato(mando, "tamano")
 
 	func empezar(indice: int, sitio: Vector2) -> void:
 		dedo = indice
 		centro = sitio
 		punta = sitio
+
+	## El dedo se mueve. Si no es estatico y se sale del circulo, el circulo va
+	## detras: se queda con el dedo justo en su borde.
+	func mover(sitio: Vector2) -> void:
+		punta = sitio
+		var desvio := punta - centro
+		if not AjustesMandos.dato(mando, "estatico") and desvio.length() > radio():
+			centro = punta - desvio.normalized() * radio()
 
 	func soltar() -> void:
 		dedo = -1
@@ -94,7 +122,7 @@ class Palanca:
 	func vector() -> Vector2:
 		if not activa():
 			return Vector2.ZERO
-		var desvio := (punta - centro) / RADIO
+		var desvio := (punta - centro) / radio()
 		var largo := minf(desvio.length(), 1.0)
 		if largo < ZONA_MUERTA:
 			return Vector2.ZERO
@@ -102,17 +130,20 @@ class Palanca:
 
 	## Donde se pinta la bola: el dedo, sin salirse del circulo.
 	func bola() -> Vector2:
-		return centro + (punta - centro).limit_length(RADIO)
+		return centro + (punta - centro).limit_length(radio())
 
 
 var _jugador: Jugador
-var _izquierda := Palanca.new()
-var _derecha := Palanca.new()
-var _especial := Palanca.new()
+var _izquierda := Palanca.new(AjustesMandos.IZQUIERDO)
+var _derecha := Palanca.new(AjustesMandos.DERECHO)
+var _especial := Palanca.new(AjustesMandos.ULTI)
 var _lienzo: Control
 var _con_raton: bool = false
 ## Cuando se toco la pantalla por ultima vez (Time.get_ticks_msec).
 var _ultimo_toque: int = -RATON_TRAS_TOQUE_MS
+## Los dedos que hay ahora en la pantalla, y lo opaco que se ven los mandos.
+var _dedos: Dictionary = {}
+var _alfa: float = ALFA_REPOSO
 
 
 ## Si se juega en un movil, con la app o en su navegador. Aparte, porque en el
@@ -131,6 +162,27 @@ static func pantalla_tactil() -> bool:
 ## Con pantalla tactil, o en el ordenador si se pide con --tactil.
 static func hace_falta() -> bool:
 	return pantalla_tactil() or "--tactil" in OS.get_cmdline_user_args()
+
+
+## Un joystick: el circulo translucido, su circunferencia y la bola. 'alfa'
+## multiplica lo opaco de todo. Tambien lo usa el editor de controles.
+static func pintar_palanca(lienzo: CanvasItem, centro: Vector2, bola: Vector2, radio: float,
+		color: Color, alfa: float) -> void:
+	lienzo.draw_circle(centro, radio, Color(color, ALFA_CIRCULO * alfa))
+	lienzo.draw_arc(centro, radio, 0.0, TAU, 64, Color(color, ALFA_BORDE * alfa), GROSOR_BORDE, true)
+	lienzo.draw_circle(bola, RADIO_BOLA * radio / RADIO, Color(color, ALFA_BOLA * alfa))
+
+
+## El boton de la ulti en reposo: un circulo con una estrella de cuatro puntas.
+static func pintar_boton_especial(lienzo: CanvasItem, sitio: Vector2, radio: float, color: Color,
+		alfa: float) -> void:
+	lienzo.draw_circle(sitio, radio, Color(color, ALFA_CIRCULO * 1.4 * alfa))
+	lienzo.draw_arc(sitio, radio, 0.0, TAU, 48, Color(color, ALFA_BORDE * alfa), GROSOR_BORDE, true)
+	var puntos := PackedVector2Array()
+	for i in 8:
+		var largo := radio * (0.55 if i % 2 == 0 else 0.2)
+		puntos.append(sitio + Vector2.UP.rotated(i * TAU / 8.0) * largo)
+	lienzo.draw_colored_polygon(puntos, Color(color, alfa))
 
 
 func _init(jugador: Jugador) -> void:
@@ -203,40 +255,43 @@ func _es_teclado_o_raton(evento: InputEvent) -> bool:
 	if evento is InputEventKey:
 		return evento.pressed
 	if evento is InputEventMouseButton or evento is InputEventMouseMotion:
-		return evento.device != InputEvent.DEVICE_ID_EMULATION 			and Time.get_ticks_msec() - _ultimo_toque > RATON_TRAS_TOQUE_MS
+		return evento.device != InputEvent.DEVICE_ID_EMULATION \
+			and Time.get_ticks_msec() - _ultimo_toque > RATON_TRAS_TOQUE_MS
 	return false
 
 
 func _tocar(dedo: int, sitio: Vector2, pulsado: bool) -> void:
 	if not pulsado:
+		_dedos.erase(dedo)
 		_levantar(dedo)
 		return
-	var pantalla := _lienzo.size
+	_dedos[dedo] = true
 	if sitio.distance_to(_sitio_pausa()) <= RADIO_PAUSA * 1.3:
 		_pausar()
 		return
 	if _hay_modos() and sitio.distance_to(_sitio_modo()) <= RADIO_MODO * 1.3:
 		_jugador.cambiar_modo_arma()
 		return
-	if sitio.distance_to(_sitio_especial()) <= RADIO_ESPECIAL * 1.2:
+	if sitio.distance_to(_reposo(AjustesMandos.ULTI)) <= _radio_boton_especial() * 1.2:
 		if not _especial.activa() and _jugador.especial_disponible:
-			_especial.empezar(dedo, _sitio_especial())
-			_especial.punta = sitio
+			_especial.empezar(dedo, sitio)
 			especial = Vector2.ZERO
 			Input.action_press("cargar_ataque_teclado")
 		return
-	if sitio.x < pantalla.x * 0.5:
-		if not _izquierda.activa():
-			_izquierda.empezar(dedo, sitio)
-	elif not _derecha.activa():
-		_derecha.empezar(dedo, sitio)
+	# El de moverse o el de apuntar: el que este mas cerca de donde cae el dedo.
+	# Con los de fabrica, es como antes: la mitad izquierda mueve y la derecha apunta.
+	var cerca_izquierda := sitio.distance_to(_reposo(AjustesMandos.IZQUIERDO)) \
+		<= sitio.distance_to(_reposo(AjustesMandos.DERECHO))
+	var palanca := _izquierda if cerca_izquierda else _derecha
+	if not palanca.activa():
+		palanca.empezar(dedo, sitio)
 	_actualizar()
 
 
 func _arrastrar(dedo: int, sitio: Vector2) -> void:
 	for palanca in [_izquierda, _derecha, _especial]:
 		if palanca.dedo == dedo:
-			palanca.punta = sitio
+			palanca.mover(sitio)
 	_actualizar()
 
 
@@ -266,6 +321,7 @@ func _soltar_todo() -> void:
 	_izquierda.soltar()
 	_derecha.soltar()
 	_especial.soltar()
+	_dedos.clear()
 	movimiento = Vector2.ZERO
 	apuntado = Vector2.ZERO
 	especial = Vector2.ZERO
@@ -282,12 +338,17 @@ func _pausar() -> void:
 	Input.parse_input_event(pausa)
 
 
-func _sitio_especial() -> Vector2:
-	return _lienzo.size + SITIO_ESPECIAL
+## Donde descansa un mando, en la pantalla de ahora.
+func _reposo(mando: StringName) -> Vector2:
+	return AjustesMandos.sitio_en(mando, _lienzo.size)
+
+
+func _radio_boton_especial() -> float:
+	return RADIO_ESPECIAL * AjustesMandos.dato(AjustesMandos.ULTI, "tamano")
 
 
 func _sitio_modo() -> Vector2:
-	return _lienzo.size + SITIO_MODO
+	return _reposo(AjustesMandos.ULTI) + SITIO_MODO
 
 
 func _hay_modos() -> bool:
@@ -298,7 +359,10 @@ func _sitio_pausa() -> Vector2:
 	return Vector2(_lienzo.size.x * 0.5, SITIO_PAUSA_ALTO)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	# Opacos con un dedo en la pantalla; translucidos sin ninguno.
+	var objetivo := 1.0 if not _dedos.is_empty() else ALFA_REPOSO
+	_alfa = move_toward(_alfa, objetivo, delta * (1.0 - ALFA_REPOSO) / CAMBIO_ALFA)
 	# El boton del especial cambia al gastarlo y al recuperarlo.
 	_lienzo.queue_redraw()
 
@@ -307,44 +371,34 @@ func _pintar() -> void:
 	if not _jugador.sigue_vivo() or not activos:
 		return
 	_pintar_pausa()
-	_pintar_boton_especial()
+	_pintar_especial()
 	if _hay_modos():
 		_pintar_boton_modo()
-	if _izquierda.activa():
-		_pintar_palanca(_izquierda, AZUL)
-	if _derecha.activa():
-		_pintar_palanca(_derecha, ROJO)
+	_pintar_mando(_izquierda, AZUL)
+	_pintar_mando(_derecha, ROJO)
 
 
-## La bola opaca, el circulo translucido y su circunferencia a medias.
-func _pintar_palanca(palanca: Palanca, color: Color) -> void:
-	_lienzo.draw_circle(palanca.centro, RADIO, Color(color, ALFA_CIRCULO))
-	_lienzo.draw_arc(palanca.centro, RADIO, 0.0, TAU, 64, Color(color, ALFA_BORDE),
-		GROSOR_BORDE, true)
-	_lienzo.draw_circle(palanca.bola(), RADIO_BOLA, Color(color, ALFA_BOLA))
+## Un joystick: donde esta el dedo si lo lleva, en su sitio si no. El oculto, solo
+## con el dedo puesto.
+func _pintar_mando(palanca: Palanca, color: Color) -> void:
+	if palanca.activa():
+		pintar_palanca(_lienzo, palanca.centro, palanca.bola(), palanca.radio(), color, _alfa)
+	elif not AjustesMandos.dato(palanca.mando, "oculto"):
+		var sitio := _reposo(palanca.mando)
+		pintar_palanca(_lienzo, sitio, sitio, palanca.radio(), color, _alfa)
 
 
-## Del color del mago mientras queda; gris si ya se ha usado en este piso.
-## Mientras se arrastra, es un joystick mas, desde el boton.
-func _pintar_boton_especial() -> void:
-	var sitio := _sitio_especial()
+## El de la ulti, del color del mago mientras queda; gris si ya se ha usado en este
+## piso. En reposo, un boton; mientras se arrastra, un joystick mas.
+func _pintar_especial() -> void:
 	var color := _jugador.mago.color if _jugador.mago != null else Color.WHITE
 	if not _jugador.especial_disponible:
 		color = Color(0.55, 0.55, 0.55)
 	if _especial.activa():
-		var palanca_color := color
-		_pintar_palanca(_especial, palanca_color)
-		return
-	var alfa := 1.0 if _jugador.especial_disponible else 0.45
-	_lienzo.draw_circle(sitio, RADIO_ESPECIAL, Color(color, ALFA_CIRCULO * 1.4 * alfa))
-	_lienzo.draw_arc(sitio, RADIO_ESPECIAL, 0.0, TAU, 48, Color(color, ALFA_BORDE * alfa),
-		GROSOR_BORDE, true)
-	# Una estrella de cuatro puntas: lo especial.
-	var puntos := PackedVector2Array()
-	for i in 8:
-		var largo := RADIO_ESPECIAL * (0.55 if i % 2 == 0 else 0.2)
-		puntos.append(sitio + Vector2.UP.rotated(i * TAU / 8.0) * largo)
-	_lienzo.draw_colored_polygon(puntos, Color(color, alfa))
+		pintar_palanca(_lienzo, _especial.centro, _especial.bola(), _especial.radio(), color, _alfa)
+	elif not AjustesMandos.dato(AjustesMandos.ULTI, "oculto"):
+		var alfa := _alfa * (1.0 if _jugador.especial_disponible else 0.45)
+		pintar_boton_especial(_lienzo, _reposo(AjustesMandos.ULTI), _radio_boton_especial(), color, alfa)
 
 
 ## Una flecha en circulo, del color del arma.

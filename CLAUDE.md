@@ -611,12 +611,17 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   un móvil.** Piezas:
   - **`ControlesTactiles`** (`scripts/controles_tactiles.gd`, capa 2, lo crea
     Principal si `hace_falta()`: en el móvil, o con `-- --tactil` en el
-    ordenador, donde el ratón hace de dedo): joystick azul en la mitad
-    izquierda (mueve) y rojo en la derecha (apunta y dispara), cada uno donde
-    se pone el dedo; bola opaca, círculo translúcido (0,22) y circunferencia
-    a medias (0,6). Botón del especial abajo a la derecha (del color del
-    mago, gris si ya se usó; se arrastra para apuntarlo, y pulsa la acción
-    del espacio, `cargar_ataque_teclado`) y de pausa arriba en el centro
+    ordenador, donde el ratón hace de dedo): **tres joysticks** (2026-11-18): azul
+    (mueve), rojo (apunta y dispara) y el de la ulti (del color del mago, gris si
+    ya se usó; pulsa la acción del espacio, `cargar_ataque_teclado`). Su sitio,
+    tamaño y los interruptores *oculto* y *estático* están en `AjustesMandos`
+    (`scripts/ajustes_mandos.gd`, el sitio en partes de la pantalla): de fábrica, en
+    las esquinas de abajo, ninguno oculto y estáticos el rojo y la ulti. Sin dedos se
+    ven al 25 % (`ALFA_REPOSO`). Un dedo coge la ulti si cae en su botón y si no el
+    joystick más cercano; el centro es donde cae, y el que no es estático sigue al
+    dedo al salirse del círculo (`Palanca.mover`). Bola opaca, círculo translúcido
+    (0,22) y circunferencia a medias (0,6), dibujados con `pintar_palanca` y
+    `pintar_boton_especial`, que usa también el editor. Pausa arriba en el centro
     (manda la acción `pausar`). Llega al jugador por tres vectores estáticos
     de pantalla (`movimiento`, `apuntado`, `especial`). Con ellos puestos
     (`activos`) el jugador no hace caso al clic izquierdo: cada dedo es
