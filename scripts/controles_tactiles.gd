@@ -17,8 +17,16 @@
 ## arriba sigue siendo arriba. El especial, pulsando la accion del espacio
 ## (cargar_ataque_teclado), que ya sabe cargar, soltar y sacar el escudo.
 ##
-## Los crea Principal solo en el movil (hace_falta). Para probarlos en el
+## Los crea Principal solo con pantalla tactil (hace_falta). Para probarlos en el
 ## ordenador: arrancar con --tactil (detras de --), y el raton hace de dedo.
+##
+## EN EL NAVEGADOR, TACTIL Y TECLADO A LA VEZ (Matias, 2026-11-18: «si el jugador usa
+## teclado o ratón, se ocultan los joysticks; si toca la pantalla, se muestran»): una
+## tableta con teclado, o un portatil con pantalla tactil, puede usar las dos cosas.
+## Manda lo ultimo que se ha usado: una tecla o el raton de verdad apagan los mandos
+## (activos a false: el jugador vuelve a hacer caso al raton) y tocar la pantalla los
+## enciende. El raton que el navegador se inventa con cada dedo (el de «emulacion»)
+## no cuenta.
 class_name ControlesTactiles
 extends CanvasLayer
 
@@ -28,8 +36,9 @@ static var apuntado: Vector2 = Vector2.ZERO
 ## Hacia donde se ha arrastrado el especial. Se queda al soltar: el jugador
 ## lo lee en el paso siguiente, al lanzarlo.
 static var especial: Vector2 = Vector2.ZERO
-## True mientras estan puestos. El jugador deja de hacer caso al clic
-## izquierdo: cada dedo que toca la pantalla hace tambien de clic.
+## True mientras se juega tocando la pantalla. El jugador deja de hacer caso al
+## clic izquierdo: cada dedo que toca la pantalla hace tambien de clic. Con teclado
+## o raton (ver arriba, EN EL NAVEGADOR), false: los mandos ni se ven.
 static var activos: bool = false
 
 ## Hasta donde llega la bola, del centro al borde del circulo grande, y lo
@@ -59,6 +68,9 @@ const RADIO_MODO: float = 36.0
 const SITIO_MODO := Vector2(-250.0, -190.0)
 ## El dedo que hace el raton al probarlos en el ordenador.
 const DEDO_RATON: int = 99
+## Lo que se ignora el raton de verdad despues de tocar la pantalla: algunos
+## navegadores mandan, ademas del toque, un clic de raton por compatibilidad.
+const RATON_TRAS_TOQUE_MS: int = 600
 
 
 ## Un joystick: el dedo que lo lleva, donde se puso y donde esta ahora.
@@ -99,6 +111,8 @@ var _derecha := Palanca.new()
 var _especial := Palanca.new()
 var _lienzo: Control
 var _con_raton: bool = false
+## Cuando se toco la pantalla por ultima vez (Time.get_ticks_msec).
+var _ultimo_toque: int = -RATON_TRAS_TOQUE_MS
 
 
 ## Si se juega en un movil, con la app o en su navegador. Aparte, porque en el
@@ -107,9 +121,16 @@ static func en_el_movil() -> bool:
 	return OS.has_feature("mobile") or OS.has_feature("web_android") or OS.has_feature("web_ios")
 
 
-## Solo en el movil, o en el ordenador si se pide con --tactil.
+## Si la pantalla se puede tocar: el movil (la app o su navegador) y, en el
+## navegador, cualquier aparato con pantalla tactil. Una tableta no siempre es
+## "mobile": el navegador del iPad se presenta como el de un Mac.
+static func pantalla_tactil() -> bool:
+	return en_el_movil() or (OS.has_feature("web") and DisplayServer.is_touchscreen_available())
+
+
+## Con pantalla tactil, o en el ordenador si se pide con --tactil.
 static func hace_falta() -> bool:
-	return en_el_movil() or "--tactil" in OS.get_cmdline_user_args()
+	return pantalla_tactil() or "--tactil" in OS.get_cmdline_user_args()
 
 
 func _init(jugador: Jugador) -> void:
@@ -120,8 +141,9 @@ func _init(jugador: Jugador) -> void:
 
 
 func _ready() -> void:
-	activos = true
-	_con_raton = not en_el_movil()
+	_con_raton = not pantalla_tactil()
+	# En el movil se empieza tocando; con teclado puede que no: hasta el primer toque.
+	activos = en_el_movil() or _con_raton
 	_lienzo = Control.new()
 	_lienzo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_lienzo.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -151,6 +173,17 @@ func _input(evento: InputEvent) -> void:
 		return
 	var toque := evento as InputEventScreenTouch
 	var arrastre := evento as InputEventScreenDrag
+	if toque != null or arrastre != null:
+		_ultimo_toque = Time.get_ticks_msec()
+		if not activos:
+			activos = true
+			_lienzo.queue_redraw()
+	elif not _con_raton and activos and _es_teclado_o_raton(evento):
+		_soltar_todo()
+		activos = false
+		return
+	if not activos:
+		return
 	if _con_raton:
 		var boton := evento as InputEventMouseButton
 		var movido := evento as InputEventMouseMotion
@@ -162,6 +195,16 @@ func _input(evento: InputEvent) -> void:
 		_tocar(toque.index, toque.position, toque.pressed)
 	elif arrastre != null:
 		_arrastrar(arrastre.index, arrastre.position)
+
+
+## Una tecla, o el raton de verdad: no el que se inventa el sistema con cada dedo
+## (DEVICE_ID_EMULATION), ni un clic que llega justo despues de un toque.
+func _es_teclado_o_raton(evento: InputEvent) -> bool:
+	if evento is InputEventKey:
+		return evento.pressed
+	if evento is InputEventMouseButton or evento is InputEventMouseMotion:
+		return evento.device != InputEvent.DEVICE_ID_EMULATION 			and Time.get_ticks_msec() - _ultimo_toque > RATON_TRAS_TOQUE_MS
+	return false
 
 
 func _tocar(dedo: int, sitio: Vector2, pulsado: bool) -> void:
@@ -261,7 +304,7 @@ func _process(_delta: float) -> void:
 
 
 func _pintar() -> void:
-	if not _jugador.sigue_vivo():
+	if not _jugador.sigue_vivo() or not activos:
 		return
 	_pintar_pausa()
 	_pintar_boton_especial()

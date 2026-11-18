@@ -62,6 +62,11 @@ func poner_de_pie(nodo: Node2D, base: Vector2, pivote: Vector2) -> void:
 ## se giraba todo; ahi se sigue viendo en horizontal, con mas suelo por arriba
 ## y por abajo. Para probarlo en el ordenador vale lo mismo que para los mandos
 ## tactiles: -- --tactil (ControlesTactiles.hace_falta).
+##
+## En el navegador gira igual que en la app: en un movil o una tableta el navegador
+## gira la pagina al girar el aparato (lo que dice su giroscopio), la ventana del
+## juego pasa a ser mas alta que ancha y aqui se nota (_mirar). Con el giro
+## bloqueado en el aparato, no gira, como cualquier otra pagina o app.
 func puede_girar() -> bool:
 	return ControlesTactiles.hace_falta()
 

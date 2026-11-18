@@ -698,6 +698,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   no hace nada). La cuenta y el proyecto de Vercel los crea Matías.
   Descarga: 42 MB de `.pck` y 38 de
   `.wasm` (10 con gzip, que Pages pone solo). Lo que cambia en el navegador:
+  - **Mandos táctiles también en tabletas, y tacto y teclado a la vez** (2026-11-18):
+    `ControlesTactiles.pantalla_tactil()` es el móvil o, en el navegador, cualquier
+    aparato con `DisplayServer.is_touchscreen_available()` (el iPad se presenta como un
+    Mac). Manda lo último usado: una tecla o el ratón de verdad apagan los joysticks
+    (`activos` a false, el jugador vuelve a usar el ratón) y un toque los enciende. El
+    ratón que se inventa el sistema con cada dedo (`DEVICE_ID_EMULATION`) y un clic
+    hasta 600 ms después de un toque no cuentan. El giro: el navegador gira la página
+    al girar el aparato y `Vista` lo ve en el tamaño de la ventana, como en la app.
   - `OS.has_feature("mobile")` es **falso** en el navegador de un móvil (lo dice la
     documentación de Godot): el móvil se mira con `ControlesTactiles.en_el_movil()`
     (`web_android`, `web_ios`), que es lo que saca los joysticks.
