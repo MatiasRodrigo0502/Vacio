@@ -77,6 +77,12 @@ extends Mecanica
 @export_range(1, 12) var piso_pasillo: int = 2
 ## Ancho del paso libre entre las dos filas. El mago mide 30.
 @export var ancho_pasillo: float = 120.0
+## Desde este piso, los pasillos se turnan: uno entero de trampas de hielo
+## (TrampaHielo, las que frenan), el del piso siguiente de pinchos, y asi. Antes,
+## nunca mezclados (Matias, 2026-11-18: «un pasillo de trampas tiene que ser entero
+## de trampas normales o entero de trampas ralentizantes»; «a partir del piso 7, los
+## pasillos alternan»). El del primero de esos pisos es de hielo, para que se vea.
+@export_range(1, 12) var piso_pasillo_hielo: int = 7
 
 ## Lado de la placa de una puerta: casi el ancho del hueco, para que no se
 ## pueda pasar por un lado. Con el jugador midiendo 30 px, los 5 de cada lado
@@ -137,7 +143,7 @@ func _poner_hielo(piso: Node) -> void:
 	var pinchos: Array[Pinchos] = []
 	for sala in piso.salas():
 		for hijo in sala.get_children():
-			if hijo is Pinchos and not hijo is TrampaHielo:
+			if hijo is Pinchos and not hijo is TrampaHielo and not hijo.has_meta(&"pasillo"):
 				pinchos.append(hijo)
 	var generador := RandomNumberGenerator.new()
 	generador.seed = hash(nombre_mecanica + " hielo") + piso.numero_piso * 7727
@@ -298,9 +304,17 @@ func _pasillo(piso: Node) -> void:
 		# Sin mirar a los enemigos: ya estan repartidos, y en cuanto entras se mueven.
 		if piso.lugar_libre(sala.to_global(sitio), LADO_PASILLO * 0.5, false):
 			libres.append(sitio)
+	var clase := "hielo" if pasillo_de_hielo(piso.numero_piso) else "pinchos"
 	for sitio in libres:
-		var pinchos := _colocar(piso, sala, "pinchos", sitio, Vector2.ONE * LADO_PASILLO, generador) as Pinchos
+		var pinchos := _colocar(piso, sala, clase, sitio, Vector2.ONE * LADO_PASILLO, generador) as Pinchos
 		pinchos.desfase = desde.distance_to(sitio) / largo * ONDA_PASILLO
+		# Para que _poner_hielo no cambie una suelta: el pasillo, todo de lo mismo.
+		pinchos.set_meta(&"pasillo", true)
+
+
+## True si el pasillo de ese piso es de trampas de hielo (piso_pasillo_hielo).
+func pasillo_de_hielo(numero: int) -> bool:
+	return numero >= piso_pasillo_hielo and (numero - piso_pasillo_hielo) % 2 == 0
 
 
 ## Los centros de las placas de las dos filas de un pasillo que va de 'desde' a
@@ -374,8 +388,8 @@ func _colocar(piso: Node, sala: Sala, clase: String, sitio: Vector2, tamano: Vec
 		generador: RandomNumberGenerator) -> Peligro:
 	var peligro: Peligro
 	match clase:
-		"pinchos":
-			var pinchos := Pinchos.new()
+		"pinchos", "hielo":
+			var pinchos := TrampaHielo.new() if clase == "hielo" else Pinchos.new()
 			# Cada trampa con su ritmo: todas a la vez serian un semaforo.
 			pinchos.desfase = generador.randf() * (Pinchos.DENTRO + Pinchos.AVISO + Pinchos.FUERA)
 			pinchos.tinte = piso.tinte_profundidad()

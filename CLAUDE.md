@@ -1186,6 +1186,10 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     trampa, y se ve cuándo se puede pasar (para llegar y para irse con la ventaja).
   - **Pasillo** (`_pasillo`): desde el piso 2 (era el 3 hasta el 2026-11-17), en una sala de pelea por piso sin
     bajada, dos filas de placas de 90 (`LADO_PASILLO`) a los lados de un paso libre de
+    120. **Todo de pinchos o todo de hielo, nunca mezclado** (2026-11-18): hasta el
+    piso 6 de pinchos, y desde `piso_pasillo_hielo` (7) se turnan, empezando por hielo
+    (`pasillo_de_hielo`: 7, 9 y 11 de hielo). Sus placas llevan la meta `pasillo` y
+    `_poner_hielo` no las toca. Las filas, de placas de 90 a los lados de un paso de
     120 (`ancho_pasillo`; el mago mide 30). Mejor en una sala con dos puertas enfrente,
     de una a otra; si no, de una puerta al centro. **Quita las rocas que tenga en
     medio** (`Piso.quitar_rocas_en`, que las devuelve al pool y las olvida en la sala):
