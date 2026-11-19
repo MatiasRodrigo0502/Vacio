@@ -24,6 +24,15 @@ const ESCENA_JUEGO := "res://scenes/Principal.tscn"
 const MUSICA := preload("res://assets/sonido/musica/portada.wav")
 ## Lo que se deja entre el volumen y el primer boton (_apartar_botones_del_volumen).
 const HUECO_VOLUMEN: float = 24.0
+## El engranaje de Ajustes, arriba a la derecha (_montar_engranaje).
+const ICONO_AJUSTES := preload("res://assets/iconos/engranaje.svg")
+## Lo que se puede pulsar mide mas que el dibujo: en un movil en horizontal, 80 de
+## los 648 de alto son ~1,4 cm, por encima de los 48 dp que piden Android y Apple.
+const LADO_AJUSTES: float = 80.0
+const ICONO_AJUSTES_ANCHO: int = 40
+const MARGEN_AJUSTES: float = 8.0
+## Blanco al 50 % (Matias, 2026-11-19): que no le quite protagonismo a la portada.
+const ALFA_AJUSTES: float = 0.5
 
 @onready var _panel_controles: Control = $PanelControles
 @onready var _panel_personajes: Control = $PanelPersonajes
@@ -57,6 +66,7 @@ func _ready() -> void:
 	# esperara, el navegador ya no la dejaria (Pantalla.completa_en_navegador).
 	$Botones/BotonJugar.pressed.connect(Pantalla.completa_en_navegador)
 	$Botones/BotonJugar.pressed.connect(_mostrar_personajes.bind(true))
+	# El de Controles pasa a ser el engranaje de Ajustes (_montar_engranaje).
 	$Botones/BotonControles.pressed.connect(_mostrar_controles.bind(true))
 	$Botones/BotonSalir.pressed.connect(_al_salir)
 	# En el navegador se sale cerrando la pestana: cerrar el juego dejaria la
@@ -68,6 +78,9 @@ func _ready() -> void:
 	_montar_fichas()
 	_montar_cooperativo()
 	_montar_gacha()
+	# Despues del gacha: su boton es una copia del de Controles tal como esta en la
+	# escena, con texto.
+	_montar_engranaje()
 	_montar_eleccion_teclas()
 	_poner_version()
 	Sonido.poner_musica(MUSICA)
@@ -86,8 +99,8 @@ func _ready() -> void:
 		Red.mensaje_pendiente = ""
 
 
-## El boton del gacha, entre Jugar y Controles, y las monedas y los diamantes
-## arriba a la derecha de la portada. Por codigo y copiando el boton de al lado,
+## El boton del gacha, al lado de Jugar, y las monedas y los diamantes arriba a la
+## derecha de la portada, a la izquierda del engranaje de Ajustes. Por codigo y copiando el boton de al lado,
 ## para que quede igual que los de la escena.
 func _montar_gacha() -> void:
 	_boton_gacha = $Botones/BotonControles.duplicate()
@@ -102,13 +115,44 @@ func _montar_gacha() -> void:
 	monedero.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	monedero.position = Vector2(size.x - Monedero.ANCHO - 16.0, 26.0)
 	monedero.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	monedero.offset_left = -Monedero.ANCHO - 16.0
-	monedero.offset_right = -16.0
+	monedero.offset_right = -(MARGEN_AJUSTES + LADO_AJUSTES + 4.0)
+	monedero.offset_left = monedero.offset_right - Monedero.ANCHO
 	monedero.offset_top = 26.0
 	add_child(monedero)
 	_gacha = PanelGacha.new()
 	_gacha.cerrado.connect(_mostrar_gacha.bind(false))
 	add_child(_gacha)
+
+
+## «Ajustes» es un engranaje arriba a la derecha (Matias, 2026-11-19), blanco al
+## 50 %, y no un boton mas de la fila de abajo. Es el boton de Controles de la
+## escena, cambiado de sitio y de aspecto: abre el mismo panel (teclas, disparo
+## automatico, estadisticas, editar los mandos), que es lo que hace de ajustes.
+## Por codigo y no en la escena, como el gacha: asi el .tscn no cambia.
+func _montar_engranaje() -> void:
+	var boton: Button = $Botones/BotonControles
+	boton.reparent(self, false)
+	boton.name = "BotonAjustes"
+	boton.text = ""
+	boton.tooltip_text = "Ajustes"
+	boton.icon = ICONO_AJUSTES
+	boton.expand_icon = true
+	boton.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	boton.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
+	boton.add_theme_constant_override("icon_max_width", ICONO_AJUSTES_ANCHO)
+	# Sin fondo: solo el dibujo (y el recuadro del foco, para el teclado).
+	boton.flat = true
+	for estado in ["icon_normal_color", "icon_hover_color", "icon_pressed_color",
+			"icon_focus_color", "icon_hover_pressed_color"]:
+		boton.add_theme_color_override(estado, Color.WHITE)
+	boton.modulate = Color(1.0, 1.0, 1.0, ALFA_AJUSTES)
+	boton.custom_minimum_size = Vector2(LADO_AJUSTES, LADO_AJUSTES)
+	boton.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	boton.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	boton.offset_right = -MARGEN_AJUSTES
+	boton.offset_left = boton.offset_right - LADO_AJUSTES
+	boton.offset_top = 0.0
+	boton.offset_bottom = LADO_AJUSTES
 
 
 func _mostrar_gacha(visible_ahora: bool) -> void:

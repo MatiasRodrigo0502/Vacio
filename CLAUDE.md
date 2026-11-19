@@ -165,7 +165,10 @@ no puede llamarse `prueba_temporal.*`: el preset la excluye.
 
 ## Estado actual del juego
 
-Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
+Arranca en `MenuPrincipal.tscn` (jugar, gacha, salir abajo; **Ajustes, un engranaje
+blanco al 50 % arriba a la derecha** desde el 2026-11-19, que es el botón de Controles
+de la escena movido por `MenuPrincipal._montar_engranaje`, `assets/iconos/engranaje.svg`,
+80 × 80 de pulsación con el dibujo a 40; abre el mismo panel). La partida vive en
 `Principal.tscn` y se vuelve al menú desde la pantalla final.
 
 - **El Corazón del Núcleo, jefe del piso 12** (2026-11-04, lo trajo Matías en
@@ -787,7 +790,14 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
     **Abrir la carpeta de partidas**: los tres botones se esconden con
     `OS.has_feature("web")`. Tampoco busca versiones nuevas (`Actualizacion`: la web
     siempre es la última) ni se pone a pantalla completa al arrancar (`Pantalla`: el
-    navegador solo deja hacerlo al pulsar algo; F11 sí).
+    navegador solo deja hacerlo al pulsar algo; F11 sí). **Al pulsar «Jugar» sí**
+    (2026-11-19, `Pantalla.completa_en_navegador`, conectada al `pressed` del botón:
+    Godot web reparte el clic dentro del evento de la página, y comprobado que la
+    petición sale con el gesto aún activo). Va por JavaScript y no por
+    `window_set_mode`, que deja un ERROR si el navegador no la deja: sin la función
+    (Safari del iPhone) o rechazada, no pasa nada. El navegador integrado de Claude
+    no llega a ponerla (la petición se queda sin respuesta): no se ha visto entrar
+    en un navegador de verdad.
   - `user://` es el almacenamiento del navegador (IndexedDB, `/userfs`): monedas,
     skins, ajustes y el tutorial visto se guardan, pero solo en ese navegador.
   - En el `<head>` lleva las etiquetas para abrirse **a pantalla completa desde la
