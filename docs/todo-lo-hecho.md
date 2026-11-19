@@ -69,6 +69,7 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
+| 19/11/2026 | Lanzador como el de Minecraft (Windows y Linux): eliges cualquier versión, se baja a su carpeta y se juega; el instalador de Windows instala el lanzador y el juego ya no se cambia a sí mismo en Windows | — |
 | 19/11/2026 | El mapa entero pasa a ser un castillo maldito en vectorial: calabozos, cloacas, cripta y salón del trono, con suelo dibujado, pared de obra, escaleras de bajada, obstáculos nuevos y salas con forma (en L, en T, en cruz, con columnas...) | — |
 | 18/11/2026 | Instalador de Windows (Inno Setup): acceso directo en el escritorio y en el menú Inicio, desinstalador e icono | `2aa8a0c` |
 | 18/11/2026 | Android: el `.apk` se firma siempre con la misma clave (por eso no se instalaba encima), y el juego se actualiza desde dentro bajando solo lo que cambia (paquetes `.pck`); el `.apk` entero solo cuando cambian el motor o los ajustes del proyecto | `fd4df43` |

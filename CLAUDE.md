@@ -632,13 +632,38 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   **Nadie lo ha probado en un móvil.**
   **Instalador de Windows** (2026-11-18, Matías eligió Inno Setup): `instalador/vacio.iss`
   (con `.gdignore`: Godot no lo mira), lo compila el trabajo `instalador` de
-  `publicar.yml` en una máquina Windows con el `Vacio.exe` de la versión →
-  `Vacio-instalador.exe`. Acceso directo en el escritorio (tarea marcada), menú
-  Inicio con «Desinstalar Vacío», icono `instalador/vacio.ico` (sacado de `icon.svg`).
-  **Se instala en `%LOCALAPPDATA%\Programs\Vacio`, sin administrador**: en Archivos de
-  programa el actualizador del juego no podría cambiar el `.exe`. No borra lo
-  guardado al desinstalar. No se ha probado aquí (no hay Inno Setup en este
-  ordenador): lo compila GitHub. Piezas:
+  `publicar.yml` en una máquina Windows → `Vacio-instalador.exe`. **Desde el
+  2026-11-19 instala el lanzador** (abajo), no el juego. Acceso directo en el
+  escritorio (tarea marcada), menú Inicio con «Desinstalar Vacío», icono
+  `instalador/vacio.ico` (sacado de `icon.svg`). Se instala en
+  `%LOCALAPPDATA%\Programs\Vacio`, sin administrador. Quita el `Vacio.exe` que
+  instalaba antes; al desinstalar se lleva las versiones bajadas, no lo guardado. No
+  se ha probado aquí (no hay Inno Setup en este ordenador): lo compila GitHub.
+  **Lanzador** (2026-11-19, Matías: «que instale algo parecido a lo que tiene el
+  Minecraft, que puedes instalar la versión que quieras y jugarla, así también
+  ahorramos problemas de actualizaciones»): `lanzador/`, **otro proyecto de Godot**
+  dentro del repositorio (el del juego no mira una carpeta con su propio
+  `project.godot`: avisa «Detected another project.godot... will be ignored» al
+  importar, y es lo que se quiere). `lanzador.gd`: a la izquierda todas las versiones
+  de GitHub (las mismas releases, de la 0.1 a la última), a la derecha lo que trae la
+  elegida y «Jugar»: si no está, la baja (comprueba tamaño y `MZ` o `1F 8B`), la deja
+  en su carpeta (`carpeta_versiones()`: `%LOCALAPPDATA%\Vacio\versiones\0.N\` en
+  Windows, `~/.local/share/vacio/versiones/0.N/` en Linux; el `.tar.gz` lo saca su
+  copia de `Desempaquetar`) y la abre con `-- --desde-lanzador`, y se cierra. «Borrar
+  esta versión» quita su carpeta. Sin internet, solo las bajadas. **Lo guardado es
+  el mismo para todas** (Matías): el juego lo guarda en su carpeta de datos, que no
+  depende de dónde esté el `.exe`. Con el fondo de la portada y los morados de
+  `PaletaPortada` (copiados: es otro proyecto). Lo exporta el trabajo `exportar`
+  (`VacioLanzador.exe`, 111 MB, casi todo el motor, para el instalador, y
+  `Vacio-lanzador-linux.tar.gz` en la versión) y lo arranca sin ventana buscando
+  errores. **En Windows el juego ya no se actualiza solo** (Matías): `Actualizacion`
+  avisa de la versión nueva y manda a bajar el instalador (`por_que_no`,
+  `se_puede_instalar` falso); y abierto desde el lanzador (`DESDE_LANZADOR`) ni
+  busca, en Windows y en Linux. Probado aquí: lee las 78 versiones de GitHub, baja
+  una de prueba de un servidor local, la abre con `--desde-lanzador` y con lo
+  guardado donde toca (con `LOCALAPPDATA` y `APPDATA` en una carpeta temporal, para no
+  tocar los de Matías). **El lanzador no se actualiza a sí mismo**: si cambia, hay
+  que volver a pasar el instalador. Piezas:
   - **`ControlesTactiles`** (`scripts/controles_tactiles.gd`, capa 2, lo crea
     Principal si `hace_falta()`: en el móvil, o con `-- --tactil` en el
     ordenador, donde el ratón hace de dedo): **tres joysticks** (2026-11-18): azul

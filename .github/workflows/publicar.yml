@@ -106,6 +106,26 @@ jobs:
             echo "El juego arranca con errores"; exit 1
           fi
 
+      # El lanzador (lanzador/, otro proyecto de Godot; Matias, 2026-11-19: «algo
+      # parecido a lo que tiene el Minecraft»): baja la version que se elija y la
+      # abre. Va en el instalador de Windows; el de Linux, en un .tar.gz, como el
+      # juego. Se arranca aqui sin ventana, como el juego: que no tenga errores.
+      - name: Exportar el lanzador
+        run: |
+          "$GODOT" --headless --path lanzador --import > build/lanzador.log 2>&1 || true
+          "$GODOT" --headless --path lanzador --export-release "Windows Desktop" ../build/VacioLanzador.exe >> build/lanzador.log 2>&1 || true
+          "$GODOT" --headless --path lanzador --export-release "Linux" ../build/VacioLanzador.x86_64 >> build/lanzador.log 2>&1 || true
+          if [ ! -s build/VacioLanzador.exe ] || [ ! -s build/VacioLanzador.x86_64 ]; then
+            echo "No ha salido el lanzador"; tail -n 60 build/lanzador.log; exit 1
+          fi
+          chmod +x build/VacioLanzador.x86_64
+          timeout 60 build/VacioLanzador.x86_64 --headless --quit-after 120 > "$RUNNER_TEMP/lanzador.log" 2>&1 || true
+          cat "$RUNNER_TEMP/lanzador.log"
+          if grep -qE "SCRIPT ERROR|^ERROR" "$RUNNER_TEMP/lanzador.log"; then
+            echo "El lanzador arranca con errores"; exit 1
+          fi
+          tar -czf build/Vacio-lanzador-linux.tar.gz -C build VacioLanzador.x86_64
+
       # Un archivo suelto bajado con el navegador pierde el permiso de
       # ejecutarse, y Ubuntu no lo abre ("no se ha encontrado la aplicacion
       # predeterminada para application/x-executable"): paso con la 0.1.
@@ -128,6 +148,8 @@ jobs:
             build/Vacio.exe
             build/Vacio-linux.tar.gz
             build/Vacio-mac.zip
+            build/VacioLanzador.exe
+            build/Vacio-lanzador-linux.tar.gz
           retention-days: 1
           if-no-files-found: error
 
@@ -267,6 +289,7 @@ jobs:
           if (-not (Test-Path $iscc)) {
             choco install innosetup -y --no-progress
           }
+          # Instala el lanzador (VacioLanzador.exe, del trabajo exportar).
           & $iscc "/DVersion=$env:VERSION" "/DOrigen=$((Resolve-Path build).Path)" instalador\vacio.iss
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Get-Item build\Vacio-instalador.exe
@@ -401,11 +424,12 @@ jobs:
             echo
             echo "**Para jugar** no hace falta instalar nada ni tener Godot:"
             echo
-            echo "- **Windows:** descarga \`Vacio.exe\` y ábrelo. Puede avisar de que es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*."
             if [ -f build/Vacio-instalador.exe ]; then
-              echo "  O, si lo prefieres instalado (con acceso directo en el escritorio y en el menú Inicio, y desinstalador), descarga \`Vacio-instalador.exe\` y ábrelo."
+              echo "- **Windows:** descarga \`Vacio-instalador.exe\` y ábrelo. Instala el **lanzador de Vacío**: eliges la versión que quieras y la juegas, y las nuevas salen ahí solas. Puede avisar de que es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*. (\`Vacio.exe\` es esta versión suelta, sin instalar.)"
+            else
+              echo "- **Windows:** descarga \`Vacio.exe\` y ábrelo. Puede avisar de que es de un editor desconocido, porque no está firmado: *Más información → Ejecutar de todas formas*."
             fi
-            echo "- **Linux:** descarga \`Vacio-linux.tar.gz\`, extráelo (clic derecho → *Extraer aquí*) y abre \`Vacio.x86_64\` con doble clic."
+            echo "- **Linux:** descarga \`Vacio-linux.tar.gz\`, extráelo (clic derecho → *Extraer aquí*) y abre \`Vacio.x86_64\` con doble clic. O el lanzador, para elegir versión: \`Vacio-lanzador-linux.tar.gz\` y \`VacioLanzador.x86_64\`."
             echo "- **Mac:** descarga \`Vacio-mac.zip\`, ábrelo y abre \`Vacio.app\` (si quieres, arrástrala antes a *Aplicaciones*). La primera vez macOS avisa de que no puede comprobar si es segura, porque no está verificada por Apple: ve a *Ajustes del Sistema → Privacidad y seguridad* y pulsa *Abrir igualmente*. Solo hace falta una vez."
             if [ -f build/Vacio-android.apk ]; then
               echo "- **Android:** descarga \`Vacio-android.apk\` desde el móvil y ábrelo. La primera vez Android pide permiso para instalar apps de esa fuente (el navegador): dáselo. Si al actualizar dice que no se puede instalar, desinstala antes la versión que tienes."
@@ -428,7 +452,7 @@ jobs:
           } > "$RUNNER_TEMP/notas.md"
           # La mas nueva queda como "latest": el enlace de descarga de siempre
           # (releases/latest/download/Vacio.exe) lleva a ella.
-          archivos=(build/Vacio.exe build/Vacio-linux.tar.gz build/Vacio-mac.zip)
+          archivos=(build/Vacio.exe build/Vacio-linux.tar.gz build/Vacio-mac.zip build/Vacio-lanzador-linux.tar.gz)
           [ -f build/Vacio-android.apk ] && archivos+=(build/Vacio-android.apk)
           for paquete in build/Vacio-android*.pck; do
             [ -f "$paquete" ] && archivos+=("$paquete")

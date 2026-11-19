@@ -1,0 +1,27 @@
+; El lanzador de Vacío (Matías, 2026-11-19: «que instale algo parecido a lo que
+; tiene el Minecraft, que puedes instalar la versión que quieras y jugarla»). Es
+; un proyecto aparte, dentro del del juego: Godot no mira una carpeta con su
+; propio project.godot, así que no se mezcla con el juego ni va dentro de él.
+
+config_version=5
+
+[application]
+
+config/name="Vacío"
+config/description="Lanzador de Vacío: baja cualquier versión del juego y la abre."
+run/main_scene="res://lanzador.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icono.svg"
+config/windows_native_icon="res://icono.ico"
+
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=600
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

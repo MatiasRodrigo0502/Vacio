@@ -2,21 +2,24 @@
 ; acceso directo en el escritorio, entrada en el menú Inicio, desinstalador (sale en
 ; «Aplicaciones instaladas» de Windows) y el icono del juego.
 ;
+; DESDE EL 2026-11-19 INSTALA EL LANZADOR (VacioLanzador.exe, el proyecto lanzador/),
+; no el juego. Matías: «que instale algo parecido a lo que tiene el Minecraft, que
+; puedes instalar la versión que quieras y jugarla». El lanzador baja cada versión a
+; %LOCALAPPDATA%\Vacio\versiones\0.N\ y la abre desde ahí.
+;
 ; LO HACE GITHUB en cada versión (trabajo «instalador» de publicar.yml), con el
-; Vacio.exe recién exportado:
+; VacioLanzador.exe recién exportado:
 ;
 ;     ISCC.exe /DVersion=0.N /DOrigen=<carpeta con Vacio.exe> instalador\vacio.iss
 ;
 ; y sale Vacio-instalador.exe en esa misma carpeta.
 ;
-; POR QUÉ EN LA CARPETA DEL USUARIO Y NO EN «ARCHIVOS DE PROGRAMA»: el juego se
-; actualiza solo cambiando su Vacio.exe (scripts/actualizacion.gd), y en Archivos de
-; programa no puede escribir sin permiso de administrador. En
-; %LOCALAPPDATA%\Programs\Vacio sí, y además el instalador no pide administrador.
+; EN LA CARPETA DEL USUARIO Y NO EN «ARCHIVOS DE PROGRAMA»: así no pide permiso de
+; administrador, ni para instalarlo ni para que el lanzador baje versiones.
 ;
 ; Al desinstalar NO se borra lo guardado (monedas, colección, ajustes, partidas):
-; eso está en la carpeta de datos de Godot, no en la del juego. Sí lo que deja a
-; medias el actualizador junto al .exe.
+; eso está en la carpeta de datos de Godot, no en la del juego. Sí las versiones que
+; bajó el lanzador, y lo que dejaba el actualizador de antes junto al .exe.
 
 #ifndef Version
   #define Version "0.0"
@@ -59,18 +62,23 @@ Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "escritorio"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "{#Origen}\Vacio.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Origen}\VacioLanzador.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "vacio.ico"; DestDir: "{app}"; Flags: ignoreversion
 
+[InstallDelete]
+; El juego suelto que instalaba este instalador antes del lanzador: ya no se usa.
+Type: files; Name: "{app}\Vacio.exe"
+Type: files; Name: "{app}\Vacio.viejo.*.exe"
+
 [Icons]
-Name: "{group}\Vacío"; Filename: "{app}\Vacio.exe"; IconFilename: "{app}\vacio.ico"
+Name: "{group}\Vacío"; Filename: "{app}\VacioLanzador.exe"; IconFilename: "{app}\vacio.ico"
 Name: "{group}\Desinstalar Vacío"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\Vacío"; Filename: "{app}\Vacio.exe"; IconFilename: "{app}\vacio.ico"; Tasks: escritorio
+Name: "{autodesktop}\Vacío"; Filename: "{app}\VacioLanzador.exe"; IconFilename: "{app}\vacio.ico"; Tasks: escritorio
 
 [Run]
-Filename: "{app}\Vacio.exe"; Description: "{cm:LaunchProgram,Vacío}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\VacioLanzador.exe"; Description: "{cm:LaunchProgram,Vacío}"; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
-; Lo que deja el actualizador junto al juego: el .exe de antes y una descarga a medias.
-Type: files; Name: "{app}\Vacio.viejo.*.exe"
-Type: files; Name: "{app}\Vacio.exe.descarga"
+; Las versiones que bajó el lanzador (lanzador/lanzador.gd, carpeta_versiones).
+Type: filesandordirs; Name: "{localappdata}\Vacio\versiones"
+Type: dirifempty; Name: "{localappdata}\Vacio"

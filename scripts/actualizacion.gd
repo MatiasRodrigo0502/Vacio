@@ -43,6 +43,14 @@
 ## puede cambiar), hay que bajar el .apk entero desde la web, como antes; con la
 ## clave de firma fija (secretos de GitHub, desde el 2026-11-18) se instala encima.
 ##
+## WINDOWS, CON EL LANZADOR (Matias, 2026-11-19: «que instale algo parecido a lo que
+## tiene el Minecraft, que puedes instalar la versión que quieras y jugarla, así
+## también ahorramos problemas de actualizaciones»): en Windows el juego ya no se
+## cambia a si mismo. Cada version la baja el lanzador (lanzador/, en el instalador)
+## a su carpeta, y se abre de ahi. Aqui solo se avisa de que hay una mas nueva y se
+## manda a bajar el lanzador (por_que_no). Y abierto desde el lanzador (con
+## -- --desde-lanzador, en Windows y en Linux), ni se busca: eso es del lanzador.
+##
 ## MAC, SI SE ABRE DESDE DESCARGAS: una app bajada de internet que no se ha
 ## movido de donde se descomprimio, macOS la abre desde una copia escondida y
 ## de solo lectura (App Translocation, en una ruta con "/AppTranslocation/").
@@ -85,6 +93,8 @@ const PARCHE_LINUX := "Vacio-linux-desde-%s.parche"
 ## El paquete de Android desde una version: lo cuelga cada version para la anterior,
 ## salvo si necesita el .apk entero (ver arriba, ANDROID).
 const PAQUETE_ANDROID := "Vacio-android-desde-%s.pck"
+## Lo que pasa el lanzador al abrir una version (lanzador/lanzador.gd).
+const DESDE_LANZADOR := "--desde-lanzador"
 ## Lo que se espera a la lista de versiones. Sin internet, mejor rendirse
 ## pronto: es un aviso, no algo que haga falta para jugar.
 const ESPERA_BUSCAR: float = 10.0
@@ -170,8 +180,16 @@ func _ready() -> void:
 	if OS.has_feature("editor") or OS.has_feature("web") or DisplayServer.get_name() == "headless":
 		return
 	version_local = GestorProgreso.version_juego()
+	# Desde el lanzador: las versiones las lleva el (ver arriba, WINDOWS).
+	if DESDE_LANZADOR in OS.get_cmdline_user_args():
+		return
 	match OS.get_name():
-		"Windows", "Linux":
+		"Windows":
+			# Solo para borrar lo que dejaron las actualizaciones de antes (_limpiar):
+			# en Windows ya no se instala nada desde aqui (se_puede_instalar).
+			ruta_exe = OS.get_executable_path()
+			por_que_no = "En Windows, las versiones se juegan con el lanzador de Vacío: bájate Vacio-instalador.exe de la web e instálalo. Ahí eliges la versión que quieras."
+		"Linux":
 			ruta_exe = OS.get_executable_path()
 		"macOS":
 			ruta_exe = _app_de_mac(OS.get_executable_path())
@@ -200,6 +218,8 @@ func buscar() -> void:
 ## True si la version nueva se puede bajar e instalar desde aqui. Si no, el
 ## aviso manda a la pagina de descarga.
 func se_puede_instalar() -> bool:
+	if OS.get_name() == "Windows":
+		return false
 	if _por_paquetes():
 		return not nueva.get("paquetes", []).is_empty()
 	return ruta_exe != "" and String(nueva.get("url", "")) != ""

@@ -22,13 +22,16 @@ piso 1 al cristal de hierro al rojo blanco del 12.
 
 La última versión, lista para jugar sin instalar nada ni tener Godot:
 
-- **Windows:** [Vacio.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe).
-  Puede avisar de que es de un editor desconocido (no está firmado):
-  *Más información → Ejecutar de todas formas*. O instalado, con acceso directo en
-  el escritorio y en el menú Inicio y desinstalador:
-  [Vacio-instalador.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-instalador.exe)
-  (se instala en tu carpeta de usuario, sin pedir administrador, para que el juego
-  pueda seguir actualizándose solo).
+- **Windows:** [Vacio-instalador.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-instalador.exe).
+  Instala el **lanzador de Vacío**, como el de Minecraft: eliges la versión que
+  quieras de la lista, se baja la primera vez y la juegas; las nuevas aparecen ahí
+  solas. Lo guardado (monedas, skins, ajustes) es el mismo en todas. Lleva acceso
+  directo en el escritorio y en el menú Inicio, y desinstalador; se instala en tu
+  carpeta de usuario, sin pedir administrador. Puede avisar de que es de un editor
+  desconocido (no está firmado): *Más información → Ejecutar de todas formas*.
+  También está [Vacio.exe](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio.exe),
+  la última suelta, sin instalar: desde la 0.79 ya no se actualiza sola en Windows,
+  avisa y manda al lanzador.
 - **Linux:** [Vacio-linux.tar.gz](https://github.com/MatiasRodrigo0502/Vacio/releases/latest/download/Vacio-linux.tar.gz).
   Se extrae (clic derecho → *Extraer aquí*) y se abre `Vacio.x86_64` con
   doble clic. Va comprimido porque un programa suelto bajado con el navegador
