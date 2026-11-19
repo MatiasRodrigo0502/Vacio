@@ -1348,6 +1348,20 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   - **La luz se mide al generar**: `generar_castillo.calibrar` lleva cada obstáculo
     fuera de 0,45-1,6 veces la luz del suelo de su zona (casi todos quedan en 1,75;
     las del trono, de 2 a 3).
+  - **Piezas que se salían de su lienzo** (revisión del 2026-11-19, Matías: «revísalos
+    para que esté todo bien»): se buscaron las que tienen relleno claro en el borde
+    de su imagen (el contorno oscuro en el borde es normal; los colgantes empiezan
+    arriba a propósito). Salían cortadas la base de la jaula, la llave de la tubería
+    de pie, huesos del montón, los sombreros de las setas pequeñas, las puntas de las
+    matas, el tapón de la botella, el resplandor de la llama de los pilares y, en
+    **todos los grupos en vertical**, las piezas de los lados (`grupo` las corría un
+    4 % fuera del lienzo). Arreglado en `castillo_piezas.py` sin cambiar el tamaño de
+    ninguna imagen: el pilar sigue en 52 × 108 porque `Sala._pintar_pilares` lo coloca
+    por su alto, así que su llama mide lo que cabe con el resplandor. Las 36 piezas se
+    repintaron con `resvg-py` (aquí no hay `rsvg-convert`) por el mismo camino que
+    `generar_zona` (pintar, calibrar contra el suelo y guardar): pintando con resvg
+    una pieza que no cambia, difiere 0,2-0,6 de 255 de la de siempre. La cuña negra
+    de la tapa de la caja rota (`caja(rota=True)`) es a propósito: es un agujero.
   **Probado** con capturas de los 12 pisos en horizontal y de 4 en vertical
   (`--tactil`), con todas las formas: en 22 salas con forma y luego en las de los 12
   pisos, ningún obstáculo, enemigo ni peligro encima de un bloque. FPS, como en

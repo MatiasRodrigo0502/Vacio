@@ -147,10 +147,12 @@ def sacos(L, x, y, w, h, p):
 
 
 def jaula(L, x, y, w, h, p):
-    cx, base = x + w / 2, y + h - 10
-    sombra_suelo(L, cx, base, w * 0.48, h * 0.08)
     rx = w * 0.42
     ry = rx * 0.32
+    # La base es una elipse de alto 'ry' con su trazo: tiene que caber entera debajo.
+    # Con 10 px fijos se salia por abajo y la jaula se veia sin base (2026-11-19).
+    cx, base = x + w / 2, y + h - max(10, ry + 6)
+    sombra_suelo(L, cx, base, w * 0.48, h * 0.08)
     arriba = y + h * 0.3
     hierro = p["hierro"]
     L.elipse(cx, base, rx, ry, oscurecer(hierro, 0.45), ancho=T)
@@ -304,11 +306,14 @@ def tuberia(L, x, y, w, h, p):
     else:
         rx = w * 0.4
         cyb = base - rx * 0.6
-        L.rect(cx - rx, y + 20, rx * 2, cyb - y - 20, L.lineal(_cilindro(hierro), 0, 0, 1, 0), ancho=T, r=4)
+        # Lo de arriba del tubo, mas abajo que lo de la tumbada: encima va la llave, que
+        # sube 29 px (vastago, rueda y trazo). Con el tubo a 20 px se salia por arriba.
+        arriba = y + 32
+        L.rect(cx - rx, arriba, rx * 2, cyb - arriba, L.lineal(_cilindro(hierro), 0, 0, 1, 0), ancho=T, r=4)
         L.elipse(cx, cyb, rx, rx * 0.6, oscurecer(hierro, 0.1), ancho=T)
         L.elipse(cx, cyb, rx * 0.72, rx * 0.42, "#0a0d0b", ancho=2.5)
         L.elipse(cx, cyb + rx * 0.15, rx * 0.5, rx * 0.18, p["limo"], trazo=None, extra='opacity="0.85"')
-        cy = y + 22
+        cy = arriba + 2
     # La llave: una rueda encima.
     L.linea("M %s %s L %s %s" % (f(cx), f(cy), f(cx), f(cy - 16)), CONTORNO, 8)
     L.linea("M %s %s L %s %s" % (f(cx), f(cy), f(cx), f(cy - 16)), hierro, 4)
@@ -322,7 +327,9 @@ def tuberia(L, x, y, w, h, p):
 
 def setas(L, x, y, w, h, p, brillo="#7fe8c8"):
     """Setas grandes que brillan, como las del limo de las cloacas."""
-    cx, base = x + w / 2, y + h - 8
+    # Lo que se deja debajo, como mucho un decimo del alto: en las pequenas (36 de
+    # alto) 8 px subian los sombreros por encima del lienzo.
+    cx, base = x + w / 2, y + h - min(8, h * 0.1)
     sombra_suelo(L, cx, base, w * 0.48, h * 0.08)
     azar = random.Random("setas%d%d" % (w, h))
     halo = L.difuso(8)
@@ -414,6 +421,10 @@ def monton_huesos(L, x, y, w, h, p):
         y0 = azar.uniform(y + h * 0.45, base - 6)
         a = azar.uniform(-0.9, 0.9)
         largo = azar.uniform(w * 0.25, w * 0.4)
+        # Que quepa entero de lado a lado, con sus nudos (7 de grosor): sorteado sin
+        # mirarlo, alguno se salia por la derecha.
+        medio = abs(math.cos(a)) * largo / 2 + 8
+        x0 = min(max(x0, x + medio), x + w - medio)
         hueso(L, x0 - math.cos(a) * largo / 2, y0 - math.sin(a) * largo / 2, x0 + math.cos(a) * largo / 2,
               y0 + math.sin(a) * largo / 2, 7, p["hueso"])
     calavera(L, cx + w * 0.05, y + h * 0.45, min(w, h) * 0.17, p["hueso"])
@@ -713,8 +724,11 @@ def grupo(L, x, y, w, h, p, piezas):
         sitios = []
         for k, pieza in enumerate(piezas):
             py = y + (h - alto) * (k / max(1, n - 1))
+            # Cada una un poco a un lado, sin salirse: con un 88 % de ancho y la mitad
+            # de ellas corridas un 10 %, la de un lado empezaba un 4 % fuera del lienzo
+            # y la del otro acababa un 4 % fuera.
             lado = (w * 0.1) * (1 if k % 2 else -1)
-            sitios.append((k, pieza, x + w * 0.06 + lado, py, w * 0.88, alto))
+            sitios.append((k, pieza, x + w * 0.1 + lado, py, w * 0.8, alto))
         sitios.sort(key=lambda s: s[0])
     for _, (funcion, extra), px, py, pw, ph in sitios:
         funcion(L, px, py, pw, ph, p, **extra)
@@ -729,7 +743,8 @@ def botella(L, x, y, w, h, p, color="#3f7a4a"):
         f(cx - w * 0.07), f(base - h * 0.66), f(cx - w * 0.07), f(base - h * 0.88), f(cx + w * 0.07), f(base - h * 0.88),
         f(cx + w * 0.07), f(base - h * 0.66), f(cx + w * 0.22), f(base - h * 0.6), f(cx + w * 0.22), f(base - h * 0.45),
         f(cx + w * 0.22), f(base)), L.lineal(_cilindro(color), 0, 0, 1, 0), ancho=2.5)
-    L.rect(cx - w * 0.08, base - h * 0.97, w * 0.16, h * 0.1, "#8a6a44", ancho=2)
+    # El tapon, sin salirse por arriba: a 0,97 del alto empezaba 2 px fuera del lienzo.
+    L.rect(cx - w * 0.08, max(y + 2, base - h * 0.97), w * 0.16, h * 0.1, "#8a6a44", ancho=2)
     L.linea("M %s %s L %s %s" % (f(cx - w * 0.12), f(base - h * 0.5), f(cx - w * 0.12), f(base - h * 0.12)),
             "#ffffff", 2.0, 0.6)
 
@@ -802,7 +817,9 @@ def matojo(L, x, y, w, h, p, color=None, tiras=7):
     azar = random.Random("matojo%s%d" % (color, w))
     for k in range(tiras):
         a = -math.pi / 2 + azar.uniform(-0.9, 0.9)
-        largo = h * azar.uniform(0.55, 0.95)
+        # Sin pasar del alto que queda encima de la base: con 'h' entero las mas largas
+        # se cortaban en recto arriba.
+        largo = (h - 4) * azar.uniform(0.55, 0.95)
         d = "M %s %s Q %s %s %s %s" % (f(cx + azar.uniform(-w * 0.25, w * 0.25)), f(base),
                                        f(cx + math.cos(a) * largo * 0.4), f(base + math.sin(a) * largo * 0.6),
                                        f(cx + math.cos(a) * largo), f(base + math.sin(a) * largo))
@@ -904,10 +921,14 @@ def pilar(L, x, y, w, h, p, zona):
     capitel = p.get("oro", aclarar(piedra, 0.15)) if zona == "trono" else aclarar(piedra, 0.12)
     caja34(L, x + 2, arriba, x + w - 2, arriba + 12, 5, aclarar(capitel, 0.1), capitel, 3.5)
     fuego = p["fuego"]
+    # La llama, del alto que quepa con su resplandor (llama: sube 1,25 veces su alto
+    # desde su base) y 2 px de margen. Con h * 0,3 el resplandor se cortaba en recto
+    # arriba (2026-11-19). El lienzo no se agranda: la sala coloca el pilar por su alto.
+    alto_llama = min(h * 0.3, (arriba - 2 - y - 2) / 1.25)
     if zona == "calabozos":
         L.forma("M %s %s Q %s %s %s %s Z" % (f(cx - 14), f(arriba - 2), f(cx), f(arriba + 12), f(cx + 14), f(arriba - 2)),
                 p["hierro"], ancho=3)
-        llama(L, cx, arriba - 2, h * 0.3, fuego)
+        llama(L, cx, arriba - 2, alto_llama, fuego)
     elif zona == "cloacas":
         L.rect(cx - 9, arriba - 24, 18, 22, "#1a2a18", ancho=3, r=3)
         L.elipse(cx, arriba - 13, 6, 8, L.radial([(0, fuego[0]), (0.6, fuego[1]), (1, fuego[2])]), trazo=None)
@@ -918,11 +939,12 @@ def pilar(L, x, y, w, h, p, zona):
                     p["hierro"], 1.8)
     elif zona == "cripta":
         calavera(L, cx, (arriba + base) / 2, w * 0.2, p["hueso"])
-        vela(L, cx, arriba, h * 0.3, fuego=fuego)
+        # La vela sube 1,11 veces su alto con el resplandor de la llama.
+        vela(L, cx, arriba, min(h * 0.3, (arriba - y - 2) / 1.11), fuego=fuego)
     else:
         L.forma("M %s %s Q %s %s %s %s Z" % (f(cx - 15), f(arriba - 2), f(cx), f(arriba + 14), f(cx + 15), f(arriba - 2)),
                 p["oro"], ancho=3)
-        llama(L, cx, arriba - 2, h * 0.32, fuego)
+        llama(L, cx, arriba - 2, min(h * 0.32, alto_llama), fuego)
 
 
 def colgante_estandarte(L, x, y, w, h, p, tela, emblema=None):
