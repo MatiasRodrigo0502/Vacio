@@ -49,7 +49,7 @@ La última versión, lista para jugar sin instalar nada ni tener Godot:
   pide permiso para instalar apps del navegador. Para que las versiones
   siguientes se instalen encima, todas tienen que ir firmadas con la misma
   clave, que GitHub guarda como secreto (ver
-  `herramientas/exportar_android.sh`). Hasta la 0.82 no estaba y cada versión
+  `herramientas/exportar_android.sh`). Hasta la 0.76 no estaba y cada versión
   llevaba una clave nueva: quien tenga una de esas tiene que desinstalarla una vez.
   Desde entonces, el juego se actualiza desde dentro bajando solo lo que cambia;
   cuando cambia el motor, avisa de que hay que bajar el `.apk` entero. **Nadie lo

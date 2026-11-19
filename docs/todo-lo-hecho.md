@@ -69,13 +69,13 @@ En tres semanas, el juego pasó de una base con obstáculos a un *roguelite* de 
 
 | Fecha | Qué | Commits |
 | --- | --- | --- |
-| 18/11/2026 | Instalador de Windows (Inno Setup): acceso directo en el escritorio y en el menú Inicio, desinstalador e icono | — |
+| 18/11/2026 | Instalador de Windows (Inno Setup): acceso directo en el escritorio y en el menú Inicio, desinstalador e icono | `2aa8a0c` |
 | 18/11/2026 | Android: el `.apk` se firma siempre con la misma clave (por eso no se instalaba encima), y el juego se actualiza desde dentro bajando solo lo que cambia (paquetes `.pck`); el `.apk` entero solo cuando cambian el motor o los ajustes del proyecto | `fd4df43` |
 | 18/11/2026 | Editor de controles para Android y el navegador: sobre la primera sala, se mueve cada joystick, se cambia su tamaño y se marca si va oculto o estático; se guarda y se puede restablecer | `07f5f7e` |
 | 18/11/2026 | Tres joysticks táctiles (moverse, apuntar y ulti) fijos en las esquinas de abajo, translúcidos hasta que se toca la pantalla; el de moverse sigue al dedo | `c37e0a8` |
 | 18/11/2026 | Navegador: mandos táctiles también en tabletas, y se ocultan al usar teclado o ratón | `a36e9a9` |
-| 18/11/2026 | Los pasillos de trampas son enteros de pinchos o enteros de hielo: de pinchos hasta el piso 6 y, desde el 7, por turnos | — |
-| 18/11/2026 | Cada proyectil de la ulti del mago verde quita 70 al dar, además de envenenar | — |
+| 18/11/2026 | Los pasillos de trampas son enteros de pinchos o enteros de hielo: de pinchos hasta el piso 6 y, desde el 7, por turnos | `262eaa3` |
+| 18/11/2026 | Cada proyectil de la ulti del mago verde quita 70 al dar, además de envenenar | `6738ad3` |
 | 17/11/2026 | En Linux, actualizar baja solo lo que cambia (un parche desde la versión anterior) y lo mete en el mismo archivo, sin dejar otro al lado; la versión web se prepara también para Vercel | — |
 | 17/11/2026 | Shift deja al mago a un tercio de su velocidad; el disparo básico llega a 1800 px (cruza cualquier sala); el agujero negro del oscuro mide el doble (300 px); descripciones nuevas del rojo, el blanco y el verde; el pasillo de pinchos sale desde el piso 2; la bola del mago asoma por una curva en «C» difuminada en vez de una recta; el vídeo de la portada a 1080p; los controles con los morados de la portada | `8bfee1f` |
 | 13/11/2026 | Cooperativo: el aviso del cortafuegos pide permiso también en redes públicas (con el de antes solo se podía entrar en la sala de Matías), botón *Abrir el cortafuegos* en la sala, y el código ya no sale de la red de VirtualBox | `8c2355a` |
