@@ -40,7 +40,7 @@ const PASOS: Array[Dictionary] = [
 	{
 		"titulo": "Bienvenido a Vacío",
 		"color": Color(1.0, 0.85, 0.55),
-		"texto": "Tienes que bajar los 12 pisos, hasta el núcleo de la Tierra.\n"
+		"texto": "Tienes que bajar los 12 pisos del castillo maldito, hasta el salón del trono.\n"
 			+ "[k]{mover}[/k] para moverte.\n"
 			+ "[k]{disparar}[/k] o [k]{raton}[/k] para disparar.\n"
 			+ "[k]{pausa}[/k]: pausa, reiniciar o volver al menú.\n"
@@ -51,7 +51,7 @@ const PASOS: Array[Dictionary] = [
 		"color": Color(0.8, 0.66, 1.0),
 		"texto": "{especial}\n"
 			+ "Solo tienes [k]uno por piso[/k]: vuelve al bajar al siguiente.\n"
-			+ "Las [k]rocas[/k] son sólidas: te tapan y no las puedes cruzar.\n"
+			+ "Barriles, cajas, columnas y muros son [k]sólidos[/k]: te tapan y no los puedes cruzar.\n"
 			+ "Arriba a la izquierda, tu [k]vida[/k]; arriba a la derecha, el [k]mapa[/k] del piso.",
 	},
 	{
@@ -72,7 +72,7 @@ const PASOS: Array[Dictionary] = [
 	{
 		"titulo": "La bajada",
 		"color": Color(1.0, 0.85, 0.55),
-		"texto": "Entra en el [k]círculo[/k] para bajar al piso 2.\n"
+		"texto": "Baja por las [k]escaleras[/k] para ir al piso 2.\n"
 			+ "Más abajo: más salas, más enemigos, pinchos, lava y agujeros.\n"
 			+ "Cada piso esconde una [k]sala secreta[/k] con un cofre: si ves una pared agrietada, dispárale.\n"
 			+ "Y en el piso 12 te espera el [k]Corazón del Núcleo[/k]. Suerte.",

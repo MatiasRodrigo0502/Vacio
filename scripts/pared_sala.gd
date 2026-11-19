@@ -184,14 +184,20 @@ func _trazar_perfil(direccion: Vector2i, generador: RandomNumberGenerator, rocas
 	var desde := -largo * 0.5 - Sala.GROSOR_MURO
 	var cuantos := int(ceil((largo + Sala.GROSOR_MURO * 2.0) / PASO)) + 1
 	var entrada := estilo.entrada * escala
-	var amplitud := estilo.ondulacion * escala
+	# La pared de obra (el castillo) va recta: sin ondas, sin bultos y con las
+	# esquinas en angulo recto. Las ondas se tiran igual, para no cambiar lo que
+	# sale despues del generador.
+	var amplitud := 0.0 if estilo.recta else estilo.ondulacion * escala
+	var esquina := 0.0 if estilo.recta else ESQUINA * escala
 	var ondas: Array[Vector2] = [
 		Vector2(TAU / generador.randf_range(200.0, 300.0), generador.randf() * TAU),
 		Vector2(TAU / generador.randf_range(70.0, 110.0), generador.randf() * TAU),
 		Vector2(TAU / generador.randf_range(28.0, 40.0), generador.randf() * TAU),
 	]
 	var pesos := [0.6, 0.3, 0.1]
-	var bultos := _elegir_bultos(direccion, generador, rocas)
+	var bultos: Array[Vector3] = []
+	if not estilo.recta:
+		bultos = _elegir_bultos(direccion, generador, rocas)
 	var valores := PackedFloat32Array()
 	valores.resize(cuantos)
 	for i in cuantos:
@@ -203,7 +209,7 @@ func _trazar_perfil(direccion: Vector2i, generador: RandomNumberGenerator, rocas
 		for bulto: Vector3 in bultos:
 			d += bulto.y * exp(-pow((s - bulto.x) / bulto.z, 2.0))
 		var hasta_esquina := largo * 0.5 - absf(s)
-		d += ESQUINA * escala * pow(1.0 - clampf(hasta_esquina / ALCANCE_ESQUINA, 0.0, 1.0), 2.0)
+		d += esquina * pow(1.0 - clampf(hasta_esquina / ALCANCE_ESQUINA, 0.0, 1.0), 2.0)
 		if direccion in puertas:
 			d *= smoothstep(LIBRE_PUERTA, LIBRE_PUERTA + RAMPA_PUERTA, absf(s))
 		valores[i] = maxf(d, 0.0)
@@ -250,9 +256,11 @@ func _trazar_cara(generador: RandomNumberGenerator) -> void:
 func _calcular_alto_cara() -> void:
 	var cuantos: int = _perfiles[arriba].size()
 	_alto_cara.resize(cuantos)
+	# La de obra, del mismo alto en toda la pared.
+	var onda := 0.0 if estilo.recta else 0.1
 	for i in cuantos:
 		var s: float = _desde[arriba] + i * PASO
-		_alto_cara[i] = estilo.alto_cara * escala * (1.0 + 0.1 * sin(s * _onda_cara.x + _onda_cara.y))
+		_alto_cara[i] = estilo.alto_cara * escala * (1.0 + onda * sin(s * _onda_cara.x + _onda_cara.y))
 
 
 ## Cuanto se mete la pared en 's' (a lo largo del lado), interpolando.

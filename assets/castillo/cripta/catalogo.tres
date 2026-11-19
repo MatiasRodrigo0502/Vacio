@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=37 format=3]
+
+[ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/lapida.png" id="2_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/cruz.png" id="3_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/urna.png" id="4_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/huesos.png" id="5_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/sarcofago.png" id="6_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/candelabro.png" id="7_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/lapida_v.png" id="8_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/cruz_v.png" id="9_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/urna_v.png" id="10_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/huesos_v.png" id="11_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/sarcofago_v.png" id="12_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/candelabro_v.png" id="13_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/lapidas.png" id="14_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/urnas.png" id="15_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/huesos_urna.png" id="16_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/sarcofago_vela.png" id="17_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/lapidas_v.png" id="18_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/urnas_v.png" id="19_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/huesos_urna_v.png" id="20_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/sarcofago_vela_v.png" id="21_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/altar.png" id="22_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/osario.png" id="23_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/ofrendas.png" id="24_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/altar_v.png" id="25_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/osario_v.png" id="26_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/ofrendas_v.png" id="27_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/piedra_hueso.png" id="28_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/piedra_cera.png" id="29_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/piedra_guijarros.png" id="30_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/piedra_eslabon.png" id="31_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/piedra_polvo.png" id="32_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/vegetacion_vela.png" id="33_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/vegetacion_calavera.png" id="34_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/vegetacion_caliz.png" id="35_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/vegetacion_hueso.png" id="36_t"]
+
+[resource]
+script = ExtResource("1_script")
+piedras = Array[Texture2D]([ExtResource("28_t"), ExtResource("29_t"), ExtResource("30_t"), ExtResource("31_t"), ExtResource("32_t")])
+rocas = Array[Texture2D]([ExtResource("2_t"), ExtResource("3_t"), ExtResource("4_t"), ExtResource("5_t"), ExtResource("6_t"), ExtResource("7_t")])
+rocas_vertical = Array[Texture2D]([ExtResource("8_t"), ExtResource("9_t"), ExtResource("10_t"), ExtResource("11_t"), ExtResource("12_t"), ExtResource("13_t")])
+bloques = Array[Texture2D]([ExtResource("6_t"), ExtResource("2_t"), ExtResource("4_t"), ExtResource("3_t")])
+bloques_vertical = Array[Texture2D]([ExtResource("12_t"), ExtResource("8_t"), ExtResource("10_t"), ExtResource("9_t")])
+grupos = Array[Texture2D]([ExtResource("14_t"), ExtResource("15_t"), ExtResource("16_t"), ExtResource("17_t")])
+grupos_vertical = Array[Texture2D]([ExtResource("18_t"), ExtResource("19_t"), ExtResource("20_t"), ExtResource("21_t")])
+plataformas = Array[Texture2D]([ExtResource("22_t"), ExtResource("23_t"), ExtResource("24_t")])
+plataformas_vertical = Array[Texture2D]([ExtResource("25_t"), ExtResource("26_t"), ExtResource("27_t")])
+vegetacion = Array[Texture2D]([ExtResource("33_t"), ExtResource("34_t"), ExtResource("35_t"), ExtResource("36_t")])
+colores_propios = true

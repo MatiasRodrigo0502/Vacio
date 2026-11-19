@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="DatosPiso" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/datos_piso.gd" id="1_datos_piso"]
-[ext_resource type="Resource" path="res://assets/rocas/piso_12/catalogo.tres" id="2_catalogo"]
-[ext_resource type="Resource" path="res://assets/bordes/piso_12/estilo_borde.tres" id="9_borde"]
+[ext_resource type="Resource" path="res://assets/castillo/trono/catalogo.tres" id="2_catalogo"]
+[ext_resource type="Resource" path="res://assets/castillo/piso_12/estilo_borde.tres" id="9_borde"]
 [ext_resource type="AudioStream" path="res://assets/sonido/musica/profundo.wav" id="20_musica"]
 [ext_resource type="Resource" path="res://resources/jefes/corazon_nucleo.tres" id="21_jefe"]
 [ext_resource type="AudioStream" path="res://assets/sonido/musica/jefe.wav" id="22_musica_jefe"]
@@ -10,7 +10,7 @@
 
 [resource]
 script = ExtResource("1_datos_piso")
-nombre_capa = "Núcleo interno"
+nombre_capa = "Salón del trono maldito"
 ancho_area = 1340.0
 velocidad_obstaculos = 390.0
 radio_vision = 495.0
@@ -27,3 +27,5 @@ tamano_sala_jefe = Vector2(1600, 860)
 objeto_antesala = ExtResource("23_vendaje")
 jefe = ExtResource("21_jefe")
 musica_jefe = ExtResource("22_musica_jefe")
+formas_salas = PackedStringArray("columnas", "esquinas", "te", "cruz", "ele")
+probabilidad_forma = 0.8

@@ -392,11 +392,11 @@ func _colocar(piso: Node, sala: Sala, clase: String, sitio: Vector2, tamano: Vec
 			var pinchos := TrampaHielo.new() if clase == "hielo" else Pinchos.new()
 			# Cada trampa con su ritmo: todas a la vez serian un semaforo.
 			pinchos.desfase = generador.randf() * (Pinchos.DENTRO + Pinchos.AVISO + Pinchos.FUERA)
-			pinchos.tinte = piso.tinte_profundidad()
+			pinchos.tinte = piso.tinte_peligros()
 			peligro = pinchos
 		"vacio":
 			var vacio := Vacio.new()
-			vacio.tinte = piso.tinte_profundidad()
+			vacio.tinte = piso.tinte_peligros()
 			peligro = vacio
 		_:
 			var lava := Lava.new()

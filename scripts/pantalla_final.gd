@@ -51,7 +51,7 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func mostrar_victoria(total_pisos: int) -> void:
-	_titulo.text = "HAS LLEGADO AL NUCLEO"
+	_titulo.text = "HAS LLEGADO AL TRONO"
 	_titulo.modulate = Color(1.0, 0.78, 0.3)
 	_subtitulo.text = "%d pisos superados. El vacio tiene fondo." % total_pisos
 	_boton.text = "Jugar otra vez  (R)"

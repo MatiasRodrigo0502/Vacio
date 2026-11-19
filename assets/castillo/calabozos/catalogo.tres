@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=37 format=3]
+
+[ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/barril.png" id="2_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/caja.png" id="3_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/sacos.png" id="4_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/jaula.png" id="5_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/grilletes.png" id="6_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/tonel.png" id="7_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/barril_v.png" id="8_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/caja_v.png" id="9_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/sacos_v.png" id="10_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/jaula_v.png" id="11_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/grilletes_v.png" id="12_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/tonel_v.png" id="13_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/cajas.png" id="14_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/barriles.png" id="15_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/sacos_caja.png" id="16_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/tonel_barril.png" id="17_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/cajas_v.png" id="18_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/barriles_v.png" id="19_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/sacos_caja_v.png" id="20_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/tonel_barril_v.png" id="21_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/mesa.png" id="22_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/camastro.png" id="23_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/banco.png" id="24_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/mesa_v.png" id="25_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/camastro_v.png" id="26_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/banco_v.png" id="27_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/piedra_guijarros.png" id="28_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/piedra_paja.png" id="29_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/piedra_hueso.png" id="30_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/piedra_eslabon.png" id="31_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/piedra_astillas.png" id="32_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/vegetacion_vela.png" id="33_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/vegetacion_botella.png" id="34_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/vegetacion_jarra.png" id="35_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/vegetacion_calavera.png" id="36_t"]
+
+[resource]
+script = ExtResource("1_script")
+piedras = Array[Texture2D]([ExtResource("28_t"), ExtResource("29_t"), ExtResource("30_t"), ExtResource("31_t"), ExtResource("32_t")])
+rocas = Array[Texture2D]([ExtResource("2_t"), ExtResource("3_t"), ExtResource("4_t"), ExtResource("5_t"), ExtResource("6_t"), ExtResource("7_t")])
+rocas_vertical = Array[Texture2D]([ExtResource("8_t"), ExtResource("9_t"), ExtResource("10_t"), ExtResource("11_t"), ExtResource("12_t"), ExtResource("13_t")])
+bloques = Array[Texture2D]([ExtResource("5_t"), ExtResource("6_t"), ExtResource("3_t"), ExtResource("2_t")])
+bloques_vertical = Array[Texture2D]([ExtResource("11_t"), ExtResource("12_t"), ExtResource("9_t"), ExtResource("8_t")])
+grupos = Array[Texture2D]([ExtResource("14_t"), ExtResource("15_t"), ExtResource("16_t"), ExtResource("17_t")])
+grupos_vertical = Array[Texture2D]([ExtResource("18_t"), ExtResource("19_t"), ExtResource("20_t"), ExtResource("21_t")])
+plataformas = Array[Texture2D]([ExtResource("22_t"), ExtResource("23_t"), ExtResource("24_t")])
+plataformas_vertical = Array[Texture2D]([ExtResource("25_t"), ExtResource("26_t"), ExtResource("27_t")])
+vegetacion = Array[Texture2D]([ExtResource("33_t"), ExtResource("34_t"), ExtResource("35_t"), ExtResource("36_t")])
+colores_propios = true

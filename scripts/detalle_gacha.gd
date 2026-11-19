@@ -331,7 +331,7 @@ static func _como_vuelan(modo: ModoArma) -> PackedStringArray:
 	if modo.atraviesa:
 		partes.append("atraviesa%s enemigos (puede%s dar a varios)" % [n, n])
 	if modo.rebotes > 0:
-		partes.append("rebota%s %s en muros y rocas" % [n, "una vez" if modo.rebotes == 1 else "%d veces" % modo.rebotes])
+		partes.append("rebota%s %s en muros y obstáculos" % [n, "una vez" if modo.rebotes == 1 else "%d veces" % modo.rebotes])
 	if modo.explosion > 0.0:
 		# La mitad de su dano, como BolaMagica._explotar, tambien al que ha tocado.
 		partes.append("explota%s al chocar (unos %d más a los de alrededor)"

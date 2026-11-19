@@ -3,15 +3,16 @@
 Claude Code lee este archivo al empezar cada sesión. Sirve para no tener que
 explicar otra vez qué es el proyecto, cómo se trabaja en él y qué se decidió ya.
 
-**Última actualización: 2026-11-13.**
+**Última actualización: 2026-11-19.**
 
 ---
 
 ## Qué es
 
 Juego 2D top-down en **Godot 4.7** (GDScript). Se desciende piso a piso por un
-embudo: **12 niveles fijos** basados en las capas de la Tierra, de la corteza al
-núcleo interno. Cada piso es un **mapa de salas unidas por puertas**, y cada uno
+embudo: **12 niveles fijos**, los pisos de un **castillo maldito**, de los
+calabozos al salón del trono (desde el 2026-11-19; antes, las capas de la
+Tierra, de la corteza al núcleo interno). Cada piso es un **mapa de salas unidas por puertas**, y cada uno
 tiene más salas, y más llenas. Todas las salas miden lo mismo en todos los
 pisos (desde el 2026-11-03; antes encogían) y la cámara ve lo mismo en todos
 (desde el 2026-10-22; antes se acercaba al bajar).
@@ -60,9 +61,11 @@ hechos.
 | Precios, probabilidades y garantías de los gachas | `resources/gacha/{skins,armas}.tres` (`TiradaGacha`) | editando números |
 | Monedas y diamantes de cada enemigo | `monedas` y `diamantes` en su `.tres` (`TipoEnemigo`) | editando números |
 | Arte de los magos y sus hechizos | `herramientas/generar_magos.py`, de `assets/magos_fuente/` → `assets/mago_<color>/` (atlas, retrato y `hechizos/`, con un `ArteHechizo` por hechizo), y `arte_disparo`/`arte_especial` en el `.tres` del mago. La carga de la ulti del oscuro no es del paquete: la dibuja `generar_carga_vacio.py` (SVG, necesita `rsvg-convert`) en `magos_fuente/hechizos/vacio/agujero_carga.png` | cambiar las tablas del script y volver a ejecutarlo (la carga del oscuro, antes `generar_carga_vacio.py`) |
-| Rocas de dentro, una por piso | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso; cada roca, grupo, bloque y losa con su `_v.png` para el móvil en vertical, en `*_vertical` del catálogo) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
+| **Arte del castillo** (desde el 2026-11-19): suelo, pared, pilares, bajada, obstáculos y su `_v`, piedrecitas, lo de encima de las mesas, adornos y colgantes de la pared | `herramientas/generar_castillo.py` (zonas, colores, suelos, muro, cara y salida), con las piezas en `castillo_piezas.py` y el dibujo en `castillo_svg.py` → `assets/castillo/<zona>/` (piezas + `catalogo.tres`) y `assets/castillo/piso_NN/` (suelo, muro, cara + `estilo_borde.tres`). Necesita `rsvg-convert` | cambiar sus tablas (`ZONAS`, `PISOS`, `piezas_de`) y volver a ejecutarlo |
+| Formas de las salas (en L, T, cruz, esquinas, columnas, muretes) | `scripts/forma_sala.gd` (`FormaSala`), y `formas_salas`/`probabilidad_forma` en el `.tres` del piso | editando la lista del `.tres`; una forma nueva, otra entrada en `FormaSala.trazar` |
+| Rocas de dentro, una por piso (ya sin usar desde el castillo) | `herramientas/generar_rocas.py` → `assets/rocas/piso_NN/` (+ `catalogo.tres`, al que apunta el `.tres` del piso; cada roca, grupo, bloque y losa con su `_v.png` para el móvil en vertical, en `*_vertical` del catálogo) | cambiar el piso en `ROCAS` y volver a ejecutarlo |
 | Pack de arte del núcleo (ya sin usar) | `herramientas/generar_nucleo.py` → `assets/nucleo/` | editar el script y volver a ejecutarlo |
-| Pared de las salas, una por piso | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
+| Pared de las salas, una por piso (ya sin usar desde el castillo) | `herramientas/generar_bordes.py` → `assets/bordes/piso_NN/` (texturas + `estilo_borde.tres`), y `estilo_borde` en el `.tres` del piso | cambiar el tema del piso en `TEMAS` y volver a ejecutarlo |
 | Arte de lava, pinchos y vacío | `herramientas/generar_peligros.py` → `assets/peligros/` (+ `shaders/lava.gdshader`) | editar el script y volver a ejecutarlo |
 | Vídeo de la portada del menú | `herramientas/convertir_portada.py <vídeo>` → `assets/portada/portada.ogv` (Ogg Theora, 1920 × 1080 agrandado y enfocado, sin sonido) y `portada_quieta.jpg` (su primera imagen). Necesita `ffmpeg` en el PATH o `imageio-ffmpeg` (pip) | volver a ejecutarlo con otro vídeo |
 | Cofre de la sala secreta | `herramientas/generar_cofre.py` (un cofre en 3D proyectado, con la tapa en cada ángulo de `ANGULOS`) → `assets/cofre/cofre.png`. Necesita `rsvg-convert` | editar el script y volver a ejecutarlo (si cambian `LADO` u `ORIGEN`, también `Cofre.PIES`) |
@@ -1299,7 +1302,60 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   que le quedaba). **El escudo del jefe lleva un aro**
   por fuera que se vacía con el tiempo que le queda. El del mago blanco lo llevó
   hasta el 2026-11-05, cuando Matías lo quitó.
-- **Arte por piso**: desde el 2026-10-08, cada uno de los 12 pisos tiene sus
+- **El castillo maldito** (2026-11-19, Matías: «hazme assets para cambiar el mapa
+  completo, quiero un cambio radical»; eligió vectorial como los magos, otro tema
+  —el castillo maldito— y salas de otras formas, con los enemigos como estaban). Se
+  hizo en la rama `mapa-castillo`. Cuatro zonas de tres pisos: **calabozos** (1-3:
+  losas frías, paja, jaulas, grilletes, barriles, antorchas), **cloacas** (4-6:
+  cantos mojados con charcos, ladrillo con desagües, barriles con limo, tuberías,
+  setas que brillan), **cripta** (7-9: mármol con runas, nichos con calaveras,
+  lápidas, urnas, sarcófagos, velas moradas) y **salón del trono** (10-12: ajedrezado
+  negro y vino con rombos de oro y grietas malditas, columnas, estatuas, armaduras,
+  braseros, banquete). Los nombres de los pisos (`nombre_capa`) son del castillo, y
+  como el mapa sale de `hash(nombre_capa)`, los mapas también cambiaron. Lo nuevo:
+  - **Suelo con dibujo** (`EstiloBorde.suelo`, `Sala._pintar_suelo`): antes era un
+    `draw_rect` de un color. Alineado con el mundo como la roca del muro, también en
+    el pasillo de las puertas. `color_suelo`/`color_detalle` del estilo pasan a los
+    peligros (`Piso._colores_suelo`).
+  - **Pared recta** (`EstiloBorde.recta`): sin ondas, sin bultos y con esquinas en
+    ángulo recto; la cara, del mismo alto (72). Sin salientes.
+  - **La bajada son unas escaleras** (`EstiloBorde.bajada`, `bajada_tapada`:
+    trampilla, reja, losa con calavera o trampilla con corona según la zona;
+    `Sala._pintar_salida`, `MEDIDA_BAJADA`). La zona de bajada sigue siendo el
+    círculo de siempre.
+  - **Tinte de pinchos y agujeros por zona** (`EstiloBorde.tinte_peligros`,
+    `Piso.tinte_peligros`): el naranja del fondo de la Tierra los dejaba oxidados.
+  - **Salas con forma** (`FormaSala`, `scripts/forma_sala.gd`): bloques macizos de
+    obra dentro de la sala, ver la decisión de abajo. Seis formas: `ele` (una
+    esquina grande), `te` (dos esquinas de un lado), `cruz` (las cuatro), `esquinas`
+    (las cuatro en escalón, casi octogonal), `columnas` (cuatro o seis sueltas) y
+    `muretes` (uno por cuarto, a lo largo). Cada piso dice cuáles y con qué
+    probabilidad (`DatosPiso.formas_salas`, `probabilidad_forma`; las elige
+    `Piso._dar_formas` con su semilla). Ni la secreta, ni la antesala, ni la del
+    jefe. Se pintan como la pared (`FormaSala.pintar`: roca del muro encima, cara de
+    la pared en el lado que da hacia abajo en la pantalla, cantos y sombra) y las de
+    las esquinas se alargan hasta el final del muro para seguir su roca. Chocan en la
+    capa de rocas un poco por debajo de la cara (`FormaSala.choque`, `SUBE_CARA`,
+    como la pared de arriba) y la sala las apunta entre sus rocas: los enemigos las
+    esquivan (`sacar_de_las_rocas`) y `Sala.punto_al_azar` y `Piso.lugar_libre` no
+    ponen nada encima (`Sala.pisa_macizo`).
+  - **Los obstáculos son del castillo** (`assets/castillo/<zona>/catalogo.tres`, uno
+    por zona; cada piso elige familia: barriles y cajas, jaulas y bloques con
+    grilletes, grupos...). En el salón del trono la familia es `bloque` y empieza por
+    columnas: de ahí salen los cuatro pilares de la sala del jefe. Las mesas y losas
+    son las plataformas, y lo de encima (velas, botellas, cálices, monedas, coronas)
+    es su «vegetación».
+  - **La luz se mide al generar**: `generar_castillo.calibrar` lleva cada obstáculo
+    fuera de 0,45-1,6 veces la luz del suelo de su zona (casi todos quedan en 1,75;
+    las del trono, de 2 a 3).
+  **Probado** con capturas de los 12 pisos en horizontal y de 4 en vertical
+  (`--tactil`), con todas las formas: en 22 salas con forma y luego en las de los 12
+  pisos, ningún obstáculo, enemigo ni peligro encima de un bloque. FPS, como en
+  `main` (con renderizado por software, de 33 a 40 en los dos). **Nadie lo ha
+  jugado.** Los peligros (pinchos, lava, agujeros) son los de antes, con el tinte de
+  cada zona. Los pisos de antes (`assets/rocas/`, `assets/bordes/`) siguen ahí:
+  volver a ellos es apuntar el `.tres` de cada piso a su catálogo y su estilo.
+- **Arte por piso** (hasta el 2026-11-19, ahora sin usar): desde el 2026-10-08, cada uno de los 12 pisos tenía sus
   propias rocas de dentro (`assets/rocas/piso_NN/`), de la misma roca que su
   pared: cantos con musgo, basalto mojado, caliza, magma con olivino,
   peridotita, ringwoodita, columnas, escoria con lava, hierro, níquel y
@@ -1342,6 +1398,15 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
 - **Posibles mejoras de las salas**, no pedidas: salas de otras formas.
 
 ## Decisiones tomadas (no deshacerlas sin hablarlo)
+
+- **Las salas con forma son bloques macizos dentro de una sala rectangular**, no
+  salas de otra forma (2026-11-19, el castillo). Todo lo demás cuenta con salas
+  rectangulares en una cuadrícula (puertas en el centro de cada lado, cámara,
+  penumbra, minimapa, reparto, cooperativo): para el juego un bloque es una roca
+  muy grande, y se ve como la pared. **Nunca tapan la cruz que une las puertas con
+  el centro** (`FormaSala.BANDA_X`/`BANDA_Y`, 180 y 160): por ahí se entra y se
+  sale, va el pasillo de pinchos y están la bajada, el objeto y el cofre. Así
+  cualquier puerta sigue llevando a cualquier otra.
 
 - **Al jefe no lo mueve nada** (ni el agujero negro ni la burbuja) **y el
   frío le dura el 40 %**: arrastrarlo a un rincón o tenerlo siempre a medio

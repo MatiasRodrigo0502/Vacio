@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="CatalogoObstaculos" load_steps=37 format=3]
+
+[ext_resource type="Script" path="res://scripts/catalogo_obstaculos.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/columna.png" id="2_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/columna_rota.png" id="3_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/estatua.png" id="4_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/armadura.png" id="5_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/brasero.png" id="6_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/pedestal.png" id="7_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/columna_v.png" id="8_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/columna_rota_v.png" id="9_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/estatua_v.png" id="10_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/armadura_v.png" id="11_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/brasero_v.png" id="12_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/pedestal_v.png" id="13_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/columnas.png" id="14_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/braseros.png" id="15_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/guardia.png" id="16_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/jarrones.png" id="17_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/columnas_v.png" id="18_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/braseros_v.png" id="19_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/guardia_v.png" id="20_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/jarrones_v.png" id="21_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/banquete.png" id="22_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/tarima.png" id="23_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/sitial.png" id="24_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/banquete_v.png" id="25_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/tarima_v.png" id="26_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/sitial_v.png" id="27_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/piedra_monedas.png" id="28_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/piedra_petalos.png" id="29_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/piedra_cristal.png" id="30_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/piedra_gema.png" id="31_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/piedra_guijarros.png" id="32_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/vegetacion_copa.png" id="33_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/vegetacion_candelabro.png" id="34_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/vegetacion_monedas.png" id="35_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/trono/vegetacion_corona.png" id="36_t"]
+
+[resource]
+script = ExtResource("1_script")
+piedras = Array[Texture2D]([ExtResource("28_t"), ExtResource("29_t"), ExtResource("30_t"), ExtResource("31_t"), ExtResource("32_t")])
+rocas = Array[Texture2D]([ExtResource("2_t"), ExtResource("3_t"), ExtResource("4_t"), ExtResource("5_t"), ExtResource("6_t"), ExtResource("7_t")])
+rocas_vertical = Array[Texture2D]([ExtResource("8_t"), ExtResource("9_t"), ExtResource("10_t"), ExtResource("11_t"), ExtResource("12_t"), ExtResource("13_t")])
+bloques = Array[Texture2D]([ExtResource("2_t"), ExtResource("3_t"), ExtResource("2_t"), ExtResource("3_t"), ExtResource("4_t"), ExtResource("5_t"), ExtResource("6_t"), ExtResource("7_t")])
+bloques_vertical = Array[Texture2D]([ExtResource("8_t"), ExtResource("9_t"), ExtResource("8_t"), ExtResource("9_t"), ExtResource("10_t"), ExtResource("11_t"), ExtResource("12_t"), ExtResource("13_t")])
+grupos = Array[Texture2D]([ExtResource("14_t"), ExtResource("15_t"), ExtResource("16_t"), ExtResource("17_t")])
+grupos_vertical = Array[Texture2D]([ExtResource("18_t"), ExtResource("19_t"), ExtResource("20_t"), ExtResource("21_t")])
+plataformas = Array[Texture2D]([ExtResource("22_t"), ExtResource("23_t"), ExtResource("24_t")])
+plataformas_vertical = Array[Texture2D]([ExtResource("25_t"), ExtResource("26_t"), ExtResource("27_t")])
+vegetacion = Array[Texture2D]([ExtResource("33_t"), ExtResource("34_t"), ExtResource("35_t"), ExtResource("36_t")])
+colores_propios = true

@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="EstiloBorde" load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://scripts/estilo_borde.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/castillo/piso_08/muro.png" id="2_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/piso_08/cara.png" id="3_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/pilar.png" id="4_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/piso_08/suelo.png" id="5_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/bajada.png" id="6_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/bajada_tapada.png" id="7_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/adorno_vela.png" id="8_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/adorno_calavera.png" id="9_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/adorno_urna.png" id="10_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/adorno_hueso.png" id="11_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/colgante_telarana.png" id="12_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/colgante_farol.png" id="13_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/colgante_cadena.png" id="14_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/cripta/colgante_raices.png" id="15_t"]
+
+[resource]
+script = ExtResource("1_script")
+muro = ExtResource("2_t")
+cara = ExtResource("3_t")
+pilar = ExtResource("4_t")
+adornos = Array[Texture2D]([ExtResource("8_t"), ExtResource("9_t"), ExtResource("10_t"), ExtResource("11_t")])
+colgantes = Array[Texture2D]([ExtResource("12_t"), ExtResource("13_t"), ExtResource("14_t"), ExtResource("15_t")])
+salientes = Array[Texture2D]([])
+color_luz = Color(0.765, 0.729, 0.839, 1.000)
+color_sombra = Color(0.024, 0.020, 0.039, 1.000)
+suelo = ExtResource("5_t")
+color_suelo = Color(0.245, 0.234, 0.271, 1.000)
+color_detalle = Color(0.576, 0.557, 0.604, 1.000)
+bajada = ExtResource("6_t")
+bajada_tapada = ExtResource("7_t")
+tinte_peligros = Color(0.900, 0.840, 1.000, 1.000)
+recta = true
+alto_cara = 72.0
+entrada = 22.0
+ondulacion = 0.0
+adornos_cada = 90.0
+colgantes_cada = 130.0
+salientes_por_sala = 0

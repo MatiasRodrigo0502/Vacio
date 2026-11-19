@@ -33,7 +33,29 @@ extends Resource
 ## La raya oscura del pie de la pared y la sombra que echa sobre el suelo.
 @export var color_sombra: Color = Color(0.06, 0.04, 0.03)
 
+@export_group("Suelo")
+## El suelo de las salas visto desde arriba. Se repite sin costuras, alineado
+## con el mundo como la roca del muro. Vacio = el color liso de siempre, que
+## cambia con la profundidad (Piso._colores_suelo). Desde el castillo
+## (2026-11-19) lo trae cada piso.
+@export var suelo: Texture2D
+## El color medio de ese suelo y el de sus detalles (juntas, bordes): los
+## peligros los usan para parecer del mismo suelo. Solo cuentan con 'suelo'.
+@export var color_suelo: Color = Color(0.16, 0.13, 0.12)
+@export var color_detalle: Color = Color(0.55, 0.40, 0.28)
+## La bajada al piso de abajo, abierta y tapada (Sala._pintar_salida). Vacias =
+## el agujero redondo de siempre.
+@export var bajada: Texture2D
+@export var bajada_tapada: Texture2D
+## Tinte de pinchos y agujeros. Transparente (alfa 0) = el de la profundidad
+## (Piso.tinte_profundidad), que va del gris al naranja: en el castillo cada zona
+## lleva el suyo.
+@export var tinte_peligros: Color = Color(0.0, 0.0, 0.0, 0.0)
+
 @export_group("Forma")
+## Pared recta, de obra: sin ondas ni bultos y con las esquinas en angulo
+## recto, como en un castillo. Con false, la de roca de cueva, irregular.
+@export var recta: bool = false
 ## Alto de la cara de la pared de arriba, en pixeles.
 @export var alto_cara: float = 50.0
 ## Cuanto se mete la pared en la sala, de media, en pixeles.

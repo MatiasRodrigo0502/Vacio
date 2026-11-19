@@ -149,6 +149,8 @@ func configurar(datos_piso: DatosPiso, numero: int, pool: PoolObstaculos,
 	# Antes que nada que mire las puertas: la secreta tiene que estar ya
 	# escondida cuando se levante la pared, y apartadas de ella las rocas.
 	_preparar_secreta()
+	# La forma de cada sala, antes que las rocas: van alrededor de sus bloques.
+	_dar_formas()
 	queue_redraw()
 	_colocar_salida()
 	_colocar_tutorial()
@@ -237,7 +239,7 @@ func lugar_libre(punto: Vector2, radio: float, mirar_enemigos: bool = true) -> b
 	var sala := sala_en(punto)
 	if sala == null:
 		return false
-	if sala.pisa_roca_filo(punto, radio + 12.0):
+	if sala.pisa_roca_filo(punto, radio + 12.0) or sala.pisa_macizo(punto, radio + 12.0):
 		return false
 	for hijo in sala.get_children():
 		if hijo is Enemigo and hijo.tipo != null and mirar_enemigos:
@@ -494,8 +496,35 @@ func _posicion_jefe(celda: Vector2i, tamano: Vector2) -> Vector2:
 	return frontera + direccion * con_muros * 0.5
 
 
-## Suelo y borde segun la profundidad: de marron de cueva a rojo incandescente.
+## La forma de cada sala (FormaSala): de las que permite el piso
+## (DatosPiso.formas_salas), con su probabilidad. Con semilla propia, como todo
+## el piso: sale igual en todas las partidas, en todos los ordenadores y en las
+## dos vistas.
+##
+## Ni la secreta (su cofre, y a veces su anillo de pinchos, van en el centro y
+## alrededor), ni la antesala ni la del jefe: son piezas pensadas.
+func _dar_formas() -> void:
+	if datos == null or datos.formas_salas.is_empty():
+		return
+	var generador := RandomNumberGenerator.new()
+	generador.seed = hash(datos.nombre_capa) + numero_piso * 92821
+	for sala in _orden_salas:
+		if sala.tipo in [MapaSalas.Tipo.SECRETA, MapaSalas.Tipo.ANTESALA, MapaSalas.Tipo.JEFE]:
+			continue
+		# Se tiran siempre los dos numeros: asi la forma de una sala no depende de
+		# si la de antes la tuvo.
+		var tiene := generador.randf() < datos.probabilidad_forma
+		var cual := datos.formas_salas[generador.randi() % datos.formas_salas.size()]
+		if tiene:
+			sala.dar_forma(FormaSala.trazar(cual, sala.tamano, generador))
+
+
+## Suelo y borde: los del piso si su estilo trae suelo (el castillo), y si no,
+## segun la profundidad, de marron de cueva a rojo incandescente.
 func _colores_suelo() -> Array[Color]:
+	var estilo: EstiloBorde = datos.estilo_borde if datos != null else null
+	if estilo != null and estilo.suelo != null:
+		return [estilo.color_suelo, estilo.color_detalle]
 	var profundidad := clampf(float(numero_piso - 1) / 11.0, 0.0, 1.0)
 	return [
 		Color(0.16, 0.13, 0.12).lerp(Color(0.42, 0.13, 0.06), profundidad),
@@ -900,3 +929,14 @@ func _al_entrar_en_salida(cuerpo: Node2D) -> void:
 func tinte_profundidad() -> Color:
 	var profundidad := clampf(float(numero_piso - 1) / 11.0, 0.0, 1.0)
 	return Color(0.92, 0.88, 0.84).lerp(Color(1.0, 0.52, 0.34), profundidad)
+
+
+## El tinte de pinchos y agujeros: el de la pared del piso si lo trae
+## (EstiloBorde.tinte_peligros; en el castillo, uno por zona) y si no el de la
+## profundidad. Con el naranja del fondo de la Tierra, los pinchos del salon del
+## trono parecerian oxidados.
+func tinte_peligros() -> Color:
+	var estilo: EstiloBorde = datos.estilo_borde if datos != null else null
+	if estilo != null and estilo.tinte_peligros.a > 0.0:
+		return estilo.tinte_peligros
+	return tinte_profundidad()

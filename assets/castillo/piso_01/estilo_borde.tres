@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="EstiloBorde" load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scripts/estilo_borde.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/castillo/piso_01/muro.png" id="2_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/piso_01/cara.png" id="3_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/pilar.png" id="4_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/piso_01/suelo.png" id="5_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/bajada.png" id="6_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/bajada_tapada.png" id="7_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/adorno_paja.png" id="8_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/adorno_escombro.png" id="9_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/adorno_vela.png" id="10_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/adorno_calavera.png" id="11_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/colgante_grillete.png" id="12_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/colgante_antorcha.png" id="13_t"]
+[ext_resource type="Texture2D" path="res://assets/castillo/calabozos/colgante_raices.png" id="14_t"]
+
+[resource]
+script = ExtResource("1_script")
+muro = ExtResource("2_t")
+cara = ExtResource("3_t")
+pilar = ExtResource("4_t")
+adornos = Array[Texture2D]([ExtResource("8_t"), ExtResource("9_t"), ExtResource("10_t"), ExtResource("11_t")])
+colgantes = Array[Texture2D]([ExtResource("12_t"), ExtResource("13_t"), ExtResource("14_t")])
+salientes = Array[Texture2D]([])
+color_luz = Color(0.663, 0.690, 0.761, 1.000)
+color_sombra = Color(0.024, 0.024, 0.039, 1.000)
+suelo = ExtResource("5_t")
+color_suelo = Color(0.238, 0.250, 0.280, 1.000)
+color_detalle = Color(0.525, 0.537, 0.580, 1.000)
+bajada = ExtResource("6_t")
+bajada_tapada = ExtResource("7_t")
+tinte_peligros = Color(0.860, 0.900, 1.000, 1.000)
+recta = true
+alto_cara = 72.0
+entrada = 22.0
+ondulacion = 0.0
+adornos_cada = 90.0
+colgantes_cada = 130.0
+salientes_por_sala = 0

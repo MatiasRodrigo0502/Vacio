@@ -23,7 +23,9 @@ de pisos en el código.
 | `cantidad_obstaculos` | Cuántas rocas lleva **cada sala de pelea** (el inicio y la del objeto van limpias). |
 | `es_nivel_final` | Solo `true` en el piso 12. Al superarlo se gana la partida. |
 | `familia_obstaculos` | Qué rocas usa el piso: `roca`, `bloque`, `grupo` o `piedra`. |
-| `catalogo_arte` | Pack de arte del piso (rocas, piedras, plataformas y vegetación). Vacío = el de la cueva sin vegetación. |
+| `catalogo_arte` | Pack de arte del piso (obstáculos, piedrecitas, plataformas y lo que va encima). Desde el 2026-11-19, el de su zona del castillo (`assets/castillo/<zona>/catalogo.tres`). Vacío = el de la cueva sin vegetación. |
+| `formas_salas` | Las formas que pueden tener sus salas (`ele`, `te`, `cruz`, `esquinas`, `columnas`, `muretes`; ver `scripts/forma_sala.gd`). Vacío = todas rectangulares. Desde el 2026-11-19, con el castillo. |
+| `probabilidad_forma` | De las salas que pueden tener forma, cuántas la tienen (0-1). |
 | `mostrar_tutorial` | El piso es un tutorial: sus salas van en fila y al entrar en cada una sale una ventana que explica algo (`scripts/tutorial.gd`). Solo el piso 1. |
 | `enemigos_tutorial` | Con el tutorial, los enemigos de su primera pelea (en el piso 1, un slime verde y dos ratas). |
 | `sala_pelea_tutorial` | En qué sala, contando desde el inicio, va esa pelea (la 3). |

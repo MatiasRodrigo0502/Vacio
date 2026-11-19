@@ -63,6 +63,10 @@ const SOMBRA_ANCHO: float = 52.0
 const SOMBRA_FUERZA: float = 0.5
 ## Lo que tarda el rastrillo en bajar o subir del todo.
 const DURACION_REJA: float = 0.22
+## El dibujo de la bajada (EstiloBorde.bajada) mide esto por el diametro del
+## agujero: trae su marco de piedra alrededor, y el hueco por el que se baja es
+## el del agujero (RADIO_SALIDA).
+const MEDIDA_BAJADA: float = 1.4
 
 var celda: Vector2i = Vector2i.ZERO
 var tipo: MapaSalas.Tipo = MapaSalas.Tipo.NORMAL
@@ -114,6 +118,9 @@ var _semilla_pared: int = 0
 ## puntos, las primeras ya estan al empezar (la pista) y cada golpe ensena mas.
 var _golpes_secreta: int = 0
 var _grietas: Array[PackedVector2Array] = []
+## La forma de la sala: los bloques macizos que se meten en ella (FormaSala).
+## null = rectangular.
+var _forma: FormaSala = null
 
 
 ## Monta la sala. La llama Piso justo despues de add_child().
@@ -210,6 +217,47 @@ func anadir_roca_filo(centro: Vector2, radio: float) -> void:
 	forma.position = centro
 	_cuerpo_filo.add_child(forma)
 	_rocas_filo.append(Vector3(centro.x, centro.y, radio))
+
+
+## Le da a la sala su forma (ver FormaSala): sus bloques macizos chocan como las
+## rocas (paran al jugador, sus bolas y los disparos enemigos) y se apuntan con
+## ellas, asi que los enemigos los esquivan como a una roca (sacar_de_las_rocas)
+## y nada se reparte encima (punto_al_azar, Piso.lugar_libre). La llama el piso
+## despues de construir y antes de colocar las rocas.
+func dar_forma(forma: FormaSala) -> void:
+	_forma = forma
+	if forma == null or forma.bloques.is_empty():
+		return
+	var cuerpo := StaticBody2D.new()
+	cuerpo.name = "Macizos"
+	cuerpo.collision_layer = Terreno.CAPA_ROCAS
+	cuerpo.collision_mask = 0
+	add_child(cuerpo)
+	for bloque in forma.bloques:
+		var caja := forma.choque(bloque)
+		_anadir_forma(cuerpo, caja)
+		_rocas.append(caja)
+	queue_redraw()
+
+
+## La forma de la sala, o null si es rectangular.
+func forma() -> FormaSala:
+	return _forma
+
+
+## True si algo de ese radio en ese punto (global) quedaria encima de un bloque
+## macizo de la sala.
+func pisa_macizo(punto_global: Vector2, radio: float) -> bool:
+	return _en_macizo(to_local(punto_global), radio)
+
+
+func _en_macizo(punto: Vector2, margen: float) -> bool:
+	if _forma == null:
+		return false
+	for bloque in _forma.bloques:
+		if bloque.grow(margen).has_point(punto):
+			return true
+	return false
 
 
 ## Apunta la caja de colision (global) de una roca o plataforma de dentro.
@@ -329,11 +377,19 @@ func cerca_de_puerta(punto: Vector2, distancia: float) -> bool:
 	return false
 
 
-## Un punto al azar del suelo, en local, a cierta distancia de las paredes.
+## Un punto al azar del suelo, en local, a cierta distancia de las paredes y de
+## los bloques macizos de su forma (FormaSala). Sin forma, el primero que sale,
+## como siempre; con forma, el primero que no cae en un bloque (si en 12 no hay
+## ninguno, el ultimo: quien lo pide mira despues si le vale).
 func punto_al_azar(generador: RandomNumberGenerator, margen: float) -> Vector2:
 	var medio := tamano * 0.5 - Vector2(margen, margen)
-	return Vector2(generador.randf_range(-medio.x, medio.x),
-		generador.randf_range(-medio.y, medio.y))
+	var punto := Vector2.ZERO
+	for _intento in 12:
+		punto = Vector2(generador.randf_range(-medio.x, medio.x),
+			generador.randf_range(-medio.y, medio.y))
+		if not _en_macizo(punto, margen):
+			break
+	return punto
 
 
 ## La sala con el agujero de bajada: la de salida o, en el piso del jefe, la
@@ -733,11 +789,14 @@ func _draw() -> void:
 	# Sin linea de limite: el borde del suelo lo tapa la pared, que choca, y es
 	# ella la que dice donde acaba la sala. Una raya recta por debajo delataria
 	# el cuadrado.
-	draw_rect(suelo, _color_suelo)
+	_pintar_suelo(suelo, 0.0)
 	if _pared != null:
 		_pared.pintar(self, color_muro())
 	else:
 		_pintar_sombra_filo()
+	# Despues de la pared: los bloques de las esquinas la tapan y siguen su roca.
+	if _forma != null:
+		_forma.pintar(self, _estilo, position, color_muro())
 
 	if puerta_secreta != Vector2i.ZERO:
 		_pintar_grietas()
@@ -751,7 +810,7 @@ func _draw() -> void:
 			4.0 if direccion == Vector2i.DOWN else 0.0,
 			4.0 if direccion == Vector2i.LEFT else 0.0,
 			4.0 if direccion == Vector2i.UP else 0.0)
-		draw_rect(hueco, _color_suelo.darkened(0.12))
+		_pintar_suelo(hueco, 0.12)
 		_pintar_sombra_pasillo(direccion)
 		if _reja > 0.0:
 			_pintar_reja(direccion)
@@ -759,6 +818,24 @@ func _draw() -> void:
 
 	if tiene_bajada():
 		_pintar_salida()
+
+
+## El suelo: el del piso (EstiloBorde.suelo), alineado con el mundo como la roca
+## del muro, para que siga sin corte de la sala al pasillo de la puerta y de
+## una sala a la de al lado. 'oscuro' lo apaga (el pasillo ya esta dentro de la
+## pared). Sin textura, el color liso de antes.
+func _pintar_suelo(caja: Rect2, oscuro: float) -> void:
+	if _estilo.suelo == null:
+		draw_rect(caja, _color_suelo.darkened(oscuro))
+		return
+	var puntos := PackedVector2Array([caja.position, Vector2(caja.end.x, caja.position.y), caja.end,
+		Vector2(caja.position.x, caja.end.y)])
+	var tam := _estilo.suelo.get_size()
+	var uvs := PackedVector2Array()
+	for punto in puntos:
+		uvs.append(ParedSala.uv_muro(position + punto, tam))
+	var luz := Color(1.0 - oscuro, 1.0 - oscuro, 1.0 - oscuro, 1.0)
+	draw_polygon(puntos, PackedColorArray([luz, luz, luz, luz]), uvs, _estilo.suelo)
 
 
 ## La roca maciza de detras del borde: la franja del muro entera, y por los
@@ -944,6 +1021,15 @@ func _pintar_pilares(direccion: Vector2i) -> void:
 ## El agujero de bajada. Mientras la sala tiene enemigos esta tapado: se ve
 ## donde esta, pero no se puede usar hasta limpiar la sala.
 func _pintar_salida() -> void:
+	# La del piso, si tiene (en el castillo, unas escaleras y su trampilla):
+	# de pie en la pantalla, como los pilares.
+	var dibujo := _estilo.bajada if esta_despejada() else _estilo.bajada_tapada
+	if dibujo != null:
+		var lado := RADIO_SALIDA * 2.0 * MEDIDA_BAJADA
+		draw_set_transform(Vector2.ZERO, Vista.giro)
+		draw_texture_rect(dibujo, Rect2(-Vector2.ONE * lado * 0.5, Vector2.ONE * lado), false)
+		draw_set_transform(Vector2.ZERO)
+		return
 	if esta_despejada():
 		draw_circle(Vector2.ZERO, RADIO_SALIDA, Color(0.05, 0.03, 0.03, 0.9))
 		draw_arc(Vector2.ZERO, RADIO_SALIDA, 0.0, TAU, 32, _color_borde, 4.0, true)

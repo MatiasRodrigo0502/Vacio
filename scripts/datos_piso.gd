@@ -62,6 +62,15 @@ extends Resource
 ## van limpias).
 @export var cantidad_obstaculos: int = 3
 
+## Las formas que pueden tener sus salas (FormaSala.FORMAS: "ele", "te",
+## "cruz", "esquinas", "columnas", "muretes"): bloques macizos que se meten en
+## la sala y hacen que no sea un rectangulo. Vacio = todas rectangulares. Ni la
+## secreta, ni la antesala, ni la del jefe tienen forma: son piezas pensadas.
+@export var formas_salas: PackedStringArray = []
+## De cada sala que puede tener forma, cuantas la tienen (0-1). Las demas,
+## rectangulares: alguna sala abierta tambien hace falta.
+@export_range(0.0, 1.0) var probabilidad_forma: float = 0.7
+
 ## Que familia de rocas usa este piso. Cambiarla es la forma mas barata de dar
 ## personalidad a una capa sin tocar nada mas.
 @export_enum("roca", "piedra", "bloque", "grupo") var familia_obstaculos: String = "roca"
