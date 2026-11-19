@@ -1373,6 +1373,16 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   - **La luz se mide al generar**: `generar_castillo.calibrar` lleva cada obstáculo
     fuera de 0,45-1,6 veces la luz del suelo de su zona (casi todos quedan en 1,75;
     las del trono, de 2 a 3).
+  - **Los suelos empalman** (2026-11-19, Matías: «los assets del suelo del piso 4 se
+    ven muy mal», con captura): la baldosa de las cloacas pintaba una columna de
+    piedras de más a cada lado, y las filas de losas de los calabozos se pasaban del
+    ancho; con la repetición de `Lienzo.mosaico`, en cada junta salían piedras
+    distintas una encima de otra: un corte recto cada 512 px (en los pisos 2 a 6; medido
+    comparando el borde de la baldosa con el resto). Ahora cada piedra y cada losa
+    va una vez dentro de la baldosa. Y **la de las cloacas mide 1024**
+    (`BALDOSA_CLOACAS`; la sala pinta el suelo con el tamaño que tenga): a 512 los
+    mismos tres charcos salían en cuadrícula por la sala. Suelos de los pisos 1 a 6
+    repintados con `resvg-py` y su `color_suelo` puesto al día.
   - **Piezas que se salían de su lienzo** (revisión del 2026-11-19, Matías: «revísalos
     para que esté todo bien»): se buscaron las que tienen relleno claro en el borde
     de su imagen (el contorno oscuro en el borde es normal; los colgantes empiezan

@@ -49,6 +49,7 @@ SALIDA = os.path.join(RAIZ, "assets", "castillo")
 RES = "res://assets/castillo"
 
 SUELO = 512      # la baldosa del suelo
+BALDOSA_CLOACAS = 1024   # la de las cloacas, el doble (suelo_cloacas)
 MURO = 256       # la de la pared vista desde arriba
 CARA_ANCHO = 512
 ALTO_CARA = 72   # EstiloBorde.alto_cara: la cara de la pared de arriba
@@ -179,9 +180,13 @@ def suelo_calabozos(z, v):
     alto = 128
     for fila in range(SUELO // alto):
         desfase = 64 if fila % 2 else 0
+        # Cada fila llena justo un ancho de baldosa (de -desfase a SUELO - desfase): lo
+        # que se sale por la izquierda lo pone la baldosa de al lado (mosaico). Antes
+        # llegaba hasta pasar de SUELO, y en la junta de dos baldosas las losas se
+        # pisaban: una raya en el suelo cada 512 px (Matias, 2026-11-19, piso 4).
         x = -desfase
-        while x < SUELO:
-            ancho = 128 if azar.random() < 0.7 else 64
+        while x < SUELO - desfase:
+            ancho = 128 if azar.random() < 0.7 and x + 128 <= SUELO - desfase else 64
             _losa(L, azar, x, fila * alto, ancho, alto, z["suelo"], z["junta"], z["suelo_luz"])
             x += ancho
     for _ in range(9 + v * 4):
@@ -205,13 +210,22 @@ def suelo_calabozos(z, v):
 
 
 def suelo_cloacas(z, v):
-    L = Lienzo(SUELO, SUELO)
+    # La baldosa, el doble que las demas (BALDOSA_CLOACAS): sus charcos son lo que mas
+    # se ve, y a 512 los mismos tres salian en cuadricula por toda la sala (Matias,
+    # 2026-11-19: «los assets del suelo del piso 4 se ven muy mal»). A 1024 se repiten
+    # una vez por sala como mucho. La sala pinta el suelo con el tamano que tenga.
+    lado_baldosa = BALDOSA_CLOACAS
+    L = Lienzo(lado_baldosa, lado_baldosa)
     azar = azar_de("suelo", "cloacas", v)
-    L.rect(0, 0, SUELO, SUELO, z["junta"], trazo=None)
+    L.rect(0, 0, lado_baldosa, lado_baldosa, z["junta"], trazo=None)
     lado = 64
-    for fila in range(SUELO // lado):
+    for fila in range(lado_baldosa // lado):
         desfase = lado // 2 if fila % 2 else 0
-        for col in range(-1, SUELO // lado + 1):
+        # Una piedra por hueco, solo los de dentro de la baldosa: las que asoman por un
+        # lado las pone la baldosa de al lado (mosaico). Con una columna de mas a cada
+        # lado, en la junta salian dos piedras distintas una encima de otra y se veia
+        # un corte recto en cada junta (Matias, 2026-11-19).
+        for col in range(lado_baldosa // lado):
             cx = col * lado + desfase + lado * 0.5 + azar.uniform(-3, 3)
             cy = fila * lado + lado * 0.5 + azar.uniform(-3, 3)
             base = variar(z["suelo"], azar, 0.12)
@@ -219,16 +233,17 @@ def suelo_cloacas(z, v):
             d = piedra_irregular(azar, cx, cy, lado * 0.53, lado * 0.5, 9, 0.1)
             L.forma(d, L.radial([(0, aclarar(base, 0.14)), (0.75, base), (1, oscurecer(base, 0.25))],
                                 0.4, 0.35, 0.7), trazo=oscurecer(z["junta"], 0.2), ancho=1.5)
-    # Charcos (mas en el aljibe) y limo.
-    for _ in range(3 + v * 3):
-        cx, cy = azar.uniform(0, SUELO), azar.uniform(0, SUELO)
+    # Charcos (mas en el aljibe) y limo. Con cuatro veces la superficie, el doble de
+    # charcos que en una baldosa de 512: la mitad por metro, que llenaban el suelo.
+    for _ in range((3 + v * 3) * 2):
+        cx, cy = azar.uniform(0, lado_baldosa), azar.uniform(0, lado_baldosa)
         rx, ry = azar.uniform(26, 60), azar.uniform(16, 34)
         d = piedra_irregular(azar, cx, cy, rx, ry, 11, 0.25)
         L.forma(d, z["agua"], trazo=oscurecer(z["agua"], 0.4), ancho=2.0, extra='opacity="0.88"')
         L.linea("M %s %s q %s %s %s %s" % (f(cx - rx * 0.5), f(cy - ry * 0.25), f(rx * 0.3), f(-ry * 0.3),
                                          f(rx * 0.6), f(-ry * 0.1)), z["agua_luz"], 2.2, 0.55)
-    for _ in range(6 + v * 6):
-        cx, cy = azar.uniform(0, SUELO), azar.uniform(0, SUELO)
+    for _ in range((6 + v * 6) * 4):
+        cx, cy = azar.uniform(0, lado_baldosa), azar.uniform(0, lado_baldosa)
         L.forma(piedra_irregular(azar, cx, cy, azar.uniform(6, 14), azar.uniform(4, 9), 7, 0.3),
                 z["limo"], trazo=None, extra='opacity="0.4"')
     return L.mosaico()
