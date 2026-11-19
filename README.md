@@ -187,9 +187,9 @@ flechas, se dispara con WASD). Todo se acuerda para la próxima vez, y el tutori
 dice las teclas que hayas elegido. Las reglas están en la otra pestaña, **Cómo
 se juega**.
 
-Al lado está el **disparo automático** (también en la pausa): encendido, el
-mago dispara sin parar al enemigo más cercano de la sala, antes a los que
-tiene a tiro, mientras no apuntes tú con el ratón o las teclas.
+En el móvil, al lado está el **disparo automático** (también en la pausa):
+encendido, el mago dispara sin parar al enemigo más cercano de la sala, antes a
+los que tiene a tiro, mientras no apuntes tú. En el ordenador no está.
 
 No hace falta memorizarlos: están en el botón **Controles** del menú, y además
 el piso 1 es un **tutorial**: cinco salas en fila, y al entrar en cada una

@@ -997,7 +997,9 @@ Arranca en `MenuPrincipal.tscn` (jugar, controles, salir). La partida vive en
   dicen las elegidas: las reglas (`teclas_disparar()`), las ventanas del tutorial
   (`Tutorial._rellenar`, `{mover}`, `{disparar}`, `{raton}`, `{pausa}` y las del
   especial) y el HUD del arma («rueda o Q»). F11 y F3 no se cambian.
-- **Disparo automático** (2026-11-03, pedido por Matías: «disparando sin
+- **Disparo automático, solo en el móvil** desde el 2026-11-19 (Matías: «elimina el
+  disparo automático en las versiones de ordenador»; `Controles.hay_disparo_automatico`:
+  en el ordenador siempre apagado y el interruptor escondido). (2026-11-03, pedido por Matías: «disparando sin
   parar mientras tenga a un enemigo a tiro, en la misma sala»): un
   interruptor en el panel Controles del menú (en la fila de «Moverse con»;
   en otra fila el panel ya no cabía) y en la pausa, los dos creados por

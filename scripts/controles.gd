@@ -76,7 +76,9 @@ const NOMBRES_TECLA := {
 
 ## Disparo automatico con autoapuntado (Matias, 2026-11-03): mientras no
 ## apuntes tu, el mago dispara sin parar al enemigo mas cercano de su sala
-## (Jugador._direccion_automatica). Se guarda como lo demas.
+## (Jugador._direccion_automatica). Se guarda como lo demas. SOLO EN EL MOVIL
+## (hay_disparo_automatico; Matias, 2026-11-19: «elimina el disparo automático en
+## las versiones de ordenador»): en el ordenador siempre false y sin interruptor.
 var disparo_automatico: bool = false
 ## Accion -> [principal, secundaria]: un InputEvent, o null si esta desactivada.
 var _teclas: Dictionary = {}
@@ -97,7 +99,9 @@ func _ready() -> void:
 		_de_fabrica[fila[0]] = huecos
 	var ajustes := ConfigFile.new()
 	ajustes.load(ARCHIVO_AJUSTES)
-	disparo_automatico = ajustes.get_value("controles", "disparo_automatico", false)
+	# Lo guardado se queda en el archivo aunque aqui no cuente: no se tira nada.
+	disparo_automatico = hay_disparo_automatico() \
+		and ajustes.get_value("controles", "disparo_automatico", false)
 	_teclas = _copia(_de_fabrica)
 	if ajustes.has_section("teclas"):
 		for fila in ACCIONES:
@@ -215,7 +219,15 @@ func _poner_principales(con_flechas: bool) -> void:
 		_teclas["disparar_" + lado][0] = wasd if con_flechas else flecha
 
 
+## Si este juego tiene disparo automatico: en el movil (la app o su navegador), y en
+## el ordenador solo con --tactil, para probar los mandos del movil.
+static func hay_disparo_automatico() -> bool:
+	return ControlesTactiles.en_el_movil() or "--tactil" in OS.get_cmdline_user_args()
+
+
 func elegir_disparo_automatico(activo: bool) -> void:
+	if not hay_disparo_automatico():
+		activo = false
 	if activo == disparo_automatico:
 		return
 	disparo_automatico = activo
@@ -229,9 +241,11 @@ func elegir_disparo_automatico(activo: bool) -> void:
 
 ## El interruptor del disparo automatico, igual en el panel de controles del
 ## menu y en la pausa: se crea aqui para que los dos sean el mismo, y cada
-## uno sigue al otro si se cambia (cambiado).
+## uno sigue al otro si se cambia (cambiado). En el ordenador sale escondido
+## (hay_disparo_automatico): quien lo pone no tiene que preguntar.
 func boton_disparo_automatico() -> CheckButton:
 	var boton := CheckButton.new()
+	boton.visible = hay_disparo_automatico()
 	boton.text = "Disparo automático"
 	boton.tooltip_text = "Dispara solo al enemigo más cercano de la sala mientras no apuntes tú"
 	boton.add_theme_font_size_override("font_size", 18)

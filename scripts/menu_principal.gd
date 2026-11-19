@@ -171,6 +171,8 @@ func _montar_eleccion_teclas() -> void:
 	# cabia en 648 de alto (se salia 3 px por arriba y por abajo).
 	var hueco := Control.new()
 	hueco.custom_minimum_size = Vector2(24.0, 0.0)
+	# Sin disparo automatico (en el ordenador), tampoco su hueco.
+	hueco.visible = Controles.hay_disparo_automatico()
 	fila.add_child(hueco)
 	fila.add_child(Controles.boton_disparo_automatico())
 	# Y las estadisticas (F3), tambien aqui por lo mismo: en una fila aparte
