@@ -53,6 +53,9 @@ var _fila_teclas: HBoxContainer
 
 
 func _ready() -> void:
+	# Primero la pantalla completa del navegador, en el mismo pulso del clic: si
+	# esperara, el navegador ya no la dejaria (Pantalla.completa_en_navegador).
+	$Botones/BotonJugar.pressed.connect(Pantalla.completa_en_navegador)
 	$Botones/BotonJugar.pressed.connect(_mostrar_personajes.bind(true))
 	$Botones/BotonControles.pressed.connect(_mostrar_controles.bind(true))
 	$Botones/BotonSalir.pressed.connect(_al_salir)

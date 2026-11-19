@@ -44,10 +44,44 @@ func _ready() -> void:
 	_aplicar()
 
 
+## En el navegador, pantalla completa al pulsar «Jugar» (Matias, 2026-11-19). Hay
+## que llamarla DENTRO del manejador del boton, sin await ni call_deferred: el
+## navegador solo la deja poner durante un gesto del usuario, y Godot web reparte los
+## clics y toques dentro del propio evento de la pagina (vacia la cola de entrada
+## ahi), asi que la señal pressed aun cuenta como gesto.
+##
+## POR QUE CON JavaScript Y NO CON DisplayServer.window_set_mode:
+## si el navegador no la deja (Safari del iPhone no tiene pantalla completa mas que
+## para videos), window_set_mode deja un ERROR en la consola. Aqui se mira antes si
+## existe la funcion y la promesa rechazada se recoge, asi que no sale nada y el
+## juego sigue igual. Se pide sobre el lienzo del juego, como hace el propio Godot:
+## asi window_get_mode y F11 siguen sabiendo en que modo esta.
+func completa_en_navegador() -> void:
+	if not OS.has_feature("web"):
+		return
+	JavaScriptBridge.eval("""
+		(function () {
+			try {
+				if (document.fullscreenElement || document.webkitFullscreenElement) return;
+				var lienzo = document.getElementById('canvas') || document.querySelector('canvas');
+				if (!lienzo) return;
+				var pedir = lienzo.requestFullscreen || lienzo.webkitRequestFullscreen;
+				if (!pedir) return;
+				var promesa = pedir.call(lienzo);
+				if (promesa && promesa.catch) promesa.catch(function () {});
+			} catch (e) {}
+		})();
+	""", true)
+
+
 ## Pasa de pantalla completa a ventana o al reves, y lo recuerda.
 func alternar() -> void:
 	if not _se_puede():
 		return
+	# En el navegador la pone «Jugar» (completa_en_navegador) y la quita Esc, sin
+	# pasar por aqui: se mira como esta de verdad.
+	if OS.has_feature("web"):
+		completa = DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
 	completa = not completa
 	_aplicar()
 	if OS.has_feature("editor"):
