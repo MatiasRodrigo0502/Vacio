@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ConfiguracionCuentas" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/configuracion_cuentas.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+url_supabase = ""
+clave_publica = ""
+url_clasificacion = "https://raw.githubusercontent.com/MatiasRodrigo0502/Vacio-clasificacion/main/clasificacion.json"

@@ -21,6 +21,9 @@ signal menu_solicitado
 @onready var _caja: Control = $Centro/Caja
 @onready var _eleccion: Control = $Centro/Eleccion
 @onready var _fichas: HBoxContainer = $Centro/Eleccion/Fichas
+## Lo de la clasificacion (subiendo, puesto, o que hay que iniciar sesion), debajo
+## del subtitulo. Por codigo, para no tocar la escena.
+var _clasificacion: Label
 
 
 func _ready() -> void:
@@ -31,6 +34,20 @@ func _ready() -> void:
 	# En el navegador no hay carpeta que abrir.
 	$Centro/Caja/BotonPartidas.visible = not OS.has_feature("web")
 	$Centro/Eleccion/BotonVolver.pressed.connect(_ver_eleccion.bind(false))
+	_clasificacion = Label.new()
+	_clasificacion.name = "Clasificacion"
+	_clasificacion.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_clasificacion.add_theme_font_size_override("font_size", 16)
+	_clasificacion.add_theme_color_override("font_color", Color(1.0, 0.86, 0.5))
+	_clasificacion.visible = false
+	_caja.add_child(_clasificacion)
+	_caja.move_child(_clasificacion, _subtitulo.get_index() + 1)
+
+
+## Lo que dice la clasificacion de esta partida (Principal._subir_partida).
+func poner_clasificacion(texto: String) -> void:
+	_clasificacion.text = texto
+	_clasificacion.visible = texto != ""
 
 
 ## R vuelve a empezar con el mismo mago, como dice el boton; Escape, desde la
@@ -76,6 +93,7 @@ func modo_cooperativo() -> void:
 
 func ocultar() -> void:
 	visible = false
+	poner_clasificacion("")
 	_ver_eleccion(false)
 
 

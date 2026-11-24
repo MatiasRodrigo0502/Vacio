@@ -27,6 +27,7 @@ Coleccion="*res://scripts/coleccion.gd"
 Controles="*res://scripts/controles.gd"
 Estadisticas="*res://scripts/estadisticas.gd"
 Vista="*res://scripts/vista.gd"
+Cuenta="*res://scripts/cuenta.gd"
 
 [display]
 

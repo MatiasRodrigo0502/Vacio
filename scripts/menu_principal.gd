@@ -26,8 +26,8 @@ const MUSICA := preload("res://assets/sonido/musica/portada.wav")
 const HUECO_VOLUMEN: float = 24.0
 ## El engranaje de Ajustes, arriba a la derecha (_montar_engranaje).
 const ICONO_AJUSTES := preload("res://assets/iconos/engranaje.svg")
-## Lo que se puede pulsar mide mas que el dibujo: en un movil en horizontal, 80 de
-## los 648 de alto son ~1,4 cm, por encima de los 48 dp que piden Android y Apple.
+## Lo que se puede pulsar mide mas que el dibujo: en un movil en horizontal con 6,8 cm
+## de alto de pantalla, 80 de los 648 son 8,4 mm; Android pide 48 dp (7,6 mm).
 const LADO_AJUSTES: float = 80.0
 const ICONO_AJUSTES_ANCHO: int = 40
 const MARGEN_AJUSTES: float = 8.0
@@ -59,6 +59,12 @@ var _tabla: TablaControles
 var _etiqueta_mover: Label
 var _fila_editor: HBoxContainer
 var _fila_teclas: HBoxContainer
+## La cuenta (arriba a la izquierda) y la clasificacion (en la fila de abajo), con
+## sus paneles (PanelCuenta, PanelClasificacion).
+var _boton_cuenta: Button
+var _boton_clasificacion: Button
+var _panel_cuenta: PanelCuenta
+var _panel_clasificacion: PanelClasificacion
 
 
 func _ready() -> void:
@@ -81,6 +87,7 @@ func _ready() -> void:
 	# Despues del gacha: su boton es una copia del de Controles tal como esta en la
 	# escena, con texto.
 	_montar_engranaje()
+	_montar_cuenta()
 	_montar_eleccion_teclas()
 	_poner_version()
 	Sonido.poner_musica(MUSICA)
@@ -153,6 +160,65 @@ func _montar_engranaje() -> void:
 	boton.offset_left = boton.offset_right - LADO_AJUSTES
 	boton.offset_top = 0.0
 	boton.offset_bottom = LADO_AJUSTES
+
+
+## Iniciar sesion va dentro del menu principal (Matias, 2026-11-19): un boton arriba
+## a la izquierda que dice «Iniciar sesión» o el apodo de quien ha entrado. Y la
+## clasificacion, un boton mas en la fila de abajo, despues del gacha. Se puede
+## jugar sin cuenta; sin ella solo no se suben partidas.
+func _montar_cuenta() -> void:
+	_boton_cuenta = Button.new()
+	_boton_cuenta.name = "BotonCuenta"
+	_boton_cuenta.flat = true
+	_boton_cuenta.add_theme_font_size_override("font_size", 18)
+	_boton_cuenta.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.85))
+	# Alto comodo para el dedo, como el engranaje de la otra esquina.
+	_boton_cuenta.custom_minimum_size = Vector2(0.0, 56.0)
+	_boton_cuenta.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	_boton_cuenta.offset_left = 16.0
+	_boton_cuenta.offset_top = 12.0
+	add_child(_boton_cuenta)
+	_boton_cuenta.pressed.connect(_mostrar_cuenta.bind(true))
+	Cuenta.sesion_cambiada.connect(_poner_boton_cuenta)
+	_poner_boton_cuenta()
+
+	_boton_clasificacion = Button.new()
+	_boton_clasificacion.name = "BotonClasificacion"
+	_boton_clasificacion.text = "Clasificación"
+	_boton_clasificacion.custom_minimum_size = Vector2(170.0, 46.0)
+	_boton_clasificacion.size_flags_vertical = Control.SIZE_SHRINK_END
+	_boton_clasificacion.add_theme_font_size_override("font_size", 18)
+	$Botones.add_child(_boton_clasificacion)
+	$Botones.move_child(_boton_clasificacion, _boton_gacha.get_index() + 1)
+	_boton_clasificacion.pressed.connect(_mostrar_clasificacion.bind(true))
+
+	_panel_cuenta = PanelCuenta.new()
+	_panel_cuenta.cerrado.connect(_mostrar_cuenta.bind(false))
+	add_child(_panel_cuenta)
+	_panel_clasificacion = PanelClasificacion.new()
+	_panel_clasificacion.cerrado.connect(_mostrar_clasificacion.bind(false))
+	add_child(_panel_clasificacion)
+
+
+func _poner_boton_cuenta() -> void:
+	_boton_cuenta.text = Cuenta.apodo if Cuenta.con_sesion() and Cuenta.apodo != "" else "Iniciar sesión"
+	_boton_cuenta.tooltip_text = "Tu cuenta" if Cuenta.con_sesion() else "Entra o crea una cuenta para subir tus partidas"
+
+
+func _mostrar_cuenta(visible_ahora: bool) -> void:
+	if visible_ahora:
+		_panel_cuenta.abrir()
+		return
+	_panel_cuenta.visible = false
+	_boton_cuenta.grab_focus()
+
+
+func _mostrar_clasificacion(visible_ahora: bool) -> void:
+	if visible_ahora:
+		_panel_clasificacion.abrir()
+		return
+	_panel_clasificacion.visible = false
+	_boton_clasificacion.grab_focus()
 
 
 func _mostrar_gacha(visible_ahora: bool) -> void:
@@ -406,6 +472,12 @@ func _unhandled_input(evento: InputEvent) -> void:
 		return
 	if _gacha.visible:
 		_mostrar_gacha(false)
+		get_viewport().set_input_as_handled()
+	elif _panel_cuenta.visible:
+		_mostrar_cuenta(false)
+		get_viewport().set_input_as_handled()
+	elif _panel_clasificacion.visible:
+		_mostrar_clasificacion(false)
 		get_viewport().set_input_as_handled()
 	elif _panel_controles.visible:
 		_mostrar_controles(false)

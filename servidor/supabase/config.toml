@@ -1,0 +1,10 @@
+# Solo lo que cambia de lo de Supabase por defecto (servidor/LEEME.md).
+
+# Nombre local del proyecto (para el CLI); el de verdad se elige al enlazarlo.
+project_id = "vacio"
+
+# La funcion comprueba ella misma la sesion (pide la cuenta a Supabase con el token).
+# Con la comprobacion de la pasarela, la pregunta previa del navegador (OPTIONS,
+# sin token) se quedaba fuera y la version web no podia subir nada.
+[functions.subir-puntuacion]
+verify_jwt = false

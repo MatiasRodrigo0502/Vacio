@@ -30,6 +30,9 @@ signal bola_lanzada(desde: Vector2, direccion: Vector2, cargada: bool)
 ## todos a la vez alrededor del mago. Aparte de bola_lanzada porque no es una
 ## bola con otros numeros: son varias, y cada una se mueve sola.
 signal veneno_lanzado(desde: Vector2, direccion: Vector2)
+## Con que se ha movido o disparado (MarcadorPartida.MetodoControl): la clasificacion
+## ensena el mas alto que se haya usado en la partida (Matias, 2026-11-19).
+signal control_usado(nivel: int)
 ## Ha cambiado el arma o su modo, para que el HUD lo diga. Con null, sin arma.
 signal modo_arma_cambiado(arma: ArmaMago, modo: ModoArma)
 ## Se emite al recoger un objeto, para que el HUD lo anuncie.
@@ -194,6 +197,8 @@ var _cargando: bool = false
 ## raton: entonces sale hacia las flechas o hacia donde mira el mago (ver
 ## _direccion_especial).
 var _especial_por_teclado: bool = false
+## Si el especial de ahora se ha pulsado con un boton del raton (la clasificacion).
+var _especial_con_raton: bool = false
 
 ## Direccion a la que mira el sprite: "abajo", "izquierda", "derecha", "arriba".
 ## Se guarda en vez de recalcularse cada vez porque, al soltar los controles, el
@@ -397,6 +402,7 @@ func _physics_process(delta: float) -> void:
 		# centro, se anda mas o menos deprisa.
 		if ControlesTactiles.movimiento != Vector2.ZERO:
 			direccion = ControlesTactiles.movimiento
+			control_usado.emit(MarcadorPartida.MetodoControl.JOYSTICKS)
 		# Arriba en la pantalla es arriba aunque la vista este girada (Vista).
 		direccion = Vista.en_mundo(direccion)
 
@@ -557,6 +563,8 @@ func _actualizar_carga(delta: float) -> void:
 		var teclado := Input.is_action_just_pressed("cargar_ataque_teclado")
 		if Input.is_action_just_pressed("cargar_ataque") or teclado:
 			_especial_por_teclado = teclado
+			_especial_con_raton = not teclado and _pulsada_con_raton(&"cargar_ataque")
+			control_usado.emit(_control_del_especial())
 			veneno_lanzado.emit(centro_colision(), _direccion_especial())
 			_gastar_especial()
 		return
@@ -575,6 +583,8 @@ func _actualizar_carga(delta: float) -> void:
 		# Con que se carga decide hacia donde sale. Con los dos a la vez manda
 		# el espacio: quien lo pulsa esta jugando con el teclado.
 		_especial_por_teclado = Input.is_action_pressed("cargar_ataque_teclado")
+		# Al soltar ya no esta pulsado: se mira mientras se carga.
+		_especial_con_raton = not _especial_por_teclado and _pulsada_con_raton(&"cargar_ataque")
 		_cargando = true
 		var antes := _carga
 		_carga = minf(_carga + delta, tiempo_carga)
@@ -587,6 +597,7 @@ func _actualizar_carga(delta: float) -> void:
 	# Se ha soltado el boton (o no estaba pulsado). Sale hacia donde se
 	# apuntaba con lo ultimo que se cargo.
 	if _cargando and _carga >= tiempo_carga:
+		control_usado.emit(_control_del_especial())
 		bola_lanzada.emit(centro_colision(), _direccion_especial(), true)
 		_gastar_especial()
 	_cancelar_carga()
@@ -632,9 +643,44 @@ func _actualizar_disparo(delta: float) -> void:
 		return
 
 	_espera_disparo += _cadencia_con_arma()
+	control_usado.emit(_control_del_disparo())
 	# Sale del centro del cuerpo y no de los pies, para que se vea nacer del
 	# personaje y no del suelo.
 	bola_lanzada.emit(centro_colision(), direccion, false)
+
+
+## Con que ha salido un disparo basico, para la clasificacion. El automatico cuenta
+## en cuanto sale un disparo con la opcion puesta, apunte quien apunte (Matias:
+## «cuando se dispara un proyectil con esa opcion activa»).
+func _control_del_disparo() -> int:
+	if Controles.disparo_automatico:
+		return MarcadorPartida.MetodoControl.AUTOMATICO
+	if ControlesTactiles.apuntado != Vector2.ZERO:
+		return MarcadorPartida.MetodoControl.JOYSTICKS
+	if _pulsada_con_raton(&"disparar_raton"):
+		return MarcadorPartida.MetodoControl.RATON
+	return MarcadorPartida.MetodoControl.BOTONES
+
+
+func _control_del_especial() -> int:
+	if ControlesTactiles.especial != Vector2.ZERO:
+		return MarcadorPartida.MetodoControl.JOYSTICKS
+	if _especial_con_raton:
+		return MarcadorPartida.MetodoControl.RATON
+	return MarcadorPartida.MetodoControl.BOTONES
+
+
+## Si la accion se esta pulsando con un boton del raton y no con una tecla: en la
+## tabla de controles se puede poner cualquiera en cualquier accion. Con los mandos
+## tactiles puestos no: cada dedo llega tambien como clic.
+func _pulsada_con_raton(accion: StringName) -> bool:
+	if ControlesTactiles.activos:
+		return false
+	for evento in InputMap.action_get_events(accion):
+		var boton := evento as InputEventMouseButton
+		if boton != null and Input.is_mouse_button_pressed(boton.button_index):
+			return true
+	return false
 
 
 ## El tiempo entre disparos. Un arma que dispara a su manera parte del de un mago

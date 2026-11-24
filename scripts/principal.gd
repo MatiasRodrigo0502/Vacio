@@ -27,6 +27,13 @@ const FRENTE_MAGO: float = 16.0
 var _piso_actual: Piso = null
 ## Apunta cada partida en user://partidas/ para equilibrar con datos.
 var _registro: RegistroPartida
+## Lo que se sube a la clasificacion al acabar: tiempo, precision y control.
+var _marcador: MarcadorPartida
+## Si se han usado atajos de prueba: esa partida no se sube.
+var _con_trucos: bool = false
+## Cuenta las partidas, para no poner en la pantalla final la respuesta del
+## servidor de una partida que ya se ha dejado (reiniciar mientras sube).
+var _numero_partida: int = 0
 ## Solo en una partida cooperativa (Red.cooperativo()): los demas magos, sus
 ## disparos y los objetos compartidos. Jugando solo es null.
 var _cooperativo: Cooperativo = null
@@ -78,6 +85,9 @@ func _ready() -> void:
 	# nodo ni se crea.
 	_registro = RegistroPartida.new(_jugador)
 	add_child(_registro)
+	_marcador = MarcadorPartida.new()
+	add_child(_marcador)
+	_jugador.control_usado.connect(_marcador.usar_control)
 	# Lo de fuera de la sala en la que se juega, a oscuras.
 	add_child(Penumbra.new(_camara))
 	# En el movil, los dos joysticks y los botones del especial y la pausa.
@@ -95,6 +105,7 @@ func _ready() -> void:
 			# ordenador dejaria a cada uno en una partida distinta.
 			var atajos := AtajosPrueba.new(_jugador, func() -> Piso: return _piso_actual)
 			atajos.usado.connect(_registro.marcar_trucos)
+			atajos.usado.connect(func() -> void: _con_trucos = true)
 			add_child(atajos)
 
 	GestorProgreso.iniciar_partida()
@@ -171,6 +182,8 @@ func _al_lanzar_bola(desde: Vector2, direccion: Vector2, cargada: bool) -> void:
 		_disparar_arma(desde, direccion, arma, _jugador.modo_actual())
 		return
 	var bola := _bola_del_jugador(direccion, cargada)
+	if not cargada:
+		_marcador.contar_disparo(bola)
 	# Un arma rara solo cambia el aspecto del disparo normal.
 	if arma != null and not cargada:
 		bola.usar_arma(arma, arma.modos[0], _piso_actual.sala_actual())
@@ -202,6 +215,7 @@ func _disparar_arma(desde: Vector2, direccion: Vector2, arma: ArmaMago, modo: Mo
 			if i % 2 == 1:
 				bola.signo_onda = -1.0
 			_soltar_bola(bola, desde, false)
+			_marcador.contar_disparo(bola)
 			bola.apagada.connect(_piso_actual.golpe_de_bola)
 			if _cooperativo != null:
 				_cooperativo.mandar_disparo(bola, desde, _jugador.mago)
@@ -463,12 +477,35 @@ func _al_ganar() -> void:
 	_jugador.bloquear_control()
 	Sonido.tocar_final(&"victoria")
 	_pantalla_final.mostrar_victoria(GestorProgreso.total_pisos())
+	_subir_partida(GestorProgreso.total_pisos(), true)
 
 
 func _al_perder() -> void:
 	_jugador.bloquear_control()
 	Sonido.tocar_final(&"derrota")
 	_pantalla_final.mostrar_derrota(GestorProgreso.piso_actual)
+	_subir_partida(GestorProgreso.piso_actual, false)
+
+
+## Sube la partida a la clasificacion si hay sesion; si no, lo dice en la pantalla
+## final (se puede jugar sin cuenta, pero sin cuenta no se sube nada). La funcion
+## del servidor solo la guarda si es la mejor de este jugador.
+##
+## Las cooperativas no: con mas vida en los enemigos y varios magos es otra
+## partida. Ni las que han usado atajos de prueba.
+func _subir_partida(piso: int, victoria: bool) -> void:
+	_marcador.parar()
+	if _cooperativo != null or _con_trucos or not Cuenta.hay_servicio():
+		return
+	if not Cuenta.con_sesion():
+		_pantalla_final.poner_clasificacion("Inicia sesión en el menú para subir tus partidas a la clasificación.")
+		return
+	var esta := _numero_partida
+	_pantalla_final.poner_clasificacion("Subiendo la partida a la clasificación…")
+	var respuesta: Dictionary = await Cuenta.subir_puntuacion(
+		_marcador.datos(GestorProgreso.personaje_elegido, piso, victoria))
+	if esta == _numero_partida and is_instance_valid(_pantalla_final):
+		_pantalla_final.poner_clasificacion(respuesta.mensaje)
 
 
 ## Vuelve al menu. Cambiar de escena tira la partida entera, que es justo lo que
@@ -488,6 +525,9 @@ func _reiniciar() -> void:
 	# Antes que nada: restaurar la vida contaria como vida recuperada en la
 	# partida que se deja.
 	_registro.terminar("reiniciada")
+	_marcador.empezar()
+	_numero_partida += 1
+	_con_trucos = false
 	# El mago elegido en el menu, antes de que el HUD lea la vida: la ventaja
 	# puede cambiar cuantos corazones tiene.
 	_jugador.usar_personaje(GestorProgreso.personaje_elegido)
