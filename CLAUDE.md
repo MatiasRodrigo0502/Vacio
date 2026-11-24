@@ -89,7 +89,7 @@ Las mecánicas reparten lo suyo recorriendo `piso.salas()`.
 ## Cómo verificar los cambios (importante)
 
 Godot **no está en el PATH**. El binario está en:
-`C:\Users\Matias\OneDrive - vidalibarraquer.net\Escritorio\Godot_v4.7.2-stable_win64.exe`
+`C:\Tools\Godot\Godot_v4.7.2-stable_win64.exe`
 
 Después de tocar scripts o `.tres`, **siempre**:
 

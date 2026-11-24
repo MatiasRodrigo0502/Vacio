@@ -187,7 +187,7 @@ requiere atribución. Si algún día se usa, hay que moverlo a la lista de arrib
 
 ## Dónde están los originales
 
-Fuera del repositorio, en `C:\Users\Matias\Gamedev\_assets_origen\`.
+Fuera del repositorio, en `C:\Users\maste\Proyectos\_assets_origen\`.
 
 **Por qué no se versionan**: son 97 MB y unos 1.250 archivos, con PNGs sueltos
 de hasta 5 MB y animaciones de 90 frames como imágenes individuales. Git guarda
